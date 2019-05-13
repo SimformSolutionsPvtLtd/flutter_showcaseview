@@ -43,36 +43,44 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: TargetWidget(
           widgetId: "ONE",
-          title: "ADDDDDD",
-          description: """
-        Lorem Ipsum Lorem Ipsum
-        Lorem Ipsum Lorem Ipsum
-        Lorem Ipsum Lorem Ipsum
-        Lorem Ipsum Lorem Ipsum
-        Lorem Ipsum Lorem Ipsum
-        """,
+          title: "Title",
+          description: "Hey There! I am title of the screen.",
           child: Text(widget.title),
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+        child: TargetWidget(
+          widgetId: "TWO",
+          title: "Counter Label",
+          description: "Shows the incremented value of the counter",
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'You have pushed the button this many times:',
+              ),
+              Text(
+                '$_counter',
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .display1,
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      floatingActionButton: TargetWidget(
+        widgetId: "THREE",
+        title: "Tap Me!",
+        description: "Tap me and counter will increase.",
+        shapeBorder: CircleBorder(),
+        child: FloatingActionButton(
+          onPressed: _incrementCounter,
+          tooltip: 'Increment',
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }

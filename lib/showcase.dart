@@ -37,22 +37,43 @@ class ShowCase extends StatefulWidget {
 
 class _ShowCaseState extends State<ShowCase> {
   List<String> ids;
+  int activeWidgetId;
 
   void startShowCase(List<String> widgetIds) {
     setState(() {
       this.ids = widgetIds;
+      activeWidgetId = 0;
     });
   }
 
-  void completed(String widgetIds) {}
+  void completed(String id) {
+    if (ids != null && ids[activeWidgetId] == id) {
+      setState(() {
+        ++activeWidgetId;
 
-  void dismiss() {}
+        if (activeWidgetId >= ids.length) {
+          _cleanupAfterSteps();
+        }
+      });
+    }
+  }
+
+  void dismiss() {
+    setState(() {
+      _cleanupAfterSteps();
+    });
+  }
+
+  void _cleanupAfterSteps() {
+    ids = null;
+    activeWidgetId = null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return _InheritedShowCaseView(
       child: widget.child,
-      activeWidgetIds: ids?.elementAt(0),
+      activeWidgetIds: ids?.elementAt(activeWidgetId),
     );
   }
 }

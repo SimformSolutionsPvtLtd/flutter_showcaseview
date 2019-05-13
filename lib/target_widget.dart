@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class TargetWidget extends StatefulWidget {
   final String widgetId;
   final Widget child;
   final String title;
   final String description;
+  final ShapeBorder shapeBorder;
+  final TextStyle titleTextStyle;
+  final TextStyle descTextStyle;
 
   const TargetWidget({
     Key key,
     @required this.widgetId,
     @required this.child,
-    this.title,
-    this.description,
+    @required this.title,
+    @required this.description,
+    this.shapeBorder,
+    this.titleTextStyle,
+    this.descTextStyle,
   }) : super(key: key);
 
   @override
@@ -20,48 +27,49 @@ class TargetWidget extends StatefulWidget {
 
 class _TargetWidgetState extends State<TargetWidget>
     with TickerProviderStateMixin {
-  bool _showShowCase = true;
+  bool _showShowCase = false;
   Animation<double> _slideAnimation;
   Animation<double> _widthAnimation;
 
   AnimationController _slideAnimationController;
   AnimationController _widthAnimationController;
 
+  String state;
+
   @override
   void initState() {
     super.initState();
-    _slideAnimationController = AnimationController(
-        duration: const Duration(milliseconds: 2500), vsync: this);
-
     _widthAnimationController = AnimationController(
         duration: const Duration(milliseconds: 2500), vsync: this);
-
-    _slideAnimation = CurvedAnimation(
-      parent: _slideAnimationController,
-      curve: Curves.easeInOut,
-    );
 
     _widthAnimation = CurvedAnimation(
       parent: _widthAnimationController,
       curve: Curves.easeInOut,
     );
 
-    _slideAnimationController.addListener(() {
+    _widthAnimationController.addListener(() {
       setState(() {});
     });
 
-    _slideAnimationController.addListener(() {
-      if (_slideAnimationController.isCompleted) {
-        _slideAnimationController.reverse();
-      }
-      if (_slideAnimationController.isDismissed) {
-        _slideAnimationController.forward();
-      }
-      print(_slideAnimationController.status);
-    });
+    _slideAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 2500),
+      vsync: this,
+    )
+      ..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.forward) {
+          setState(() => state = "showing");
+        } else if (status == AnimationStatus.completed) {
+          _slideAnimationController.reverse();
+        }
+        if (_slideAnimationController.isDismissed) {
+          _slideAnimationController.forward();
+        }
+      });
 
-    _slideAnimationController.forward();
-    _widthAnimationController.forward();
+    _slideAnimation = CurvedAnimation(
+      parent: _slideAnimationController,
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -69,6 +77,22 @@ class _TargetWidgetState extends State<TargetWidget>
     super.dispose();
     _slideAnimationController.dispose();
     _widthAnimationController.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    showOverlayIfActiveStep();
+  }
+
+  void showOverlayIfActiveStep() {
+    String activeStep = ShowCase.activeView(context);
+    setState(() => _showShowCase = activeStep == widget.widgetId);
+
+    if (activeStep == widget.widgetId) {
+      _slideAnimationController.forward(from: 0.0);
+      _widthAnimationController.forward(from: 0.0);
+    }
   }
 
   @override
@@ -83,8 +107,26 @@ class _TargetWidgetState extends State<TargetWidget>
     );
   }
 
-  buildOverlayOnTarget(
-          Offset offset, Size size, Rect rectBound, Size screenSize) =>
+  _onTargetTap() {
+    print(state);
+    ShowCase.dismiss(context);
+    setState(() {
+      _showShowCase = false;
+      print(_showShowCase);
+    });
+  }
+
+  _nextIfAny() {
+    print(state);
+    ShowCase.completed(context, widget.widgetId);
+    _slideAnimationController.forward();
+    _widthAnimationController.forward();
+  }
+
+  buildOverlayOnTarget(Offset offset,
+      Size size,
+      Rect rectBound,
+      Size screenSize,) =>
       Visibility(
         visible: _showShowCase,
         maintainAnimation: true,
@@ -92,25 +134,21 @@ class _TargetWidgetState extends State<TargetWidget>
         child: Stack(
           children: [
             GestureDetector(
-              onTap: () {
-                setState(() {
-                  _showShowCase = false;
-                  print(_showShowCase);
-                });
-              },
+              onTap: _onTargetTap,
               child: Container(
                 width: double.infinity,
                 height: double.infinity,
                 color: Colors.grey.withOpacity(0.3),
               ),
             ),
-            _Target(
+            _TargetWidget(
               offset: offset,
               size: size,
               widthAnimation: _widthAnimation,
+              onTap: _nextIfAny,
+              shapeBorder: widget.shapeBorder,
             ),
             _Content(
-              transitionPercent: 1,
               offset: offset,
               screenSize: screenSize,
               title: widget.title,
@@ -118,6 +156,8 @@ class _TargetWidgetState extends State<TargetWidget>
               touchTargetRadius: 44,
               touchTargetToContentPadding: 20.0,
               animationOffset: _slideAnimation,
+              titleTextStyle: widget.titleTextStyle,
+              descTextStyle: widget.descTextStyle,
             ),
           ],
         ),
@@ -125,7 +165,6 @@ class _TargetWidgetState extends State<TargetWidget>
 }
 
 class _Content extends StatelessWidget {
-  final double transitionPercent;
   final Offset offset;
   final Size screenSize;
   final String title;
@@ -133,9 +172,10 @@ class _Content extends StatelessWidget {
   final double touchTargetRadius;
   final double touchTargetToContentPadding;
   final Animation<double> animationOffset;
+  final TextStyle titleTextStyle;
+  final TextStyle descTextStyle;
 
   _Content({
-    this.transitionPercent,
     this.offset,
     this.screenSize,
     this.title,
@@ -143,6 +183,8 @@ class _Content extends StatelessWidget {
     this.touchTargetRadius,
     this.touchTargetToContentPadding,
     this.animationOffset,
+    this.titleTextStyle,
+    this.descTextStyle,
   });
 
   bool isCloseToTopOrBottom(Offset position) {
@@ -173,8 +215,7 @@ class _Content extends StatelessWidget {
   Widget build(BuildContext context) {
     final contentOrientation = findPositionForContent(offset);
     final contentOffsetMultiplier = contentOrientation == "B" ? 1.0 : -1.0;
-    final contentY =
-        offset.dy + (contentOffsetMultiplier * (touchTargetRadius + 20));
+    final contentY = offset.dy + (contentOffsetMultiplier * 48);
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
       top: contentY,
@@ -184,12 +225,14 @@ class _Content extends StatelessWidget {
         translation: Offset(0.0, contentFractionalOffset),
         child: SlideTransition(
           position: Tween<Offset>(
-            begin: Offset(0.0, contentFractionalOffset / 4),
+            begin: Offset(0.0, contentFractionalOffset / 5),
             end: Offset(0.0, 0.100), //controls the opening of the slice
           ).animate(animationOffset),
           child: Container(
             width: screenSize.width,
             child: Material(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
               color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.only(left: 40, right: 40),
@@ -197,21 +240,26 @@ class _Content extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: 4, top: 8),
                       child: Text(
                         title,
-                        style: Theme
+                        style:
+                        titleTextStyle ?? Theme
                             .of(context)
                             .textTheme
                             .title,
                       ),
                     ),
-                    Text(
-                      description,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .subtitle,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        description,
+                        style: descTextStyle ??
+                            Theme
+                                .of(context)
+                                .textTheme
+                                .subtitle,
+                      ),
                     ),
                   ],
                 ),
@@ -224,16 +272,20 @@ class _Content extends StatelessWidget {
   }
 }
 
-class _Target extends StatelessWidget {
+class _TargetWidget extends StatelessWidget {
   final Offset offset;
   final Size size;
   final Animation<double> widthAnimation;
+  final VoidCallback onTap;
+  final ShapeBorder shapeBorder;
 
-  const _Target({
+  _TargetWidget({
     Key key,
     @required this.offset,
     this.size,
     this.widthAnimation,
+    this.onTap,
+    this.shapeBorder,
   }) : super(key: key);
 
   @override
@@ -244,9 +296,7 @@ class _Target extends StatelessWidget {
       child: FractionalTranslation(
         translation: Offset(-0.5, -0.5),
         child: GestureDetector(
-          onTap: () {
-            print("tapped");
-          },
+          onTap: onTap,
           child: Container(
             height: size.height + 16,
             width: Tween<double>(
@@ -256,8 +306,13 @@ class _Target extends StatelessWidget {
                 .animate(widthAnimation)
                 .value,
             decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(),
-              color: Colors.grey.withOpacity(0.7),
+              shape: shapeBorder ??
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+              color: Colors.blueGrey.withOpacity(0.3),
             ),
           ),
         ),
@@ -281,34 +336,30 @@ class AnchoredOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // This LayoutBuilder gives us the opportunity to measure the above
-      // Container to calculate the "anchor" point at its center.
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return OverlayBuilder(
-            showOverlay: showOverlay,
-            overlayBuilder: (BuildContext overlayContext) {
-              // To calculate the "anchor" point we grab the render box of
-              // our parent Container and then we find the center of that box.
-              RenderBox box = context.findRenderObject() as RenderBox;
-              final topLeft =
-                  box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-              final bottomRight = box.size
-                  .bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-              final Rect anchorBounds = Rect.fromLTRB(
-                topLeft.dx,
-                topLeft.dy,
-                bottomRight.dx,
-                bottomRight.dy,
-              );
-              final anchorCenter = box.size.center(topLeft);
-              return overlayBuilder(overlayContext, anchorBounds, anchorCenter);
-            },
-            child: child,
-          );
-        },
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return OverlayBuilder(
+          showOverlay: showOverlay,
+          overlayBuilder: (BuildContext overlayContext) {
+            // To calculate the "anchor" point we grab the render box of
+            // our parent Container and then we find the center of that box.
+            RenderBox box = context.findRenderObject() as RenderBox;
+            final topLeft =
+            box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
+            final bottomRight =
+            box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+            final Rect anchorBounds = Rect.fromLTRB(
+              topLeft.dx,
+              topLeft.dy,
+              bottomRight.dx,
+              bottomRight.dy,
+            );
+            final anchorCenter = box.size.center(topLeft);
+            return overlayBuilder(overlayContext, anchorBounds, anchorCenter);
+          },
+          child: child,
+        );
+      },
     );
   }
 }
@@ -379,10 +430,6 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
       buildOverlay();
     }
   }
-
-  // void addToOverlay(OverlayEntry entry) async {
-  //   Overlay.of(context).insert(entry);
-  // }
 
   void addToOverlay(OverlayEntry overlayEntry) async {
     Overlay.of(context).insert(overlayEntry);

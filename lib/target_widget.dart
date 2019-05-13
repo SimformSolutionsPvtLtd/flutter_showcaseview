@@ -18,8 +18,58 @@ class TargetWidget extends StatefulWidget {
   _TargetWidgetState createState() => _TargetWidgetState();
 }
 
-class _TargetWidgetState extends State<TargetWidget> {
+class _TargetWidgetState extends State<TargetWidget>
+    with TickerProviderStateMixin {
   bool _showShowCase = true;
+  Animation<double> _slideAnimation;
+  Animation<double> _widthAnimation;
+
+  AnimationController _slideAnimationController;
+  AnimationController _widthAnimationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _slideAnimationController = AnimationController(
+        duration: const Duration(milliseconds: 2500), vsync: this);
+
+    _widthAnimationController = AnimationController(
+        duration: const Duration(milliseconds: 2500), vsync: this);
+
+    _slideAnimation = CurvedAnimation(
+      parent: _slideAnimationController,
+      curve: Curves.easeInOut,
+    );
+
+    _widthAnimation = CurvedAnimation(
+      parent: _widthAnimationController,
+      curve: Curves.easeInOut,
+    );
+
+    _slideAnimationController.addListener(() {
+      setState(() {});
+    });
+
+    _slideAnimationController.addListener(() {
+      if (_slideAnimationController.isCompleted) {
+        _slideAnimationController.reverse();
+      }
+      if (_slideAnimationController.isDismissed) {
+        _slideAnimationController.forward();
+      }
+      print(_slideAnimationController.status);
+    });
+
+    _slideAnimationController.forward();
+    _widthAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _slideAnimationController.dispose();
+    _widthAnimationController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +87,8 @@ class _TargetWidgetState extends State<TargetWidget> {
           Offset offset, Size size, Rect rectBound, Size screenSize) =>
       Visibility(
         visible: _showShowCase,
+        maintainAnimation: true,
+        maintainState: true,
         child: Stack(
           children: [
             GestureDetector(
@@ -55,14 +107,17 @@ class _TargetWidgetState extends State<TargetWidget> {
             _Target(
               offset: offset,
               size: size,
+              widthAnimation: _widthAnimation,
             ),
             _Content(
-              title: widget.title,
-              description: widget.description,
-              rectBound: rectBound,
+              transitionPercent: 1,
               offset: offset,
               screenSize: screenSize,
-              widgetSize: size,
+              title: widget.title,
+              description: widget.description,
+              touchTargetRadius: 44,
+              touchTargetToContentPadding: 20.0,
+              animationOffset: _slideAnimation,
             ),
           ],
         ),
@@ -70,32 +125,35 @@ class _TargetWidgetState extends State<TargetWidget> {
 }
 
 class _Content extends StatelessWidget {
-  final String title;
-  final String description;
-  final Rect rectBound;
+  final double transitionPercent;
   final Offset offset;
   final Size screenSize;
-  final Size widgetSize;
+  final String title;
+  final String description;
+  final double touchTargetRadius;
+  final double touchTargetToContentPadding;
+  final Animation<double> animationOffset;
 
-  const _Content({
-    Key key,
-    this.title,
-    this.description,
-    this.rectBound,
+  _Content({
+    this.transitionPercent,
     this.offset,
     this.screenSize,
-    this.widgetSize,
-  }) : super(key: key);
+    this.title,
+    this.description,
+    this.touchTargetRadius,
+    this.touchTargetToContentPadding,
+    this.animationOffset,
+  });
 
   bool isCloseToTopOrBottom(Offset position) {
-    return position.dy <= 88.0 || (screenSize.height - position.dy) <= 88.0;
+    return position.dy <= 88 || (screenSize.height - position.dy) <= 88;
   }
 
   bool isOnTopHalfOfScreen(Offset position) {
-    return position.dy < (screenSize.height / 2.0);
+    return position.dy < (screenSize.height / 2);
   }
 
-  String findPostionForContent(Offset position) {
+  String findPositionForContent(Offset position) {
     if (isCloseToTopOrBottom(position)) {
       if (isOnTopHalfOfScreen(position)) {
         return "B";
@@ -113,43 +171,51 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contentOrientation = findPostionForContent(offset);
-    print(contentOrientation);
+    final contentOrientation = findPositionForContent(offset);
     final contentOffsetMultiplier = contentOrientation == "B" ? 1.0 : -1.0;
-    final contentY = offset.dy +
-        (contentOffsetMultiplier *
-            (contentOrientation == "A"
-                ? (widgetSize.height + 48)
-                : widgetSize.height));
-
+    final contentY =
+        offset.dy + (contentOffsetMultiplier * (touchTargetRadius + 20));
+    final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
       top: contentY,
       right: 16,
       left: 16,
-      child: Card(
-        elevation: 4,
-        child: Container(
-          height: 48,
-          width: screenSize.width,
-          child: Material(
-            color: Colors.white,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    title,
-                  ),
+      child: FractionalTranslation(
+        translation: Offset(0.0, contentFractionalOffset),
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(0.0, contentFractionalOffset / 4),
+            end: Offset(0.0, 0.100), //controls the opening of the slice
+          ).animate(animationOffset),
+          child: Container(
+            width: screenSize.width,
+            child: Material(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 40, right: 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        title,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .title,
+                      ),
+                    ),
+                    Text(
+                      description,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .subtitle,
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: Text(
-                    description,
-                    softWrap: true,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -161,17 +227,17 @@ class _Content extends StatelessWidget {
 class _Target extends StatelessWidget {
   final Offset offset;
   final Size size;
+  final Animation<double> widthAnimation;
 
   const _Target({
     Key key,
     @required this.offset,
     this.size,
+    this.widthAnimation,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print(offset);
-
     return Positioned(
       top: offset.dy,
       left: offset.dx,
@@ -183,7 +249,12 @@ class _Target extends StatelessWidget {
           },
           child: Container(
             height: size.height + 16,
-            width: size.width + 16,
+            width: Tween<double>(
+              begin: 0,
+              end: size.width + 16, //controls the opening of the slice
+            )
+                .animate(widthAnimation)
+                .value,
             decoration: ShapeDecoration(
               shape: RoundedRectangleBorder(),
               color: Colors.grey.withOpacity(0.7),

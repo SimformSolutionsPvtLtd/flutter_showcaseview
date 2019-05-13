@@ -41,7 +41,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: TargetWidget(
+          widgetId: "ONE",
+          title: "ADDDDDD",
+          description: """
+        Lorem Ipsum Lorem Ipsum
+        Lorem Ipsum Lorem Ipsum
+        Lorem Ipsum Lorem Ipsum
+        Lorem Ipsum Lorem Ipsum
+        Lorem Ipsum Lorem Ipsum
+        """,
+          child: Text(widget.title),
+        ),
       ),
       body: Center(
         child: Column(
@@ -58,18 +69,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: TargetWidget(
-        widgetId: "THREE",
-        title: "ADDDDDD",
-        description: """
-        Lorem Ipsum Lorem Ipsum
-        Lorem Ipsum Lorem Ipsum
-        """,
-        child: FloatingActionButton(
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: Icon(Icons.add),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
       ),
     );
   }

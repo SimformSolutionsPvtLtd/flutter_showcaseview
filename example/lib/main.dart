@@ -28,6 +28,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  GlobalKey _one = GlobalKey();
+  GlobalKey _two = GlobalKey();
+  GlobalKey _three = GlobalKey();
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -37,12 +41,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
-            (_) => ShowCase.startShowCase(context, ["ONE", "TWO", "THREE"]));
+            (_) => ShowCase.startShowCase(context, [_one, _two, _three]));
 
     return Scaffold(
       appBar: AppBar(
         title: TargetWidget(
-          widgetId: "ONE",
+          key: _one,
           title: "Title",
           description: "Hey There! I am title of the screen.",
           child: Text(widget.title),
@@ -50,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: TargetWidget(
-          widgetId: "TWO",
+          key: _two,
           title: "Counter Label",
           description: "Shows the incremented value of the counter",
           child: Column(
@@ -72,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: TargetWidget(
-        widgetId: "THREE",
+        key: _three,
         title: "Tap Me!",
         description: "Tap me and counter will increase.",
         shapeBorder: CircleBorder(),

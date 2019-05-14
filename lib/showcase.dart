@@ -11,14 +11,14 @@ class ShowCase extends StatefulWidget {
         .activeWidgetIds;
   }
 
-  static startShowCase(BuildContext context, List<String> widgetIds) {
+  static startShowCase(BuildContext context, List<GlobalKey> widgetIds) {
     _ShowCaseState state = context
         .ancestorStateOfType(TypeMatcher<_ShowCaseState>()) as _ShowCaseState;
 
     state.startShowCase(widgetIds);
   }
 
-  static completed(BuildContext context, String widgetIds) {
+  static completed(BuildContext context, GlobalKey widgetIds) {
     _ShowCaseState state = context
         .ancestorStateOfType(TypeMatcher<_ShowCaseState>()) as _ShowCaseState;
 
@@ -36,17 +36,17 @@ class ShowCase extends StatefulWidget {
 }
 
 class _ShowCaseState extends State<ShowCase> {
-  List<String> ids;
+  List<GlobalKey> ids;
   int activeWidgetId;
 
-  void startShowCase(List<String> widgetIds) {
+  void startShowCase(List<GlobalKey> widgetIds) {
     setState(() {
       this.ids = widgetIds;
       activeWidgetId = 0;
     });
   }
 
-  void completed(String id) {
+  void completed(GlobalKey id) {
     if (ids != null && ids[activeWidgetId] == id) {
       setState(() {
         ++activeWidgetId;
@@ -79,7 +79,7 @@ class _ShowCaseState extends State<ShowCase> {
 }
 
 class _InheritedShowCaseView extends InheritedWidget {
-  final String activeWidgetIds;
+  final GlobalKey activeWidgetIds;
 
   _InheritedShowCaseView({
     @required this.activeWidgetIds,

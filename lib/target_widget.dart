@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 class TargetWidget extends StatefulWidget {
-  final String widgetId;
   final Widget child;
   final String title;
   final String description;
@@ -12,7 +11,6 @@ class TargetWidget extends StatefulWidget {
 
   const TargetWidget({
     Key key,
-    @required this.widgetId,
     @required this.child,
     @required this.title,
     @required this.description,
@@ -57,7 +55,9 @@ class _TargetWidgetState extends State<TargetWidget>
     )
       ..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.forward) {
-          setState(() => state = "showing");
+          setState(() {
+            state = "showing";
+          });
         } else if (status == AnimationStatus.completed) {
           _slideAnimationController.reverse();
         }
@@ -82,14 +82,16 @@ class _TargetWidgetState extends State<TargetWidget>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    showOverlayIfActiveStep();
+    showOverlayIfActive();
   }
 
-  void showOverlayIfActiveStep() {
-    String activeStep = ShowCase.activeView(context);
-    setState(() => _showShowCase = activeStep == widget.widgetId);
+  void showOverlayIfActive() {
+    GlobalKey activeStep = ShowCase.activeView(context);
+    setState(() {
+      _showShowCase = activeStep == widget.key;
+    });
 
-    if (activeStep == widget.widgetId) {
+    if (activeStep == widget.key) {
       _slideAnimationController.forward(from: 0.0);
       _widthAnimationController.forward(from: 0.0);
     }
@@ -98,7 +100,6 @@ class _TargetWidgetState extends State<TargetWidget>
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
     return AnchoredOverlay(
       overlayBuilder: (BuildContext context, Rect rectBound, Offset offset) =>
           buildOverlayOnTarget(offset, rectBound.size, rectBound, size),
@@ -118,7 +119,7 @@ class _TargetWidgetState extends State<TargetWidget>
 
   _nextIfAny() {
     print(state);
-    ShowCase.completed(context, widget.widgetId);
+    ShowCase.completed(context, widget.key);
     _slideAnimationController.forward();
     _widthAnimationController.forward();
   }

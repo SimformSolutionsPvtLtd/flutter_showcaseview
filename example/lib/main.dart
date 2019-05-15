@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
-            (_) => ShowCase.startShowCase(context, [_one, _two, _three]));
+        (_) => ShowCase.startShowCase(context, [_one, _two, _three]));
 
     return Scaffold(
       appBar: AppBar(
@@ -66,10 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text(
                 '$_counter',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .display1,
+                style: Theme.of(context).textTheme.display1,
               ),
             ],
           ),

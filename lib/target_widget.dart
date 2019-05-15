@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 class TargetWidget extends StatefulWidget {
@@ -32,13 +33,11 @@ class _TargetWidgetState extends State<TargetWidget>
   AnimationController _slideAnimationController;
   AnimationController _widthAnimationController;
 
-  String state;
-
   @override
   void initState() {
     super.initState();
     _widthAnimationController = AnimationController(
-        duration: const Duration(milliseconds: 2500), vsync: this);
+        duration: const Duration(milliseconds: 2000), vsync: this);
 
     _widthAnimation = CurvedAnimation(
       parent: _widthAnimationController,
@@ -50,15 +49,11 @@ class _TargetWidgetState extends State<TargetWidget>
     });
 
     _slideAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 2500),
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     )
       ..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.forward) {
-          setState(() {
-            state = "showing";
-          });
-        } else if (status == AnimationStatus.completed) {
+        if (status == AnimationStatus.completed) {
           _slideAnimationController.reverse();
         }
         if (_slideAnimationController.isDismissed) {
@@ -82,18 +77,18 @@ class _TargetWidgetState extends State<TargetWidget>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    showOverlayIfActive();
+    showOverlay();
   }
 
-  void showOverlayIfActive() {
-    GlobalKey activeStep = ShowCase.activeView(context);
+  void showOverlay() {
+    GlobalKey activeStep = ShowCase.activeTargetWidget(context);
     setState(() {
       _showShowCase = activeStep == widget.key;
     });
 
     if (activeStep == widget.key) {
-      _slideAnimationController.forward(from: 0.0);
-      _widthAnimationController.forward(from: 0.0);
+      _slideAnimationController.forward();
+      _widthAnimationController.forward();
     }
   }
 
@@ -109,7 +104,6 @@ class _TargetWidgetState extends State<TargetWidget>
   }
 
   _onTargetTap() {
-    print(state);
     ShowCase.dismiss(context);
     setState(() {
       _showShowCase = false;
@@ -118,7 +112,6 @@ class _TargetWidgetState extends State<TargetWidget>
   }
 
   _nextIfAny() {
-    print(state);
     ShowCase.completed(context, widget.key);
     _slideAnimationController.forward();
     _widthAnimationController.forward();
@@ -154,8 +147,6 @@ class _TargetWidgetState extends State<TargetWidget>
               screenSize: screenSize,
               title: widget.title,
               description: widget.description,
-              touchTargetRadius: 44,
-              touchTargetToContentPadding: 20.0,
               animationOffset: _slideAnimation,
               titleTextStyle: widget.titleTextStyle,
               descTextStyle: widget.descTextStyle,
@@ -170,8 +161,6 @@ class _Content extends StatelessWidget {
   final Size screenSize;
   final String title;
   final String description;
-  final double touchTargetRadius;
-  final double touchTargetToContentPadding;
   final Animation<double> animationOffset;
   final TextStyle titleTextStyle;
   final TextStyle descTextStyle;
@@ -181,8 +170,6 @@ class _Content extends StatelessWidget {
     this.screenSize,
     this.title,
     this.description,
-    this.touchTargetRadius,
-    this.touchTargetToContentPadding,
     this.animationOffset,
     this.titleTextStyle,
     this.descTextStyle,

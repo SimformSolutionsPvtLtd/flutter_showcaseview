@@ -5,7 +5,7 @@ class ShowCase extends StatefulWidget {
 
   const ShowCase({Key key, @required this.child}) : super(key: key);
 
-  static activeView(BuildContext context) {
+  static activeTargetWidget(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedShowCaseView)
             as _InheritedShowCaseView)
         .activeWidgetIds;

@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 
 class ShapePainter extends CustomPainter {
   GlobalKey key;
-  ShapePainter({@required this.key});
+  final ShapeBorder shapeBorder;
+  ShapePainter({@required this.key, this.shapeBorder});
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
+    double radius = 3.0;
     paint.color = Colors.black.withOpacity(0.5);
     RRect outer =
         RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(0));
-    // RRect inner = RRect.fromLTRBR(100, 100, size.width -100 , size.height -100 ,Radius.circular(3));
-    RRect inner = RRect.fromRectAndRadius(_getPosition(), Radius.circular(3));
+    if (shapeBorder == CircleBorder()) {
+      radius = 50;
+    }
+    RRect inner =
+        RRect.fromRectAndRadius(_getPosition(), Radius.circular(radius));
     canvas.drawDRRect(outer, inner, paint);
   }
 

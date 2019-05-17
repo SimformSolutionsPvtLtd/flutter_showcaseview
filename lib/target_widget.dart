@@ -137,7 +137,7 @@ class _TargetWidgetState extends State<TargetWidget>
                 height: double.infinity,
                 // color: Colors.grey.withOpacity(0.3),
                 child: CustomPaint(
-                  painter: ShapePainter(key: widget.key),
+                  painter: ShapePainter(key: widget.key,shapeBorder: widget.shapeBorder),
                 ),
               ),
             ),
@@ -298,7 +298,6 @@ class _TargetWidget extends StatelessWidget {
                       Radius.circular(8),
                     ),
                   ),
-              color: Colors.white.withOpacity(0.0),
             ),
           ),
         ),

@@ -108,13 +108,13 @@ class _TargetWidgetState extends State<TargetWidget>
     );
   }
 
-  _onTargetTap() {
-    ShowCase.dismiss(context);
-    setState(() {
-      _showShowCase = false;
-      print(_showShowCase);
-    });
-  }
+  // _onTargetTap() {
+  //   ShowCase.dismiss(context);
+  //   setState(() {
+  //     _showShowCase = false;
+  //     print(_showShowCase);
+  //   });
+  // }
 
   _nextIfAny() {
     ShowCase.completed(context, widget.key);
@@ -135,14 +135,14 @@ class _TargetWidgetState extends State<TargetWidget>
         child: Stack(
           children: [
             GestureDetector(
-              onTap: _onTargetTap,
+              onTap: _nextIfAny,
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 // color: Colors.grey.withOpacity(0.3),
                 child: CustomPaint(
                   painter: ShapePainter(
-                    opacity: widget.opacity ?? 0.7,
+                      opacity: widget.opacity ?? 0.7,
                       key: widget.key,
                       shapeBorder: widget.shapeBorder,
                       color: widget.color ?? Colors.black),

@@ -54,8 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: TargetWidget(
-          opacity: 0.2,
-          color: Colors.blue,
           key: _two,
           title: "Counter Label",
           description: "Shows the incremented value of the counter",

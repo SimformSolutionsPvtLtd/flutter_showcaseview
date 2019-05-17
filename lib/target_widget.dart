@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:showcaseview/custom_paint.dart';
 
 class TargetWidget extends StatefulWidget {
   final Widget child;
@@ -9,16 +10,17 @@ class TargetWidget extends StatefulWidget {
   final ShapeBorder shapeBorder;
   final TextStyle titleTextStyle;
   final TextStyle descTextStyle;
+  final GlobalKey key;
 
   const TargetWidget({
-    Key key,
+    this.key,
     @required this.child,
     @required this.title,
     @required this.description,
     this.shapeBorder,
     this.titleTextStyle,
     this.descTextStyle,
-  }) : super(key: key);
+  });
 
   @override
   _TargetWidgetState createState() => _TargetWidgetState();
@@ -51,8 +53,7 @@ class _TargetWidgetState extends State<TargetWidget>
     _slideAnimationController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
-    )
-      ..addStatusListener((AnimationStatus status) {
+    )..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           _slideAnimationController.reverse();
         }
@@ -117,10 +118,12 @@ class _TargetWidgetState extends State<TargetWidget>
     _widthAnimationController.forward();
   }
 
-  buildOverlayOnTarget(Offset offset,
-      Size size,
-      Rect rectBound,
-      Size screenSize,) =>
+  buildOverlayOnTarget(
+    Offset offset,
+    Size size,
+    Rect rectBound,
+    Size screenSize,
+  ) =>
       Visibility(
         visible: _showShowCase,
         maintainAnimation: true,
@@ -132,7 +135,10 @@ class _TargetWidgetState extends State<TargetWidget>
               child: Container(
                 width: double.infinity,
                 height: double.infinity,
-                color: Colors.grey.withOpacity(0.3),
+                // color: Colors.grey.withOpacity(0.3),
+                child: CustomPaint(
+                  painter: ShapePainter(key: widget.key),
+                ),
               ),
             ),
             _TargetWidget(
@@ -232,10 +238,7 @@ class _Content extends StatelessWidget {
                       child: Text(
                         title,
                         style:
-                        titleTextStyle ?? Theme
-                            .of(context)
-                            .textTheme
-                            .title,
+                            titleTextStyle ?? Theme.of(context).textTheme.title,
                       ),
                     ),
                     Padding(
@@ -243,10 +246,7 @@ class _Content extends StatelessWidget {
                       child: Text(
                         description,
                         style: descTextStyle ??
-                            Theme
-                                .of(context)
-                                .textTheme
-                                .subtitle,
+                            Theme.of(context).textTheme.subtitle,
                       ),
                     ),
                   ],
@@ -290,9 +290,7 @@ class _TargetWidget extends StatelessWidget {
             width: Tween<double>(
               begin: 0,
               end: size.width + 16, //controls the opening of the slice
-            )
-                .animate(widthAnimation)
-                .value,
+            ).animate(widthAnimation).value,
             decoration: ShapeDecoration(
               shape: shapeBorder ??
                   RoundedRectangleBorder(
@@ -300,7 +298,7 @@ class _TargetWidget extends StatelessWidget {
                       Radius.circular(8),
                     ),
                   ),
-              color: Colors.blueGrey.withOpacity(0.3),
+              color: Colors.white.withOpacity(0.0),
             ),
           ),
         ),
@@ -333,9 +331,9 @@ class AnchoredOverlay extends StatelessWidget {
             // our parent Container and then we find the center of that box.
             RenderBox box = context.findRenderObject() as RenderBox;
             final topLeft =
-            box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
+                box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
             final bottomRight =
-            box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+                box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
             final Rect anchorBounds = Rect.fromLTRB(
               topLeft.dx,
               topLeft.dy,

@@ -11,6 +11,8 @@ class TargetWidget extends StatefulWidget {
   final TextStyle titleTextStyle;
   final TextStyle descTextStyle;
   final GlobalKey key;
+  final Color color;
+  final double opacity;
 
   const TargetWidget({
     this.key,
@@ -18,6 +20,8 @@ class TargetWidget extends StatefulWidget {
     @required this.title,
     @required this.description,
     this.shapeBorder,
+    this.color,
+    this.opacity,
     this.titleTextStyle,
     this.descTextStyle,
   });
@@ -133,11 +137,15 @@ class _TargetWidgetState extends State<TargetWidget>
             GestureDetector(
               onTap: _onTargetTap,
               child: Container(
-                width: double.infinity,
-                height: double.infinity,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
                 // color: Colors.grey.withOpacity(0.3),
                 child: CustomPaint(
-                  painter: ShapePainter(key: widget.key,shapeBorder: widget.shapeBorder),
+                  painter: ShapePainter(
+                    opacity: widget.opacity ?? 0.7,
+                      key: widget.key,
+                      shapeBorder: widget.shapeBorder,
+                      color: widget.color ?? Colors.black),
                 ),
               ),
             ),

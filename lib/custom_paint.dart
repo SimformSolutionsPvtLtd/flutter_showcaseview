@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 class ShapePainter extends CustomPainter {
   GlobalKey key;
   final ShapeBorder shapeBorder;
-  ShapePainter({@required this.key, this.shapeBorder});
+  final Color color;
+  final double opacity;
+  ShapePainter(
+      {@required this.key, this.color, this.shapeBorder, this.opacity});
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
     double radius = 3.0;
-    paint.color = Colors.black.withOpacity(0.5);
+    paint.color = color.withOpacity(opacity);
     RRect outer =
         RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(0));
     if (shapeBorder == CircleBorder()) {

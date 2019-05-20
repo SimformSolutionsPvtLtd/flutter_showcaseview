@@ -3,6 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:showcaseview/custom_paint.dart';
 
+import 'get_position.dart';
+
 class TargetWidget extends StatefulWidget {
   final Widget child;
   final String title;
@@ -39,6 +41,8 @@ class _TargetWidgetState extends State<TargetWidget>
   AnimationController _slideAnimationController;
   AnimationController _widthAnimationController;
 
+  GetPosition position;
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +74,7 @@ class _TargetWidgetState extends State<TargetWidget>
       parent: _slideAnimationController,
       curve: Curves.easeInOut,
     );
+    position = GetPosition(key: widget.key);
   }
 
   @override
@@ -143,7 +148,7 @@ class _TargetWidgetState extends State<TargetWidget>
                 child: CustomPaint(
                   painter: ShapePainter(
                       opacity: widget.opacity ?? 0.7,
-                      key: widget.key,
+                      rect: position.getRect(),
                       shapeBorder: widget.shapeBorder,
                       color: widget.color ?? Colors.black),
                 ),
@@ -157,6 +162,7 @@ class _TargetWidgetState extends State<TargetWidget>
               shapeBorder: widget.shapeBorder,
             ),
             _Content(
+              position: position,
               offset: offset,
               screenSize: screenSize,
               title: widget.title,
@@ -171,6 +177,7 @@ class _TargetWidgetState extends State<TargetWidget>
 }
 
 class _Content extends StatelessWidget {
+  final GetPosition position;
   final Offset offset;
   final Size screenSize;
   final String title;
@@ -180,6 +187,7 @@ class _Content extends StatelessWidget {
   final TextStyle descTextStyle;
 
   _Content({
+    this.position,
     this.offset,
     this.screenSize,
     this.title,
@@ -217,7 +225,9 @@ class _Content extends StatelessWidget {
   Widget build(BuildContext context) {
     final contentOrientation = findPositionForContent(offset);
     final contentOffsetMultiplier = contentOrientation == "B" ? 1.0 : -1.0;
-    final contentY = offset.dy + (contentOffsetMultiplier * 48);
+    final contentY = contentOffsetMultiplier == 1.0
+        ? position.getBottom() + (contentOffsetMultiplier * 20)
+        : position.getTop() + (contentOffsetMultiplier * 20);
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
       top: contentY,

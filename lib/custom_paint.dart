@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ShapePainter extends CustomPainter {
-  GlobalKey key;
+  Rect rect;
   final ShapeBorder shapeBorder;
   final Color color;
   final double opacity;
   ShapePainter(
-      {@required this.key, this.color, this.shapeBorder, this.opacity});
+      {@required this.rect, this.color, this.shapeBorder, this.opacity});
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
@@ -17,27 +17,12 @@ class ShapePainter extends CustomPainter {
     if (shapeBorder == CircleBorder()) {
       radius = 50;
     }
-    RRect inner =
-        RRect.fromRectAndRadius(_getPosition(), Radius.circular(radius));
+    RRect inner = RRect.fromRectAndRadius(rect, Radius.circular(radius));
     canvas.drawDRRect(outer, inner, paint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return false;
-  }
-
-  _getPosition() {
-    RenderBox box = key.currentContext.findRenderObject();
-    final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-    final bottomRight =
-        box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-    Rect rect = Rect.fromLTRB(
-      topLeft.dx - 6,
-      topLeft.dy - 6,
-      bottomRight.dx + 6,
-      bottomRight.dy + 6,
-    );
-    return rect;
   }
 }

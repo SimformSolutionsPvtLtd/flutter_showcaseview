@@ -53,10 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Center(
-        child: TargetWidget(
+        child: TargetWidget.withWidget(
           key: _two,
-          title: "Counter Label",
-          description: "Shows the incremented value of the counter",
+          container: Text(
+            'Hello',
+            style: TextStyle(fontSize: 35, color: Colors.white),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,

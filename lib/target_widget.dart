@@ -15,12 +15,27 @@ class TargetWidget extends StatefulWidget {
   final GlobalKey key;
   final Color color;
   final double opacity;
+  final Widget container;
 
   const TargetWidget({
     this.key,
     @required this.child,
+    this.container,
     @required this.title,
     @required this.description,
+    this.shapeBorder,
+    this.color,
+    this.opacity,
+    this.titleTextStyle,
+    this.descTextStyle,
+  });
+
+  const TargetWidget.withWidget({
+    this.key,
+    @required this.child,
+    @required this.container,
+    this.title,
+    this.description,
     this.shapeBorder,
     this.color,
     this.opacity,
@@ -170,6 +185,7 @@ class _TargetWidgetState extends State<TargetWidget>
               animationOffset: _slideAnimation,
               titleTextStyle: widget.titleTextStyle,
               descTextStyle: widget.descTextStyle,
+              container: widget.container,
             ),
           ],
         ),
@@ -185,17 +201,18 @@ class _Content extends StatelessWidget {
   final Animation<double> animationOffset;
   final TextStyle titleTextStyle;
   final TextStyle descTextStyle;
+  final Widget container;
 
-  _Content({
-    this.position,
-    this.offset,
-    this.screenSize,
-    this.title,
-    this.description,
-    this.animationOffset,
-    this.titleTextStyle,
-    this.descTextStyle,
-  });
+  _Content(
+      {this.position,
+      this.offset,
+      this.screenSize,
+      this.title,
+      this.description,
+      this.animationOffset,
+      this.titleTextStyle,
+      this.descTextStyle,
+      this.container});
 
   bool isCloseToTopOrBottom(Offset position) {
     return position.dy <= 88 || (screenSize.height - position.dy) <= 88;
@@ -229,52 +246,76 @@ class _Content extends StatelessWidget {
         ? position.getBottom() + (contentOffsetMultiplier * 20)
         : position.getTop() + (contentOffsetMultiplier * 20);
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
-    return Positioned(
-      top: contentY,
-      right: 16,
-      left: 16,
-      child: FractionalTranslation(
-        translation: Offset(0.0, contentFractionalOffset),
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: Offset(0.0, contentFractionalOffset / 5),
-            end: Offset(0.0, 0.100), //controls the opening of the slice
-          ).animate(animationOffset),
-          child: Container(
-            width: screenSize.width,
-            child: Material(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 40, right: 40),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4, top: 8),
-                      child: Text(
-                        title,
-                        style:
-                            titleTextStyle ?? Theme.of(context).textTheme.title,
+    if (container == null) {
+      return Positioned(
+        top: contentY,
+        right: 16,
+        left: 16,
+        child: FractionalTranslation(
+          translation: Offset(0.0, contentFractionalOffset),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset(0.0, contentFractionalOffset / 5),
+              end: Offset(0.0, 0.100),
+            ).animate(animationOffset),
+            child: Container(
+              width: screenSize.width,
+              child: Material(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 40, right: 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4, top: 8),
+                        child: Text(
+                          title,
+                          style: titleTextStyle ??
+                              Theme.of(context).textTheme.title,
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        description,
-                        style: descTextStyle ??
-                            Theme.of(context).textTheme.subtitle,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          description,
+                          style: descTextStyle ??
+                              Theme.of(context).textTheme.subtitle,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Positioned(
+        top: contentY,
+        child: FractionalTranslation(
+          translation: Offset(0.0, contentFractionalOffset),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset(0.0, contentFractionalOffset / 5),
+              end: Offset(0.0, 0.100),
+            ).animate(animationOffset),
+            child: Container(
+              width: screenSize.width,
+              child: Material(
+                color: Colors.transparent,
+                child: Center(
+                  child: Container(child: container),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
 

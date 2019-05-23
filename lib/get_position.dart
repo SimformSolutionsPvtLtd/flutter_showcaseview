@@ -27,14 +27,22 @@ class GetPosition {
     return height;
   }
 
-  double getBottom(){
+  double getWidth() {
+    RenderBox box = key.currentContext.findRenderObject();
+    final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
+    final bottomRight =
+        box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+    return bottomRight.dy - topLeft.dx;
+  }
+
+  double getBottom() {
     RenderBox box = key.currentContext.findRenderObject();
     final bottomRight =
         box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
     return bottomRight.dy;
   }
 
-  double getTop(){
+  double getTop() {
     RenderBox box = key.currentContext.findRenderObject();
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
     return topLeft.dy;

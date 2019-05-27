@@ -18,23 +18,6 @@ class GetPosition {
     return rect;
   }
 
-  double getHeight() {
-    RenderBox box = key.currentContext.findRenderObject();
-    final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-    final bottomRight =
-        box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-    double height = bottomRight.dy - topLeft.dy;
-    return height;
-  }
-
-  double getWidth() {
-    RenderBox box = key.currentContext.findRenderObject();
-    final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-    final bottomRight =
-        box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-    return bottomRight.dy - topLeft.dx;
-  }
-
   double getBottom() {
     RenderBox box = key.currentContext.findRenderObject();
     final bottomRight =
@@ -46,5 +29,30 @@ class GetPosition {
     RenderBox box = key.currentContext.findRenderObject();
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
     return topLeft.dy;
+  }
+
+  double getLeft() {
+    RenderBox box = key.currentContext.findRenderObject();
+    final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
+    return topLeft.dx;
+  }
+
+  double getRight() {
+    RenderBox box = key.currentContext.findRenderObject();
+    final bottomRight =
+        box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+    return bottomRight.dx;
+  }
+
+  double getHeight() {
+    return getBottom() - getTop();
+  }
+
+  double getWidth() {
+    return getRight() - getLeft();
+  }
+
+  double getCenter() {
+    return (getLeft() + getRight()) / 2;
   }
 }

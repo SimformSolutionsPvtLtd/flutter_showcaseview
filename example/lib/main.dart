@@ -53,12 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Center(
-        child: TargetWidget.withWidget(
+        child: TargetWidget(
           key: _two,
-          container: Text(
-            'Hello',
-            style: TextStyle(fontSize: 35, color: Colors.white),
-          ),
+          title: 'Body Of Page',
+          description: 'It shows number count',
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,

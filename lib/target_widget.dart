@@ -243,8 +243,8 @@ class _Content extends StatelessWidget {
     final contentOrientation = findPositionForContent(offset);
     final contentOffsetMultiplier = contentOrientation == "B" ? 1.0 : -1.0;
     final contentY = contentOffsetMultiplier == 1.0
-        ? position.getBottom() + (contentOffsetMultiplier * 10)
-        : position.getTop() + (contentOffsetMultiplier * 10);
+        ? position.getBottom() + (contentOffsetMultiplier * 3)
+        : position.getTop() + (contentOffsetMultiplier * 3);
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
 
     if (container == null) {
@@ -263,39 +263,56 @@ class _Content extends StatelessWidget {
               width: screenSize.width,
               child: Material(
                 color: Colors.transparent,
-                child: Column(
+                child: Stack(
                   children: <Widget>[
                     _getUpArrow(contentOffsetMultiplier),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Container(
-                        width: screenSize.width,
-                        padding: EdgeInsets.only(left: 40, right: 40),
-                        color: Colors.white,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4, top: 8),
-                              child: Text(
-                                title,
-                                style: titleTextStyle ??
-                                    Theme.of(context).textTheme.title,
-                              ),
+                    Column(
+                      children: <Widget>[
+                        contentOffsetMultiplier == 1
+                            ? SizedBox(
+                                height: 28.0,
+                              )
+                            : Container(),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Container(
+                            width: screenSize.width,
+                            padding: EdgeInsets.only(left: 40, right: 40),
+                            color: Colors.white,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(bottom: 4, top: 8),
+                                  child: Text(
+                                    title,
+                                    style: titleTextStyle ??
+                                        Theme.of(context).textTheme.title,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Text(
+                                    description,
+                                    style: descTextStyle ??
+                                        Theme.of(context).textTheme.subtitle,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: Text(
-                                description,
-                                style: descTextStyle ??
-                                    Theme.of(context).textTheme.subtitle,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    _getDownArrow(contentOffsetMultiplier)
+                    Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: 37,
+                        ),
+                        _getDownArrow(contentOffsetMultiplier),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -340,7 +357,8 @@ class _Content extends StatelessWidget {
                 Icons.arrow_drop_up,
                 color: Colors.white,
                 size: 50.0,
-              ))
+              ),
+            )
           : Container(),
     );
   }

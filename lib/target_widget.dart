@@ -215,26 +215,14 @@ class _Content extends StatelessWidget {
       this.container});
 
   bool isCloseToTopOrBottom(Offset position) {
-    return position.dy <= 88 || (screenSize.height - position.dy) <= 88;
-  }
-
-  bool isOnTopHalfOfScreen(Offset position) {
-    return position.dy < (screenSize.height / 2);
+    return (screenSize.height - position.dy) <= 88;
   }
 
   String findPositionForContent(Offset position) {
     if (isCloseToTopOrBottom(position)) {
-      if (isOnTopHalfOfScreen(position)) {
-        return "B";
-      } else {
-        return "A";
-      }
+      return 'A';
     } else {
-      if (isOnTopHalfOfScreen(position)) {
-        return "A";
-      } else {
-        return "B";
-      }
+      return 'B';
     }
   }
 
@@ -322,7 +310,8 @@ class _Content extends StatelessWidget {
       );
     } else {
       return Positioned(
-        top: contentY,
+        top: contentOffsetMultiplier == 1 ? contentY + 10 : contentY - 10,
+        left: position.getCenter() - 30,
         child: FractionalTranslation(
           translation: Offset(0.0, contentFractionalOffset),
           child: SlideTransition(
@@ -331,8 +320,6 @@ class _Content extends StatelessWidget {
               end: Offset(0.0, 0.100),
             ).animate(animationOffset),
             child: Container(
-              width: screenSize.width + 10,
-              color: Colors.black,
               child: Material(
                 color: Colors.transparent,
                 child: Center(

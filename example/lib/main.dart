@@ -31,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
   GlobalKey _three = GlobalKey();
+  GlobalKey _four = GlobalKey();
 
   void _incrementCounter() {
     setState(() {
@@ -41,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
-        (_) => ShowCase.startShowCase(context, [_one, _two, _three]));
+        (_) => ShowCase.startShowCase(context, [_one, _two, _three, _four]));
 
     return Scaffold(
       appBar: AppBar(
@@ -52,26 +53,41 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Text(widget.title),
         ),
       ),
-      body: Center(
-        child: TargetWidget(
-          key: _two,
-          title: 'Body Of Page',
-          description: 'It shows number count',
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
             children: <Widget>[
-              Text(
-                'You have pushed the button this many times:',
+              Align(
+                alignment: Alignment(0.2, 0.6),
+                child: TargetWidget.withWidget(
+                  key: _two,
+                  container: Text(
+                    'Hello',
+                    style: TextStyle(fontSize: 30.0, color: Colors.white),
+                  ),
+                  child: Text(
+                    '$_counter',
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                ),
               ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.display1,
+              Align(
+                alignment: Alignment(0.2, 0.8),
+                child: TargetWidget.withWidget(
+                  key: _four,
+                  container: Text(
+                    'Hello',
+                    style: TextStyle(fontSize: 30.0, color: Colors.white),
+                  ),
+                  child: Text(
+                    '$_counter',
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                ),
               ),
             ],
-          ),
-        ),
-      ),
+          )),
       floatingActionButton: TargetWidget(
         key: _three,
         title: "Tap Me!",

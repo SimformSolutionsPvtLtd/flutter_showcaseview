@@ -1,0 +1,83 @@
+Flutter crash report; please file at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter packages get
+
+## exception
+
+_TypeError: type 'YamlList' is not a subtype of type 'YamlMap'
+
+```
+#0      _validate (package:flutter_tools/src/flutter_manifest.dart:312:30)
+<asynchronous suspension>
+#1      FlutterManifest._createFromYaml (package:flutter_tools/src/flutter_manifest.dart:45:40)
+<asynchronous suspension>
+#2      FlutterManifest.createFromString (package:flutter_tools/src/flutter_manifest.dart:40:12)
+<asynchronous suspension>
+#3      FlutterManifest.createFromPath (package:flutter_tools/src/flutter_manifest.dart:34:12)
+<asynchronous suspension>
+#4      FlutterProject._readManifest (package:flutter_tools/src/project.dart:153:60)
+<asynchronous suspension>
+#5      FlutterProject.fromDirectory (package:flutter_tools/src/project.dart:44:44)
+<asynchronous suspension>
+#6      FlutterProject.fromPath (package:flutter_tools/src/project.dart:59:58)
+#7      PackagesGetCommand.runCommand (package:flutter_tools/src/commands/packages.dart:96:61)
+<asynchronous suspension>
+#8      FlutterCommand.verifyThenRunCommand (package:flutter_tools/src/runner/flutter_command.dart:559:18)
+#9      _asyncThenWrapperHelper.<anonymous closure> (dart:async-patch/async_patch.dart:77:64)
+#10     _rootRunUnary (dart:async/zone.dart:1132:38)
+#11     _CustomZone.runUnary (dart:async/zone.dart:1029:19)
+#12     _FutureListener.handleValue (dart:async/future_impl.dart:126:18)
+#13     Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:639:45)
+#14     Future._propagateToListeners (dart:async/future_impl.dart:668:32)
+#15     Future._complete (dart:async/future_impl.dart:473:7)
+#16     _SyncCompleter.complete (dart:async/future_impl.dart:51:12)
+#17     _AsyncAwaitCompleter.complete.<anonymous closure> (dart:async-patch/async_patch.dart:33:20)
+#18     _rootRun (dart:async/zone.dart:1124:13)
+#19     _CustomZone.run (dart:async/zone.dart:1021:19)
+#20     _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:947:23)
+#21     _microtaskLoop (dart:async/schedule_microtask.dart:41:21)
+#22     _startMicrotaskLoop (dart:async/schedule_microtask.dart:50:5)
+#23     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:115:13)
+#24     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:172:5)
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, v1.5.4-hotfix.2, on Mac OS X 10.14.3 18D109, locale en-GB)
+    • Flutter version 1.5.4-hotfix.2 at /Devarsh/flutter
+    • Framework revision 7a4c33425d (4 weeks ago), 2019-04-29 11:05:24 -0700
+    • Engine revision 52c7a1e849
+    • Dart version 2.3.0 (build 2.3.0-dev.0.5 a1668566e5)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 28.0.3)
+    • Android SDK at /Users/devarsh.ranpara/Library/Android/sdk
+    • Android NDK location not configured (optional; useful for native profiling support)
+    • Platform android-28, build-tools 28.0.3
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_152-release-1248-b01)
+    • All Android licenses accepted.
+
+[✓] iOS toolchain - develop for iOS devices (Xcode 10.2.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 10.2.1, Build version 10E1001
+    • ios-deploy 1.9.4
+    • CocoaPods version 1.5.3
+
+[✓] Android Studio (version 3.3)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin version 34.0.1
+    • Dart plugin version 182.5215
+    • Java version OpenJDK Runtime Environment (build 1.8.0_152-release-1248-b01)
+
+[✓] VS Code (version 1.34.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.0.2
+
+[✓] Connected device (1 available)
+    • Redmi 6 • 05d212ad7d28 • android-arm • Android 8.1.0 (API 27)
+
+• No issues found!
+```

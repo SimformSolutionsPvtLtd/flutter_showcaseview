@@ -59,13 +59,11 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Stack(
             children: <Widget>[
               Align(
-                alignment: Alignment(0.2, 0.6),
-                child: TargetWidget.withWidget(
+                alignment: Alignment(0.5, 0.6),
+                child: TargetWidget(
                   key: _two,
-                  container: Text(
-                    'Hello',
-                    style: TextStyle(fontSize: 30.0, color: Colors.white),
-                  ),
+                  title: 'Title',
+                  description: 'Desc',
                   child: Text(
                     '$_counter',
                     style: Theme.of(context).textTheme.display1,

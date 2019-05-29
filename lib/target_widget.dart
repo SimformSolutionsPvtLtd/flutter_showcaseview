@@ -218,6 +218,11 @@ class _Content extends StatelessWidget {
     return (screenSize.height - position.dy) <= 88;
   }
 
+  bool isLeft() {
+    double screenWidht = screenSize.width / 2;
+    return !(screenWidht <= position.getCenter());
+  }
+
   String findPositionForContent(Offset position) {
     if (isCloseToTopOrBottom(position)) {
       return 'A';
@@ -334,20 +339,15 @@ class _Content extends StatelessWidget {
   }
 
   Widget _getUpArrow(contentOffsetMultiplier) {
-    return Container(
-      width: screenSize.width,
-      child: contentOffsetMultiplier == 1.0
-          ? Container(
-              alignment: Alignment.bottomLeft,
-              padding: EdgeInsets.only(left: position.getCenter() - 40),
-              child: Icon(
-                Icons.arrow_drop_up,
-                color: Colors.white,
-                size: 50.0,
-              ),
-            )
-          : Container(),
-    );
+    return contentOffsetMultiplier == 1.0
+        ? Positioned(
+            left: position.getCenter() - 40,
+            child: Icon(
+              Icons.arrow_drop_up,
+              color: Colors.white,
+              size: 50.0,
+            ))
+        : Container();
   }
 
   Widget _getDownArrow(contentOffsetMultiplier) {

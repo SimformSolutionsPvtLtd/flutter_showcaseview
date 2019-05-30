@@ -19,6 +19,7 @@ class TargetWidget extends StatefulWidget {
   final Widget container;
   final Color tooltipColor;
   final Color textColor;
+  final bool showArrow;
 
   const TargetWidget({
     this.key,
@@ -33,6 +34,7 @@ class TargetWidget extends StatefulWidget {
     this.descTextStyle,
     this.tooltipColor,
     this.textColor,
+    this.showArrow,
   });
 
   const TargetWidget.withWidget({
@@ -48,6 +50,7 @@ class TargetWidget extends StatefulWidget {
     this.descTextStyle,
     this.tooltipColor,
     this.textColor,
+    this.showArrow,
   });
 
   @override
@@ -195,6 +198,7 @@ class _TargetWidgetState extends State<TargetWidget>
               container: widget.container,
               tooltipColor: widget.tooltipColor ?? Colors.white,
               textColor: widget.textColor ?? Colors.black,
+              showArrow: widget.showArrow ?? true,
             ),
           ],
         ),

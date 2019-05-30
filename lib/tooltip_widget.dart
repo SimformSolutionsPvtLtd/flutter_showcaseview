@@ -13,6 +13,7 @@ class Content extends StatelessWidget {
   final Widget container;
   final Color tooltipColor;
   final Color textColor;
+  final bool showArrow;
 
   Content({
     this.position,
@@ -26,6 +27,7 @@ class Content extends StatelessWidget {
     this.container,
     this.tooltipColor,
     this.textColor,
+    this.showArrow,
   });
 
   bool isCloseToTopOrBottom(Offset position) {
@@ -79,11 +81,16 @@ class Content extends StatelessWidget {
     double padingTop = contentOffsetMultiplier == 1 ? 22 : 0;
     double padingBottom = contentOffsetMultiplier == 1 ? 0 : 27;
 
+    if (!showArrow) {
+      padingTop = 10;
+      padingBottom = 10;
+    }
+
     if (container == null) {
       double leftPos = _getLeft();
       return Stack(
         children: <Widget>[
-          _getArrow(contentOffsetMultiplier),
+          showArrow ? _getArrow(contentOffsetMultiplier) : Container(),
           Positioned(
             top: contentY,
             left: leftPos,
@@ -137,7 +144,7 @@ class Content extends StatelessWidget {
     } else {
       return Stack(
         children: <Widget>[
-          _getArrow(contentOffsetMultiplier),
+          showArrow ? _getArrow(contentOffsetMultiplier) : Container(),
           Positioned(
             top: contentOffsetMultiplier == 1 ? contentY + 10 : contentY - 10,
             left: position.getCenter() - 30,

@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   key: _four,
                   container: Text(
                     'Hello',
-                    style: TextStyle(fontSize: 30.0, color: Colors.white),
+                    style: TextStyle(fontSize: 50.0, color: Colors.white),
                   ),
                   child: Text(
                     '$_counter',

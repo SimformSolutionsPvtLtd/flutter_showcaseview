@@ -32,11 +32,6 @@ class Content extends StatelessWidget {
     return (screenSize.height - position.dy) <= 100;
   }
 
-  bool _isLeft() {
-    double screenWidht = screenSize.width / 2;
-    return !(screenWidht <= position.getCenter());
-  }
-
   String findPositionForContent(Offset position) {
     if (isCloseToTopOrBottom(position)) {
       return 'A';
@@ -47,8 +42,29 @@ class Content extends StatelessWidget {
 
   double _getTooltipWidth() {
     double width = 80;
-    width += (description.length * 8);
+    width += (description.length * 6);
     return width;
+  }
+
+  bool _isLeft() {
+    double screenWidht = screenSize.width / 3;
+    return !(screenWidht <= position.getCenter());
+  }
+
+  bool _isRight() {
+    double screenWidht = screenSize.width / 3;
+    return ((screenWidht * 2) <= position.getCenter());
+  }
+
+  double _getLeft() {
+    if (_isLeft()) {
+      return position.getCenter() - (_getTooltipWidth() * 0.2);
+    }
+    if (_isRight()) {
+      return position.getCenter() - (_getTooltipWidth());
+    } else {
+      return position.getCenter() - (_getTooltipWidth() * 0.5);
+    }
   }
 
   @override
@@ -64,9 +80,7 @@ class Content extends StatelessWidget {
     double padingBottom = contentOffsetMultiplier == 1 ? 0 : 27;
 
     if (container == null) {
-      double leftPos = _isLeft()
-          ? position.getCenter() - (_getTooltipWidth() * 0.2)
-          : position.getCenter() - (_getTooltipWidth() * 0.8);
+      double leftPos = _getLeft();
       return Stack(
         children: <Widget>[
           _getArrow(contentOffsetMultiplier),
@@ -121,26 +135,34 @@ class Content extends StatelessWidget {
         ],
       );
     } else {
-      return Positioned(
-        top: contentOffsetMultiplier == 1 ? contentY + 10 : contentY - 10,
-        left: position.getCenter() - 30,
-        child: FractionalTranslation(
-          translation: Offset(0.0, contentFractionalOffset),
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: Offset(0.0, contentFractionalOffset / 5),
-              end: Offset(0.0, 0.100),
-            ).animate(animationOffset),
-            child: Container(
-              child: Material(
-                color: Colors.transparent,
-                child: Center(
-                  child: Container(child: container),
+      return Stack(
+        children: <Widget>[
+          _getArrow(contentOffsetMultiplier),
+          Positioned(
+            top: contentOffsetMultiplier == 1 ? contentY + 10 : contentY - 10,
+            left: position.getCenter() - 30,
+            child: FractionalTranslation(
+              translation: Offset(0.0, contentFractionalOffset),
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset(0.0, contentFractionalOffset / 5),
+                  end: Offset(0.0, 0.100),
+                ).animate(animationOffset),
+                child: Container(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Center(
+                      child: Container(
+                          padding: EdgeInsets.only(
+                              top: padingTop, bottom: padingBottom),
+                          child: container),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       );
     }
   }

@@ -32,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   GlobalKey _two = GlobalKey();
   GlobalKey _three = GlobalKey();
   GlobalKey _four = GlobalKey();
+  GlobalKey _five = GlobalKey();
 
   void _incrementCounter() {
     setState(() {
@@ -41,8 +42,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => ShowCase.startShowCase(context, [_one, _two, _three, _four]));
+    WidgetsBinding.instance.addPostFrameCallback((_) =>
+        ShowCase.startShowCase(context, [_one, _two, _three, _four, _five]));
 
     return Scaffold(
       appBar: AppBar(
@@ -59,11 +60,30 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Stack(
             children: <Widget>[
               Align(
-                alignment: Alignment(0.5, 0.6),
+                alignment: Alignment(-0.5, -0.3),
                 child: TargetWidget(
+                  title: 'Sample Text',
+                  description: 'This is Sample Text',
+                  key: _five,
+                  child: Text(
+                    'Text',
+                    style: TextStyle(fontSize: 50),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment(0.5, 0.6),
+                child: TargetWidget.withWidget(
                   key: _two,
-                  title: 'Title',
-                  description: 'Desc',
+                  container: Text(
+                    'Hello',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                    ),
+                  ),
+                  // title: 'Title',
+                  // description: 'Desc',
                   child: Text(
                     '$_counter',
                     style: Theme.of(context).textTheme.display1,
@@ -73,16 +93,15 @@ class _MyHomePageState extends State<MyHomePage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: TargetWidget(
-                  overlayColor: Colors.black,
-                  key: _four,
-                  shapeBorder: CircleBorder(),
-                  title: 'Title',
-                  description: 'Temp Fab',
-                  child: FloatingActionButton(
-                    onPressed: (){},
-                    child: Icon(Icons.add),
-                  )
-                ),
+                    overlayColor: Colors.black,
+                    key: _four,
+                    shapeBorder: CircleBorder(),
+                    title: 'Title',
+                    description: 'Temp Fab',
+                    child: FloatingActionButton(
+                      onPressed: () {},
+                      child: Icon(Icons.add),
+                    )),
               ),
             ],
           )),

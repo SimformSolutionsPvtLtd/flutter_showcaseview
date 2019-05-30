@@ -14,9 +14,11 @@ class TargetWidget extends StatefulWidget {
   final TextStyle titleTextStyle;
   final TextStyle descTextStyle;
   final GlobalKey key;
-  final Color color;
-  final double opacity;
+  final Color overlayColor;
+  final double overlayOpacity;
   final Widget container;
+  final Color tooltipColor;
+  final Color textColor;
 
   const TargetWidget({
     this.key,
@@ -25,10 +27,12 @@ class TargetWidget extends StatefulWidget {
     @required this.title,
     @required this.description,
     this.shapeBorder,
-    this.color,
-    this.opacity,
+    this.overlayColor,
+    this.overlayOpacity,
     this.titleTextStyle,
     this.descTextStyle,
+    this.tooltipColor,
+    this.textColor,
   });
 
   const TargetWidget.withWidget({
@@ -38,10 +42,12 @@ class TargetWidget extends StatefulWidget {
     this.title,
     this.description,
     this.shapeBorder,
-    this.color,
-    this.opacity,
+    this.overlayColor,
+    this.overlayOpacity,
     this.titleTextStyle,
     this.descTextStyle,
+    this.tooltipColor,
+    this.textColor,
   });
 
   @override
@@ -163,10 +169,10 @@ class _TargetWidgetState extends State<TargetWidget>
                 // color: Colors.grey.withOpacity(0.3),
                 child: CustomPaint(
                   painter: ShapePainter(
-                      opacity: widget.opacity ?? 0.7,
+                      opacity: widget.overlayOpacity ?? 0.7,
                       rect: position.getRect(),
                       shapeBorder: widget.shapeBorder,
-                      color: widget.color ?? Colors.black),
+                      color: widget.overlayColor ?? Colors.black),
                 ),
               ),
             ),
@@ -187,6 +193,8 @@ class _TargetWidgetState extends State<TargetWidget>
               titleTextStyle: widget.titleTextStyle,
               descTextStyle: widget.descTextStyle,
               container: widget.container,
+              tooltipColor: widget.tooltipColor ?? Colors.white,
+              textColor: widget.textColor ?? Colors.black,
             ),
           ],
         ),

@@ -11,23 +11,28 @@ class Content extends StatelessWidget {
   final TextStyle titleTextStyle;
   final TextStyle descTextStyle;
   final Widget container;
+  final Color tooltipColor;
+  final Color textColor;
 
-  Content(
-      {this.position,
-      this.offset,
-      this.screenSize,
-      this.title,
-      this.description,
-      this.animationOffset,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.container});
+  Content({
+    this.position,
+    this.offset,
+    this.screenSize,
+    this.title,
+    this.description,
+    this.animationOffset,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.container,
+    this.tooltipColor,
+    this.textColor,
+  });
 
   bool isCloseToTopOrBottom(Offset position) {
     return (screenSize.height - position.dy) <= 100;
   }
 
-  bool isLeft() {
+  bool _isLeft() {
     double screenWidht = screenSize.width / 2;
     return !(screenWidht <= position.getCenter());
   }
@@ -40,6 +45,12 @@ class Content extends StatelessWidget {
     }
   }
 
+  double _getTooltipWidth() {
+    double width = 80;
+    width += (description.length * 8);
+    return width;
+  }
+
   @override
   Widget build(BuildContext context) {
     final contentOrientation = findPositionForContent(offset);
@@ -49,78 +60,65 @@ class Content extends StatelessWidget {
         : position.getTop() + (contentOffsetMultiplier * 3);
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
 
+    double padingTop = contentOffsetMultiplier == 1 ? 22 : 0;
+    double padingBottom = contentOffsetMultiplier == 1 ? 0 : 27;
+
     if (container == null) {
-      return Positioned(
-        top: contentY,
-        right: 16,
-        left: 16,
-        child: FractionalTranslation(
-          translation: Offset(0.0, contentFractionalOffset),
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: Offset(0.0, contentFractionalOffset / 5),
-              end: Offset(0.0, 0.100),
-            ).animate(animationOffset),
-            child: Container(
-              width: screenSize.width,
-              child: Material(
-                color: Colors.transparent,
-                child: Stack(
-                  children: <Widget>[
-                    _getUpArrow(contentOffsetMultiplier),
-                    Column(
-                      children: <Widget>[
-                        contentOffsetMultiplier == 1
-                            ? SizedBox(
-                                height: 28.0,
-                              )
-                            : Container(),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Container(
-                            width: screenSize.width,
-                            padding: EdgeInsets.only(left: 40, right: 40),
-                            color: Colors.white,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(bottom: 4, top: 8),
-                                  child: Text(
-                                    title,
-                                    style: titleTextStyle ??
-                                        Theme.of(context).textTheme.title,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Text(
-                                    description,
-                                    style: descTextStyle ??
-                                        Theme.of(context).textTheme.subtitle,
-                                  ),
-                                ),
-                              ],
+      double leftPos = _isLeft()
+          ? position.getCenter() - (_getTooltipWidth() * 0.2)
+          : position.getCenter() - (_getTooltipWidth() * 0.8);
+      return Stack(
+        children: <Widget>[
+          _getArrow(contentOffsetMultiplier),
+          Positioned(
+            top: contentY,
+            left: leftPos,
+            child: FractionalTranslation(
+              translation: Offset(0.0, contentFractionalOffset),
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset(0.0, contentFractionalOffset / 10),
+                  end: Offset(0.0, 0.100),
+                ).animate(animationOffset),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    padding:
+                        EdgeInsets.only(top: padingTop, bottom: padingBottom),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Container(
+                        padding: EdgeInsets.only(left: 40, right: 40),
+                        color: tooltipColor,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 4, top: 8),
+                              child: Text(
+                                title,
+                                style: titleTextStyle ??
+                                    Theme.of(context).textTheme.title,
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                description,
+                                style: descTextStyle ??
+                                    Theme.of(context).textTheme.subtitle,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                    Column(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 37,
-                        ),
-                        _getDownArrow(contentOffsetMultiplier),
-                      ],
-                    )
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
+          )
+        ],
       );
     } else {
       return Positioned(
@@ -147,32 +145,32 @@ class Content extends StatelessWidget {
     }
   }
 
-  Widget _getUpArrow(contentOffsetMultiplier) {
-    return contentOffsetMultiplier == 1.0
-        ? Positioned(
-            left: position.getCenter() - 40,
-            child: Icon(
-              Icons.arrow_drop_up,
-              color: Colors.white,
-              size: 50.0,
-            ))
-        : Container();
-  }
-
-  Widget _getDownArrow(contentOffsetMultiplier) {
-    return Container(
-      width: screenSize.width,
-      child: contentOffsetMultiplier == -1.0
-          ? Container(
-              alignment: Alignment.bottomLeft,
-              padding: EdgeInsets.only(left: position.getCenter() - 40),
-              child: Icon(
-                Icons.arrow_drop_down,
-                color: Colors.white,
-                size: 50.0,
-              ),
-            )
-          : Container(),
+  Widget _getArrow(contentOffsetMultiplier) {
+    final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
+    return Positioned(
+      top: contentOffsetMultiplier == 1.0
+          ? position.getBottom()
+          : position.getTop(),
+      left: position.getCenter() - 25,
+      child: FractionalTranslation(
+          translation: Offset(0.0, contentFractionalOffset),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset(0.0, contentFractionalOffset / 5),
+              end: Offset(0.0, 0.100),
+            ).animate(animationOffset),
+            child: contentOffsetMultiplier == 1.0
+                ? Icon(
+                    Icons.arrow_drop_up,
+                    color: tooltipColor,
+                    size: 50.0,
+                  )
+                : Icon(
+                    Icons.arrow_drop_down,
+                    color: tooltipColor,
+                    size: 50.0,
+                  ),
+          )),
     );
   }
 }

@@ -71,17 +71,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Align(
-                alignment: Alignment(0.2, 0.8),
-                child: TargetWidget.withWidget(
+                alignment: Alignment.centerLeft,
+                child: TargetWidget(
+                  overlayColor: Colors.black,
                   key: _four,
-                  container: Text(
-                    'Hello',
-                    style: TextStyle(fontSize: 50.0, color: Colors.white),
-                  ),
-                  child: Text(
-                    '$_counter',
-                    style: Theme.of(context).textTheme.display1,
-                  ),
+                  shapeBorder: CircleBorder(),
+                  title: 'Title',
+                  description: 'Temp Fab',
+                  child: FloatingActionButton(
+                    onPressed: (){},
+                    child: Icon(Icons.add),
+                  )
                 ),
               ),
             ],

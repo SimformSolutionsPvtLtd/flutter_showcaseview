@@ -60,7 +60,12 @@ class Content extends StatelessWidget {
 
   double _getLeft() {
     if (_isLeft()) {
-      return position.getCenter() - (_getTooltipWidth() * 0.2);
+      double leftPadding = position.getCenter() - (_getTooltipWidth() * 0.2);
+
+      if (leftPadding + _getTooltipWidth() > screenSize.width) {
+        leftPadding = (screenSize.width) - _getTooltipWidth();
+      }
+      return leftPadding;
     }
     if (_isRight()) {
       return position.getCenter() - (_getTooltipWidth());

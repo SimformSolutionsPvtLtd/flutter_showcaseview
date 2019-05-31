@@ -18,9 +18,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
   final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -43,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCase.startShowCase(context, [_one, _two, _three, _four, _five]));
+        ShowCase.startShowCase(context, [_two, _one, _three, _four, _five]));
 
     return Scaffold(
       appBar: AppBar(
@@ -76,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: TargetWidget.withWidget(
                   key: _two,
                   container: Text(
-                    'Hello',
+                    'Helloooow',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,

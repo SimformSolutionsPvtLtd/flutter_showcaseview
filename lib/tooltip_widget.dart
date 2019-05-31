@@ -61,14 +61,17 @@ class Content extends StatelessWidget {
   double _getLeft() {
     if (_isLeft()) {
       double leftPadding = position.getCenter() - (_getTooltipWidth() * 0.2);
-
       if (leftPadding + _getTooltipWidth() > screenSize.width) {
-        leftPadding = (screenSize.width) - _getTooltipWidth();
+        leftPadding = (screenSize.width - 20) - _getTooltipWidth();
       }
       return leftPadding;
     }
     if (_isRight()) {
-      return position.getCenter() - (_getTooltipWidth());
+      double rightPadding = position.getCenter() - (_getTooltipWidth());
+      if (rightPadding + _getTooltipWidth() > screenSize.width) {
+        rightPadding = (screenSize.width - 20) - _getTooltipWidth();
+      }
+      return rightPadding;
     } else {
       return position.getCenter() - (_getTooltipWidth() * 0.5);
     }
@@ -78,13 +81,14 @@ class Content extends StatelessWidget {
   Widget build(BuildContext context) {
     final contentOrientation = findPositionForContent(offset);
     final contentOffsetMultiplier = contentOrientation == "B" ? 1.0 : -1.0;
-    final contentY = contentOffsetMultiplier == 1.0
+    bool arrowTop = contentOffsetMultiplier == 1.0 ? true : false;
+    final contentY = arrowTop
         ? position.getBottom() + (contentOffsetMultiplier * 3)
         : position.getTop() + (contentOffsetMultiplier * 3);
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
 
-    double padingTop = contentOffsetMultiplier == 1 ? 22 : 0;
-    double padingBottom = contentOffsetMultiplier == 1 ? 0 : 27;
+    double padingTop = arrowTop ? 22 : 0;
+    double padingBottom = arrowTop ? 0 : 27;
 
     if (!showArrow) {
       padingTop = 10;
@@ -151,8 +155,7 @@ class Content extends StatelessWidget {
         children: <Widget>[
           showArrow ? _getArrow(contentOffsetMultiplier) : Container(),
           Positioned(
-            top: contentOffsetMultiplier == 1 ? contentY + 10 : contentY - 10,
-            left: position.getCenter() - 30,
+            top: arrowTop ? contentY + 10 : contentY - 10,
             child: FractionalTranslation(
               translation: Offset(0.0, contentFractionalOffset),
               child: SlideTransition(
@@ -180,11 +183,10 @@ class Content extends StatelessWidget {
   }
 
   Widget _getArrow(contentOffsetMultiplier) {
+    bool arrowTop = contentOffsetMultiplier == 1.0 ? true : false;
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
-      top: contentOffsetMultiplier == 1.0
-          ? position.getBottom()
-          : position.getTop(),
+      top: arrowTop ? position.getBottom() : position.getTop(),
       left: position.getCenter() - 25,
       child: FractionalTranslation(
           translation: Offset(0.0, contentFractionalOffset),
@@ -193,7 +195,7 @@ class Content extends StatelessWidget {
               begin: Offset(0.0, contentFractionalOffset / 5),
               end: Offset(0.0, 0.100),
             ).animate(animationOffset),
-            child: contentOffsetMultiplier == 1.0
+            child: arrowTop
                 ? Icon(
                     Icons.arrow_drop_up,
                     color: tooltipColor,

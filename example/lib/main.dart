@@ -63,6 +63,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   title: 'Sample Text',
                   description: 'This is Sample Text',
                   key: _five,
+                  container: Text(
+                    'Helloooow',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                    ),
+                  ),
                   child: Text(
                     'Text',
                     style: TextStyle(fontSize: 50),

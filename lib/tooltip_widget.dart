@@ -14,6 +14,9 @@ class Content extends StatelessWidget {
   final Color tooltipColor;
   final Color textColor;
   final bool showArrow;
+  final double cHeight = 200;
+  final double cWidht = 200;
+  static bool isArrowUp;
 
   Content({
     this.position,
@@ -31,7 +34,11 @@ class Content extends StatelessWidget {
   });
 
   bool isCloseToTopOrBottom(Offset position) {
-    return (screenSize.height - position.dy) <= 100;
+    double height = 120;
+    if (cHeight != null) {
+      height = cHeight;
+    }
+    return (screenSize.height - position.dy) <= height;
   }
 
   String findPositionForContent(Offset position) {
@@ -77,18 +84,26 @@ class Content extends StatelessWidget {
     }
   }
 
+  double _getSpace() {
+    double space = position.getCenter() - (cWidht / 2);
+    if (space + cWidht > screenSize.width) {
+      space = screenSize.width - cWidht - 8;
+    }
+    return space;
+  }
+
   @override
   Widget build(BuildContext context) {
     final contentOrientation = findPositionForContent(offset);
     final contentOffsetMultiplier = contentOrientation == "B" ? 1.0 : -1.0;
-    bool arrowTop = contentOffsetMultiplier == 1.0 ? true : false;
-    final contentY = arrowTop
+    isArrowUp = contentOffsetMultiplier == 1.0 ? true : false;
+    final contentY = isArrowUp
         ? position.getBottom() + (contentOffsetMultiplier * 3)
         : position.getTop() + (contentOffsetMultiplier * 3);
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
 
-    double padingTop = arrowTop ? 22 : 0;
-    double padingBottom = arrowTop ? 0 : 27;
+    double padingTop = isArrowUp ? 22 : 0;
+    double padingBottom = isArrowUp ? 0 : 27;
 
     if (!showArrow) {
       padingTop = 10;
@@ -155,7 +170,8 @@ class Content extends StatelessWidget {
         children: <Widget>[
           showArrow ? _getArrow(contentOffsetMultiplier) : Container(),
           Positioned(
-            top: arrowTop ? contentY + 10 : contentY - 10,
+            left: _getSpace(),
+            top: isArrowUp ? contentY + 10 : contentY - 10,
             child: FractionalTranslation(
               translation: Offset(0.0, contentFractionalOffset),
               child: SlideTransition(
@@ -168,9 +184,16 @@ class Content extends StatelessWidget {
                     color: Colors.transparent,
                     child: Center(
                       child: Container(
-                          padding: EdgeInsets.only(
-                              top: padingTop, bottom: padingBottom),
-                          child: container),
+                        padding: EdgeInsets.only(
+                            top: padingTop, bottom: padingBottom),
+                        child: Container(
+                          height: cHeight,
+                          width: cWidht,
+                          child: Center(
+                            child: container,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -183,10 +206,9 @@ class Content extends StatelessWidget {
   }
 
   Widget _getArrow(contentOffsetMultiplier) {
-    bool arrowTop = contentOffsetMultiplier == 1.0 ? true : false;
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
-      top: arrowTop ? position.getBottom() : position.getTop(),
+      top: isArrowUp ? position.getBottom() : position.getTop(),
       left: position.getCenter() - 25,
       child: FractionalTranslation(
           translation: Offset(0.0, contentFractionalOffset),
@@ -195,7 +217,7 @@ class Content extends StatelessWidget {
               begin: Offset(0.0, contentFractionalOffset / 5),
               end: Offset(0.0, 0.100),
             ).animate(animationOffset),
-            child: arrowTop
+            child: isArrowUp
                 ? Icon(
                     Icons.arrow_drop_up,
                     color: tooltipColor,

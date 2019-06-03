@@ -1,3 +1,4 @@
+import 'package:example/second_file.dart';
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ShowCase(child: MyHomePage(title: 'ShowCase Example')),
+      home: ShowCase(child: MailPage()),
     );
   }
 }

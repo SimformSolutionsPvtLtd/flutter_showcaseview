@@ -80,6 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Align(
                 alignment: Alignment(0.5, 0.6),
                 child: TargetWidget.withWidget(
+                  cHeight: 200,
+                  cWidht: 200,
                   key: _two,
                   container: Text(
                     'Helloooow',

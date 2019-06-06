@@ -14,24 +14,25 @@ class Content extends StatelessWidget {
   final Color tooltipColor;
   final Color textColor;
   final bool showArrow;
-  final double cHeight = 200;
-  final double cWidht = 200;
+  final double cHeight;
+  final double cWidht;
   static bool isArrowUp;
 
-  Content({
-    this.position,
-    this.offset,
-    this.screenSize,
-    this.title,
-    this.description,
-    this.animationOffset,
-    this.titleTextStyle,
-    this.descTextStyle,
-    this.container,
-    this.tooltipColor,
-    this.textColor,
-    this.showArrow,
-  });
+  Content(
+      {this.position,
+      this.offset,
+      this.screenSize,
+      this.title,
+      this.description,
+      this.animationOffset,
+      this.titleTextStyle,
+      this.descTextStyle,
+      this.container,
+      this.tooltipColor,
+      this.textColor,
+      this.showArrow,
+      this.cHeight,
+      this.cWidht});
 
   bool isCloseToTopOrBottom(Offset position) {
     double height = 120;
@@ -50,7 +51,7 @@ class Content extends StatelessWidget {
   }
 
   double _getTooltipWidth() {
-    double width = 80;
+    double width = 40;
     width += (description.length * 6);
     return width;
   }
@@ -72,15 +73,24 @@ class Content extends StatelessWidget {
         leftPadding = (screenSize.width - 20) - _getTooltipWidth();
       }
       return leftPadding;
+    } else if (!(_isRight())) {
+      return position.getCenter() - (_getTooltipWidth() * 0.5);
+    } else {
+      return null;
     }
+  }
+
+  double _getRight() {
     if (_isRight()) {
-      double rightPadding = position.getCenter() - (_getTooltipWidth() * 0.1);
+      double rightPadding = position.getCenter() + (_getTooltipWidth() / 2);
       if (rightPadding + _getTooltipWidth() > screenSize.width) {
-        rightPadding = (screenSize.width - 20) - _getTooltipWidth();
+        rightPadding = 20;
       }
       return rightPadding;
-    } else {
+    } else if (!(_isLeft())) {
       return position.getCenter() - (_getTooltipWidth() * 0.5);
+    } else {
+      return null;
     }
   }
 
@@ -88,6 +98,8 @@ class Content extends StatelessWidget {
     double space = position.getCenter() - (cWidht / 2);
     if (space + cWidht > screenSize.width) {
       space = screenSize.width - cWidht - 8;
+    } else if (space < (cWidht / 2)) {
+      space = 16;
     }
     return space;
   }
@@ -111,13 +123,13 @@ class Content extends StatelessWidget {
     }
 
     if (container == null) {
-      double leftPos = _getLeft();
       return Stack(
         children: <Widget>[
           showArrow ? _getArrow(contentOffsetMultiplier) : Container(),
           Positioned(
             top: contentY,
-            left: leftPos,
+            left: _getLeft(),
+            right: _getRight(),
             child: FractionalTranslation(
               translation: Offset(0.0, contentFractionalOffset),
               child: SlideTransition(
@@ -133,13 +145,13 @@ class Content extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
-                        padding: EdgeInsets.only(left: 40, right: 40),
+                        padding: EdgeInsets.only(left: 20, right: 20),
                         color: tooltipColor,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 4, top: 8),
+                              padding: const EdgeInsets.only(bottom: 0, top: 8),
                               child: Text(
                                 title,
                                 style: titleTextStyle ??
@@ -187,6 +199,7 @@ class Content extends StatelessWidget {
                         padding: EdgeInsets.only(
                             top: padingTop, bottom: padingBottom),
                         child: Container(
+                          color: Colors.transparent,
                           height: cHeight,
                           width: cWidht,
                           child: Center(

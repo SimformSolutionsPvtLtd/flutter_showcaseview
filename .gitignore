@@ -10,6 +10,8 @@
 .packages
 .pub-cache/
 .pub/
+.idea/
+.vscode/
 build/
 
 # Android related

@@ -20,6 +20,8 @@ class TargetWidget extends StatefulWidget {
   final Color tooltipColor;
   final Color textColor;
   final bool showArrow;
+  final double cHeight;
+  final double cWidht;
 
   const TargetWidget({
     this.key,
@@ -35,6 +37,8 @@ class TargetWidget extends StatefulWidget {
     this.tooltipColor,
     this.textColor,
     this.showArrow,
+    this.cHeight,
+    this.cWidht
   });
 
   const TargetWidget.withWidget({
@@ -51,6 +55,8 @@ class TargetWidget extends StatefulWidget {
     this.tooltipColor,
     this.textColor,
     this.showArrow,
+    @required  this.cHeight,
+    @required  this.cWidht
   });
 
   @override
@@ -199,6 +205,8 @@ class _TargetWidgetState extends State<TargetWidget>
               tooltipColor: widget.tooltipColor ?? Colors.white,
               textColor: widget.textColor ?? Colors.black,
               showArrow: widget.showArrow ?? true,
+              cHeight: widget.cHeight,
+              cWidht: widget.cWidht,
             ),
           ],
         ),

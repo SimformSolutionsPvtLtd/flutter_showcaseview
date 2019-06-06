@@ -9,14 +9,14 @@ class GetPosition {
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
     final bottomRight =
         box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-    double l = topLeft.dx;
-    double t = topLeft.dy;
-    double r = bottomRight.dx;
-    double b = bottomRight.dy;
-    double space = 6 ;
-    if (l == 0 || t == 0 || r == 0 || b == 0) {
-      space = 0;
-    }
+    // double l = topLeft.dx;
+    // double t = topLeft.dy;
+    // double r = bottomRight.dx;
+    // double b = bottomRight.dy;
+    double space = 0 ;
+    // if (l == 0 || t == 0 || r == 0 || b == 0) {
+    //   space = 0;
+    // }
     Rect rect = Rect.fromLTRB(
       topLeft.dx - space,
       topLeft.dy - space,

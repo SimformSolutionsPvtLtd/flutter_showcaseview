@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: ShowCase(child: MailPage()),
-
     );
   }
 }
@@ -32,6 +31,7 @@ class _MailPageState extends State<MailPage> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) =>
         ShowCase.startShowCase(context, [_one, _two, _three, _four, _five]));
+
     return Scaffold(
       body: Container(
         child: SafeArea(
@@ -41,13 +41,13 @@ class _MailPageState extends State<MailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(top: 8.0,left: 8.0,right: 8.0),
+                    padding: EdgeInsets.only(top: 8, left: 8, right: 8),
                     child: Card(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      elevation: 3.0,
+                          borderRadius: BorderRadius.circular(10)),
+                      elevation: 3,
                       child: Container(
-                        padding: EdgeInsets.all(12.0),
+                        padding: EdgeInsets.all(12),
                         child: Row(
                           children: <Widget>[
                             Expanded(
@@ -64,12 +64,12 @@ class _MailPageState extends State<MailPage> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 10.0,
+                                    width: 10,
                                   ),
                                   Text(
                                     'Search email',
                                     style: TextStyle(
-                                        color: Colors.black45, fontSize: 20.0),
+                                        color: Colors.black45, fontSize: 20),
                                   ),
                                 ],
                               ),
@@ -80,13 +80,13 @@ class _MailPageState extends State<MailPage> {
                               description: 'Click here to go to your Profile',
                               shapeBorder: CircleBorder(),
                               child: Container(
-                                width: 30.0,
-                                height: 30.0,
-                                decoration: new BoxDecoration(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  image: new DecorationImage(
+                                  image: DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: new AssetImage('assets/simform.png'),
+                                    image: AssetImage('assets/simform.png'),
                                   ),
                                 ),
                               ),
@@ -97,134 +97,124 @@ class _MailPageState extends State<MailPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 7.0,
+                    height: 7,
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 13,top : 5),
+                    padding: EdgeInsets.only(left: 13, top: 5),
                     child: Text(
                       'PRIMARY',
                       style: TextStyle(
                           color: Colors.black54,
-                          fontSize: 15.0,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: TargetWidget(
-                    key: _three,
-                    title: 'Mail',
-                    description: 'Click here to check mail',
-                    child: Container(
-                      padding: EdgeInsets.only(left : 6,right: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                TargetWidget.withWidget(
-                                  key: _four,
-                                  cHeight: 80,
-                                  cWidht: 140,
-                                  shapeBorder: CircleBorder(),
-                                  showArrow: false,
-                                  container: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 40.0,
-                                        height: 40.0,
-                                        decoration: new BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.blue[200]),
-                                        child: Center(
-                                          child: Text('S'),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        'Your sender\'s profile ',
-                                        style: TextStyle(color: Colors.white),
-                                      )
-                                    ],
-                                  ),
-                                  child: Container(
-                                    margin: EdgeInsets.all(10.0),
-                                    child: Container(
-                                      width: 40.0,
-                                      height: 40.0,
-                                      decoration: new BoxDecoration(
+                  key: _three,
+                  title: 'Mail',
+                  description: 'Click here to check mail',
+                  child: Container(
+                    padding: EdgeInsets.only(left: 6, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              TargetWidget.withWidget(
+                                key: _four,
+                                cHeight: 80,
+                                cWidht: 140,
+                                shapeBorder: CircleBorder(),
+                                showArrow: false,
+                                container: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: Colors.blue[200]),
                                       child: Center(
                                         child: Text('S'),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      'Slack',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 17.0),
+                                    SizedBox(
+                                      height: 10,
                                     ),
                                     Text(
-                                      'Flutter Notification',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.0),
-                                    ),
-                                    Text(
-                                      'Hi, you have new Notification',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15.0),
+                                      'Your sender\'s profile ',
+                                      style: TextStyle(color: Colors.white),
                                     )
                                   ],
-                                )
-                              ],
-                            ),
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                '1 Jun',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                ),
+                                child: Container(
+                                  margin: EdgeInsets.all(10),
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.blue[200]),
+                                    child: Center(
+                                      child: Text('S'),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Icon(
-                                Icons.star_border,
-                                color: Colors.grey,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Slack',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                  Text(
+                                    'Flutter Notification',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    'Hi, you have new Notification',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  )
+                                ],
                               )
                             ],
-                          )
-                        ],
-                      ),
-                    )
-                    // MailTile(
-                    //   Mail(
-                    //       sender: 'Slack',
-                    //       sub: 'Flutter Notification',
-                    //       msg: 'Hi, you have new Notification',
-                    //       date: '1 Jun',
-                    //       isUnread: true),
-                    // ),
+                          ),
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Text(
+                              '1 Jun',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Icon(
+                              Icons.star_border,
+                              color: Colors.grey,
+                            )
+                          ],
+                        )
+                      ],
                     ),
+                  ),
+                ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: MailTile(
                   Mail(
                       sender: 'Medium',
@@ -235,7 +225,7 @@ class _MailPageState extends State<MailPage> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: MailTile(
                   Mail(
                       sender: 'Quora',
@@ -246,7 +236,7 @@ class _MailPageState extends State<MailPage> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: MailTile(
                   Mail(
                       sender: 'Google',
@@ -257,7 +247,7 @@ class _MailPageState extends State<MailPage> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: MailTile(
                   Mail(
                       sender: 'Simfom',
@@ -268,7 +258,7 @@ class _MailPageState extends State<MailPage> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: MailTile(
                   Mail(
                       sender: 'Flutter',
@@ -319,7 +309,7 @@ class MailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left : 6.0,right: 16.0),
+      padding: EdgeInsets.only(left: 6, right: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -328,10 +318,10 @@ class MailTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.all(10.0),
-                  width: 40.0,
-                  height: 40.0,
-                  decoration: new BoxDecoration(
+                  margin: EdgeInsets.all(10),
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
                       shape: BoxShape.circle, color: Colors.blue[200]),
                   child: Center(
                     child: Text(mail.sender[0]),
@@ -343,23 +333,26 @@ class MailTile extends StatelessWidget {
                     Text(
                       mail.sender,
                       style: TextStyle(
-                          fontWeight:
-                              mail.isUnread ? FontWeight.bold : FontWeight.normal,
-                          fontSize: 17.0),
+                          fontWeight: mail.isUnread
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontSize: 17),
                     ),
                     Text(
                       mail.sub,
                       style: TextStyle(
-                          fontWeight:
-                              mail.isUnread ? FontWeight.bold : FontWeight.normal,
-                          fontSize: 16.0),
+                          fontWeight: mail.isUnread
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontSize: 16),
                     ),
                     Text(
                       mail.msg,
                       style: TextStyle(
-                          fontWeight:
-                              mail.isUnread ? FontWeight.bold : FontWeight.normal,
-                          fontSize: 15.0),
+                          fontWeight: mail.isUnread
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontSize: 15),
                     )
                   ],
                 )
@@ -371,7 +364,8 @@ class MailTile extends StatelessWidget {
               Text(
                 mail.date,
                 style: TextStyle(
-                  fontWeight: mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                  fontWeight:
+                      mail.isUnread ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
               Icon(

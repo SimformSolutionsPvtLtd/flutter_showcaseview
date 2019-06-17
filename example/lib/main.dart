@@ -257,7 +257,7 @@ class _MailPageState extends State<MailPage> {
               padding: EdgeInsets.symmetric(vertical: 10),
               child: MailTile(
                 Mail(
-                    sender: 'Simfom',
+                    sender: 'simform',
                     sub: 'Credit card Plugin',
                     msg: 'Check out our credit card plugin',
                     date: '19 May',

@@ -22,6 +22,7 @@ class TargetWidget extends StatefulWidget {
   final bool showArrow;
   final double cHeight;
   final double cWidht;
+  final Duration slideDuration;
 
   const TargetWidget({
     this.key,
@@ -38,7 +39,8 @@ class TargetWidget extends StatefulWidget {
     this.textColor,
     this.showArrow,
     this.cHeight,
-    this.cWidht
+    this.cWidht,
+    this.slideDuration = const Duration(milliseconds: 2000),
   });
 
   const TargetWidget.withWidget({
@@ -55,8 +57,9 @@ class TargetWidget extends StatefulWidget {
     this.tooltipColor,
     this.textColor,
     this.showArrow,
-    @required  this.cHeight,
-    @required  this.cWidht
+    @required this.cHeight,
+    @required this.cWidht,
+    this.slideDuration = const Duration(milliseconds: 2000),
   });
 
   @override
@@ -78,7 +81,9 @@ class _TargetWidgetState extends State<TargetWidget>
   void initState() {
     super.initState();
     _widthAnimationController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
+      duration: widget.slideDuration,
+      vsync: this,
+    );
 
     _widthAnimation = CurvedAnimation(
       parent: _widthAnimationController,
@@ -212,7 +217,6 @@ class _TargetWidgetState extends State<TargetWidget>
         ),
       );
 }
-
 
 class _TargetWidget extends StatelessWidget {
   final Offset offset;

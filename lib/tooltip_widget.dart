@@ -51,9 +51,13 @@ class Content extends StatelessWidget {
   }
 
   double _getTooltipWidth() {
-    double width = 40;
-    width += (description.length * 6);
-    return width;
+    double titleLength = (title.length * 10.0);
+    double descriptionLength = (description.length * 7.0);
+    if (titleLength > descriptionLength) {
+      return titleLength + 40;
+    } else {
+      return descriptionLength + 40;
+    }
   }
 
   bool _isLeft() {
@@ -72,6 +76,9 @@ class Content extends StatelessWidget {
       if (leftPadding + _getTooltipWidth() > screenSize.width) {
         leftPadding = (screenSize.width - 20) - _getTooltipWidth();
       }
+      if (leftPadding < 20) {
+        leftPadding = 14;
+      }
       return leftPadding;
     } else if (!(_isRight())) {
       return position.getCenter() - (_getTooltipWidth() * 0.5);
@@ -84,7 +91,7 @@ class Content extends StatelessWidget {
     if (_isRight()) {
       double rightPadding = position.getCenter() + (_getTooltipWidth() / 2);
       if (rightPadding + _getTooltipWidth() > screenSize.width) {
-        rightPadding = 20;
+        rightPadding = 14;
       }
       return rightPadding;
     } else if (!(_isLeft())) {
@@ -145,27 +152,30 @@ class Content extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
-                        padding: EdgeInsets.only(left: 20, right: 20),
+                        width: _getTooltipWidth(),
+                        padding: EdgeInsets.only(
+                            left: 20, right: 20, top: 8, bottom: 8),
                         color: tooltipColor,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 0, top: 8),
-                              child: Text(
-                                title,
-                                style: titleTextStyle ??
-                                    Theme.of(context).textTheme.title,
+                            Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    title,
+                                    style: titleTextStyle ??
+                                        Theme.of(context).textTheme.title,
+                                  ),
+                                  Text(
+                                    description,
+                                    style: descTextStyle ??
+                                        Theme.of(context).textTheme.subtitle,
+                                  ),
+                                ],
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: Text(
-                                description,
-                                style: descTextStyle ??
-                                    Theme.of(context).textTheme.subtitle,
-                              ),
-                            ),
+                            )
                           ],
                         ),
                       ),

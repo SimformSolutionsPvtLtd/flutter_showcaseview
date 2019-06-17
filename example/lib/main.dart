@@ -1,4 +1,3 @@
-import 'package:example/second_file.dart';
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -13,116 +12,375 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: ShowCase(child: MailPage()),
+
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
+class MailPage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MailPageState createState() => _MailPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
+class _MailPageState extends State<MailPage> {
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
   GlobalKey _three = GlobalKey();
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCase.startShowCase(context, [_two, _one, _three, _four, _five]));
-
+        ShowCase.startShowCase(context, [_one, _two, _three, _four, _five]));
     return Scaffold(
-      appBar: AppBar(
-        title: TargetWidget(
-          key: _one,
-          title: "Title",
-          description: "Hey There! I am title of the screen.",
-          child: Text(widget.title),
-        ),
-      ),
       body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
+        child: SafeArea(
+          child: ListView(
             children: <Widget>[
-              Align(
-                alignment: Alignment(-0.5, -0.3),
-                child: TargetWidget(
-                  title: 'Sample Text',
-                  description: 'This is Sample Text',
-                  key: _five,
-                  container: Text(
-                    'Helloooow',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(top: 8.0,left: 8.0,right: 8.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      elevation: 3.0,
+                      child: Container(
+                        padding: EdgeInsets.all(12.0),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Row(
+                                children: <Widget>[
+                                  TargetWidget(
+                                    key: _one,
+                                    title: 'Menu',
+                                    description:
+                                        'Click here to see menu options',
+                                    child: Icon(
+                                      Icons.menu,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  Text(
+                                    'Search email',
+                                    style: TextStyle(
+                                        color: Colors.black45, fontSize: 20.0),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            TargetWidget(
+                              key: _two,
+                              title: 'Profile',
+                              description: 'Click here to go to your Profile',
+                              shapeBorder: CircleBorder(),
+                              child: Container(
+                                width: 30.0,
+                                height: 30.0,
+                                decoration: new BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: new DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new AssetImage('assets/simform.png'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  child: Text(
-                    'Text',
-                    style: TextStyle(fontSize: 50),
+                  SizedBox(
+                    height: 7.0,
                   ),
-                ),
-              ),
-              Align(
-                alignment: Alignment(0.5, 0.6),
-                child: TargetWidget.withWidget(
-                  cHeight: 200,
-                  cWidht: 200,
-                  key: _two,
-                  container: Text(
-                    'Helloooow',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
+                  Container(
+                    padding: EdgeInsets.only(left: 13,top : 5),
+                    child: Text(
+                      'PRIMARY',
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
-                  // title: 'Title',
-                  // description: 'Desc',
-                  child: Text(
-                    '$_counter',
-                    style: Theme.of(context).textTheme.display1,
-                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: TargetWidget(
+                    key: _three,
+                    title: 'Mail',
+                    description: 'Click here to check mail',
+                    child: Container(
+                      padding: EdgeInsets.only(left : 6,right: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                TargetWidget.withWidget(
+                                  key: _four,
+                                  cHeight: 80,
+                                  cWidht: 140,
+                                  shapeBorder: CircleBorder(),
+                                  showArrow: false,
+                                  container: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 40.0,
+                                        height: 40.0,
+                                        decoration: new BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.blue[200]),
+                                        child: Center(
+                                          child: Text('S'),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        'Your sender\'s profile ',
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                  child: Container(
+                                    margin: EdgeInsets.all(10.0),
+                                    child: Container(
+                                      width: 40.0,
+                                      height: 40.0,
+                                      decoration: new BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.blue[200]),
+                                      child: Center(
+                                        child: Text('S'),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      'Slack',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17.0),
+                                    ),
+                                    Text(
+                                      'Flutter Notification',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0),
+                                    ),
+                                    Text(
+                                      'Hi, you have new Notification',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15.0),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                '1 Jun',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Icon(
+                                Icons.star_border,
+                                color: Colors.grey,
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                    // MailTile(
+                    //   Mail(
+                    //       sender: 'Slack',
+                    //       sub: 'Flutter Notification',
+                    //       msg: 'Hi, you have new Notification',
+                    //       date: '1 Jun',
+                    //       isUnread: true),
+                    // ),
+                    ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: MailTile(
+                  Mail(
+                      sender: 'Medium',
+                      sub: 'Showcase View',
+                      msg: 'Check new showcase View',
+                      date: '25 May',
+                      isUnread: false),
                 ),
               ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TargetWidget(
-                    overlayColor: Colors.black,
-                    key: _four,
-                    shapeBorder: CircleBorder(),
-                    title: 'Title',
-                    description: 'Temp Fab',
-                    child: FloatingActionButton(
-                      onPressed: () {},
-                      child: Icon(Icons.add),
-                    )),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: MailTile(
+                  Mail(
+                      sender: 'Quora',
+                      sub: 'New Question for you',
+                      msg: 'Hi, There is new question for you',
+                      date: '22 May',
+                      isUnread: false),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: MailTile(
+                  Mail(
+                      sender: 'Google',
+                      sub: 'Flutter 1.5',
+                      msg: 'We have launched Flutter 1.5',
+                      date: '20 May',
+                      isUnread: true),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: MailTile(
+                  Mail(
+                      sender: 'Simfom',
+                      sub: 'Credit card Plugin',
+                      msg: 'Check out our credit card plugin',
+                      date: '19 May',
+                      isUnread: true),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: MailTile(
+                  Mail(
+                      sender: 'Flutter',
+                      sub: 'Flutter is Future',
+                      msg: 'Flutter laucnhed for Web',
+                      date: '18 Jun',
+                      isUnread: true),
+                ),
               ),
             ],
-          )),
+          ),
+        ),
+      ),
       floatingActionButton: TargetWidget(
-        key: _three,
-        title: "Tap Me!",
-        description: "Tap me and counter will increase.",
+        key: _five,
+        title: 'Compose Mail',
+        description: 'Click here to compose mail',
         shapeBorder: CircleBorder(),
         child: FloatingActionButton(
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: Icon(Icons.add),
+          backgroundColor: Colors.white,
+          onPressed: () {
+            setState(() {});
+          },
+          child: Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class Mail {
+  String sender;
+  String sub;
+  String msg;
+  String date;
+  bool isUnread;
+  Mail({this.sender, this.sub, this.msg, this.date, this.isUnread});
+}
+
+class MailTile extends StatelessWidget {
+  final Mail mail;
+
+  MailTile(this.mail);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left : 6.0,right: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  width: 40.0,
+                  height: 40.0,
+                  decoration: new BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.blue[200]),
+                  child: Center(
+                    child: Text(mail.sender[0]),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      mail.sender,
+                      style: TextStyle(
+                          fontWeight:
+                              mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                          fontSize: 17.0),
+                    ),
+                    Text(
+                      mail.sub,
+                      style: TextStyle(
+                          fontWeight:
+                              mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                          fontSize: 16.0),
+                    ),
+                    Text(
+                      mail.msg,
+                      style: TextStyle(
+                          fontWeight:
+                              mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                          fontSize: 15.0),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              Text(
+                mail.date,
+                style: TextStyle(
+                  fontWeight: mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              Icon(
+                Icons.star_border,
+                color: Colors.grey,
+              )
+            ],
+          )
+        ],
       ),
     );
   }

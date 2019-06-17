@@ -132,7 +132,7 @@ class _MailPageState extends State<MailPage> {
                             TargetWidget.withWidget(
                               key: _four,
                               cHeight: 80,
-                              cWidht: 140,
+                              cWidth: 140,
                               shapeBorder: CircleBorder(),
                               showArrow: false,
                               container: Column(

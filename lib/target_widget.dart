@@ -21,7 +21,7 @@ class TargetWidget extends StatefulWidget {
   final Color textColor;
   final bool showArrow;
   final double cHeight;
-  final double cWidht;
+  final double cWidth;
   final Duration slideDuration;
 
   const TargetWidget({
@@ -39,7 +39,7 @@ class TargetWidget extends StatefulWidget {
     this.textColor,
     this.showArrow,
     this.cHeight,
-    this.cWidht,
+    this.cWidth,
     this.slideDuration = const Duration(milliseconds: 2000),
   });
 
@@ -58,7 +58,7 @@ class TargetWidget extends StatefulWidget {
     this.textColor,
     this.showArrow,
     @required this.cHeight,
-    @required this.cWidht,
+    @required this.cWidth,
     this.slideDuration = const Duration(milliseconds: 2000),
   });
 
@@ -210,8 +210,8 @@ class _TargetWidgetState extends State<TargetWidget>
               tooltipColor: widget.tooltipColor ?? Colors.white,
               textColor: widget.textColor ?? Colors.black,
               showArrow: widget.showArrow ?? true,
-              cHeight: widget.cHeight,
-              cWidht: widget.cWidht,
+              contentHeight: widget.cHeight,
+              contentWidth: widget.cWidth,
             ),
           ],
         ),

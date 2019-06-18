@@ -153,7 +153,7 @@ class Content extends StatelessWidget {
                     padding:
                         EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(8),
                       child: Container(
                         width: _getTooltipWidth(),
                         padding: EdgeInsets.only(
@@ -237,24 +237,24 @@ class Content extends StatelessWidget {
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
       top: isArrowUp ? position.getBottom() : position.getTop(),
-      left: position.getCenter() - 25,
+      left: position.getCenter() - 24,
       child: FractionalTranslation(
           translation: Offset(0.0, contentFractionalOffset),
           child: SlideTransition(
             position: Tween<Offset>(
               begin: Offset(0.0, contentFractionalOffset / 5),
-              end: Offset(0.0, 0.100),
+              end: Offset(0.0, 0.150),
             ).animate(animationOffset),
             child: isArrowUp
                 ? Icon(
                     Icons.arrow_drop_up,
                     color: tooltipColor,
-                    size: 50.0,
+                    size: 50,
                   )
                 : Icon(
                     Icons.arrow_drop_down,
                     color: tooltipColor,
-                    size: 50.0,
+                    size: 50,
                   ),
           )),
     );

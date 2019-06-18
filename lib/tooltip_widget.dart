@@ -62,8 +62,8 @@ class Content extends StatelessWidget {
   }
 
   bool _isLeft() {
-    double screenWidht = screenSize.width / 3;
-    return !(screenWidht <= position.getCenter());
+    double screenWidth = screenSize.width / 3;
+    return !(screenWidth <= position.getCenter());
   }
 
   bool _isRight() {

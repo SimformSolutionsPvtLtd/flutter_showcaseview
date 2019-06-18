@@ -21,6 +21,7 @@ class GetPosition {
     return rect;
   }
 
+  ///Get the bottom position of the widget
   double getBottom() {
     RenderBox box = key.currentContext.findRenderObject();
     final bottomRight =
@@ -28,18 +29,21 @@ class GetPosition {
     return bottomRight.dy;
   }
 
+  ///Get the top position of the widget
   double getTop() {
     RenderBox box = key.currentContext.findRenderObject();
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
     return topLeft.dy;
   }
 
+  ///Get the left position of the widget
   double getLeft() {
     RenderBox box = key.currentContext.findRenderObject();
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
     return topLeft.dx;
   }
 
+  ///Get the right position of the widget
   double getRight() {
     RenderBox box = key.currentContext.findRenderObject();
     final bottomRight =

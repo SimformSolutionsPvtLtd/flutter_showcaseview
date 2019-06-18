@@ -5,6 +5,7 @@ import 'package:showcaseview/custom_paint.dart';
 import 'package:showcaseview/tooltip_widget.dart';
 
 import 'get_position.dart';
+import 'layout_overlays.dart';
 
 class TargetWidget extends StatefulWidget {
   final Widget child;
@@ -35,8 +36,8 @@ class TargetWidget extends StatefulWidget {
     this.overlayOpacity,
     this.titleTextStyle,
     this.descTextStyle,
-    this.tooltipColor,
-    this.textColor,
+    this.tooltipColor = Colors.white,
+    this.textColor = Colors.black,
     this.showArrow,
     this.cHeight,
     this.cWidth,
@@ -56,8 +57,8 @@ class TargetWidget extends StatefulWidget {
     this.overlayOpacity,
     this.titleTextStyle,
     this.descTextStyle,
-    this.tooltipColor,
-    this.textColor,
+    this.tooltipColor = Colors.white,
+    this.textColor = Colors.black,
     this.showArrow = false,
     this.slideDuration = const Duration(milliseconds: 2000),
   });
@@ -70,29 +71,13 @@ class _TargetWidgetState extends State<TargetWidget>
     with TickerProviderStateMixin {
   bool _showShowCase = false;
   Animation<double> _slideAnimation;
-  Animation<double> _widthAnimation;
-
   AnimationController _slideAnimationController;
-  AnimationController _widthAnimationController;
 
   GetPosition position;
 
   @override
   void initState() {
     super.initState();
-    _widthAnimationController = AnimationController(
-      duration: widget.slideDuration,
-      vsync: this,
-    );
-
-    _widthAnimation = CurvedAnimation(
-      parent: _widthAnimationController,
-      curve: Curves.easeInOut,
-    );
-
-    _widthAnimationController.addListener(() {
-      setState(() {});
-    });
 
     _slideAnimationController = AnimationController(
       duration: widget.slideDuration,
@@ -110,6 +95,7 @@ class _TargetWidgetState extends State<TargetWidget>
       parent: _slideAnimationController,
       curve: Curves.easeInOut,
     );
+
     position = GetPosition(key: widget.key);
   }
 
@@ -117,7 +103,6 @@ class _TargetWidgetState extends State<TargetWidget>
   void dispose() {
     super.dispose();
     _slideAnimationController.dispose();
-    _widthAnimationController.dispose();
   }
 
   @override
@@ -126,6 +111,9 @@ class _TargetWidgetState extends State<TargetWidget>
     showOverlay();
   }
 
+  ///
+  /// show overlay if there is any target widget
+  ///
   void showOverlay() {
     GlobalKey activeStep = ShowCase.activeTargetWidget(context);
     setState(() {
@@ -134,7 +122,6 @@ class _TargetWidgetState extends State<TargetWidget>
 
     if (activeStep == widget.key) {
       _slideAnimationController.forward();
-      _widthAnimationController.forward();
     }
   }
 
@@ -149,18 +136,9 @@ class _TargetWidgetState extends State<TargetWidget>
     );
   }
 
-  // _onTargetTap() {
-  //   ShowCase.dismiss(context);
-  //   setState(() {
-  //     _showShowCase = false;
-  //     print(_showShowCase);
-  //   });
-  // }
-
   _nextIfAny() {
     ShowCase.completed(context, widget.key);
     _slideAnimationController.forward();
-    _widthAnimationController.forward();
   }
 
   buildOverlayOnTarget(
@@ -180,7 +158,6 @@ class _TargetWidgetState extends State<TargetWidget>
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                // color: Colors.grey.withOpacity(0.3),
                 child: CustomPaint(
                   painter: ShapePainter(
                       opacity: widget.overlayOpacity ?? 0.7,
@@ -193,7 +170,6 @@ class _TargetWidgetState extends State<TargetWidget>
             _TargetWidget(
               offset: offset,
               size: size,
-              widthAnimation: _widthAnimation,
               onTap: _nextIfAny,
               shapeBorder: widget.shapeBorder,
             ),
@@ -207,8 +183,8 @@ class _TargetWidgetState extends State<TargetWidget>
               titleTextStyle: widget.titleTextStyle,
               descTextStyle: widget.descTextStyle,
               container: widget.container,
-              tooltipColor: widget.tooltipColor ?? Colors.white,
-              textColor: widget.textColor ?? Colors.black,
+              tooltipColor: widget.tooltipColor,
+              textColor: widget.textColor,
               showArrow: widget.showArrow ?? true,
               contentHeight: widget.cHeight,
               contentWidth: widget.cWidth,
@@ -240,19 +216,16 @@ class _TargetWidget extends StatelessWidget {
       top: offset.dy,
       left: offset.dx,
       child: FractionalTranslation(
-        translation: Offset(-0.5, -0.5),
+        translation: const Offset(-0.5, -0.5),
         child: GestureDetector(
           onTap: onTap,
           child: Container(
             height: size.height + 16,
-            width: Tween<double>(
-              begin: 0,
-              end: size.width + 16, //controls the opening of the slice
-            ).animate(widthAnimation).value,
+            width: size.width + 16,
             decoration: ShapeDecoration(
               shape: shapeBorder ??
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(8),
                     ),
                   ),
@@ -261,151 +234,5 @@ class _TargetWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class AnchoredOverlay extends StatelessWidget {
-  final bool showOverlay;
-  final Widget Function(BuildContext, Rect anchorBounds, Offset anchor)
-      overlayBuilder;
-  final Widget child;
-
-  AnchoredOverlay({
-    key,
-    this.showOverlay = false,
-    this.overlayBuilder,
-    this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return OverlayBuilder(
-          showOverlay: showOverlay,
-          overlayBuilder: (BuildContext overlayContext) {
-            // To calculate the "anchor" point we grab the render box of
-            // our parent Container and then we find the center of that box.
-            RenderBox box = context.findRenderObject() as RenderBox;
-            final topLeft =
-                box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-            final bottomRight =
-                box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-            final Rect anchorBounds = Rect.fromLTRB(
-              topLeft.dx,
-              topLeft.dy,
-              bottomRight.dx,
-              bottomRight.dy,
-            );
-            final anchorCenter = box.size.center(topLeft);
-            return overlayBuilder(overlayContext, anchorBounds, anchorCenter);
-          },
-          child: child,
-        );
-      },
-    );
-  }
-}
-
-class OverlayBuilder extends StatefulWidget {
-  final bool showOverlay;
-  final Widget Function(BuildContext) overlayBuilder;
-  final Widget child;
-
-  OverlayBuilder({
-    key,
-    this.showOverlay = false,
-    this.overlayBuilder,
-    this.child,
-  }) : super(key: key);
-
-  @override
-  _OverlayBuilderState createState() => _OverlayBuilderState();
-}
-
-class _OverlayBuilderState extends State<OverlayBuilder> {
-  OverlayEntry _overlayEntry;
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.showOverlay) {
-      // showOverlay();
-      WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
-    }
-  }
-
-  @override
-  void didUpdateWidget(OverlayBuilder oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // syncWidgetAndOverlay();
-    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    // syncWidgetAndOverlay();
-    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
-  }
-
-  @override
-  void dispose() {
-    if (isShowingOverlay()) {
-      hideOverlay();
-    }
-
-    super.dispose();
-  }
-
-  bool isShowingOverlay() => _overlayEntry != null;
-
-  void showOverlay() {
-    if (_overlayEntry == null) {
-      // Create the overlay.
-      _overlayEntry = OverlayEntry(
-        builder: widget.overlayBuilder,
-      );
-      addToOverlay(_overlayEntry);
-    } else {
-      // Rebuild overlay.
-      buildOverlay();
-    }
-  }
-
-  void addToOverlay(OverlayEntry overlayEntry) async {
-    Overlay.of(context).insert(overlayEntry);
-    final overlay = Overlay.of(context);
-    if (overlayEntry == null)
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => overlay.insert(overlayEntry));
-  }
-
-  void hideOverlay() {
-    if (_overlayEntry != null) {
-      _overlayEntry.remove();
-      _overlayEntry = null;
-    }
-  }
-
-  void syncWidgetAndOverlay() {
-    if (isShowingOverlay() && !widget.showOverlay) {
-      hideOverlay();
-    } else if (!isShowingOverlay() && widget.showOverlay) {
-      showOverlay();
-    }
-  }
-
-  void buildOverlay() async {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _overlayEntry?.markNeedsBuild());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    buildOverlay();
-
-    return widget.child;
   }
 }

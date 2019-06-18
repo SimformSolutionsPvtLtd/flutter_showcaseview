@@ -27,6 +27,7 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _three = GlobalKey();
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     //Start showcase view after current widget frames are drawn.
@@ -41,14 +42,14 @@ class _MailPageState extends State<MailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(top: 8, left: 8, right: 8),
+                  padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                     elevation: 3,
                     child: Container(
-                      padding: EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       child: Row(
                         children: <Widget>[
                           Expanded(
@@ -102,7 +103,7 @@ class _MailPageState extends State<MailPage> {
                   height: 7,
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 16, top: 4),
+                  padding: const EdgeInsets.only(left: 16, top: 4),
                   child: Text(
                     'PRIMARY',
                     style: TextStyle(
@@ -115,13 +116,13 @@ class _MailPageState extends State<MailPage> {
               ],
             ),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: TargetWidget(
                 key: _three,
                 title: 'Mail',
                 description: 'Click here to check mail',
                 child: Container(
-                  padding: EdgeInsets.only(left: 6, right: 16),
+                  padding: const EdgeInsets.only(left: 6, right: 16),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -158,7 +159,7 @@ class _MailPageState extends State<MailPage> {
                                 ],
                               ),
                               child: Container(
-                                margin: EdgeInsets.all(10),
+                                margin: const EdgeInsets.all(10),
                                 child: Container(
                                   width: 40,
                                   height: 40,
@@ -178,21 +179,24 @@ class _MailPageState extends State<MailPage> {
                                 Text(
                                   'Slack',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                  ),
                                 ),
                                 Text(
                                   'Flutter Notification',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Text(
                                   'Hi, you have new Notification',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15),
-                                )
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
                               ],
                             )
                           ],
@@ -217,62 +221,47 @@ class _MailPageState extends State<MailPage> {
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: MailTile(
-                Mail(
-                  sender: 'Medium',
-                  sub: 'Showcase View',
-                  msg: 'Check new showcase View',
-                  date: '25 May',
-                  isUnread: false,
-                ),
+            MailTile(
+              Mail(
+                sender: 'Medium',
+                sub: 'Showcase View',
+                msg: 'Check new showcase View',
+                date: '25 May',
+                isUnread: false,
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: MailTile(
-                Mail(
-                  sender: 'Quora',
-                  sub: 'New Question for you',
-                  msg: 'Hi, There is new question for you',
-                  date: '22 May',
-                  isUnread: false,
-                ),
+            MailTile(
+              Mail(
+                sender: 'Quora',
+                sub: 'New Question for you',
+                msg: 'Hi, There is new question for you',
+                date: '22 May',
+                isUnread: false,
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: MailTile(
-                Mail(
-                    sender: 'Google',
-                    sub: 'Flutter 1.5',
-                    msg: 'We have launched Flutter 1.5',
-                    date: '20 May',
-                    isUnread: true),
-              ),
+            MailTile(
+              Mail(
+                  sender: 'Google',
+                  sub: 'Flutter 1.5',
+                  msg: 'We have launched Flutter 1.5',
+                  date: '20 May',
+                  isUnread: true),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: MailTile(
-                Mail(
-                    sender: 'simform',
-                    sub: 'Credit card Plugin',
-                    msg: 'Check out our credit card plugin',
-                    date: '19 May',
-                    isUnread: true),
-              ),
+            MailTile(
+              Mail(
+                  sender: 'simform',
+                  sub: 'Credit card Plugin',
+                  msg: 'Check out our credit card plugin',
+                  date: '19 May',
+                  isUnread: true),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: MailTile(
-                Mail(
-                  sender: 'Flutter',
-                  sub: 'Flutter is Future',
-                  msg: 'Flutter laucnhed for Web',
-                  date: '18 Jun',
-                  isUnread: true,
-                ),
+            MailTile(
+              Mail(
+                sender: 'Flutter',
+                sub: 'Flutter is Future',
+                msg: 'Flutter laucnhed for Web',
+                date: '18 Jun',
+                isUnread: true,
               ),
             ),
           ],
@@ -322,7 +311,7 @@ class MailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 6, right: 16),
+      padding: const EdgeInsets.only(left: 6, right: 16, top: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -331,7 +320,7 @@ class MailTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
@@ -388,7 +377,7 @@ class MailTile extends StatelessWidget {
                 color: Colors.grey,
               ),
             ],
-          )
+          ),
         ],
       ),
     );

@@ -27,9 +27,9 @@ class TargetWidget extends StatefulWidget {
   const TargetWidget({
     this.key,
     @required this.child,
-    this.container,
     @required this.title,
     @required this.description,
+    this.container,
     this.shapeBorder,
     this.overlayColor,
     this.overlayOpacity,
@@ -47,6 +47,8 @@ class TargetWidget extends StatefulWidget {
     this.key,
     @required this.child,
     @required this.container,
+    @required this.cHeight,
+    @required this.cWidth,
     this.title,
     this.description,
     this.shapeBorder,
@@ -56,9 +58,7 @@ class TargetWidget extends StatefulWidget {
     this.descTextStyle,
     this.tooltipColor,
     this.textColor,
-    this.showArrow,
-    @required this.cHeight,
-    @required this.cWidth,
+    this.showArrow = false,
     this.slideDuration = const Duration(milliseconds: 2000),
   });
 
@@ -95,7 +95,7 @@ class _TargetWidgetState extends State<TargetWidget>
     });
 
     _slideAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: widget.slideDuration,
       vsync: this,
     )..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {

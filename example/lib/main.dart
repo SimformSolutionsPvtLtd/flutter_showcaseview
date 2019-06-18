@@ -134,7 +134,6 @@ class _MailPageState extends State<MailPage> {
                               cHeight: 80,
                               cWidth: 140,
                               shapeBorder: CircleBorder(),
-                              showArrow: false,
                               container: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[

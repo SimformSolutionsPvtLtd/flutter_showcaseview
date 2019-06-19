@@ -14,39 +14,40 @@ class Content extends StatelessWidget {
   final Color tooltipColor;
   final Color textColor;
   final bool showArrow;
-  final double cHeight;
-  final double cWidht;
+  final double contentHeight;
+  final double contentWidth;
   static bool isArrowUp;
 
-  Content(
-      {this.position,
-      this.offset,
-      this.screenSize,
-      this.title,
-      this.description,
-      this.animationOffset,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.container,
-      this.tooltipColor,
-      this.textColor,
-      this.showArrow,
-      this.cHeight,
-      this.cWidht});
+  Content({
+    this.position,
+    this.offset,
+    this.screenSize,
+    this.title,
+    this.description,
+    this.animationOffset,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.container,
+    this.tooltipColor,
+    this.textColor,
+    this.showArrow,
+    this.contentHeight,
+    this.contentWidth,
+  });
 
   bool isCloseToTopOrBottom(Offset position) {
     double height = 120;
-    if (cHeight != null) {
-      height = cHeight;
+    if (contentHeight != null) {
+      height = contentHeight;
     }
     return (screenSize.height - position.dy) <= height;
   }
 
   String findPositionForContent(Offset position) {
     if (isCloseToTopOrBottom(position)) {
-      return 'A';
+      return 'ABOVE';
     } else {
-      return 'B';
+      return 'BELOW';
     }
   }
 
@@ -61,13 +62,13 @@ class Content extends StatelessWidget {
   }
 
   bool _isLeft() {
-    double screenWidht = screenSize.width / 3;
-    return !(screenWidht <= position.getCenter());
+    double screenWidth = screenSize.width / 3;
+    return !(screenWidth <= position.getCenter());
   }
 
   bool _isRight() {
-    double screenWidht = screenSize.width / 3;
-    return ((screenWidht * 2) <= position.getCenter());
+    double screenWidth = screenSize.width / 3;
+    return ((screenWidth * 2) <= position.getCenter());
   }
 
   double _getLeft() {
@@ -102,10 +103,10 @@ class Content extends StatelessWidget {
   }
 
   double _getSpace() {
-    double space = position.getCenter() - (cWidht / 2);
-    if (space + cWidht > screenSize.width) {
-      space = screenSize.width - cWidht - 8;
-    } else if (space < (cWidht / 2)) {
+    double space = position.getCenter() - (contentWidth / 2);
+    if (space + contentWidth > screenSize.width) {
+      space = screenSize.width - contentWidth - 8;
+    } else if (space < (contentWidth / 2)) {
       space = 16;
     }
     return space;
@@ -114,19 +115,21 @@ class Content extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final contentOrientation = findPositionForContent(offset);
-    final contentOffsetMultiplier = contentOrientation == "B" ? 1.0 : -1.0;
+    final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
     isArrowUp = contentOffsetMultiplier == 1.0 ? true : false;
+
     final contentY = isArrowUp
         ? position.getBottom() + (contentOffsetMultiplier * 3)
         : position.getTop() + (contentOffsetMultiplier * 3);
+
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
 
-    double padingTop = isArrowUp ? 22 : 0;
-    double padingBottom = isArrowUp ? 0 : 27;
+    double paddingTop = isArrowUp ? 22 : 0;
+    double paddingBottom = isArrowUp ? 0 : 27;
 
     if (!showArrow) {
-      padingTop = 10;
-      padingBottom = 10;
+      paddingTop = 10;
+      paddingBottom = 10;
     }
 
     if (container == null) {
@@ -148,9 +151,9 @@ class Content extends StatelessWidget {
                   color: Colors.transparent,
                   child: Container(
                     padding:
-                        EdgeInsets.only(top: padingTop, bottom: padingBottom),
+                        EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(8),
                       child: Container(
                         width: _getTooltipWidth(),
                         padding: EdgeInsets.only(
@@ -207,11 +210,13 @@ class Content extends StatelessWidget {
                     child: Center(
                       child: Container(
                         padding: EdgeInsets.only(
-                            top: padingTop, bottom: padingBottom),
+                          top: paddingTop,
+                          bottom: paddingBottom,
+                        ),
                         child: Container(
                           color: Colors.transparent,
-                          height: cHeight,
-                          width: cWidht,
+                          height: contentHeight,
+                          width: contentWidth,
                           child: Center(
                             child: container,
                           ),
@@ -232,26 +237,27 @@ class Content extends StatelessWidget {
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
       top: isArrowUp ? position.getBottom() : position.getTop(),
-      left: position.getCenter() - 25,
+      left: position.getCenter() - 24,
       child: FractionalTranslation(
-          translation: Offset(0.0, contentFractionalOffset),
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: Offset(0.0, contentFractionalOffset / 5),
-              end: Offset(0.0, 0.100),
-            ).animate(animationOffset),
-            child: isArrowUp
-                ? Icon(
-                    Icons.arrow_drop_up,
-                    color: tooltipColor,
-                    size: 50.0,
-                  )
-                : Icon(
-                    Icons.arrow_drop_down,
-                    color: tooltipColor,
-                    size: 50.0,
-                  ),
-          )),
+        translation: Offset(0.0, contentFractionalOffset),
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(0.0, contentFractionalOffset / 5),
+            end: Offset(0.0, 0.150),
+          ).animate(animationOffset),
+          child: isArrowUp
+              ? Icon(
+                  Icons.arrow_drop_up,
+                  color: tooltipColor,
+                  size: 50,
+                )
+              : Icon(
+                  Icons.arrow_drop_down,
+                  color: tooltipColor,
+                  size: 50,
+                ),
+        ),
+      ),
     );
   }
 }

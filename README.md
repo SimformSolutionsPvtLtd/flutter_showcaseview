@@ -1,4 +1,4 @@
-# showcaseview
+# ShowCaseView
 
 A Flutter package allows you to Showcase/Highlight your widgets step by step.
 

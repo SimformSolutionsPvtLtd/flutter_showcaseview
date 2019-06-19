@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 class ShowCase extends StatefulWidget {
   final Widget child;
 
-  const ShowCase({Key key, @required this.child}) : super(key: key);
+  const ShowCase({
+    Key key,
+    @required this.child,
+  }) : super(key: key);
 
   static activeTargetWidget(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedShowCaseView)

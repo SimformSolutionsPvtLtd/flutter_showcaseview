@@ -1,7 +1,3 @@
-
-# Created by https://www.gitignore.io/api/flutter
-# Edit at https://www.gitignore.io/?templates=flutter
-
 ### Flutter ###
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -56,4 +52,4 @@ build/
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-# End of https://www.gitignore.io/api/flutter
+/showcaseview.iml

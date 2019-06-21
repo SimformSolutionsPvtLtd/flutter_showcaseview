@@ -27,7 +27,7 @@ class Showcase extends StatefulWidget {
   const Showcase({
     @required this.key,
     @required this.child,
-    @required this.title,
+    this.title,
     @required this.description,
     this.shapeBorder,
     this.overlayColor,
@@ -157,7 +157,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 height: MediaQuery.of(context).size.height,
                 child: CustomPaint(
                   painter: ShapePainter(
-                      opacity: widget.overlayOpacity ?? 0.7,
+                      opacity: widget.overlayOpacity ?? 0.75,
                       rect: position.getRect(),
                       shapeBorder: widget.shapeBorder,
                       color: widget.overlayColor ?? Colors.black),

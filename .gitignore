@@ -53,3 +53,8 @@ build/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 /showcaseview.iml
+
+.idea/instapk.xml
+instapk.log*
+ios/Frameworks/
+ios/Runner.xcworkspace/xcshareddata/

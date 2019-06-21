@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ShowCase(child: MailPage()),
+      home: ShowCaseWidget(child: MailPage()),
     );
   }
 }
@@ -32,7 +32,7 @@ class _MailPageState extends State<MailPage> {
   Widget build(BuildContext context) {
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCase.startShowCase(context, [_one, _two, _three, _four, _five]));
+        ShowCaseWidget.startShowCase(context, [_one, _two, _three, _four, _five]));
 
     return Scaffold(
       body: SafeArea(
@@ -55,7 +55,7 @@ class _MailPageState extends State<MailPage> {
                           Expanded(
                             child: Row(
                               children: <Widget>[
-                                TargetWidget(
+                                Showcase(
                                   key: _one,
                                   title: 'Menu',
                                   description: 'Click here to see menu options',
@@ -77,11 +77,14 @@ class _MailPageState extends State<MailPage> {
                               ],
                             ),
                           ),
-                          TargetWidget(
+                          Showcase(
                             key: _two,
                             title: 'Profile',
                             description: 'Click here to go to your Profile',
+                            showcaseBackgroundColor : Colors.blueAccent,
+                            textColor: Colors.white,
                             shapeBorder: CircleBorder(),
+
                             child: Container(
                               width: 30,
                               height: 30,
@@ -117,7 +120,7 @@ class _MailPageState extends State<MailPage> {
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
-              child: TargetWidget(
+              child: Showcase(
                 key: _three,
                 title: 'Mail',
                 description: 'Click here to check mail',
@@ -130,10 +133,10 @@ class _MailPageState extends State<MailPage> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            TargetWidget.withWidget(
+                            Showcase.withWidget(
                               key: _four,
-                              cHeight: 80,
-                              cWidth: 140,
+                              height: 80,
+                              width: 140,
                               shapeBorder: CircleBorder(),
                               container: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +252,7 @@ class _MailPageState extends State<MailPage> {
             ),
             MailTile(
               Mail(
-                  sender: 'simform',
+                  sender: 'Simform',
                   sub: 'Credit card Plugin',
                   msg: 'Check out our credit card plugin',
                   date: '19 May',
@@ -267,7 +270,7 @@ class _MailPageState extends State<MailPage> {
           ],
         ),
       ),
-      floatingActionButton: TargetWidget(
+      floatingActionButton: Showcase(
         key: _five,
         title: 'Compose Mail',
         description: 'Click here to compose mail',

@@ -1,4 +1,4 @@
 library showcaseview;
 
+export 'showcase_widget.dart';
 export 'showcase.dart';
-export 'target_widget.dart';

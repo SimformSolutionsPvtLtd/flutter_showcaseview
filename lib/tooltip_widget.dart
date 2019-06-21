@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/get_position.dart';
 
-class Content extends StatelessWidget {
+class ToolTipWidget extends StatelessWidget {
   final GetPosition position;
   final Offset offset;
   final Size screenSize;
@@ -18,7 +18,7 @@ class Content extends StatelessWidget {
   final double contentWidth;
   static bool isArrowUp;
 
-  Content({
+  ToolTipWidget({
     this.position,
     this.offset,
     this.screenSize,
@@ -55,9 +55,9 @@ class Content extends StatelessWidget {
     double titleLength = (title.length * 10.0);
     double descriptionLength = (description.length * 7.0);
     if (titleLength > descriptionLength) {
-      return titleLength + 40;
+      return titleLength + 10;
     } else {
-      return descriptionLength + 40;
+      return descriptionLength + 10;
     }
   }
 
@@ -156,8 +156,7 @@ class Content extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         width: _getTooltipWidth(),
-                        padding: EdgeInsets.only(
-                            left: 20, right: 20, top: 8, bottom: 8),
+                        padding: EdgeInsets.symmetric(vertical: 8),
                         color: tooltipColor,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -169,12 +168,12 @@ class Content extends StatelessWidget {
                                   Text(
                                     title,
                                     style: titleTextStyle ??
-                                        Theme.of(context).textTheme.title,
+                                        Theme.of(context).textTheme.title.merge(TextStyle(color: textColor)),
                                   ),
                                   Text(
                                     description,
                                     style: descTextStyle ??
-                                        Theme.of(context).textTheme.subtitle,
+                                        Theme.of(context).textTheme.subtitle.merge(TextStyle(color: textColor)),
                                   ),
                                 ],
                               ),

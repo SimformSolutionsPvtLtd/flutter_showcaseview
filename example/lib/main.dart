@@ -57,8 +57,7 @@ class _MailPageState extends State<MailPage> {
                               children: <Widget>[
                                 Showcase(
                                   key: _one,
-                                  title: 'Menu',
-                                  description: 'Click here to see menu options',
+                                  description: 'Tap to see menu options',
                                   child: Icon(
                                     Icons.menu,
                                     color: Colors.black45,
@@ -80,7 +79,7 @@ class _MailPageState extends State<MailPage> {
                           Showcase(
                             key: _two,
                             title: 'Profile',
-                            description: 'Click here to go to your Profile',
+                            description: 'Tap to see profile',
                             showcaseBackgroundColor : Colors.blueAccent,
                             textColor: Colors.white,
                             shapeBorder: CircleBorder(),
@@ -118,12 +117,14 @@ class _MailPageState extends State<MailPage> {
                 ),
               ],
             ),
+
+            Padding(padding: EdgeInsets.only(top: 8)),
+
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Showcase(
                 key: _three,
-                title: 'Mail',
-                description: 'Click here to check mail',
+                description: 'Tap to check mail',
                 child: Container(
                   padding: const EdgeInsets.only(left: 6, right: 16),
                   child: Row(
@@ -142,8 +143,8 @@ class _MailPageState extends State<MailPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
-                                    width: 40,
-                                    height: 40,
+                                    width: 45,
+                                    height: 45,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: Colors.blue[200],
@@ -164,8 +165,8 @@ class _MailPageState extends State<MailPage> {
                               child: Container(
                                 margin: const EdgeInsets.all(10),
                                 child: Container(
-                                  width: 40,
-                                  height: 40,
+                                  width: 45,
+                                  height: 45,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.blue[200],
@@ -176,6 +177,7 @@ class _MailPageState extends State<MailPage> {
                                 ),
                               ),
                             ),
+                            Padding(padding: EdgeInsets.only(left: 8)),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -314,7 +316,7 @@ class MailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 6, right: 16, top: 8),
+      padding: const EdgeInsets.only(left: 6, right: 16, top: 8,bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -324,8 +326,8 @@ class MailTile extends StatelessWidget {
               children: <Widget>[
                 Container(
                   margin: const EdgeInsets.all(10),
-                  width: 40,
-                  height: 40,
+                  width: 45,
+                  height: 45,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.blue[200],
@@ -334,6 +336,7 @@ class MailTile extends StatelessWidget {
                     child: Text(mail.sender[0]),
                   ),
                 ),
+                Padding(padding: EdgeInsets.only(left: 8)),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[

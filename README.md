@@ -24,14 +24,14 @@ dependencies:
 import 'package:showcaseview/showcaseview.dart';
 ```
 
-3. Adding a `ShowCase` widget.
+3. Adding a `ShowCaseWidget` widget.
 ```dart
-ShowCase(
+ShowCaseWidget(
   child: Somewidget(),
 ),
 ```
 
-4. Adding a `TargetWidget` widget.
+4. Adding a `Showcase` widget.
 ```dart
 GlobalKey _one = GlobalKey();
 GlobalKey _two = GlobalKey();
@@ -39,7 +39,7 @@ GlobalKey _three = GlobalKey();
 
 ...
 
-TargetWidget(
+Showcase(
   key: _one,
   title: 'Menu',
   description: 'Click here to see menu options',
@@ -53,7 +53,7 @@ TargetWidget(
 Some more optional parameters
 
 ```dart
-TargetWidget(
+Showcase(
   key: _two,
   title: 'Profile',
   description: 'Click here to go to your Profile',
@@ -65,10 +65,10 @@ TargetWidget(
 ),
 ```
 
-5. Using a `TargetWidget.withWidget` widget.
+5. Using a `Showcase.withWidget` widget.
 
 ```dart
-TargetWidget.withWidget(
+Showcase.withWidget(
   key: _three,
   cHeight: 80,
   cWidth: 140,
@@ -83,17 +83,17 @@ TargetWidget.withWidget(
 ),
 ```
 
-6. Starting the `ShowCaseView`
+6. Starting the `ShowCase`
 ```dart
 someEvent(){
-    ShowCase.startShowCase(context, [_one, _two, _three]);
+    ShowCaseWidget.startShowCase(context, [_one, _two, _three]);
 }
 ```
 
 If you want to start the `ShowCaseView` as soon as your UI built up then use below code.
 ```dart
 WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCase.startShowCase(context, [_one, _two, _three]));
+        ShowCaseWidget.startShowCase(context, [_one, _two, _three]));
 ```
 
 

@@ -1,95 +1,235 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:showcaseview/custom_paint.dart';
+import 'get_position.dart';
+import 'layout_overlays.dart';
+import 'tooltip_widget.dart';
 
-class ShowCase extends StatefulWidget {
+class Showcase extends StatefulWidget {
   final Widget child;
+  final String title;
+  final String description;
+  final ShapeBorder shapeBorder;
+  final TextStyle titleTextStyle;
+  final TextStyle descTextStyle;
+  final GlobalKey key;
+  final Color overlayColor;
+  final double overlayOpacity;
+  final Widget container;
+  final Color showcaseBackgroundColor;
+  final Color textColor;
+  final bool showArrow;
+  final double height;
+  final double width;
+  final Duration slideDuration;
 
-  const ShowCase({
-    Key key,
+  const Showcase({
+    @required this.key,
     @required this.child,
-  }) : super(key: key);
+    this.title,
+    @required this.description,
+    this.shapeBorder,
+    this.overlayColor,
+    this.overlayOpacity,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.showArrow,
+    this.slideDuration = const Duration(milliseconds: 2000),
+  })  : height = null,
+        width = null,
+        container = null;
 
-  static activeTargetWidget(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(_InheritedShowCaseView)
-            as _InheritedShowCaseView)
-        .activeWidgetIds;
-  }
+  const Showcase.withWidget({
+    this.key,
+    @required this.child,
+    @required this.container,
+    @required this.height,
+    @required this.width,
+    this.title,
+    this.description,
+    this.shapeBorder,
+    this.overlayColor,
+    this.overlayOpacity,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.showArrow = false,
+    this.slideDuration = const Duration(milliseconds: 2000),
+  });
 
-  static startShowCase(BuildContext context, List<GlobalKey> widgetIds) {
-    _ShowCaseState state = context
-        .ancestorStateOfType(TypeMatcher<_ShowCaseState>()) as _ShowCaseState;
+  @override
+  _ShowcaseState createState() => _ShowcaseState();
+}
 
-    state.startShowCase(widgetIds);
-  }
+class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
+  bool _showShowCase = false;
+  Animation<double> _slideAnimation;
+  AnimationController _slideAnimationController;
 
-  static completed(BuildContext context, GlobalKey widgetIds) {
-    _ShowCaseState state = context
-        .ancestorStateOfType(TypeMatcher<_ShowCaseState>()) as _ShowCaseState;
+  GetPosition position;
 
-    state.completed(widgetIds);
-  }
+  @override
+  void initState() {
+    super.initState();
 
-  static dismiss(BuildContext context) {
-    _ShowCaseState state = context
-        .ancestorStateOfType(TypeMatcher<_ShowCaseState>()) as _ShowCaseState;
-    state.dismiss();
+    _slideAnimationController = AnimationController(
+      duration: widget.slideDuration,
+      vsync: this,
+    )..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.completed) {
+          _slideAnimationController.reverse();
+        }
+        if (_slideAnimationController.isDismissed) {
+          _slideAnimationController.forward();
+        }
+      });
+
+    _slideAnimation = CurvedAnimation(
+      parent: _slideAnimationController,
+      curve: Curves.easeInOut,
+    );
+
+    position = GetPosition(key: widget.key);
   }
 
   @override
-  _ShowCaseState createState() => _ShowCaseState();
-}
-
-class _ShowCaseState extends State<ShowCase> {
-  List<GlobalKey> ids;
-  int activeWidgetId;
-
-  void startShowCase(List<GlobalKey> widgetIds) {
-    setState(() {
-      this.ids = widgetIds;
-      activeWidgetId = 0;
-    });
+  void dispose() {
+    super.dispose();
+    _slideAnimationController.dispose();
   }
 
-  void completed(GlobalKey id) {
-    if (ids != null && ids[activeWidgetId] == id) {
-      setState(() {
-        ++activeWidgetId;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    showOverlay();
+  }
 
-        if (activeWidgetId >= ids.length) {
-          _cleanupAfterSteps();
-        }
-      });
+  ///
+  /// show overlay if there is any target widget
+  ///
+  void showOverlay() {
+    GlobalKey activeStep = ShowCaseWidget.activeTargetWidget(context);
+    setState(() {
+      _showShowCase = activeStep == widget.key;
+    });
+
+    if (activeStep == widget.key) {
+      _slideAnimationController.forward();
     }
-  }
-
-  void dismiss() {
-    setState(() {
-      _cleanupAfterSteps();
-    });
-  }
-
-  void _cleanupAfterSteps() {
-    ids = null;
-    activeWidgetId = null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedShowCaseView(
+    Size size = MediaQuery.of(context).size;
+    return AnchoredOverlay(
+      overlayBuilder: (BuildContext context, Rect rectBound, Offset offset) =>
+          buildOverlayOnTarget(offset, rectBound.size, rectBound, size),
+      showOverlay: true,
       child: widget.child,
-      activeWidgetIds: ids?.elementAt(activeWidgetId),
     );
   }
+
+  _nextIfAny() {
+    ShowCaseWidget.completed(context, widget.key);
+    _slideAnimationController.forward();
+  }
+
+  buildOverlayOnTarget(
+    Offset offset,
+    Size size,
+    Rect rectBound,
+    Size screenSize,
+  ) =>
+      Visibility(
+        visible: _showShowCase,
+        maintainAnimation: true,
+        maintainState: true,
+        child: Stack(
+          children: [
+            GestureDetector(
+              onTap: _nextIfAny,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: CustomPaint(
+                  painter: ShapePainter(
+                      opacity: widget.overlayOpacity ?? 0.75,
+                      rect: position.getRect(),
+                      shapeBorder: widget.shapeBorder,
+                      color: widget.overlayColor ?? Colors.black),
+                ),
+              ),
+            ),
+            _TargetWidget(
+              offset: offset,
+              size: size,
+              onTap: _nextIfAny,
+              shapeBorder: widget.shapeBorder,
+            ),
+            ToolTipWidget(
+              position: position,
+              offset: offset,
+              screenSize: screenSize,
+              title: widget.title,
+              description: widget.description,
+              animationOffset: _slideAnimation,
+              titleTextStyle: widget.titleTextStyle,
+              descTextStyle: widget.descTextStyle,
+              container: widget.container,
+              tooltipColor: widget.showcaseBackgroundColor,
+              textColor: widget.textColor,
+              showArrow: widget.showArrow ?? true,
+              contentHeight: widget.height,
+              contentWidth: widget.width,
+            ),
+          ],
+        ),
+      );
 }
 
-class _InheritedShowCaseView extends InheritedWidget {
-  final GlobalKey activeWidgetIds;
+class _TargetWidget extends StatelessWidget {
+  final Offset offset;
+  final Size size;
+  final Animation<double> widthAnimation;
+  final VoidCallback onTap;
+  final ShapeBorder shapeBorder;
 
-  _InheritedShowCaseView({
-    @required this.activeWidgetIds,
-    @required child,
-  }) : super(child: child);
+  _TargetWidget({
+    Key key,
+    @required this.offset,
+    this.size,
+    this.widthAnimation,
+    this.onTap,
+    this.shapeBorder,
+  }) : super(key: key);
 
   @override
-  bool updateShouldNotify(_InheritedShowCaseView oldWidget) =>
-      oldWidget.activeWidgetIds != activeWidgetIds;
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: offset.dy,
+      left: offset.dx,
+      child: FractionalTranslation(
+        translation: const Offset(-0.5, -0.5),
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: size.height + 16,
+            width: size.width + 16,
+            decoration: ShapeDecoration(
+              shape: shapeBorder ??
+                  RoundedRectangleBorder(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -30,7 +30,6 @@ class TargetWidget extends StatefulWidget {
     @required this.child,
     @required this.title,
     @required this.description,
-    this.container,
     this.shapeBorder,
     this.overlayColor,
     this.overlayOpacity,
@@ -39,10 +38,10 @@ class TargetWidget extends StatefulWidget {
     this.tooltipColor = Colors.white,
     this.textColor = Colors.black,
     this.showArrow,
-    this.cHeight,
-    this.cWidth,
     this.slideDuration = const Duration(milliseconds: 2000),
-  });
+  })  : cHeight = null,
+        cWidth = null,
+        container = null;
 
   const TargetWidget.withWidget({
     this.key,

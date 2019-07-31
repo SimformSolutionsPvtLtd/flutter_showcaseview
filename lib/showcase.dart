@@ -22,7 +22,7 @@ class Showcase extends StatefulWidget {
   final bool showArrow;
   final double height;
   final double width;
-  final Duration slideDuration;
+  final Duration animationDuration;
 
   const Showcase({
     @required this.key,
@@ -30,17 +30,32 @@ class Showcase extends StatefulWidget {
     this.title,
     @required this.description,
     this.shapeBorder,
-    this.overlayColor,
-    this.overlayOpacity,
+    this.overlayColor = Colors.black,
+    this.overlayOpacity = 0.75,
     this.titleTextStyle,
     this.descTextStyle,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
-    this.showArrow,
-    this.slideDuration = const Duration(milliseconds: 2000),
+    this.showArrow = true,
+    this.animationDuration = const Duration(milliseconds: 2000),
   })  : height = null,
         width = null,
-        container = null;
+        container = null,
+        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
+            "overlay opacity should be >= 0.0 and <= 1.0."),
+        assert(key != null ||
+            child != null ||
+            title != null ||
+            showArrow != null ||
+            description != null ||
+            shapeBorder != null ||
+            overlayColor != null ||
+            titleTextStyle != null ||
+            descTextStyle != null ||
+            showcaseBackgroundColor != null ||
+            textColor != null ||
+            shapeBorder != null ||
+            animationDuration != null);
 
   const Showcase.withWidget({
     this.key,
@@ -51,14 +66,28 @@ class Showcase extends StatefulWidget {
     this.title,
     this.description,
     this.shapeBorder,
-    this.overlayColor,
-    this.overlayOpacity,
+    this.overlayColor = Colors.black,
+    this.overlayOpacity = 0.75,
     this.titleTextStyle,
     this.descTextStyle,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
-    this.slideDuration = const Duration(milliseconds: 2000),
-  }) : this.showArrow = false;
+    this.animationDuration = const Duration(milliseconds: 2000),
+  })  : this.showArrow = false,
+        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
+            "overlay opacity should be >= 0.0 and <= 1.0."),
+        assert(key != null ||
+            child != null ||
+            title != null ||
+            description != null ||
+            shapeBorder != null ||
+            overlayColor != null ||
+            titleTextStyle != null ||
+            descTextStyle != null ||
+            showcaseBackgroundColor != null ||
+            textColor != null ||
+            shapeBorder != null ||
+            animationDuration != null);
 
   @override
   _ShowcaseState createState() => _ShowcaseState();
@@ -76,7 +105,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     super.initState();
 
     _slideAnimationController = AnimationController(
-      duration: widget.slideDuration,
+      duration: widget.animationDuration,
       vsync: this,
     )..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
@@ -156,10 +185,10 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 height: MediaQuery.of(context).size.height,
                 child: CustomPaint(
                   painter: ShapePainter(
-                      opacity: widget.overlayOpacity ?? 0.75,
+                      opacity: widget.overlayOpacity,
                       rect: position.getRect(),
                       shapeBorder: widget.shapeBorder,
-                      color: widget.overlayColor ?? Colors.black),
+                      color: widget.overlayColor),
                 ),
               ),
             ),
@@ -181,7 +210,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               container: widget.container,
               tooltipColor: widget.showcaseBackgroundColor,
               textColor: widget.textColor,
-              showArrow: widget.showArrow ?? true,
+              showArrow: widget.showArrow,
               contentHeight: widget.height,
               contentWidth: widget.width,
             ),

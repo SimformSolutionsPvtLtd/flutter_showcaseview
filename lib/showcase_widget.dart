@@ -15,22 +15,25 @@ class ShowCaseWidget extends StatefulWidget {
   }
 
   static startShowCase(BuildContext context, List<GlobalKey> widgetIds) {
-    _ShowCaseWidgetState state = context
-        .ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>()) as _ShowCaseWidgetState;
+    _ShowCaseWidgetState state =
+        context.ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>())
+            as _ShowCaseWidgetState;
 
     state.startShowCase(widgetIds);
   }
 
   static completed(BuildContext context, GlobalKey widgetIds) {
-    _ShowCaseWidgetState state = context
-        .ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>()) as _ShowCaseWidgetState;
+    _ShowCaseWidgetState state =
+        context.ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>())
+            as _ShowCaseWidgetState;
 
     state.completed(widgetIds);
   }
 
   static dismiss(BuildContext context) {
-    _ShowCaseWidgetState state = context
-        .ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>()) as _ShowCaseWidgetState;
+    _ShowCaseWidgetState state =
+        context.ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>())
+            as _ShowCaseWidgetState;
     state.dismiss();
   }
 

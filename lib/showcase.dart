@@ -57,9 +57,8 @@ class Showcase extends StatefulWidget {
     this.descTextStyle,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
-    this.showArrow = false,
     this.slideDuration = const Duration(milliseconds: 2000),
-  });
+  }) : this.showArrow = false;
 
   @override
   _ShowcaseState createState() => _ShowcaseState();

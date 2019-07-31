@@ -163,7 +163,9 @@ class ToolTipWidget extends StatelessWidget {
                           children: <Widget>[
                             Container(
                               child: Column(
-                                crossAxisAlignment: title != null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                                crossAxisAlignment: title != null
+                                    ? CrossAxisAlignment.start
+                                    : CrossAxisAlignment.center,
                                 children: <Widget>[
                                   title != null
                                       ? Text(
@@ -201,10 +203,9 @@ class ToolTipWidget extends StatelessWidget {
     } else {
       return Stack(
         children: <Widget>[
-          showArrow ? _getArrow(contentOffsetMultiplier) : Container(),
           Positioned(
             left: _getSpace(),
-            top: isArrowUp ? contentY + 10 : contentY - 10,
+            top: contentY - 10,
             child: FractionalTranslation(
               translation: Offset(0.0, contentFractionalOffset),
               child: SlideTransition(
@@ -212,24 +213,15 @@ class ToolTipWidget extends StatelessWidget {
                   begin: Offset(0.0, contentFractionalOffset / 5),
                   end: Offset(0.0, 0.100),
                 ).animate(animationOffset),
-                child: Container(
-                  child: Material(
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      top: paddingTop,
+                    ),
                     color: Colors.transparent,
                     child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          top: paddingTop,
-                          bottom: paddingBottom,
-                        ),
-                        child: Container(
-                          color: Colors.transparent,
-                          height: contentHeight,
-                          width: contentWidth,
-                          child: Center(
-                            child: container,
-                          ),
-                        ),
-                      ),
+                      child: container,
                     ),
                   ),
                 ),
@@ -244,7 +236,7 @@ class ToolTipWidget extends StatelessWidget {
   Widget _getArrow(contentOffsetMultiplier) {
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
-      top: isArrowUp ? position.getBottom() : position.getTop(),
+      top: isArrowUp ? position.getBottom() : position.getTop() - 1,
       left: position.getCenter() - 24,
       child: FractionalTranslation(
         translation: Offset(0.0, contentFractionalOffset),

@@ -32,7 +32,8 @@ class _MailPageState extends State<MailPage> {
   Widget build(BuildContext context) {
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.startShowCase(context, [_one, _two, _three, _four, _five]));
+        ShowCaseWidget.startShowCase(
+            context, [_one, _two, _three, _four, _five]));
 
     return Scaffold(
       body: SafeArea(
@@ -80,10 +81,9 @@ class _MailPageState extends State<MailPage> {
                             key: _two,
                             title: 'Profile',
                             description: 'Tap to see profile',
-                            showcaseBackgroundColor : Colors.blueAccent,
+                            showcaseBackgroundColor: Colors.blueAccent,
                             textColor: Colors.white,
                             shapeBorder: CircleBorder(),
-
                             child: Container(
                               width: 30,
                               height: 30,
@@ -117,9 +117,7 @@ class _MailPageState extends State<MailPage> {
                 ),
               ],
             ),
-
             Padding(padding: EdgeInsets.only(top: 8)),
-
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Showcase(
@@ -136,7 +134,7 @@ class _MailPageState extends State<MailPage> {
                           children: <Widget>[
                             Showcase.withWidget(
                               key: _four,
-                              height: 80,
+                              height: 50,
                               width: 140,
                               shapeBorder: CircleBorder(),
                               container: Column(
@@ -316,7 +314,7 @@ class MailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 6, right: 16, top: 8,bottom: 8),
+      padding: const EdgeInsets.only(left: 6, right: 16, top: 8, bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

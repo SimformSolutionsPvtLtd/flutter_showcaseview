@@ -12,7 +12,7 @@ It is inspired from [Fluttery's Flutter challange](https://www.youtube.com/watch
 
 1.  Add dependency to `pubspec.yaml`
 
-    *Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/)*
+    *Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/packages/showcaseview)*
 
 ```dart
 dependencies:

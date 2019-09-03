@@ -16,7 +16,7 @@ It is inspired from [Fluttery's Flutter challange](https://www.youtube.com/watch
 
 ```dart
 dependencies:
-    showcaseview: ^0.1.1
+    showcaseview: ^0.1.2
 ```
 
 2.  Import the package

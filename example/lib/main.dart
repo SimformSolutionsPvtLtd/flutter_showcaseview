@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:example/detailscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'detailscreen.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,16 +42,12 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _five = GlobalKey();
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
         ShowCaseWidget.of(context)
             .startShowCase([_one, _two, _three, _four, _five]));
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -76,7 +72,6 @@ class _MailPageState extends State<MailPage> {
                                 Showcase(
                                   key: _one,
                                   description: 'Tap to see menu options',
-                                  disableAnimation: true,
                                   child: Icon(
                                     Icons.menu,
                                     color: Colors.black45,
@@ -204,68 +199,67 @@ class _MailPageState extends State<MailPage> {
                                 child: Container(
                                   margin: const EdgeInsets.all(10),
                                   child: Container(
-                                    width: 45,
-                                    height: 45,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.blue[200],
-                                    ),
-                                    child: Center(
-                                      child: Text('S'),
-                                    ),
+                                  width: 45,
+                                  height: 45,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.blue[200],
+                                  ),
+                                  child: Center(
+                                    child: Text('S'),
                                   ),
                                 ),
                               ),
-                              Padding(padding: EdgeInsets.only(left: 8)),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    'Slack',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Flutter Notification',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Hi, you have new Notification',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              '1 Jun',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
                             ),
-                            Icon(
-                              Icons.star_border,
-                              color: Colors.grey,
+                            Padding(padding: EdgeInsets.only(left: 8)),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'Slack',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                                Text(
+                                  'Flutter Notification',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  'Hi, you have new Notification',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
                             )
                           ],
-                        )
-                      ],
-                    ),
+                        ),
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            '1 Jun',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Icon(
+                            Icons.star_border,
+                            color: Colors.grey,
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),
-            ),
+            )),
             MailTile(
               Mail(
                 sender: 'Medium',

@@ -59,6 +59,9 @@ class _MailPageState extends State<MailPage> {
                                 Showcase(
                                   key: _one,
                                   description: 'Tap to see menu options',
+                                  onClick: () {
+                                    print('I am tapped...!');
+                                  },
                                   child: Icon(
                                     Icons.menu,
                                     color: Colors.black45,

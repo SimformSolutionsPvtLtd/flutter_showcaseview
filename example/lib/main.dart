@@ -28,14 +28,35 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
 
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  _showSnakbar(String msg) {
+    final snackbar = SnackBar(
+      content: Text(msg),
+      backgroundColor: Colors.blue,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
         ShowCaseWidget.startShowCase(
             context, [_one, _two, _three, _four, _five]));
+  }
 
+  @override
+  void dispose() {
+    super.dispose();
+    print('Main desposed');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: SafeArea(
         child: ListView(
           children: <Widget>[
@@ -59,8 +80,11 @@ class _MailPageState extends State<MailPage> {
                                 Showcase(
                                   key: _one,
                                   description: 'Tap to see menu options',
-                                  onClick: () {
-                                    print('I am tapped...!');
+                                  onTargetClick: () {
+                                    _showSnakbar('Menu button clicked');
+                                  },
+                                  onTooltipClick: () {
+                                    _showSnakbar('Tooltip widget clicked');
                                   },
                                   child: Icon(
                                     Icons.menu,
@@ -281,7 +305,10 @@ class _MailPageState extends State<MailPage> {
         child: FloatingActionButton(
           backgroundColor: Colors.white,
           onPressed: () {
-            setState(() {});
+            setState(() {
+              ShowCaseWidget.startShowCase(
+                  context, [_one, _two, _three, _four, _five]);
+            });
           },
           child: Icon(
             Icons.add,

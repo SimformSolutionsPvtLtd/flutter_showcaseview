@@ -23,8 +23,6 @@ class Showcase extends StatefulWidget {
   final double height;
   final double width;
   final Duration animationDuration;
-  final VoidCallback onTargetClick;
-  final VoidCallback onTooltipClick;
 
   const Showcase(
       {@required this.key,
@@ -39,9 +37,7 @@ class Showcase extends StatefulWidget {
       this.showcaseBackgroundColor = Colors.white,
       this.textColor = Colors.black,
       this.showArrow = true,
-      this.animationDuration = const Duration(milliseconds: 2000),
-      this.onTargetClick,
-      this.onTooltipClick})
+      this.animationDuration = const Duration(milliseconds: 2000)})
       : height = null,
         width = null,
         container = null,
@@ -76,9 +72,7 @@ class Showcase extends StatefulWidget {
       this.descTextStyle,
       this.showcaseBackgroundColor = Colors.white,
       this.textColor = Colors.black,
-      this.animationDuration = const Duration(milliseconds: 2000),
-      this.onTargetClick,
-      this.onTooltipClick})
+      this.animationDuration = const Duration(milliseconds: 2000)})
       : this.showArrow = false,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity should be >= 0.0 and <= 1.0."),
@@ -201,7 +195,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             _TargetWidget(
               offset: offset,
               size: size,
-              onTap: widget.onTargetClick ?? _nextIfAny,
+              onTap: _nextIfAny,
               shapeBorder: widget.shapeBorder,
             ),
             ToolTipWidget(
@@ -219,7 +213,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               showArrow: widget.showArrow,
               contentHeight: widget.height,
               contentWidth: widget.width,
-              onTooltipClick: widget.onTooltipClick,
             ),
           ],
         ),

@@ -11,7 +11,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ShowCaseWidget(child: MailPage()),
+      home: Scaffold(
+        body: ShowCaseWidget(
+          child: MailPage(),
+        ),
+      ),
     );
   }
 }
@@ -45,6 +49,10 @@ class _MailPageState extends State<MailPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) =>
         ShowCaseWidget.startShowCase(
             context, [_one, _two, _three, _four, _five]));
+
+    ShowCaseWidget.setOnShowCaseFinish(() {
+      _showSnakbar('ShowcaseView Finished');
+    });
   }
 
   @override
@@ -80,12 +88,6 @@ class _MailPageState extends State<MailPage> {
                                 Showcase(
                                   key: _one,
                                   description: 'Tap to see menu options',
-                                  onTargetClick: () {
-                                    _showSnakbar('Menu button clicked');
-                                  },
-                                  onTooltipClick: () {
-                                    _showSnakbar('Tooltip widget clicked');
-                                  },
                                   child: Icon(
                                     Icons.menu,
                                     color: Colors.black45,

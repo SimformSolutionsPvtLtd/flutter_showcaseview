@@ -23,6 +23,9 @@ class Showcase extends StatefulWidget {
   final double height;
   final double width;
   final Duration animationDuration;
+  final VoidCallback onToolTipClick;
+  final VoidCallback onTargetClick;
+  final bool disposeOnTap;
 
   const Showcase(
       {@required this.key,
@@ -37,12 +40,20 @@ class Showcase extends StatefulWidget {
       this.showcaseBackgroundColor = Colors.white,
       this.textColor = Colors.black,
       this.showArrow = true,
+      this.onTargetClick,
+      this.disposeOnTap,
       this.animationDuration = const Duration(milliseconds: 2000)})
       : height = null,
         width = null,
         container = null,
+        this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity should be >= 0.0 and <= 1.0."),
+        assert(
+            onTargetClick == null
+                ? true
+                : (disposeOnTap == null ? false : true),
+            "disposeOnTap is required with use of onTargetClick"),
         assert(key != null ||
             child != null ||
             title != null ||
@@ -72,8 +83,11 @@ class Showcase extends StatefulWidget {
       this.descTextStyle,
       this.showcaseBackgroundColor = Colors.white,
       this.textColor = Colors.black,
+      this.onTargetClick,
+      this.disposeOnTap,
       this.animationDuration = const Duration(milliseconds: 2000)})
       : this.showArrow = false,
+        this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(key != null ||
@@ -166,6 +180,36 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     _slideAnimationController.forward();
   }
 
+  _getOnTargetTap() {
+    if (widget.disposeOnTap == true) {
+      return widget.onTargetClick == null
+          ? () {
+              ShowCaseWidget.dismiss(context);
+            }
+          : () {
+              ShowCaseWidget.dismiss(context);
+              widget.onTargetClick();
+            };
+    } else {
+      return widget.onTargetClick ?? _nextIfAny;
+    }
+  }
+
+  _getOnTooltipTap() {
+    if (widget.disposeOnTap == true) {
+      return widget.onToolTipClick == null
+          ? () {
+              ShowCaseWidget.dismiss(context);
+            }
+          : () {
+              ShowCaseWidget.dismiss(context);
+              widget.onToolTipClick();
+            };
+    } else {
+      return widget.onToolTipClick ?? () {};
+    }
+  }
+
   buildOverlayOnTarget(
     Offset offset,
     Size size,
@@ -195,7 +239,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             _TargetWidget(
               offset: offset,
               size: size,
-              onTap: _nextIfAny,
+              onTap: _getOnTargetTap(),
               shapeBorder: widget.shapeBorder,
             ),
             ToolTipWidget(
@@ -213,6 +257,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               showArrow: widget.showArrow,
               contentHeight: widget.height,
               contentWidth: widget.width,
+              onTooltipTap: _getOnTooltipTap(),
             ),
           ],
         ),

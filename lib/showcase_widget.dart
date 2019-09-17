@@ -46,6 +46,12 @@ class _ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey> ids;
   int activeWidgetId;
 
+  @override
+  void didChangeDependencies() {
+
+    super.didChangeDependencies();
+  }
+
   void startShowCase(List<GlobalKey> widgetIds) {
     setState(() {
       this.ids = widgetIds;
@@ -91,7 +97,6 @@ class _ShowCaseWidgetState extends State<ShowCaseWidget> {
     ShowCaseOnFinish._onShowCaseFinish = null;
     super.dispose();
   }
-
 }
 
 class _InheritedShowCaseView extends InheritedWidget {

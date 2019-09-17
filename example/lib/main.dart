@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
+import 'SecondPage.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -147,29 +149,73 @@ class _MailPageState extends State<MailPage> {
               ],
             ),
             Padding(padding: EdgeInsets.only(top: 8)),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Showcase(
-                key: _three,
-                description: 'Tap to check mail',
-                child: Container(
-                  padding: const EdgeInsets.only(left: 6, right: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Showcase.withWidget(
-                              key: _four,
-                              height: 50,
-                              width: 140,
-                              shapeBorder: CircleBorder(),
-                              container: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Second(),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Showcase(
+                  key: _three,
+                  description: 'Tap to check mail',
+                  disposeOnTap: true,
+                  onTargetClick: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => Second(),
+                      ),
+                    ).then((_) {
+                      setState(() {
+                        ShowCaseWidget.startShowCase(context, [_four, _five]);
+                      });
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 6, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Showcase.withWidget(
+                                key: _four,
+                                height: 50,
+                                width: 140,
+                                shapeBorder: CircleBorder(),
+                                container: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      width: 45,
+                                      height: 45,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.blue[200],
+                                      ),
+                                      child: Center(
+                                        child: Text('S'),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      'Your sender\'s profile ',
+                                      style: TextStyle(color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                                child: Container(
+                                  margin: const EdgeInsets.all(10),
+                                  child: Container(
                                     width: 45,
                                     height: 45,
                                     decoration: BoxDecoration(
@@ -180,75 +226,54 @@ class _MailPageState extends State<MailPage> {
                                       child: Text('S'),
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 10,
+                                ),
+                              ),
+                              Padding(padding: EdgeInsets.only(left: 8)),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Slack',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                    ),
                                   ),
                                   Text(
-                                    'Your sender\'s profile ',
-                                    style: TextStyle(color: Colors.white),
-                                  )
+                                    'Flutter Notification',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Hi, you have new Notification',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
                                 ],
-                              ),
-                              child: Container(
-                                margin: const EdgeInsets.all(10),
-                                child: Container(
-                                  width: 45,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.blue[200],
-                                  ),
-                                  child: Center(
-                                    child: Text('S'),
-                                  ),
-                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Text(
+                              '1 Jun',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Padding(padding: EdgeInsets.only(left: 8)),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  'Slack',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                                Text(
-                                  'Flutter Notification',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                Text(
-                                  'Hi, you have new Notification',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ],
+                            Icon(
+                              Icons.star_border,
+                              color: Colors.grey,
                             )
                           ],
-                        ),
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Text(
-                            '1 Jun',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Icon(
-                            Icons.star_border,
-                            color: Colors.grey,
-                          )
-                        ],
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

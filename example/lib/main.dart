@@ -15,7 +15,11 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: ShowCaseWidget(
-          child: MailPage(),
+          builder: Builder(
+            builder: (context) {
+              return MailPage();
+            },
+          ),
         ),
       ),
     );
@@ -51,16 +55,9 @@ class _MailPageState extends State<MailPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) =>
         ShowCaseWidget.startShowCase(
             context, [_one, _two, _three, _four, _five]));
-
     ShowCaseWidget.setOnShowCaseFinish(() {
       _showSnakbar('ShowcaseView Finished');
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    print('Main desposed');
   }
 
   @override

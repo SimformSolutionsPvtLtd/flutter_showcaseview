@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ShowCaseWidget extends StatefulWidget {
-  final Widget child;
+  final Builder builder;
 
-  const ShowCaseWidget({Key key, @required this.child}) : super(key: key);
+  const ShowCaseWidget({@required this.builder});
 
   static activeTargetWidget(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedShowCaseView)
@@ -11,27 +11,24 @@ class ShowCaseWidget extends StatefulWidget {
         .activeWidgetIds;
   }
 
-  static startShowCase(BuildContext context, List<GlobalKey> widgetIds) {
-    _ShowCaseWidgetState state =
-        context.ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>())
-            as _ShowCaseWidgetState;
+  static ShowCaseWidgetState of(BuildContext context) =>
+      context.ancestorStateOfType(const TypeMatcher<ShowCaseWidgetState>());
 
-    state.startShowCase(widgetIds);
+  static startShowCase(BuildContext context, List<GlobalKey> widgetIds) {
+    ShowCaseWidgetState state = ShowCaseWidget.of(context);
+    if (state != null) {
+      state.startShowCase(widgetIds);
+    } else {
+      throw Exception('Please provide ShowCaseView context');
+    }
   }
 
   static completed(BuildContext context, GlobalKey widgetIds) {
-    _ShowCaseWidgetState state =
-        context.ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>())
-            as _ShowCaseWidgetState;
-
-    state.completed(widgetIds);
+    ShowCaseWidget.of(context).completed(widgetIds);
   }
 
   static dismiss(BuildContext context) {
-    _ShowCaseWidgetState state =
-        context.ancestorStateOfType(TypeMatcher<_ShowCaseWidgetState>())
-            as _ShowCaseWidgetState;
-    state.dismiss();
+    ShowCaseWidget.of(context).dismiss();
   }
 
   static setOnShowCaseFinish(VoidCallback onFinish) {
@@ -39,18 +36,12 @@ class ShowCaseWidget extends StatefulWidget {
   }
 
   @override
-  _ShowCaseWidgetState createState() => _ShowCaseWidgetState();
+  ShowCaseWidgetState createState() => ShowCaseWidgetState();
 }
 
-class _ShowCaseWidgetState extends State<ShowCaseWidget> {
+class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey> ids;
   int activeWidgetId;
-
-  @override
-  void didChangeDependencies() {
-
-    super.didChangeDependencies();
-  }
 
   void startShowCase(List<GlobalKey> widgetIds) {
     setState(() {
@@ -63,10 +54,12 @@ class _ShowCaseWidgetState extends State<ShowCaseWidget> {
     if (ids != null && ids[activeWidgetId] == id) {
       setState(() {
         ++activeWidgetId;
+
         if (activeWidgetId >= ids.length) {
           _cleanupAfterSteps();
           if (ShowCaseOnFinish._onShowCaseFinish != null) {
             ShowCaseOnFinish._onShowCaseFinish();
+            ShowCaseOnFinish._onShowCaseFinish = null;
           }
         }
       });
@@ -87,15 +80,9 @@ class _ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   Widget build(BuildContext context) {
     return _InheritedShowCaseView(
-      child: widget.child,
+      child: widget.builder,
       activeWidgetIds: ids?.elementAt(activeWidgetId),
     );
-  }
-
-  @override
-  void dispose() {
-    ShowCaseOnFinish._onShowCaseFinish = null;
-    super.dispose();
   }
 }
 

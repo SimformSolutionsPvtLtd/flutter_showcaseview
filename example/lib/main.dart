@@ -16,9 +16,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: ShowCaseWidget(
           builder: Builder(
-            builder: (context) {
-              return MailPage();
-            },
+            builder: (context) => MailPage()
           ),
         ),
       ),

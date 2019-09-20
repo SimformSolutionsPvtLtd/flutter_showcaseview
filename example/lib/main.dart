@@ -40,7 +40,7 @@ class _MailPageState extends State<MailPage> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  _showSnakbar(String msg) {
+  _showSnackbar(String msg) {
     final snackbar = SnackBar(
       content: Text(msg),
       backgroundColor: Colors.blue,
@@ -53,10 +53,9 @@ class _MailPageState extends State<MailPage> {
     super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.startShowCase(
-            context, [_one, _two, _three, _four, _five]));
+        ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]));
     ShowCaseWidget.setOnShowCaseFinish(() {
-      _showSnakbar('ShowcaseView Finished');
+      _showSnackbar('ShowcaseView Finished');
     });
   }
 
@@ -151,7 +150,7 @@ class _MailPageState extends State<MailPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => Second(),
+                    builder: (_) => Detail(),
                   ),
                 );
               },
@@ -165,11 +164,11 @@ class _MailPageState extends State<MailPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => Second(),
+                        builder: (_) => Detail(),
                       ),
                     ).then((_) {
                       setState(() {
-                        ShowCaseWidget.startShowCase(context, [_four, _five]);
+                        ShowCaseWidget.of(context).startShowCase([_four, _five]);
                       });
                     });
                   },
@@ -330,8 +329,7 @@ class _MailPageState extends State<MailPage> {
           backgroundColor: Colors.white,
           onPressed: () {
             setState(() {
-              ShowCaseWidget.startShowCase(
-                  context, [_one, _two, _three, _four, _five]);
+              ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]);
             });
           },
           child: Icon(

@@ -2,21 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:showcaseview/showcase_widget.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-class Second extends StatefulWidget {
+class Detail extends StatefulWidget {
   @override
-  _SecondState createState() => _SecondState();
+  _DetailState createState() => _DetailState();
 }
 
-class _SecondState extends State<Second> {
+class _DetailState extends State<Detail> {
   final GlobalKey _one = GlobalKey();
   BuildContext myContext;
 
   @override
-  void didChangeDependencies() {
-    //Start showcase view after current widget frames are drawn.
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-        (_) => ShowCaseWidget.startShowCase(myContext, [_one]));
-    super.didChangeDependencies();
+            (_) {
+          Future.delayed(Duration(milliseconds: 200), () =>
+              ShowCaseWidget.of(myContext).startShowCase([_one])
+          );
+        }
+    );
   }
 
   @override

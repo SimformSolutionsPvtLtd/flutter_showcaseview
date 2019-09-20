@@ -53,7 +53,12 @@ class Showcase extends StatefulWidget {
             onTargetClick == null
                 ? true
                 : (disposeOnTap == null ? false : true),
-            "disposeOnTap is required with use of onTargetClick"),
+            "disposeOnTap is required if you're using onTargetClick"),
+        assert(
+        disposeOnTap == null
+            ? true
+            : (onTargetClick == null ? false : true),
+        "onTargetClick is required if you're using disposeOnTap"),
         assert(key != null ||
             child != null ||
             title != null ||
@@ -176,7 +181,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   }
 
   _nextIfAny() {
-    ShowCaseWidget.completed(context, widget.key);
+    ShowCaseWidget.of(context).completed(widget.key);
     _slideAnimationController.forward();
   }
 
@@ -184,10 +189,10 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     if (widget.disposeOnTap == true) {
       return widget.onTargetClick == null
           ? () {
-              ShowCaseWidget.dismiss(context);
+        ShowCaseWidget.of(context).dismiss();
             }
           : () {
-              ShowCaseWidget.dismiss(context);
+        ShowCaseWidget.of(context).dismiss();
               widget.onTargetClick();
             };
     } else {
@@ -199,10 +204,10 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     if (widget.disposeOnTap == true) {
       return widget.onToolTipClick == null
           ? () {
-              ShowCaseWidget.dismiss(context);
+        ShowCaseWidget.of(context).dismiss();
             }
           : () {
-              ShowCaseWidget.dismiss(context);
+        ShowCaseWidget.of(context).dismiss();
               widget.onToolTipClick();
             };
     } else {

@@ -11,24 +11,15 @@ class ShowCaseWidget extends StatefulWidget {
         .activeWidgetIds;
   }
 
-  static ShowCaseWidgetState of(BuildContext context) =>
-      context.ancestorStateOfType(const TypeMatcher<ShowCaseWidgetState>());
-
-  static startShowCase(BuildContext context, List<GlobalKey> widgetIds) {
-    ShowCaseWidgetState state = ShowCaseWidget.of(context);
+  static ShowCaseWidgetState of(BuildContext context) {
+    ShowCaseWidgetState state = context.ancestorStateOfType(
+        const TypeMatcher<ShowCaseWidgetState>());
     if (state != null) {
-      state.startShowCase(widgetIds);
+      return context.ancestorStateOfType(
+          const TypeMatcher<ShowCaseWidgetState>());
     } else {
       throw Exception('Please provide ShowCaseView context');
     }
-  }
-
-  static completed(BuildContext context, GlobalKey widgetIds) {
-    ShowCaseWidget.of(context).completed(widgetIds);
-  }
-
-  static dismiss(BuildContext context) {
-    ShowCaseWidget.of(context).dismiss();
   }
 
   static setOnShowCaseFinish(VoidCallback onFinish) {

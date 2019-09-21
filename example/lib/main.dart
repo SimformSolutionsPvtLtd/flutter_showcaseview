@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
-
-import 'SecondPage.dart';
+import 'detailscreen.dart';
 
 void main() => runApp(MyApp());
 
@@ -36,31 +35,17 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
 
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
-  _showSnackbar(String msg) {
-    final snackbar = SnackBar(
-      content: Text(msg),
-      backgroundColor: Colors.blue,
-    );
-    scaffoldKey.currentState.showSnackBar(snackbar);
-  }
-
   @override
   void initState() {
     super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
         ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]));
-    ShowCaseWidget.setOnShowCaseFinish(() {
-      _showSnackbar('ShowcaseView Finished');
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       body: SafeArea(
         child: ListView(
           children: <Widget>[

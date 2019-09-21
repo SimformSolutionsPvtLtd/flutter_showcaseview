@@ -22,10 +22,6 @@ class ShowCaseWidget extends StatefulWidget {
     }
   }
 
-  static setOnShowCaseFinish(VoidCallback onFinish) {
-    ShowCaseOnFinish._onShowCaseFinish = onFinish;
-  }
-
   @override
   ShowCaseWidgetState createState() => ShowCaseWidgetState();
 }

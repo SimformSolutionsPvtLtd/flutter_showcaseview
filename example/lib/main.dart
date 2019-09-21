@@ -36,16 +36,6 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
 
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
-  _showSnackbar(String msg) {
-    final snackbar = SnackBar(
-      content: Text(msg),
-      backgroundColor: Colors.blue,
-    );
-    scaffoldKey.currentState.showSnackBar(snackbar);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -57,7 +47,6 @@ class _MailPageState extends State<MailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       body: SafeArea(
         child: ListView(
           children: <Widget>[

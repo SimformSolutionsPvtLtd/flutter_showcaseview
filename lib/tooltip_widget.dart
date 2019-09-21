@@ -17,6 +17,7 @@ class ToolTipWidget extends StatelessWidget {
   final double contentHeight;
   final double contentWidth;
   static bool isArrowUp;
+  final VoidCallback onTooltipTap;
 
   ToolTipWidget({
     this.position,
@@ -33,6 +34,7 @@ class ToolTipWidget extends StatelessWidget {
     this.showArrow,
     this.contentHeight,
     this.contentWidth,
+    this.onTooltipTap,
   });
 
   bool isCloseToTopOrBottom(Offset position) {
@@ -154,42 +156,45 @@ class ToolTipWidget extends StatelessWidget {
                         EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        width: _getTooltipWidth(),
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        color: tooltipColor,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              child: Column(
-                                crossAxisAlignment: title != null
-                                    ? CrossAxisAlignment.start
-                                    : CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  title != null
-                                      ? Text(
-                                          title,
-                                          style: titleTextStyle ??
-                                              Theme.of(context)
-                                                  .textTheme
-                                                  .title
-                                                  .merge(TextStyle(
-                                                      color: textColor)),
-                                        )
-                                      : Container(),
-                                  Text(
-                                    description,
-                                    style: descTextStyle ??
-                                        Theme.of(context)
-                                            .textTheme
-                                            .subtitle
-                                            .merge(TextStyle(color: textColor)),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                      child: GestureDetector(
+                        onTap: onTooltipTap,
+                        child: Container(
+                          width: _getTooltipWidth(),
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          color: tooltipColor,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                child: Column(
+                                  crossAxisAlignment: title != null
+                                      ? CrossAxisAlignment.start
+                                      : CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    title != null
+                                        ? Text(
+                                            title,
+                                            style: titleTextStyle ??
+                                                Theme.of(context)
+                                                    .textTheme
+                                                    .title
+                                                    .merge(TextStyle(
+                                                        color: textColor)),
+                                          )
+                                        : Container(),
+                                    Text(
+                                      description,
+                                      style: descTextStyle ??
+                                          Theme.of(context)
+                                              .textTheme
+                                              .subtitle
+                                              .merge(TextStyle(color: textColor)),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -215,13 +220,16 @@ class ToolTipWidget extends StatelessWidget {
                 ).animate(animationOffset),
                 child: Material(
                   color: Colors.transparent,
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      top: paddingTop,
-                    ),
-                    color: Colors.transparent,
-                    child: Center(
-                      child: container,
+                  child: GestureDetector(
+                    onTap: onTooltipTap,
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        top: paddingTop,
+                      ),
+                      color: Colors.transparent,
+                      child: Center(
+                        child: container,
+                      ),
                     ),
                   ),
                 ),

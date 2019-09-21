@@ -16,7 +16,7 @@ It is inspired from [Fluttery's Flutter challange](https://www.youtube.com/watch
 
 ```dart
 dependencies:
-    showcaseview: ^0.1.2
+    showcaseview: ^0.1.3
 ```
 
 2.  Import the package
@@ -27,7 +27,9 @@ import 'package:showcaseview/showcaseview.dart';
 3. Adding a `ShowCaseWidget` widget.
 ```dart
 ShowCaseWidget(
-  child: Somewidget(),
+  builder: Builder(
+    builder : (context) ()=> Somewidget()
+  ),
 ),
 ```
 
@@ -98,7 +100,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 
 
 ## How to use
-Check out the **example** app in the [example](example) directory or the 'Example' tab on pub.dartlang.org for a more complete example.
+Check out the **example** app in the [example](example) directory or the 'Example' tab on pub.dev for a more complete example.
 
 
 ## Getting Started

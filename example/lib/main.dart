@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
-
-import 'SecondPage.dart';
+import 'detailscreen.dart';
 
 void main() => runApp(MyApp());
 

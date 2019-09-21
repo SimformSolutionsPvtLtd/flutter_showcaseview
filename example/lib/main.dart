@@ -52,9 +52,6 @@ class _MailPageState extends State<MailPage> {
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
         ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]));
-    ShowCaseWidget.setOnShowCaseFinish(() {
-      _showSnackbar('ShowcaseView Finished');
-    });
   }
 
   @override

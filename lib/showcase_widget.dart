@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class ShowCaseWidget extends StatefulWidget {
   final Builder builder;
+  final VoidCallback onFinish;
 
-  const ShowCaseWidget({@required this.builder});
+  const ShowCaseWidget({@required this.builder, this.onFinish});
 
   static activeTargetWidget(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedShowCaseView)
@@ -12,11 +13,11 @@ class ShowCaseWidget extends StatefulWidget {
   }
 
   static ShowCaseWidgetState of(BuildContext context) {
-    ShowCaseWidgetState state = context.ancestorStateOfType(
-        const TypeMatcher<ShowCaseWidgetState>());
+    ShowCaseWidgetState state =
+        context.ancestorStateOfType(const TypeMatcher<ShowCaseWidgetState>());
     if (state != null) {
-      return context.ancestorStateOfType(
-          const TypeMatcher<ShowCaseWidgetState>());
+      return context
+          .ancestorStateOfType(const TypeMatcher<ShowCaseWidgetState>());
     } else {
       throw Exception('Please provide ShowCaseView context');
     }
@@ -44,9 +45,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
         if (activeWidgetId >= ids.length) {
           _cleanupAfterSteps();
-          if (ShowCaseOnFinish._onShowCaseFinish != null) {
-            ShowCaseOnFinish._onShowCaseFinish();
-            ShowCaseOnFinish._onShowCaseFinish = null;
+          if (widget.onFinish != null) {
+            widget.onFinish();
           }
         }
       });
@@ -84,8 +84,4 @@ class _InheritedShowCaseView extends InheritedWidget {
   @override
   bool updateShouldNotify(_InheritedShowCaseView oldWidget) =>
       oldWidget.activeWidgetIds != activeWidgetIds;
-}
-
-class ShowCaseOnFinish {
-  static VoidCallback _onShowCaseFinish;
 }

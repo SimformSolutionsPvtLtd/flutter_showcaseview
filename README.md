@@ -92,6 +92,18 @@ someEvent(){
 }
 ```
 
+7. onFinish method for `ShowCase`
+```dart
+ShowCaseWidget(
+  onFinish: () {
+    // Your code goes here
+  },
+  builder: Builder(
+    builder : (context) ()=> Somewidget()
+  ),
+),
+```
+
 If you want to start the `ShowCaseView` as soon as your UI built up then use below code.
 ```dart
 WidgetsBinding.instance.addPostFrameCallback((_) =>

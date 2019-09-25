@@ -27,7 +27,9 @@ import 'package:showcaseview/showcaseview.dart';
 3. Adding a `ShowCaseWidget` widget.
 ```dart
 ShowCaseWidget(
-  child: Somewidget(),
+  builder: Builder(
+    builder : (context) ()=> Somewidget()
+  ),
 ),
 ```
 

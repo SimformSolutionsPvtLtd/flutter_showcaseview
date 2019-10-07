@@ -134,7 +134,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
           _slideAnimationController.reverse();
         }
         if (_slideAnimationController.isDismissed) {
-          _slideAnimationController.forward();
+          if (!widget.disableAnimation) {
+            _slideAnimationController.forward();
+          }
         }
       });
 
@@ -187,7 +189,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
   _nextIfAny() {
     ShowCaseWidget.of(context).completed(widget.key);
-    _slideAnimationController.forward();
+    if (!widget.disableAnimation) {
+      _slideAnimationController.forward();
+    }
   }
 
   _getOnTargetTap() {

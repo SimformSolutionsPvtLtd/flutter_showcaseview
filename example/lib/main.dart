@@ -12,7 +12,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MailPage(),
+      home: Scaffold(
+        body: ShowCaseWidget(
+          builder: Builder(
+            builder: (context) => MailPage()
+          ),
+        ),
+      ),
     );
   }
 }

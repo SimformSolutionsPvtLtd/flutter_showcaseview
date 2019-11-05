@@ -56,10 +56,16 @@ class ToolTipWidget extends StatelessWidget {
   double _getTooltipWidth() {
     double titleLength = title == null ? 0 : (title.length * 10.0);
     double descriptionLength = (description.length * 7.0);
+    double tooltipWidth;
     if (titleLength > descriptionLength) {
-      return titleLength + 10;
+      tooltipWidth = titleLength;
     } else {
-      return descriptionLength + 10;
+      tooltipWidth = descriptionLength;
+    }
+    if(tooltipWidth > (screenSize.width - 80)) {
+      return screenSize.width-80;
+    } else {
+      return tooltipWidth;
     }
   }
 
@@ -159,8 +165,8 @@ class ToolTipWidget extends StatelessWidget {
                       child: GestureDetector(
                         onTap: onTooltipTap,
                         child: Container(
-                          width: _getTooltipWidth(),
-                          padding: EdgeInsets.symmetric(vertical: 8),
+                          width: _getTooltipWidth()+30,
+                          padding: EdgeInsets.symmetric(vertical: 8, horizontal:15.0),
                           color: tooltipColor,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,

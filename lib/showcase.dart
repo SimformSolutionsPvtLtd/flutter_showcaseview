@@ -26,6 +26,7 @@ class Showcase extends StatefulWidget {
   final VoidCallback onToolTipClick;
   final VoidCallback onTargetClick;
   final bool disposeOnTap;
+  final EdgeInsets spotlightPadding;
 
   const Showcase(
       {@required this.key,
@@ -42,6 +43,7 @@ class Showcase extends StatefulWidget {
       this.showArrow = true,
       this.onTargetClick,
       this.disposeOnTap,
+      this.spotlightPadding = EdgeInsets.all(0.0),
       this.animationDuration = const Duration(milliseconds: 2000)})
       : height = null,
         width = null,
@@ -90,6 +92,7 @@ class Showcase extends StatefulWidget {
       this.textColor = Colors.black,
       this.onTargetClick,
       this.disposeOnTap,
+      this.spotlightPadding,
       this.animationDuration = const Duration(milliseconds: 2000)})
       : this.showArrow = false,
         this.onToolTipClick = null,
@@ -215,6 +218,11 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     }
   }
 
+  Rect getSpotlightRect() {
+    Rect r = position.getRect();
+    return Rect.fromLTRB(r.left-widget.spotlightPadding.left, r.top-widget.spotlightPadding.top, r.right+widget.spotlightPadding.right, r.bottom+widget.spotlightPadding.bottom);
+  }
+
   buildOverlayOnTarget(
     Offset offset,
     Size size,
@@ -235,7 +243,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 child: CustomPaint(
                   painter: ShapePainter(
                       opacity: widget.overlayOpacity,
-                      rect: position.getRect(),
+                      rect: getSpotlightRect(),
                       shapeBorder: widget.shapeBorder,
                       color: widget.overlayColor),
                 ),

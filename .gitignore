@@ -58,3 +58,7 @@ build/
 instapk.log*
 ios/Frameworks/
 ios/Runner.xcworkspace/xcshareddata/
+
+#Vim
+*.swo
+*.swp

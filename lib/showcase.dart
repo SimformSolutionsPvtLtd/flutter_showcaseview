@@ -26,6 +26,7 @@ class Showcase extends StatefulWidget {
   final VoidCallback onToolTipClick;
   final VoidCallback onTargetClick;
   final bool disposeOnTap;
+  final bool disableAnimation;
 
   const Showcase(
       {@required this.key,
@@ -42,7 +43,8 @@ class Showcase extends StatefulWidget {
       this.showArrow = true,
       this.onTargetClick,
       this.disposeOnTap,
-      this.animationDuration = const Duration(milliseconds: 2000)})
+      this.animationDuration = const Duration(milliseconds: 2000),
+      this.disableAnimation = false})
       : height = null,
         width = null,
         container = null,
@@ -55,10 +57,10 @@ class Showcase extends StatefulWidget {
                 : (disposeOnTap == null ? false : true),
             "disposeOnTap is required if you're using onTargetClick"),
         assert(
-        disposeOnTap == null
-            ? true
-            : (onTargetClick == null ? false : true),
-        "onTargetClick is required if you're using disposeOnTap"),
+            disposeOnTap == null
+                ? true
+                : (onTargetClick == null ? false : true),
+            "onTargetClick is required if you're using disposeOnTap"),
         assert(key != null ||
             child != null ||
             title != null ||
@@ -90,7 +92,8 @@ class Showcase extends StatefulWidget {
       this.textColor = Colors.black,
       this.onTargetClick,
       this.disposeOnTap,
-      this.animationDuration = const Duration(milliseconds: 2000)})
+      this.animationDuration = const Duration(milliseconds: 2000),
+      this.disableAnimation = false})
       : this.showArrow = false,
         this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -131,7 +134,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
           _slideAnimationController.reverse();
         }
         if (_slideAnimationController.isDismissed) {
-          _slideAnimationController.forward();
+          if (!widget.disableAnimation) {
+            _slideAnimationController.forward();
+          }
         }
       });
 
@@ -165,7 +170,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     });
 
     if (activeStep == widget.key) {
-      _slideAnimationController.forward();
+      if (!widget.disableAnimation) {
+        _slideAnimationController.forward();
+      }
     }
   }
 
@@ -182,17 +189,19 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
   _nextIfAny() {
     ShowCaseWidget.of(context).completed(widget.key);
-    _slideAnimationController.forward();
+    if (!widget.disableAnimation) {
+      _slideAnimationController.forward();
+    }
   }
 
   _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
       return widget.onTargetClick == null
           ? () {
-        ShowCaseWidget.of(context).dismiss();
+              ShowCaseWidget.of(context).dismiss();
             }
           : () {
-        ShowCaseWidget.of(context).dismiss();
+              ShowCaseWidget.of(context).dismiss();
               widget.onTargetClick();
             };
     } else {
@@ -204,10 +213,10 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     if (widget.disposeOnTap == true) {
       return widget.onToolTipClick == null
           ? () {
-        ShowCaseWidget.of(context).dismiss();
+              ShowCaseWidget.of(context).dismiss();
             }
           : () {
-        ShowCaseWidget.of(context).dismiss();
+              ShowCaseWidget.of(context).dismiss();
               widget.onToolTipClick();
             };
     } else {

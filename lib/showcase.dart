@@ -43,7 +43,7 @@ class Showcase extends StatefulWidget {
       this.showArrow = true,
       this.onTargetClick,
       this.disposeOnTap,
-      this.spotlightPadding = EdgeInsets.all(0.0),
+      this.spotlightPadding = const EdgeInsets.all(0.0),
       this.animationDuration = const Duration(milliseconds: 2000)})
       : height = null,
         width = null,

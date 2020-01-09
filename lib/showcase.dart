@@ -1,7 +1,34 @@
+/*
+ * Copyright © 2020, Simform Solutions
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:showcaseview/custom_paint.dart';
+import 'package:showcaseview/showcaseview.dart';
+
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'tooltip_widget.dart';
@@ -28,39 +55,38 @@ class Showcase extends StatefulWidget {
   final bool disposeOnTap;
   final bool disableAnimation;
 
-  const Showcase(
-      {@required this.key,
-      @required this.child,
-      this.title,
-      @required this.description,
-      this.shapeBorder,
-      this.overlayColor = Colors.black,
-      this.overlayOpacity = 0.75,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.showcaseBackgroundColor = Colors.white,
-      this.textColor = Colors.black,
-      this.showArrow = true,
-      this.onTargetClick,
-      this.disposeOnTap,
-      this.animationDuration = const Duration(milliseconds: 2000),
-      this.disableAnimation = false})
+  const Showcase({@required this.key,
+    @required this.child,
+    this.title,
+    @required this.description,
+    this.shapeBorder,
+    this.overlayColor = Colors.black,
+    this.overlayOpacity = 0.75,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.showArrow = true,
+    this.onTargetClick,
+    this.disposeOnTap,
+    this.animationDuration = const Duration(milliseconds: 2000),
+    this.disableAnimation = false})
       : height = null,
         width = null,
         container = null,
         this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
+        "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(
-            onTargetClick == null
-                ? true
-                : (disposeOnTap == null ? false : true),
-            "disposeOnTap is required if you're using onTargetClick"),
+        onTargetClick == null
+            ? true
+            : (disposeOnTap == null ? false : true),
+        "disposeOnTap is required if you're using onTargetClick"),
         assert(
-            disposeOnTap == null
-                ? true
-                : (onTargetClick == null ? false : true),
-            "onTargetClick is required if you're using disposeOnTap"),
+        disposeOnTap == null
+            ? true
+            : (onTargetClick == null ? false : true),
+        "onTargetClick is required if you're using disposeOnTap"),
         assert(key != null ||
             child != null ||
             title != null ||
@@ -75,29 +101,28 @@ class Showcase extends StatefulWidget {
             shapeBorder != null ||
             animationDuration != null);
 
-  const Showcase.withWidget(
-      {this.key,
-      @required this.child,
-      @required this.container,
-      @required this.height,
-      @required this.width,
-      this.title,
-      this.description,
-      this.shapeBorder,
-      this.overlayColor = Colors.black,
-      this.overlayOpacity = 0.75,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.showcaseBackgroundColor = Colors.white,
-      this.textColor = Colors.black,
-      this.onTargetClick,
-      this.disposeOnTap,
-      this.animationDuration = const Duration(milliseconds: 2000),
-      this.disableAnimation = false})
+  const Showcase.withWidget({this.key,
+    @required this.child,
+    @required this.container,
+    @required this.height,
+    @required this.width,
+    this.title,
+    this.description,
+    this.shapeBorder,
+    this.overlayColor = Colors.black,
+    this.overlayOpacity = 0.75,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.onTargetClick,
+    this.disposeOnTap,
+    this.animationDuration = const Duration(milliseconds: 2000),
+    this.disableAnimation = false})
       : this.showArrow = false,
         this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
+        "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(key != null ||
             child != null ||
             title != null ||
@@ -130,15 +155,15 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       duration: widget.animationDuration,
       vsync: this,
     )..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.completed) {
-          _slideAnimationController.reverse();
+      if (status == AnimationStatus.completed) {
+        _slideAnimationController.reverse();
+      }
+      if (_slideAnimationController.isDismissed) {
+        if (!widget.disableAnimation) {
+          _slideAnimationController.forward();
         }
-        if (_slideAnimationController.isDismissed) {
-          if (!widget.disableAnimation) {
-            _slideAnimationController.forward();
-          }
-        }
-      });
+      }
+    });
 
     _slideAnimation = CurvedAnimation(
       parent: _slideAnimationController,
@@ -198,12 +223,12 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     if (widget.disposeOnTap == true) {
       return widget.onTargetClick == null
           ? () {
-              ShowCaseWidget.of(context).dismiss();
-            }
+        ShowCaseWidget.of(context).dismiss();
+      }
           : () {
-              ShowCaseWidget.of(context).dismiss();
-              widget.onTargetClick();
-            };
+        ShowCaseWidget.of(context).dismiss();
+        widget.onTargetClick();
+      };
     } else {
       return widget.onTargetClick ?? _nextIfAny;
     }
@@ -213,23 +238,21 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     if (widget.disposeOnTap == true) {
       return widget.onToolTipClick == null
           ? () {
-              ShowCaseWidget.of(context).dismiss();
-            }
+        ShowCaseWidget.of(context).dismiss();
+      }
           : () {
-              ShowCaseWidget.of(context).dismiss();
-              widget.onToolTipClick();
-            };
+        ShowCaseWidget.of(context).dismiss();
+        widget.onToolTipClick();
+      };
     } else {
       return widget.onToolTipClick ?? () {};
     }
   }
 
-  buildOverlayOnTarget(
-    Offset offset,
-    Size size,
-    Rect rectBound,
-    Size screenSize,
-  ) =>
+  buildOverlayOnTarget(Offset offset,
+      Size size,
+      Rect rectBound,
+      Size screenSize,) =>
       Visibility(
         visible: _showShowCase,
         maintainAnimation: true,

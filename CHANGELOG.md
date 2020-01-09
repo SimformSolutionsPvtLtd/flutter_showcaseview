@@ -1,3 +1,8 @@
+## [0.1.5] - January 09, 2020
+
+* Refactor usage of deprecated methods
+* Add support for `disableAnimation` option.
+
 ## [0.1.4] - Added onFinish method [#17](https://github.com/simformsolutions/flutter_showcaseview/issues/17).
 
 ## [0.1.3] - Added feature

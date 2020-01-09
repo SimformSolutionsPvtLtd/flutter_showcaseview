@@ -1,6 +1,6 @@
 name: showcaseview
 description: A Flutter package to Showcase/Highlight widgets step by step.
-version: 0.1.4
+version: 0.1.5
 author: Simform solutions <developer@simform.com>
 homepage: https://github.com/simformsolutions/flutter_showcaseview
 issue_tracker: https://github.com/simformsolutions/flutter_showcaseview/issues

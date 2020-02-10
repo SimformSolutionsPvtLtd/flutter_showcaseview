@@ -1,3 +1,6 @@
+
+[![pub](https://img.shields.io/badge/pub-0.1.5-red.svg)](https://pub.dev/packages/showcaseview)
+
 # ShowCaseView
 
 A Flutter package allows you to Showcase/Highlight your widgets step by step.

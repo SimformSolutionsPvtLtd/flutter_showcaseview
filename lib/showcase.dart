@@ -54,8 +54,10 @@ class Showcase extends StatefulWidget {
   final VoidCallback onTargetClick;
   final bool disposeOnTap;
   final bool disableAnimation;
+  final Widget Function(String, GetPosition) customTooltipBuilder;
 
-  const Showcase({@required this.key,
+  const Showcase({
+    @required this.key,
     @required this.child,
     this.title,
     @required this.description,
@@ -70,7 +72,9 @@ class Showcase extends StatefulWidget {
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false})
+    this.disableAnimation = false,
+    this.customTooltipBuilder,
+  })
       : height = null,
         width = null,
         container = null,
@@ -101,7 +105,8 @@ class Showcase extends StatefulWidget {
             shapeBorder != null ||
             animationDuration != null);
 
-  const Showcase.withWidget({this.key,
+  const Showcase.withWidget({
+    this.key,
     @required this.child,
     @required this.container,
     @required this.height,
@@ -118,9 +123,11 @@ class Showcase extends StatefulWidget {
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false})
+    this.disableAnimation = false,
+  })
       : this.showArrow = false,
         this.onToolTipClick = null,
+        this.customTooltipBuilder = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
         "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(key != null ||
@@ -154,16 +161,17 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     _slideAnimationController = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
-    )..addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.completed) {
-        _slideAnimationController.reverse();
-      }
-      if (_slideAnimationController.isDismissed) {
-        if (!widget.disableAnimation) {
-          _slideAnimationController.forward();
+    )
+      ..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.completed) {
+          _slideAnimationController.reverse();
         }
-      }
-    });
+        if (_slideAnimationController.isDismissed) {
+          if (!widget.disableAnimation) {
+            _slideAnimationController.forward();
+          }
+        }
+      });
 
     _slideAnimation = CurvedAnimation(
       parent: _slideAnimationController,
@@ -203,7 +211,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return AnchoredOverlay(
       overlayBuilder: (BuildContext context, Rect rectBound, Offset offset) =>
           buildOverlayOnTarget(offset, rectBound.size, rectBound, size),
@@ -262,8 +272,14 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             GestureDetector(
               onTap: _nextIfAny,
               child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height,
                 child: CustomPaint(
                   painter: ShapePainter(
                       opacity: widget.overlayOpacity,
@@ -279,7 +295,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               onTap: _getOnTargetTap(),
               shapeBorder: widget.shapeBorder,
             ),
-            ToolTipWidget(
+            widget.customTooltipBuilder == null
+                ? ToolTipWidget(
               position: position,
               offset: offset,
               screenSize: screenSize,
@@ -295,7 +312,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               contentHeight: widget.height,
               contentWidth: widget.width,
               onTooltipTap: _getOnTooltipTap(),
-            ),
+            )
+                : widget.customTooltipBuilder(widget.description, position),
           ],
         ),
       );

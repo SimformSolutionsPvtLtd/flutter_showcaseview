@@ -55,6 +55,7 @@ class Showcase extends StatefulWidget {
   final bool disposeOnTap;
   final bool disableAnimation;
   final Widget Function(String, GetPosition) customTooltipBuilder;
+  final Function(GlobalKey) onFinish;
 
   const Showcase({
     @required this.key,
@@ -74,6 +75,7 @@ class Showcase extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 2000),
     this.disableAnimation = false,
     this.customTooltipBuilder,
+    this.onFinish,
   })
       : height = null,
         width = null,
@@ -124,6 +126,7 @@ class Showcase extends StatefulWidget {
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
     this.disableAnimation = false,
+    this.onFinish,
   })
       : this.showArrow = false,
         this.onToolTipClick = null,
@@ -224,6 +227,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
   _nextIfAny() {
     ShowCaseWidget.of(context).completed(widget.key);
+    if (widget.onFinish != null) {
+      widget.onFinish(widget.key);
+    }
     if (!widget.disableAnimation) {
       _slideAnimationController.forward();
     }

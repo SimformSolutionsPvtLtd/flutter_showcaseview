@@ -28,7 +28,7 @@ import 'package:flutter/material.dart';
 
 class ShowCaseWidget extends StatefulWidget {
   final Builder builder;
-  final VoidCallback onFinish;
+  final Function(List<GlobalKey>) onFinish;
 
   const ShowCaseWidget({@required this.builder, this.onFinish});
 
@@ -69,10 +69,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
         ++activeWidgetId;
 
         if (activeWidgetId >= ids.length) {
-          _cleanupAfterSteps();
           if (widget.onFinish != null) {
-            widget.onFinish();
+            widget.onFinish(ids);
           }
+          _cleanupAfterSteps();
         }
       });
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
+
 import 'detailscreen.dart';
 
 void main() => runApp(MyApp());
@@ -14,9 +15,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: ShowCaseWidget(
-          builder: Builder(
-            builder: (context) => MailPage()
-          ),
+          builder: Builder(builder: (context) => MailPage()),
         ),
       ),
     );
@@ -34,13 +33,15 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _three = GlobalKey();
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
+  GlobalKey _six = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]));
+        ShowCaseWidget.of(context)
+            .startShowCase([_one, _two, _three, _four, _five, _six]));
   }
 
   @override
@@ -152,7 +153,8 @@ class _MailPageState extends State<MailPage> {
                       ),
                     ).then((_) {
                       setState(() {
-                        ShowCaseWidget.of(context).startShowCase([_four, _five]);
+                        ShowCaseWidget.of(context)
+                            .startShowCase([_four, _five]);
                       });
                     });
                   },
@@ -283,6 +285,7 @@ class _MailPageState extends State<MailPage> {
                   msg: 'We have launched Flutter 1.5',
                   date: '20 May',
                   isUnread: true),
+              showcaseKey: _six,
             ),
             MailTile(
               Mail(
@@ -313,7 +316,8 @@ class _MailPageState extends State<MailPage> {
           backgroundColor: Colors.white,
           onPressed: () {
             setState(() {
-              ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]);
+              ShowCaseWidget.of(context)
+                  .startShowCase([_one, _two, _three, _four, _five]);
             });
           },
           child: Icon(
@@ -344,8 +348,9 @@ class Mail {
 
 class MailTile extends StatelessWidget {
   final Mail mail;
+  final Key showcaseKey;
 
-  MailTile(this.mail);
+  MailTile(this.mail, {this.showcaseKey});
 
   @override
   Widget build(BuildContext context) {
@@ -412,10 +417,60 @@ class MailTile extends StatelessWidget {
                       mail.isUnread ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
-              Icon(
-                Icons.star_border,
-                color: Colors.grey,
-              ),
+              showcaseKey == null
+                  ? Icon(
+                      Icons.star_border,
+                      color: Colors.grey,
+                    )
+                  : Showcase(
+                      key: showcaseKey,
+                      description: 'custom tooltip',
+                      customTooltipBuilder: (description, position) {
+                        print(
+                            'custom ${position.getRect()} ${position.getLeft()}');
+                        return Material(
+                          type: MaterialType.transparency,
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                    colors: [Colors.orange, Colors.orangeAccent],
+                                  ), borderRadius: BorderRadius.circular(8)),
+                                  child: Center(
+                                      child: Text(
+                                    description,
+                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                  )),
+                                ),
+                                left: position.getLeft() - 200,
+                                top: position.getTop() -20 ,
+                                width: 200,
+                                height: 64,
+                              ),
+                              Align(
+                                child: MaterialButton(
+                                  onPressed: () {
+                                    ShowCaseWidget.of(context).completed(showcaseKey);
+                                  },
+                                  child: Text('OK, Let\'s go'),
+                                  textColor: Colors.white,
+                                  color: Colors.deepOrangeAccent,
+
+
+                                ),
+                                alignment: Alignment(0, 0),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.star_border,
+                        color: Colors.grey,
+                      ),
+                    ),
             ],
           ),
         ],

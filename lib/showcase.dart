@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'dart:async';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:showcaseview/custom_paint.dart';
 import 'get_position.dart';
@@ -42,7 +43,7 @@ class Showcase extends StatefulWidget {
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
+        "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(key != null ||
             child != null ||
             title != null ||
@@ -55,7 +56,7 @@ class Showcase extends StatefulWidget {
             showcaseBackgroundColor != null ||
             textColor != null ||
             shapeBorder != null ||
-            animationDuration != null);
+            animationDuration != null,);
 
   const Showcase.withWidget({
     this.key,
@@ -75,7 +76,7 @@ class Showcase extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 2000),
   })  : this.showArrow = false,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
+        "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(key != null ||
             child != null ||
             title != null ||
@@ -87,7 +88,7 @@ class Showcase extends StatefulWidget {
             showcaseBackgroundColor != null ||
             textColor != null ||
             shapeBorder != null ||
-            animationDuration != null);
+            animationDuration != null,);
 
   @override
   _ShowcaseState createState() => _ShowcaseState();
@@ -97,7 +98,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   bool _showShowCase = false;
   Animation<double> _slideAnimation;
   AnimationController _slideAnimationController;
-
+  Timer timer;
   GetPosition position;
 
   @override
@@ -108,13 +109,13 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       duration: widget.animationDuration,
       vsync: this,
     )..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.completed) {
-          _slideAnimationController.reverse();
-        }
-        if (_slideAnimationController.isDismissed) {
-          _slideAnimationController.forward();
-        }
-      });
+      if (status == AnimationStatus.completed) {
+        _slideAnimationController.reverse();
+      }
+      if (_slideAnimationController.isDismissed) {
+        _slideAnimationController.forward();
+      }
+    });
 
     _slideAnimation = CurvedAnimation(
       parent: _slideAnimationController,
@@ -147,6 +148,11 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
     if (activeStep == widget.key) {
       _slideAnimationController.forward();
+      if (ShowCaseWidget.autoPlayStatus(context)) {
+        timer =  Timer(Duration(seconds: (ShowCaseWidget.autoPlayDuration(context) as Duration).inSeconds), () {
+          _nextIfAny();
+        });
+      }
     }
   }
 
@@ -162,16 +168,20 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   }
 
   _nextIfAny() {
+    if (timer != null && timer.isActive) {
+      if (ShowCaseWidget.autoPlayLock(context)) { return; }
+      timer.cancel();
+    } else if (timer != null && !timer.isActive) { timer = null;}
     ShowCaseWidget.completed(context, widget.key);
     _slideAnimationController.forward();
   }
 
   buildOverlayOnTarget(
-    Offset offset,
-    Size size,
-    Rect rectBound,
-    Size screenSize,
-  ) =>
+      Offset offset,
+      Size size,
+      Rect rectBound,
+      Size screenSize,
+      ) =>
       Visibility(
         visible: _showShowCase,
         maintainAnimation: true,

@@ -11,7 +11,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ShowCaseWidget(child: MailPage()),
+      home: ShowCaseWidget(
+        child: MailPage(),
+        autoPlay: true,
+        autoPlayLockEnable: true,
+      ),
     );
   }
 }
@@ -342,7 +346,7 @@ class MailTile extends StatelessWidget {
                       mail.sender,
                       style: TextStyle(
                         fontWeight:
-                            mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                        mail.isUnread ? FontWeight.bold : FontWeight.normal,
                         fontSize: 17,
                       ),
                     ),
@@ -350,7 +354,7 @@ class MailTile extends StatelessWidget {
                       mail.sub,
                       style: TextStyle(
                         fontWeight:
-                            mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                        mail.isUnread ? FontWeight.bold : FontWeight.normal,
                         fontSize: 16,
                       ),
                     ),
@@ -358,7 +362,7 @@ class MailTile extends StatelessWidget {
                       mail.msg,
                       style: TextStyle(
                         fontWeight:
-                            mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                        mail.isUnread ? FontWeight.bold : FontWeight.normal,
                         fontSize: 15,
                       ),
                     ),
@@ -373,7 +377,7 @@ class MailTile extends StatelessWidget {
                 mail.date,
                 style: TextStyle(
                   fontWeight:
-                      mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                  mail.isUnread ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
               Icon(

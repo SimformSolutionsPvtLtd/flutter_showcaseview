@@ -31,9 +31,19 @@ class ShowCaseWidget extends StatefulWidget {
   final VoidCallback onFinish;
   final Function(int, GlobalKey) onStart;
   final Function(int, GlobalKey) onComplete;
+  final bool autoPlay;
+  final Duration autoPlayDelay;
+  final bool autoPlayLockEnable;
 
-  const ShowCaseWidget(
-      {@required this.builder, this.onFinish, this.onStart, this.onComplete});
+  const ShowCaseWidget({
+    @required this.builder,
+    this.onFinish,
+    this.onStart,
+    this.onComplete,
+    this.autoPlay = false,
+    this.autoPlayDelay = const Duration(milliseconds: 2000),
+    this.autoPlayLockEnable = false,
+  });
 
   static activeTargetWidget(BuildContext context) {
     return context
@@ -58,6 +68,18 @@ class ShowCaseWidget extends StatefulWidget {
 class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey> ids;
   int activeWidgetId;
+  bool autoPlay;
+  Duration autoPlayDelay;
+  bool autoPlayLockEnable;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this.autoPlayDelay = widget.autoPlayDelay;
+    this.autoPlay = widget.autoPlay;
+    this.autoPlayLockEnable = widget.autoPlayLockEnable;
+  }
 
   void startShowCase(List<GlobalKey> widgetIds) {
     setState(() {

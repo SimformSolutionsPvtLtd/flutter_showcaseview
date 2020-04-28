@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:showcaseview/get_position.dart';
 
@@ -82,10 +84,11 @@ class ToolTipWidget extends StatelessWidget {
   double _getTooltipWidth() {
     double titleLength = title == null ? 0 : (title.length * 10.0);
     double descriptionLength = (description.length * 7.0);
-    if (titleLength > descriptionLength) {
-      return titleLength + 10;
+    double maxLength = max(titleLength, descriptionLength);
+    if (maxLength >= screenSize.width) {
+      return screenSize.width - 30;
     } else {
-      return descriptionLength + 10;
+      return maxLength + 10;
     }
   }
 
@@ -186,7 +189,7 @@ class ToolTipWidget extends StatelessWidget {
                         onTap: onTooltipTap,
                         child: Container(
                           width: _getTooltipWidth(),
-                          padding: EdgeInsets.symmetric(vertical: 8),
+                          padding: EdgeInsets.all(8.0),
                           color: tooltipColor,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,

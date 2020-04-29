@@ -28,8 +28,13 @@ import 'package:flutter/material.dart';
 
 class GetPosition {
   final GlobalKey key;
+  final EdgeInsetsGeometry padding;
 
-  GetPosition({this.key});
+  GetPosition({this.key, this.padding = const EdgeInsets.all(0.0)});
+
+  EdgeInsets get resolvedPadding {
+    return padding.resolve(Directionality.of(key.currentContext));
+  }
 
   Rect getRect() {
     RenderBox box = key.currentContext.findRenderObject();
@@ -39,10 +44,10 @@ class GetPosition {
     box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
 
     Rect rect = Rect.fromLTRB(
-      topLeft.dx,
-      topLeft.dy,
-      bottomRight.dx,
-      bottomRight.dy,
+      topLeft.dx - resolvedPadding.left,
+      topLeft.dy - resolvedPadding.top,
+      bottomRight.dx + resolvedPadding.right,
+      bottomRight.dy + resolvedPadding.bottom,
     );
     return rect;
   }
@@ -52,21 +57,21 @@ class GetPosition {
     RenderBox box = key.currentContext.findRenderObject();
     final bottomRight =
     box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-    return bottomRight.dy;
+    return bottomRight.dy + resolvedPadding.bottom;
   }
 
   ///Get the top position of the widget
   double getTop() {
     RenderBox box = key.currentContext.findRenderObject();
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-    return topLeft.dy;
+    return topLeft.dy - resolvedPadding.top;
   }
 
   ///Get the left position of the widget
   double getLeft() {
     RenderBox box = key.currentContext.findRenderObject();
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-    return topLeft.dx;
+    return topLeft.dx - resolvedPadding.left;
   }
 
   ///Get the right position of the widget
@@ -74,7 +79,7 @@ class GetPosition {
     RenderBox box = key.currentContext.findRenderObject();
     final bottomRight =
     box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-    return bottomRight.dx;
+    return bottomRight.dx + resolvedPadding.right;
   }
 
   double getHeight() {

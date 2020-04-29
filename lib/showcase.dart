@@ -54,6 +54,7 @@ class Showcase extends StatefulWidget {
   final VoidCallback onTargetClick;
   final bool disposeOnTap;
   final bool disableAnimation;
+  final EdgeInsetsGeometry spotlightPadding;
 
   const Showcase({@required this.key,
     @required this.child,
@@ -70,7 +71,8 @@ class Showcase extends StatefulWidget {
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false})
+    this.disableAnimation = false,
+    this.spotlightPadding = const EdgeInsets.all(0.0)})
       : height = null,
         width = null,
         container = null,
@@ -118,7 +120,8 @@ class Showcase extends StatefulWidget {
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false})
+    this.disableAnimation = false,
+    this.spotlightPadding = const EdgeInsets.all(0.0)})
       : this.showArrow = false,
         this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -170,7 +173,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       curve: Curves.easeInOut,
     );
 
-    position = GetPosition(key: widget.key);
+    position = GetPosition(key: widget.key, padding: widget.spotlightPadding);
   }
 
   @override

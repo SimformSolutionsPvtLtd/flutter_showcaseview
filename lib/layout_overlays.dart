@@ -128,13 +128,13 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   @override
   void didUpdateWidget(OverlayBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
+    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay(oldWidget));
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
+    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay(null));
   }
 
   @override
@@ -162,8 +162,8 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   }
 
   void addToOverlay(OverlayEntry overlayEntry) async {
-    Overlay.of(context).insert(overlayEntry);
-    final overlay = Overlay.of(context);
+    final overlay = Navigator.of(context, rootNavigator:true).overlay;
+    overlay.insert(overlayEntry);
     if (overlayEntry == null)
       WidgetsBinding.instance
           .addPostFrameCallback((_) => overlay.insert(overlayEntry));
@@ -176,7 +176,15 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
     }
   }
 
-  void syncWidgetAndOverlay() {
+  void syncWidgetAndOverlay(OverlayBuilder oldWidget) {
+    if (oldWidget != null &&
+        oldWidget.overlayBuilder != widget.overlayBuilder &&
+        widget.showOverlay) {
+      // remove current overlay first
+      hideOverlay();
+      // show overlay will create the new overlay
+      showOverlay();
+    }
     if (isShowingOverlay() && !widget.showOverlay) {
       hideOverlay();
     } else if (!isShowingOverlay() && widget.showOverlay) {

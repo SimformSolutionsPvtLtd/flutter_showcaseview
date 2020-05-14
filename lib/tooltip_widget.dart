@@ -205,6 +205,7 @@ class ToolTipWidget extends StatelessWidget {
                                     title != null
                                         ? Text(
                                             title,
+                                            softWrap: true,
                                             style: titleTextStyle ??
                                                 Theme.of(context)
                                                     .textTheme
@@ -215,6 +216,7 @@ class ToolTipWidget extends StatelessWidget {
                                         : Container(),
                                     Text(
                                       description,
+                                      softWrap: true,
                                       style: descTextStyle ??
                                           Theme.of(context)
                                               .textTheme

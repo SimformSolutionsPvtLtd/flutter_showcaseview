@@ -82,7 +82,12 @@ class ToolTipWidget extends StatelessWidget {
   double _getTooltipWidth() {
     double titleLength = title == null ? 0 : (title.length * 10.0);
     double descriptionLength = (description.length * 7.0);
-    if (titleLength > descriptionLength) {
+    double screenWidth = (screenSize.width.toDouble() * 0.9);
+    if (titleLength > screenWidth) {
+      return screenWidth;
+    } else if (descriptionLength > screenWidth) {
+      return screenWidth;
+    } else if (titleLength > descriptionLength) {
       return titleLength + 10;
     } else {
       return descriptionLength + 10;
@@ -179,7 +184,7 @@ class ToolTipWidget extends StatelessWidget {
                   color: Colors.transparent,
                   child: Container(
                     padding:
-                    EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
+                        EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: GestureDetector(
@@ -199,14 +204,14 @@ class ToolTipWidget extends StatelessWidget {
                                   children: <Widget>[
                                     title != null
                                         ? Text(
-                                      title,
-                                      style: titleTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .title
-                                              .merge(TextStyle(
-                                              color: textColor)),
-                                    )
+                                            title,
+                                            style: titleTextStyle ??
+                                                Theme.of(context)
+                                                    .textTheme
+                                                    .title
+                                                    .merge(TextStyle(
+                                                        color: textColor)),
+                                          )
                                         : Container(),
                                     Text(
                                       description,
@@ -214,7 +219,8 @@ class ToolTipWidget extends StatelessWidget {
                                           Theme.of(context)
                                               .textTheme
                                               .subtitle
-                                              .merge(TextStyle(color: textColor)),
+                                              .merge(
+                                                  TextStyle(color: textColor)),
                                     ),
                                   ],
                                 ),
@@ -281,15 +287,15 @@ class ToolTipWidget extends StatelessWidget {
           ).animate(animationOffset),
           child: isArrowUp
               ? Icon(
-            Icons.arrow_drop_up,
-            color: tooltipColor,
-            size: 50,
-          )
+                  Icons.arrow_drop_up,
+                  color: tooltipColor,
+                  size: 50,
+                )
               : Icon(
-            Icons.arrow_drop_down,
-            color: tooltipColor,
-            size: 50,
-          ),
+                  Icons.arrow_drop_down,
+                  color: tooltipColor,
+                  size: 50,
+                ),
         ),
       ),
     );

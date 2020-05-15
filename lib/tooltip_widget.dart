@@ -208,9 +208,9 @@ class ToolTipWidget extends StatelessWidget {
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                            CrossAxisAlignment.center,
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                            MainAxisAlignment.end,
                                         children: <Widget>[
                                           CloseButton(
                                             color: Color(0xFFFFDDB70),

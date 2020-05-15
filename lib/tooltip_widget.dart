@@ -205,14 +205,20 @@ class ToolTipWidget extends StatelessWidget {
                                         ? CrossAxisAlignment.start
                                         : CrossAxisAlignment.center,
                                     children: <Widget>[
-                                      Align(
-                                        child: CloseButton(
-                                          color: Color(0xFFFFDDB70),
-                                          onPressed: () =>
-                                              ShowCaseWidget.of(context)
-                                                  .dismiss(),
-                                        ),
-                                        alignment: Alignment.topRight,
+                                      Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          CloseButton(
+                                            color: Color(0xFFFFDDB70),
+                                            onPressed: () =>
+                                                ShowCaseWidget.of(context)
+                                                    .dismiss(),
+                                          ),
+                                        ],
                                       ),
                                       title != null
                                           ? Text(

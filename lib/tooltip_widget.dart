@@ -212,12 +212,10 @@ class ToolTipWidget extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: <Widget>[
-                                          CloseButton(
-                                            color: Color(0xFFFFDDB70),
-                                            onPressed: () =>
-                                                ShowCaseWidget.of(context)
-                                                    .dismiss(),
-                                          ),
+                                          InkWell(
+                                            child: Icon(Icons.close, color: Color(0xFFFFDDB70)),
+                                            onTap: () => ShowCaseWidget.of(context).dismiss(),
+                                          )
                                         ],
                                       ),
                                       title != null

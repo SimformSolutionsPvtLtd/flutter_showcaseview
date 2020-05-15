@@ -197,17 +197,19 @@ class ToolTipWidget extends StatelessWidget {
                             children: <Widget>[
                               Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 4.0, bottom: 4.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 4.0, bottom: 4.0),
                                   child: Column(
                                     crossAxisAlignment: title != null
                                         ? CrossAxisAlignment.start
                                         : CrossAxisAlignment.center,
                                     children: <Widget>[
                                       Align(
-                                        child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: CloseButton(
-                                                color: Color(0xFFFFDDB70))),
+                                        child: CloseButton(
+                                          color: Color(0xFFFFDDB70),
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                        ),
                                         alignment: Alignment.topRight,
                                       ),
                                       title != null

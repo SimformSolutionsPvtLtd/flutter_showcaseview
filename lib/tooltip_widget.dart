@@ -44,6 +44,7 @@ class ToolTipWidget extends StatelessWidget {
   final bool showArrow;
   final double contentHeight;
   final double contentWidth;
+  final BuildContext showCaseContext;
   static bool isArrowUp;
   final VoidCallback onTooltipTap;
 
@@ -63,6 +64,7 @@ class ToolTipWidget extends StatelessWidget {
     this.contentHeight,
     this.contentWidth,
     this.onTooltipTap,
+    this.showCaseContext,
   });
 
   bool isCloseToTopOrBottom(Offset position) {
@@ -188,7 +190,7 @@ class ToolTipWidget extends StatelessWidget {
                     padding:
                         EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(4),
                       child: GestureDetector(
                         onTap: onTooltipTap,
                         child: Container(
@@ -199,7 +201,7 @@ class ToolTipWidget extends StatelessWidget {
                             children: <Widget>[
                               Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Column(
                                     crossAxisAlignment: title != null
                                         ? CrossAxisAlignment.start
@@ -213,8 +215,12 @@ class ToolTipWidget extends StatelessWidget {
                                             MainAxisAlignment.end,
                                         children: <Widget>[
                                           InkWell(
-                                            child: Icon(Icons.close, color: Color(0xFFFFDDB70)),
-                                            onTap: () => ShowCaseWidget.of(context).dismiss(),
+                                            child: Icon(Icons.close,
+                                                color: Color(0xFFFFDDB70)),
+                                            onTap: () {
+                                              ShowCaseWidget.of(showCaseContext)
+                                                  .dismiss();
+                                            },
                                           )
                                         ],
                                       ),

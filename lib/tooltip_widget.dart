@@ -197,35 +197,44 @@ class ToolTipWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Container(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Column(
-                                  crossAxisAlignment: title != null
-                                      ? CrossAxisAlignment.start
-                                      : CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    title != null
-                                        ? Text(
-                                            title,
-                                            softWrap: true,
-                                            style: titleTextStyle ??
-                                                Theme.of(context)
-                                                    .textTheme
-                                                    .title
-                                                    .merge(TextStyle(
-                                                        color: textColor)),
-                                          )
-                                        : Container(),
-                                    Text(
-                                      description,
-                                      softWrap: true,
-                                      style: descTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .subtitle
-                                              .merge(
-                                                  TextStyle(color: textColor)),
-                                    ),
-                                  ],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Column(
+                                    crossAxisAlignment: title != null
+                                        ? CrossAxisAlignment.start
+                                        : CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Align(
+                                        child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: CloseButton(
+                                                color: Color(0xFFFFDDB70))),
+                                        alignment: Alignment.topRight,
+                                      ),
+                                      title != null
+                                          ? Text(
+                                              title,
+                                              softWrap: true,
+                                              style: titleTextStyle ??
+                                                  Theme.of(context)
+                                                      .textTheme
+                                                      .title
+                                                      .merge(TextStyle(
+                                                          color: textColor)),
+                                            )
+                                          : Container(),
+                                      Text(
+                                        description,
+                                        softWrap: true,
+                                        style: descTextStyle ??
+                                            Theme.of(context)
+                                                .textTheme
+                                                .subtitle
+                                                .merge(TextStyle(
+                                                    color: textColor)),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               )
                             ],

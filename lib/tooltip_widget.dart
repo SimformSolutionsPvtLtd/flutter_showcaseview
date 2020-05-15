@@ -197,8 +197,7 @@ class ToolTipWidget extends StatelessWidget {
                             children: <Widget>[
                               Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 4.0, bottom: 4.0),
+                                  padding: const EdgeInsets.all(4.0),
                                   child: Column(
                                     crossAxisAlignment: title != null
                                         ? CrossAxisAlignment.start

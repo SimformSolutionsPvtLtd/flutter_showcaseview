@@ -27,6 +27,8 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/get_position.dart';
 
+import 'showcase_widget.dart';
+
 class ToolTipWidget extends StatelessWidget {
   final GetPosition position;
   final Offset offset;
@@ -207,7 +209,8 @@ class ToolTipWidget extends StatelessWidget {
                                         child: CloseButton(
                                           color: Color(0xFFFFDDB70),
                                           onPressed: () =>
-                                              Navigator.pop(context),
+                                              ShowCaseWidget.of(context)
+                                                  .dismiss(),
                                         ),
                                         alignment: Alignment.topRight,
                                       ),

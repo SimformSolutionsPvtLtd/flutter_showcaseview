@@ -191,14 +191,13 @@ class ToolTipWidget extends StatelessWidget {
                         onTap: onTooltipTap,
                         child: Container(
                           width: _getTooltipWidth(),
-                          padding: EdgeInsets.symmetric(vertical: 8),
                           color: tooltipColor,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
+                                  padding: const EdgeInsets.only(left: 4.0, bottom: 4.0),
                                   child: Column(
                                     crossAxisAlignment: title != null
                                         ? CrossAxisAlignment.start

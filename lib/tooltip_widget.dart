@@ -76,17 +76,20 @@ class ToolTipWidget extends StatelessWidget {
   }
 
   String findPositionForContent(Offset position) {
-    if (isCloseToTopOrBottom(position)) {
-      return 'ABOVE';
-    } else {
-      return 'BELOW';
-    }
+    return "ABOVE";
+    // if (isCloseToTopOrBottom(position)) {
+    //   return 'ABOVE';
+    // } else {
+    //   return 'BELOW';
+    // }
   }
 
   double _getTooltipWidth() {
     double titleLength = title == null ? 0 : (title.length * 10.0);
     double descriptionLength = (description.length * 7.0);
     double screenWidth = (screenSize.width.toDouble() * 0.9);
+    return screenWidth;
+
     if (titleLength > screenWidth) {
       return screenWidth;
     } else if (descriptionLength > screenWidth) {
@@ -162,7 +165,7 @@ class ToolTipWidget extends StatelessWidget {
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
 
     double paddingTop = isArrowUp ? 22 : 0;
-    double paddingBottom = isArrowUp ? 0 : 27;
+    double paddingBottom = isArrowUp ? 0 : 18;
 
     if (!showArrow) {
       paddingTop = 10;

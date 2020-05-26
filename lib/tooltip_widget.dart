@@ -87,18 +87,19 @@ class ToolTipWidget extends StatelessWidget {
   double _getTooltipWidth() {
     double titleLength = title == null ? 0 : (title.length * 10.0);
     double descriptionLength = (description.length * 7.0);
-    double screenWidth = (screenSize.width.toDouble() * 0.9);
+    double screenWidth = (screenSize.width.toDouble() * 0.8);
+
     return screenWidth;
 
-    if (titleLength > screenWidth) {
-      return screenWidth;
-    } else if (descriptionLength > screenWidth) {
-      return screenWidth;
-    } else if (titleLength > descriptionLength) {
-      return titleLength + 10;
-    } else {
-      return descriptionLength + 10;
-    }
+    // if (titleLength > screenWidth) {
+    //   return screenWidth;
+    // } else if (descriptionLength > screenWidth) {
+    //   return screenWidth;
+    // } else if (titleLength > descriptionLength) {
+    //   return titleLength + 10;
+    // } else {
+    //   return descriptionLength + 10;
+    // }
   }
 
   bool _isLeft() {
@@ -159,7 +160,7 @@ class ToolTipWidget extends StatelessWidget {
     isArrowUp = contentOffsetMultiplier == 1.0 ? true : false;
 
     final contentY = isArrowUp
-        ? position.getBottom() + (contentOffsetMultiplier * 3)
+        ? position.getBottom() + (contentOffsetMultiplier * 2)
         : position.getTop() + (contentOffsetMultiplier * 3);
 
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);

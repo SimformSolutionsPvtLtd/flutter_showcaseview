@@ -14,9 +14,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: ShowCaseWidget(
-          builder: Builder(
-            builder: (context) => MailPage()
-          ),
+          builder: Builder(builder: (context) => MailPage()),
         ),
       ),
     );
@@ -34,13 +32,15 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _three = GlobalKey();
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
+  GlobalKey _six = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]));
+        ShowCaseWidget.of(context)
+            .startShowCase([_one, _two, _three, _four, _five, _six]));
   }
 
   @override
@@ -152,7 +152,8 @@ class _MailPageState extends State<MailPage> {
                       ),
                     ).then((_) {
                       setState(() {
-                        ShowCaseWidget.of(context).startShowCase([_four, _five]);
+                        ShowCaseWidget.of(context)
+                            .startShowCase([_four, _five]);
                       });
                     });
                   },
@@ -258,13 +259,30 @@ class _MailPageState extends State<MailPage> {
                 ),
               ),
             ),
-            MailTile(
-              Mail(
-                sender: 'Medium',
-                sub: 'Showcase View',
-                msg: 'Check new showcase View',
-                date: '25 May',
-                isUnread: false,
+            Showcase.withWidget(
+              key: _six,
+              height: 50,
+              width: 140,
+              shapeBorder: CircleBorder(),
+              container: Text(
+                'Medium mail contents',
+                style: TextStyle(color: Colors.white),
+              ),
+              containerBuilder: (context, bound, offset, container) {
+                return Positioned(
+                  left: bound.left + 80,
+                  top: bound.top - 30,
+                  child: container,
+                );
+              },
+              child: MailTile(
+                Mail(
+                  sender: 'Medium',
+                  sub: 'Showcase View',
+                  msg: 'Check new showcase View',
+                  date: '25 May',
+                  isUnread: false,
+                ),
               ),
             ),
             MailTile(
@@ -313,7 +331,8 @@ class _MailPageState extends State<MailPage> {
           backgroundColor: Colors.white,
           onPressed: () {
             setState(() {
-              ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]);
+              ShowCaseWidget.of(context)
+                  .startShowCase([_one, _two, _three, _four, _five, _six]);
             });
           },
           child: Icon(

@@ -62,7 +62,7 @@ class ToolTipWidget extends StatelessWidget {
       this.contentHeight,
       this.contentWidth,
       this.onTooltipTap,
-      this.contentPadding = const EdgeInsets.symmetric(vertical: 8)});
+      this.contentPadding});
 
   bool isCloseToTopOrBottom(Offset position) {
     double height = 120;

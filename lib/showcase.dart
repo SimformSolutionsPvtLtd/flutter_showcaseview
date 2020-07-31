@@ -73,7 +73,7 @@ class Showcase extends StatefulWidget {
       this.disposeOnTap,
       this.animationDuration = const Duration(milliseconds: 2000),
       this.disableAnimation = false,
-      this.contentPadding})
+      this.contentPadding = const EdgeInsets.symmetric(vertical: 8)})
       : height = null,
         width = null,
         container = null,
@@ -123,7 +123,7 @@ class Showcase extends StatefulWidget {
       this.disposeOnTap,
       this.animationDuration = const Duration(milliseconds: 2000),
       this.disableAnimation = false,
-      this.contentPadding})
+      this.contentPadding = const EdgeInsets.symmetric(vertical: 8)})
       : this.showArrow = false,
         this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,

@@ -44,24 +44,25 @@ class ToolTipWidget extends StatelessWidget {
   final double contentWidth;
   static bool isArrowUp;
   final VoidCallback onTooltipTap;
+  final EdgeInsets contentPadding;
 
-  ToolTipWidget({
-    this.position,
-    this.offset,
-    this.screenSize,
-    this.title,
-    this.description,
-    this.animationOffset,
-    this.titleTextStyle,
-    this.descTextStyle,
-    this.container,
-    this.tooltipColor,
-    this.textColor,
-    this.showArrow,
-    this.contentHeight,
-    this.contentWidth,
-    this.onTooltipTap,
-  });
+  ToolTipWidget(
+      {this.position,
+      this.offset,
+      this.screenSize,
+      this.title,
+      this.description,
+      this.animationOffset,
+      this.titleTextStyle,
+      this.descTextStyle,
+      this.container,
+      this.tooltipColor,
+      this.textColor,
+      this.showArrow,
+      this.contentHeight,
+      this.contentWidth,
+      this.onTooltipTap,
+      this.contentPadding = const EdgeInsets.symmetric(vertical: 8)});
 
   bool isCloseToTopOrBottom(Offset position) {
     double height = 120;
@@ -179,14 +180,14 @@ class ToolTipWidget extends StatelessWidget {
                   color: Colors.transparent,
                   child: Container(
                     padding:
-                    EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
+                        EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: GestureDetector(
                         onTap: onTooltipTap,
                         child: Container(
                           width: _getTooltipWidth(),
-                          padding: EdgeInsets.symmetric(vertical: 8),
+                          padding: contentPadding,
                           color: tooltipColor,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -199,14 +200,14 @@ class ToolTipWidget extends StatelessWidget {
                                   children: <Widget>[
                                     title != null
                                         ? Text(
-                                      title,
-                                      style: titleTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .title
-                                              .merge(TextStyle(
-                                              color: textColor)),
-                                    )
+                                            title,
+                                            style: titleTextStyle ??
+                                                Theme.of(context)
+                                                    .textTheme
+                                                    .title
+                                                    .merge(TextStyle(
+                                                        color: textColor)),
+                                          )
                                         : Container(),
                                     Text(
                                       description,
@@ -214,7 +215,8 @@ class ToolTipWidget extends StatelessWidget {
                                           Theme.of(context)
                                               .textTheme
                                               .subtitle
-                                              .merge(TextStyle(color: textColor)),
+                                              .merge(
+                                                  TextStyle(color: textColor)),
                                     ),
                                   ],
                                 ),
@@ -281,15 +283,15 @@ class ToolTipWidget extends StatelessWidget {
           ).animate(animationOffset),
           child: isArrowUp
               ? Icon(
-            Icons.arrow_drop_up,
-            color: tooltipColor,
-            size: 50,
-          )
+                  Icons.arrow_drop_up,
+                  color: tooltipColor,
+                  size: 50,
+                )
               : Icon(
-            Icons.arrow_drop_down,
-            color: tooltipColor,
-            size: 50,
-          ),
+                  Icons.arrow_drop_down,
+                  color: tooltipColor,
+                  size: 50,
+                ),
         ),
       ),
     );

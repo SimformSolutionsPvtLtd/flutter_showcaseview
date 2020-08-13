@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'detailscreen.dart';
@@ -14,6 +16,12 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: ShowCaseWidget(
+          onStart: (index, key) => {
+            log('onStart: $index, $key')
+          },
+          onComplete: (index, key) => {
+            log('onComplete: $index, $key')
+          },
           builder: Builder(
             builder: (context) => MailPage()
           ),

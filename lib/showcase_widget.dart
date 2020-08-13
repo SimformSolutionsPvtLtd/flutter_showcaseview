@@ -29,8 +29,8 @@ import 'package:flutter/material.dart';
 class ShowCaseWidget extends StatefulWidget {
   final Builder builder;
   final VoidCallback onFinish;
-  final Function onStart;
-  final Function onComplete;
+  final Function(int, GlobalKey) onStart;
+  final Function(int, GlobalKey) onComplete;
 
   const ShowCaseWidget({@required this.builder, this.onFinish, this.onStart, this.onComplete});
 
@@ -90,15 +90,13 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   }
 
   void _onStart() {
-    if (widget.onStart != null && activeWidgetId < ids.length) {
-      widget.onStart(activeWidgetId, ids[activeWidgetId]);
+    if (activeWidgetId < ids.length) {
+      widget.onStart?.call(activeWidgetId, ids[activeWidgetId]);
     }
   }
 
   void _onComplete() {
-    if (widget.onComplete != null) {
-      widget.onComplete(activeWidgetId, ids[activeWidgetId]);
-    }
+    widget.onComplete?.call(activeWidgetId, ids[activeWidgetId]);
   }
 
   void _cleanupAfterSteps() {

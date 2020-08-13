@@ -16,11 +16,11 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: ShowCaseWidget(
-          onStart: (index, key) => {
-            log('onStart: $index, $key')
+          onStart: (index, key) {
+            log('onStart: $index, $key');
           },
-          onComplete: (index, key) => {
-            log('onComplete: $index, $key')
+          onComplete: (index, key) {
+            log('onComplete: $index, $key');
           },
           builder: Builder(
             builder: (context) => MailPage()

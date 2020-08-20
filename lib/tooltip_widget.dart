@@ -195,10 +195,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: GestureDetector(
-                        onTap: onTooltipTap,
+                        onTap: widget.onTooltipTap,
                         child: Container(
                           width: _getTooltipWidth(),
-                          padding: contentPadding,
+                          padding: widget.contentPadding,
                           color: widget.tooltipColor,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -215,7 +215,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                                     style: widget.titleTextStyle ??
                                         Theme.of(context)
                                             .textTheme
-                                            .title
+                                            .headline6
                                             .merge(TextStyle(
                                             color: widget.textColor)),
                                   )
@@ -225,7 +225,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                                       style: widget.descTextStyle ??
                                           Theme.of(context)
                                               .textTheme
-                                              .subtitle
+                                              .subtitle2
                                               .merge(
                                                   TextStyle(color: widget.textColor)),
                                     ),
@@ -260,7 +260,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                 child: Material(
                   color: Colors.transparent,
                   child: GestureDetector(
-                    onTap: onTooltipTap,
+                    onTap: widget.onTooltipTap,
                     child: Container(
                       padding: EdgeInsets.only(
                         top: paddingTop,

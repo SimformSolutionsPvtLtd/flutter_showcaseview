@@ -1,0 +1,29 @@
+name: Dart CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image:  google/dart:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter packages get
+      - name: Static Analysis
+        run: flutter analyze
+      - name: Code Formatting
+        run: dartfmt --set-exit-if-changed -w --fix .
+      - name: Check Publish Warnings
+        run: pub publish --dry-run

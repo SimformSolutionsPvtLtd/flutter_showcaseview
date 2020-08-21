@@ -1,3 +1,10 @@
+## [0.1.6] - August 21, 2020
+
+- [Feature #63](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/63) method callback after individual showcase start and end
+- [Fix #57](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/57) Position of the Showcase.withWidget is different on iPhone 11
+- [Feature #49](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/49) Add autoplay tooltip on showcase view plugin.
+
+
 ## [0.1.5] - January 09, 2020
 
 * Refactor usage of deprecated methods

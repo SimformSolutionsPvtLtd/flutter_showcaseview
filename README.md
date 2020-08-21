@@ -1,7 +1,6 @@
-
-[![pub](https://img.shields.io/badge/pub-0.1.5-red.svg)](https://pub.dev/packages/showcaseview)
-
 # ShowCaseView
+
+[![CI](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/workflows/Flutter%20CI/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions) [![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)
 
 A Flutter package allows you to Showcase/Highlight your widgets step by step.
 

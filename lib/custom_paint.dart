@@ -44,7 +44,7 @@ class ShapePainter extends CustomPainter {
     final paint = Paint();
     paint.color = color.withOpacity(opacity);
     RRect outer =
-    RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(0));
+        RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(0));
 
     double radius = shapeBorder == CircleBorder() ? 50 : 3;
 

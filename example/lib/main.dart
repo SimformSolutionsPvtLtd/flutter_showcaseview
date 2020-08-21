@@ -22,9 +22,7 @@ class MyApp extends StatelessWidget {
           onComplete: (index, key) {
             log('onComplete: $index, $key');
           },
-          builder: Builder(
-            builder: (context) => MailPage()
-          ),
+          builder: Builder(builder: (context) => MailPage()),
         ),
       ),
     );
@@ -48,7 +46,8 @@ class _MailPageState extends State<MailPage> {
     super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]));
+        ShowCaseWidget.of(context)
+            .startShowCase([_one, _two, _three, _four, _five]));
   }
 
   @override
@@ -160,7 +159,8 @@ class _MailPageState extends State<MailPage> {
                       ),
                     ).then((_) {
                       setState(() {
-                        ShowCaseWidget.of(context).startShowCase([_four, _five]);
+                        ShowCaseWidget.of(context)
+                            .startShowCase([_four, _five]);
                       });
                     });
                   },
@@ -321,7 +321,8 @@ class _MailPageState extends State<MailPage> {
           backgroundColor: Colors.white,
           onPressed: () {
             setState(() {
-              ShowCaseWidget.of(context).startShowCase([_one, _two, _three, _four, _five]);
+              ShowCaseWidget.of(context)
+                  .startShowCase([_one, _two, _three, _four, _five]);
             });
           },
           child: Icon(

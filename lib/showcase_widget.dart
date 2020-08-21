@@ -32,7 +32,8 @@ class ShowCaseWidget extends StatefulWidget {
   final Function(int, GlobalKey) onStart;
   final Function(int, GlobalKey) onComplete;
 
-  const ShowCaseWidget({@required this.builder, this.onFinish, this.onStart, this.onComplete});
+  const ShowCaseWidget(
+      {@required this.builder, this.onFinish, this.onStart, this.onComplete});
 
   static activeTargetWidget(BuildContext context) {
     return context
@@ -42,7 +43,7 @@ class ShowCaseWidget extends StatefulWidget {
 
   static ShowCaseWidgetState of(BuildContext context) {
     ShowCaseWidgetState state =
-    context.findAncestorStateOfType<ShowCaseWidgetState>();
+        context.findAncestorStateOfType<ShowCaseWidgetState>();
     if (state != null) {
       return context.findAncestorStateOfType<ShowCaseWidgetState>();
     } else {

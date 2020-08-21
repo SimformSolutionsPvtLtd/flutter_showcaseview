@@ -44,7 +44,7 @@ import 'package:flutter/material.dart';
 class AnchoredOverlay extends StatelessWidget {
   final bool showOverlay;
   final Widget Function(BuildContext, Rect anchorBounds, Offset anchor)
-  overlayBuilder;
+      overlayBuilder;
   final Widget child;
 
   AnchoredOverlay({
@@ -65,9 +65,9 @@ class AnchoredOverlay extends StatelessWidget {
             // our parent Container and then we find the center of that box.
             RenderBox box = context.findRenderObject() as RenderBox;
             final topLeft =
-            box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
+                box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
             final bottomRight =
-            box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+                box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
             final Rect anchorBounds = Rect.fromLTRB(
               topLeft.dx,
               topLeft.dy,

@@ -1,0 +1,25 @@
+name: Dart CI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image:  google/dart:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter packages get
+      - name: Code Formatting
+        run: dartfmt -w .
+      - name: Check Publish Warnings
+        run: pub publish --dry-run
+      - name: Publish Package
+        run: pub publish -f

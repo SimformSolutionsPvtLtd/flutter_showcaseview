@@ -46,6 +46,7 @@ class _MailPageState extends State<MailPage> {
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
         (_) => ShowCaseWidget.of(context).startShowCase([_one, _two, _three]));
   }

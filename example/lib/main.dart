@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
             log('onComplete: $index, $key');
           },
           builder: Builder(builder: (context) => MailPage()),
-          autoPlay: true,
+          autoPlay: false,
           autoPlayDelay: Duration(seconds: 3),
-          autoPlayLockEnable: true,
+          autoPlayLockEnable: false,
         ),
       ),
     );
@@ -142,10 +142,10 @@ class _MailPageState extends State<MailPage> {
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Showcase(
                 key: _three,
+                barrierDismissible: false,
                 description: 'Tap to check mail',
                 disposeOnTap: true,
                 onTargetClick: () {
-                  ShowCaseWidget.of(context).dismiss();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

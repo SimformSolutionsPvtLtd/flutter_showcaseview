@@ -29,11 +29,12 @@ class Showcase extends StatefulWidget {
   final VoidCallback onTargetClick;
   final bool disposeOnTap;
   final bool disableAnimation;
-
+  final bool barrierDismissible;
   const Showcase({
     @required this.key,
     @required this.child,
     this.title,
+    this.barrierDismissible = true,
     @required this.description,
     this.shapeBorder,
     this.overlayColor = Colors.black,
@@ -85,6 +86,7 @@ class Showcase extends StatefulWidget {
       @required this.height,
       @required this.width,
       this.title,
+      this.barrierDismissible = true,
       this.description,
       this.shapeBorder,
       this.overlayColor = Colors.black,
@@ -205,6 +207,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       timer.cancel();
     } else if (timer != null && !timer.isActive) {
       timer = null;
+    } else if (!widget.barrierDismissible) {
+      return;
     }
     ShowCaseWidget.of(context).completed(widget.key);
     if (!widget.disableAnimation) {
@@ -224,6 +228,21 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             };
     } else {
       return widget.onToolTipClick ?? () {};
+    }
+  }
+
+  _getOnTargetClick() {
+    if (widget.disposeOnTap == true) {
+      return widget.onTargetClick == null
+          ? () {
+              ShowCaseWidget.of(context).dismiss();
+            }
+          : () {
+              ShowCaseWidget.of(context).dismiss();
+              widget.onTargetClick();
+            };
+    } else {
+      return widget.onTargetClick ?? () {};
     }
   }
 
@@ -256,7 +275,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             _TargetWidget(
               offset: offset,
               size: size,
-              onTap: widget.onTargetClick,
+              onTap: _getOnTargetClick(),
               shapeBorder: widget.shapeBorder,
             ),
             ToolTipWidget(

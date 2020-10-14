@@ -27,6 +27,7 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/get_position.dart';
 import 'package:showcaseview/measure_size.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class ToolTipWidget extends StatefulWidget {
   final GetPosition position;
@@ -87,11 +88,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   }
 
   double _getTooltipWidth() {
+    final width = MediaQuery.of(context).size.width - 10;
     double titleLength = widget.title == null ? 0 : widget.title.length * 10.0;
     double descriptionLength = widget.description.length * 7.0;
     if (titleLength > descriptionLength) {
       return titleLength + 10;
     } else {
+      if (width < descriptionLength) return width - 10;
       return descriptionLength + 10;
     }
   }
@@ -203,40 +206,34 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                           width: _getTooltipWidth(),
                           padding: widget.contentPadding,
                           color: widget.tooltipColor,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                child: Column(
-                                  crossAxisAlignment: widget.title != null
-                                      ? CrossAxisAlignment.start
-                                      : CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    widget.title != null
-                                        ? Text(
-                                            widget.title,
-                                            style: widget.titleTextStyle ??
-                                                Theme.of(context)
-                                                    .textTheme
-                                                    .headline6
-                                                    .merge(TextStyle(
-                                                        color:
-                                                            widget.textColor)),
-                                          )
-                                        : Container(),
-                                    Text(
-                                      widget.description,
-                                      style: widget.descTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .subtitle2
-                                              .merge(TextStyle(
-                                                  color: widget.textColor)),
-                                    ),
-                                  ],
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: widget.title != null
+                                  ? CrossAxisAlignment.start
+                                  : CrossAxisAlignment.center,
+                              children: <Widget>[
+                                widget.title != null
+                                    ? Text(
+                                        widget.title,
+                                        style: widget.titleTextStyle ??
+                                            Theme.of(context)
+                                                .textTheme
+                                                .headline6
+                                                .merge(TextStyle(
+                                                    color: widget.textColor)),
+                                      )
+                                    : Container(),
+                                AutoSizeText(
+                                  widget.description,
+                                  style: widget.descTextStyle ??
+                                      Theme.of(context)
+                                          .textTheme
+                                          .subtitle2
+                                          .merge(TextStyle(
+                                              color: widget.textColor)),
                                 ),
-                              )
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

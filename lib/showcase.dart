@@ -8,7 +8,7 @@ import 'layout_overlays.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
-  final bool next;
+  final VoidCallback next;
   final Widget child;
   final String title;
   final String description;
@@ -36,7 +36,7 @@ class Showcase extends StatefulWidget {
     @required this.key,
     @required this.child,
     this.title,
-    this.next = true,
+    this.next,
     this.barrierDismissible = true,
     @required this.description,
     this.shapeBorder,
@@ -89,7 +89,7 @@ class Showcase extends StatefulWidget {
       @required this.container,
       @required this.height,
       @required this.width,
-      this.next = true,
+      this.next,
       this.title,
       this.barrierDismissible = true,
       this.description,
@@ -265,7 +265,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
         child: Stack(
           children: [
             GestureDetector(
-              onTap: widget.next ? _nextIfAny : null,
+              onTap: widget.next == null ? _nextIfAny : widget.next,
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,

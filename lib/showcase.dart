@@ -28,6 +28,7 @@ class Showcase extends StatefulWidget {
   final Duration animationDuration;
   final VoidCallback onToolTipClick;
   final VoidCallback onTargetClick;
+  final void Function(DragEndDetails) onHorizontalDragEnd;
   final bool disposeOnTap;
   final bool disableAnimation;
   final bool barrierDismissible;
@@ -47,6 +48,7 @@ class Showcase extends StatefulWidget {
     this.textColor = Colors.black,
     this.showArrow = true,
     this.onTargetClick,
+    this.onHorizontalDragEnd,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
     this.disableAnimation = false,
@@ -99,6 +101,7 @@ class Showcase extends StatefulWidget {
       this.showcaseBackgroundColor = Colors.white,
       this.textColor = Colors.black,
       this.onTargetClick,
+      this.onHorizontalDragEnd,
       this.disposeOnTap,
       this.animationDuration = const Duration(milliseconds: 2000),
       this.disableAnimation = false,
@@ -276,6 +279,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               ),
             ),
             _TargetWidget(
+              onHorizontalDragEnd: widget.onHorizontalDragEnd,
               offset: offset,
               size: size,
               onTap: _getOnTargetClick(),
@@ -310,7 +314,7 @@ class _TargetWidget extends StatelessWidget {
   final Animation<double> widthAnimation;
   final VoidCallback onTap;
   final ShapeBorder shapeBorder;
-
+  final void Function(DragEndDetails) onHorizontalDragEnd;
   _TargetWidget({
     Key key,
     @required this.offset,
@@ -318,6 +322,7 @@ class _TargetWidget extends StatelessWidget {
     this.widthAnimation,
     this.onTap,
     this.shapeBorder,
+    this.onHorizontalDragEnd,
   }) : super(key: key);
 
   @override
@@ -328,6 +333,7 @@ class _TargetWidget extends StatelessWidget {
       child: FractionalTranslation(
         translation: const Offset(-0.5, -0.5),
         child: GestureDetector(
+          onHorizontalDragEnd: onHorizontalDragEnd,
           onTap: onTap,
           child: Container(
             height: size.height + 16,

@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
             log('onComplete: $index, $key');
           },
           builder: Builder(builder: (context) => MailPage()),
-          autoPlay: true,
+          autoPlay: false,
           autoPlayDelay: Duration(seconds: 3),
-          autoPlayLockEnable: true,
+          autoPlayLockEnable: false,
         ),
       ),
     );
@@ -45,12 +45,16 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _five = GlobalKey();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback((_) =>
         ShowCaseWidget.of(context)
             .startShowCase([_one, _two, _three, _four, _five]));
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: ListView(

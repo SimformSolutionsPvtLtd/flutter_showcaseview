@@ -197,7 +197,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     );
   }
 
-  _nextIfAny() {
+  void _nextIfAny() {
     if (timer != null && timer.isActive) {
       if (ShowCaseWidget.of(context).autoPlayLockEnable) {
         return;
@@ -212,19 +212,20 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     }
   }
 
-  _getOnTooltipTap() {
+  void _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
-      return widget.onToolTipClick == null
-          ? () {
-              ShowCaseWidget.of(context).dismiss();
-            }
-          : () {
-              ShowCaseWidget.of(context).dismiss();
-              widget.onToolTipClick();
-            };
+      ShowCaseWidget.of(context).dismiss();
+      widget.onTargetClick();
     } else {
-      return widget.onToolTipClick ?? () {};
+      (widget.onTargetClick ?? _nextIfAny)?.call();
     }
+  }
+
+  void _getOnTooltipTap() {
+    if (widget.disposeOnTap == true) {
+      ShowCaseWidget.of(context).dismiss();
+    }
+    widget.onToolTipClick?.call();
   }
 
   buildOverlayOnTarget(
@@ -256,7 +257,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             _TargetWidget(
               offset: offset,
               size: size,
-              onTap: _nextIfAny,
+              onTap: _getOnTargetTap,
               shapeBorder: widget.shapeBorder,
             ),
             ToolTipWidget(
@@ -274,7 +275,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               showArrow: widget.showArrow,
               contentHeight: widget.height,
               contentWidth: widget.width,
-              onTooltipTap: _getOnTooltipTap(),
+              onTooltipTap: _getOnTooltipTap,
               contentPadding: widget.contentPadding,
             ),
           ],

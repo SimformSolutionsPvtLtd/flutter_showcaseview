@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:showcaseview/get_position.dart';
 import 'package:showcaseview/measure_size.dart';
@@ -89,10 +91,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   double _getTooltipWidth() {
     double titleLength = widget.title == null ? 0 : widget.title.length * 10.0;
     double descriptionLength = widget.description.length * 7.0;
-    if (titleLength > descriptionLength) {
-      return titleLength + 10;
+    var maxTextWidth = max(titleLength, descriptionLength);
+    if (maxTextWidth > widget.screenSize.width - 20) {
+      return widget.screenSize.width - 20;
     } else {
-      return descriptionLength + 10;
+      return maxTextWidth + 15;
     }
   }
 

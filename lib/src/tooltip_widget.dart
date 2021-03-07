@@ -27,8 +27,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:showcaseview/get_position.dart';
-import 'package:showcaseview/measure_size.dart';
+
+import 'get_position.dart';
+import 'measure_size.dart';
 
 class ToolTipWidget extends StatefulWidget {
   final GetPosition position;

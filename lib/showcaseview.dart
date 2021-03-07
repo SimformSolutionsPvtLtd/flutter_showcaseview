@@ -26,5 +26,5 @@
 
 library showcaseview;
 
-export 'showcase.dart';
-export 'showcase_widget.dart';
+export 'src/showcase.dart';
+export 'src/showcase_widget.dart';

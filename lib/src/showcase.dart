@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:async';
-import 'package:showcaseview/showcaseview.dart';
-import 'package:showcaseview/custom_paint.dart';
+import 'custom_paint.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
+import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {

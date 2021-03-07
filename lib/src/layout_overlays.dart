@@ -43,9 +43,9 @@ import 'package:flutter/material.dart';
 ///
 class AnchoredOverlay extends StatelessWidget {
   final bool showOverlay;
-  final Widget Function(BuildContext, Rect anchorBounds, Offset anchor)
+  final Widget Function(BuildContext, Rect anchorBounds, Offset anchor)?
       overlayBuilder;
-  final Widget child;
+  final Widget? child;
 
   AnchoredOverlay({
     key,
@@ -75,7 +75,7 @@ class AnchoredOverlay extends StatelessWidget {
               bottomRight.dy,
             );
             final anchorCenter = box.size.center(topLeft);
-            return overlayBuilder(overlayContext, anchorBounds, anchorCenter);
+            return overlayBuilder!(overlayContext, anchorBounds, anchorCenter);
           },
           child: child,
         );
@@ -99,8 +99,8 @@ class AnchoredOverlay extends StatelessWidget {
 //
 class OverlayBuilder extends StatefulWidget {
   final bool showOverlay;
-  final Widget Function(BuildContext) overlayBuilder;
-  final Widget child;
+  final Widget Function(BuildContext)? overlayBuilder;
+  final Widget? child;
 
   OverlayBuilder({
     key,
@@ -114,27 +114,29 @@ class OverlayBuilder extends StatefulWidget {
 }
 
 class _OverlayBuilderState extends State<OverlayBuilder> {
-  OverlayEntry _overlayEntry;
+  OverlayEntry? _overlayEntry;
 
   @override
   void initState() {
     super.initState();
 
     if (widget.showOverlay) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
+      WidgetsBinding.instance!.addPostFrameCallback((_) => showOverlay());
     }
   }
 
   @override
   void didUpdateWidget(OverlayBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => syncWidgetAndOverlay());
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => syncWidgetAndOverlay());
   }
 
   @override
@@ -152,9 +154,9 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
     if (_overlayEntry == null) {
       // Create the overlay.
       _overlayEntry = OverlayEntry(
-        builder: widget.overlayBuilder,
+        builder: widget.overlayBuilder!,
       );
-      addToOverlay(_overlayEntry);
+      addToOverlay(_overlayEntry!);
     } else {
       // Rebuild overlay.
       buildOverlay();
@@ -162,16 +164,12 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   }
 
   void addToOverlay(OverlayEntry overlayEntry) async {
-    Overlay.of(context).insert(overlayEntry);
-    final overlay = Overlay.of(context);
-    if (overlayEntry == null)
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => overlay.insert(overlayEntry));
+    Overlay.of(context)!.insert(overlayEntry);
   }
 
   void hideOverlay() {
     if (_overlayEntry != null) {
-      _overlayEntry.remove();
+      _overlayEntry!.remove();
       _overlayEntry = null;
     }
   }
@@ -185,7 +183,7 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   }
 
   void buildOverlay() async {
-    WidgetsBinding.instance
+    WidgetsBinding.instance!
         .addPostFrameCallback((_) => _overlayEntry?.markNeedsBuild());
   }
 
@@ -193,6 +191,6 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   Widget build(BuildContext context) {
     buildOverlay();
 
-    return widget.child;
+    return widget.child!;
   }
 }

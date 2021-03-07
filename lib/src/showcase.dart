@@ -9,32 +9,32 @@ import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
   final Widget child;
-  final String title;
-  final String description;
-  final ShapeBorder shapeBorder;
-  final TextStyle titleTextStyle;
-  final TextStyle descTextStyle;
+  final String? title;
+  final String? description;
+  final ShapeBorder? shapeBorder;
+  final TextStyle? titleTextStyle;
+  final TextStyle? descTextStyle;
   final EdgeInsets contentPadding;
-  final GlobalKey key;
+  final GlobalKey? key;
   final Color overlayColor;
   final double overlayOpacity;
-  final Widget container;
+  final Widget? container;
   final Color showcaseBackgroundColor;
   final Color textColor;
   final bool showArrow;
-  final double height;
-  final double width;
+  final double? height;
+  final double? width;
   final Duration animationDuration;
-  final VoidCallback onToolTipClick;
-  final VoidCallback onTargetClick;
-  final bool disposeOnTap;
+  final VoidCallback? onToolTipClick;
+  final VoidCallback? onTargetClick;
+  final bool? disposeOnTap;
   final bool disableAnimation;
 
   const Showcase({
-    @required this.key,
-    @required this.child,
+    required this.key,
+    required this.child,
     this.title,
-    @required this.description,
+    required this.description,
     this.shapeBorder,
     this.overlayColor = Colors.black,
     this.overlayOpacity = 0.75,
@@ -63,57 +63,32 @@ class Showcase extends StatefulWidget {
             disposeOnTap == null
                 ? true
                 : (onTargetClick == null ? false : true),
-            "onTargetClick is required if you're using disposeOnTap"),
-        assert(key != null ||
-            child != null ||
-            title != null ||
-            showArrow != null ||
-            description != null ||
-            shapeBorder != null ||
-            overlayColor != null ||
-            titleTextStyle != null ||
-            descTextStyle != null ||
-            showcaseBackgroundColor != null ||
-            textColor != null ||
-            shapeBorder != null ||
-            animationDuration != null);
+            "onTargetClick is required if you're using disposeOnTap");
 
-  const Showcase.withWidget(
-      {this.key,
-      @required this.child,
-      @required this.container,
-      @required this.height,
-      @required this.width,
-      this.title,
-      this.description,
-      this.shapeBorder,
-      this.overlayColor = Colors.black,
-      this.overlayOpacity = 0.75,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.showcaseBackgroundColor = Colors.white,
-      this.textColor = Colors.black,
-      this.onTargetClick,
-      this.disposeOnTap,
-      this.animationDuration = const Duration(milliseconds: 2000),
-      this.disableAnimation = false,
-      this.contentPadding = const EdgeInsets.symmetric(vertical: 8)})
-      : this.showArrow = false,
+  const Showcase.withWidget({
+    this.key,
+    required this.child,
+    required this.container,
+    required this.height,
+    required this.width,
+    this.title,
+    this.description,
+    this.shapeBorder,
+    this.overlayColor = Colors.black,
+    this.overlayOpacity = 0.75,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.onTargetClick,
+    this.disposeOnTap,
+    this.animationDuration = const Duration(milliseconds: 2000),
+    this.disableAnimation = false,
+    this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+  })  : this.showArrow = false,
         this.onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
-        assert(key != null ||
-            child != null ||
-            title != null ||
-            description != null ||
-            shapeBorder != null ||
-            overlayColor != null ||
-            titleTextStyle != null ||
-            descTextStyle != null ||
-            showcaseBackgroundColor != null ||
-            textColor != null ||
-            shapeBorder != null ||
-            animationDuration != null);
+            "overlay opacity should be >= 0.0 and <= 1.0.");
 
   @override
   _ShowcaseState createState() => _ShowcaseState();
@@ -121,10 +96,10 @@ class Showcase extends StatefulWidget {
 
 class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   bool _showShowCase = false;
-  Animation<double> _slideAnimation;
-  AnimationController _slideAnimationController;
-  Timer timer;
-  GetPosition position;
+  Animation<double>? _slideAnimation;
+  late AnimationController _slideAnimationController;
+  Timer? timer;
+  GetPosition? position;
 
   @override
   void initState() {
@@ -168,17 +143,17 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   /// show overlay if there is any target widget
   ///
   void showOverlay() {
-    GlobalKey activeStep = ShowCaseWidget.activeTargetWidget(context);
+    GlobalKey? activeStep = ShowCaseWidget.activeTargetWidget(context);
     setState(() {
       _showShowCase = activeStep == widget.key;
     });
 
     if (activeStep == widget.key) {
       _slideAnimationController.forward();
-      if (ShowCaseWidget.of(context).autoPlay) {
+      if (ShowCaseWidget.of(context)!.autoPlay) {
         timer = Timer(
             Duration(
-                seconds: ShowCaseWidget.of(context).autoPlayDelay.inSeconds),
+                seconds: ShowCaseWidget.of(context)!.autoPlayDelay.inSeconds),
             () {
           _nextIfAny();
         });
@@ -198,15 +173,15 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   }
 
   void _nextIfAny() {
-    if (timer != null && timer.isActive) {
-      if (ShowCaseWidget.of(context).autoPlayLockEnable) {
+    if (timer != null && timer!.isActive) {
+      if (ShowCaseWidget.of(context)!.autoPlayLockEnable) {
         return;
       }
-      timer.cancel();
-    } else if (timer != null && !timer.isActive) {
+      timer!.cancel();
+    } else if (timer != null && !timer!.isActive) {
       timer = null;
     }
-    ShowCaseWidget.of(context).completed(widget.key);
+    ShowCaseWidget.of(context)!.completed(widget.key);
     if (!widget.disableAnimation) {
       _slideAnimationController.forward();
     }
@@ -214,16 +189,16 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
   void _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
-      ShowCaseWidget.of(context).dismiss();
-      widget.onTargetClick();
+      ShowCaseWidget.of(context)!.dismiss();
+      widget.onTargetClick!();
     } else {
-      (widget.onTargetClick ?? _nextIfAny)?.call();
+      (widget.onTargetClick ?? _nextIfAny).call();
     }
   }
 
   void _getOnTooltipTap() {
     if (widget.disposeOnTap == true) {
-      ShowCaseWidget.of(context).dismiss();
+      ShowCaseWidget.of(context)!.dismiss();
     }
     widget.onToolTipClick?.call();
   }
@@ -248,7 +223,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 child: CustomPaint(
                   painter: ShapePainter(
                       opacity: widget.overlayOpacity,
-                      rect: position.getRect(),
+                      rect: position!.getRect(),
                       shapeBorder: widget.shapeBorder,
                       color: widget.overlayColor),
                 ),
@@ -285,14 +260,14 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
 class _TargetWidget extends StatelessWidget {
   final Offset offset;
-  final Size size;
-  final Animation<double> widthAnimation;
-  final VoidCallback onTap;
-  final ShapeBorder shapeBorder;
+  final Size? size;
+  final Animation<double>? widthAnimation;
+  final VoidCallback? onTap;
+  final ShapeBorder? shapeBorder;
 
   _TargetWidget({
-    Key key,
-    @required this.offset,
+    Key? key,
+    required this.offset,
     this.size,
     this.widthAnimation,
     this.onTap,
@@ -309,8 +284,8 @@ class _TargetWidget extends StatelessWidget {
         child: GestureDetector(
           onTap: onTap,
           child: Container(
-            height: size.height + 16,
-            width: size.width + 16,
+            height: size!.height + 16,
+            width: size!.width + 16,
             decoration: ShapeDecoration(
               shape: shapeBorder ??
                   RoundedRectangleBorder(

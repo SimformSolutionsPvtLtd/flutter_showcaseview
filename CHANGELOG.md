@@ -1,3 +1,6 @@
+## [0.2.0] - March 07, 2021
+- Migrated to null safety
+
 ## [0.1.6] - August 21, 2020
 
 - [Feature #63](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/63) method callback after individual showcase start and end

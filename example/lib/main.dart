@@ -48,8 +48,8 @@ class _MailPageState extends State<MailPage> {
   void initState() {
     super.initState();
     //Start showcase view after current widget frames are drawn.
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.of(context)
+    WidgetsBinding.instance!.addPostFrameCallback((_) =>
+        ShowCaseWidget.of(context)!
             .startShowCase([_one, _two, _three, _four, _five]));
   }
 
@@ -163,7 +163,7 @@ class _MailPageState extends State<MailPage> {
                         ),
                       ).then((_) {
                         setState(() {
-                          ShowCaseWidget.of(context)
+                          ShowCaseWidget.of(context)!
                               .startShowCase([_four, _five]);
                         });
                       });
@@ -325,7 +325,7 @@ class _MailPageState extends State<MailPage> {
           backgroundColor: Colors.white,
           onPressed: () {
             setState(() {
-              ShowCaseWidget.of(context)
+              ShowCaseWidget.of(context)!
                   .startShowCase([_one, _two, _three, _four, _five]);
             });
           },
@@ -347,11 +347,11 @@ class Mail {
   bool isUnread;
 
   Mail({
-    this.sender,
-    this.sub,
-    this.msg,
-    this.date,
-    this.isUnread,
+    required this.sender,
+    required this.sub,
+    required this.msg,
+    required this.date,
+    required this.isUnread,
   });
 }
 

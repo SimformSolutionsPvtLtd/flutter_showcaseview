@@ -8,14 +8,14 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
   final GlobalKey _one = GlobalKey();
-  BuildContext myContext;
+  BuildContext? myContext;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       Future.delayed(Duration(milliseconds: 200),
-          () => ShowCaseWidget.of(myContext).startShowCase([_one]));
+          () => ShowCaseWidget.of(myContext!)!.startShowCase([_one]));
     });
   }
 

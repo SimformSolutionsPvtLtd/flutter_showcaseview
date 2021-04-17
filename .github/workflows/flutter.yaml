@@ -2,6 +2,10 @@ name: Flutter CI
 
 on:
   push:
+    paths:
+      - '**.dart'
+      - '**.yaml'
+      - '**.yml'
     branches:
       - master
   pull_request:
@@ -20,6 +24,6 @@ jobs:
       - name: Static Analysis
         run: flutter analyze
       - name: Code Formatting
-        run: dartfmt --set-exit-if-changed -w --fix .
+        run: dart format --set-exit-if-changed .
       - name: Check Publish Warnings
         run: pub publish --dry-run

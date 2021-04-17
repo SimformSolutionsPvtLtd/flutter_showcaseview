@@ -142,9 +142,9 @@ class _MailPageState extends State<MailPage> {
             Padding(padding: EdgeInsets.only(top: 8)),
             GestureDetector(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.push<void>(
                     context,
-                    MaterialPageRoute(
+                    MaterialPageRoute<void>(
                       builder: (_) => Detail(),
                     ),
                   );
@@ -156,9 +156,9 @@ class _MailPageState extends State<MailPage> {
                     description: 'Tap to check mail',
                     disposeOnTap: true,
                     onTargetClick: () {
-                      Navigator.push(
+                      Navigator.push<void>(
                         context,
-                        MaterialPageRoute(
+                        MaterialPageRoute<void>(
                           builder: (_) => Detail(),
                         ),
                       ).then((_) {

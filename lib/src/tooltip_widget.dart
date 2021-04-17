@@ -77,7 +77,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   Offset? position;
 
   bool isCloseToTopOrBottom(Offset position) {
-    double height = 120;
+    var height = 120.0;
     height = widget.contentHeight ?? height;
     return (widget.screenSize!.height - position.dy) <= height;
   }
@@ -91,8 +91,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   }
 
   double _getTooltipWidth() {
-    double titleLength = widget.title == null ? 0 : widget.title!.length * 10.0;
-    double descriptionLength = widget.description!.length * 7.0;
+    final titleLength = widget.title == null ? 0 : widget.title!.length * 10.0;
+    final descriptionLength = widget.description!.length * 7.0;
     var maxTextWidth = max(titleLength, descriptionLength);
     if (maxTextWidth > widget.screenSize!.width - 20) {
       return widget.screenSize!.width - 20;
@@ -102,18 +102,18 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   }
 
   bool _isLeft() {
-    double screenWidth = widget.screenSize!.width / 3;
+    final screenWidth = widget.screenSize!.width / 3;
     return !(screenWidth <= widget.position!.getCenter());
   }
 
   bool _isRight() {
-    double screenWidth = widget.screenSize!.width / 3;
+    final screenWidth = widget.screenSize!.width / 3;
     return ((screenWidth * 2) <= widget.position!.getCenter());
   }
 
   double? _getLeft() {
     if (_isLeft()) {
-      double leftPadding =
+      var leftPadding =
           widget.position!.getCenter() - (_getTooltipWidth() * 0.1);
       if (leftPadding + _getTooltipWidth() > widget.screenSize!.width) {
         leftPadding = (widget.screenSize!.width - 20) - _getTooltipWidth();
@@ -131,7 +131,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
 
   double? _getRight() {
     if (_isRight()) {
-      double rightPadding =
+      var rightPadding =
           widget.position!.getCenter() + (_getTooltipWidth() / 2);
       if (rightPadding + _getTooltipWidth() > widget.screenSize!.width) {
         rightPadding = 14;
@@ -145,7 +145,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   }
 
   double _getSpace() {
-    double space = widget.position!.getCenter() - (widget.contentWidth! / 2);
+    var space = widget.position!.getCenter() - (widget.contentWidth! / 2);
     if (space + widget.contentWidth! > widget.screenSize!.width) {
       space = widget.screenSize!.width - widget.contentWidth! - 8;
     } else if (space < (widget.contentWidth! / 2)) {
@@ -173,8 +173,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     final num contentFractionalOffset =
         contentOffsetMultiplier.clamp(-1.0, 0.0);
 
-    double paddingTop = ToolTipWidget.isArrowUp ? 22 : 0;
-    double paddingBottom = ToolTipWidget.isArrowUp ? 0 : 27;
+    var paddingTop = ToolTipWidget.isArrowUp ? 22.0 : 0.0;
+    var paddingBottom = ToolTipWidget.isArrowUp ? 0.0 : 27.0;
 
     if (!widget.showArrow!) {
       paddingTop = 10;
@@ -282,7 +282,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                         child: MeasureSize(
                             onSizeChange: (size) {
                               setState(() {
-                                Offset? tempPos = position;
+                                var tempPos = position;
                                 tempPos = Offset(
                                     position!.dx, position!.dy + size!.height);
                                 position = tempPos;
@@ -301,7 +301,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     }
   }
 
-  Widget _getArrow(contentOffsetMultiplier) {
+  Widget _getArrow(double contentOffsetMultiplier) {
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
     return Positioned(
       top: ToolTipWidget.isArrowUp

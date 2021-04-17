@@ -25,9 +25,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'dart:async';
+
 import 'custom_paint.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
@@ -35,6 +37,9 @@ import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
+  @override
+  final GlobalKey? key;
+
   final Widget child;
   final String? title;
   final String? description;
@@ -42,7 +47,6 @@ class Showcase extends StatefulWidget {
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final EdgeInsets contentPadding;
-  final GlobalKey? key;
   final Color overlayColor;
   final double overlayOpacity;
   final Widget? container;
@@ -112,8 +116,8 @@ class Showcase extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 2000),
     this.disableAnimation = false,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
-  })  : this.showArrow = false,
-        this.onToolTipClick = null,
+  })  : showArrow = false,
+        onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity should be >= 0.0 and <= 1.0.");
 
@@ -135,7 +139,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     _slideAnimationController = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
-    )..addStatusListener((AnimationStatus status) {
+    )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           _slideAnimationController.reverse();
         }
@@ -170,7 +174,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   /// show overlay if there is any target widget
   ///
   void showOverlay() {
-    GlobalKey? activeStep = ShowCaseWidget.activeTargetWidget(context);
+    final activeStep = ShowCaseWidget.activeTargetWidget(context);
     setState(() {
       _showShowCase = activeStep == widget.key;
     });
@@ -181,18 +185,16 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
         timer = Timer(
             Duration(
                 seconds: ShowCaseWidget.of(context)!.autoPlayDelay.inSeconds),
-            () {
-          _nextIfAny();
-        });
+            _nextIfAny);
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return AnchoredOverlay(
-      overlayBuilder: (BuildContext context, Rect rectBound, Offset offset) =>
+      overlayBuilder: (context, rectBound, offset) =>
           buildOverlayOnTarget(offset, rectBound.size, rectBound, size),
       showOverlay: true,
       child: widget.child,
@@ -230,7 +232,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     widget.onToolTipClick?.call();
   }
 
-  buildOverlayOnTarget(
+  Widget buildOverlayOnTarget(
     Offset offset,
     Size size,
     Rect rectBound,

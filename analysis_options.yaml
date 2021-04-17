@@ -1,1 +1,21 @@
-include: 'package:effective_dart/effective_dart.yaml'
+include: 'package:effective_dart/analysis_options.yaml'
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  errors:
+    argument_type_not_assignable: error
+    invalid_assignment: error
+    dead_code: warning
+
+linter:
+  rules:
+    public_member_api_docs: false
+    avoid_returning_null: false
+    avoid_print: true
+    avoid_empty_else: true
+    annotate_overrides: true
+    cancel_subscriptions: true
+    close_sinks: true
+    avoid_positional_boolean_parameters: false

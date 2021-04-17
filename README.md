@@ -1,14 +1,18 @@
 # ShowCaseView
 
-[![CI](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/workflows/Flutter%20CI/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions) [![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)
+[![Build](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/workflows/Build/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions) [![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)
 
 A Flutter package allows you to Showcase/Highlight your widgets step by step.
 
-It is inspired from [Fluttery's Flutter challange](https://www.youtube.com/watch?v=Xm0ELlBtNWM).
+It is inspired from [Fluttery's Flutter challenge](https://www.youtube.com/watch?v=Xm0ELlBtNWM).
+
+
 
 ## Preview
 
 ![The example app running in Android](https://github.com/simformsolutions/flutter_showcaseview/blob/master/preview/showcaseview.gif)
+
+
 
 ## Installing
 
@@ -118,6 +122,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 Check out the **example** app in the [example](example) directory or the 'Example' tab on pub.dartlang.org for a more complete example.
 
 
+
 ## Getting Started
 
 This project is a starting point for a Dart
@@ -130,7 +135,8 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 
 
-# License
+
+## License
 
 ```
 Copyright © 2020, Simform Solutions

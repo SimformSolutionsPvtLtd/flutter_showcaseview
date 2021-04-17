@@ -1,5 +1,11 @@
-## [0.2.0] - March 07, 2021
-- Migrated to null safety
+## [1.0.0] - March 07, 2021
+
+- Fixed [#95](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/95) - Migrated to null safety.  
+- Fixed [#74](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/74) - Long text description is hidden.
+- Fixed [#76](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/76) - Overlay is not displayed properly on web.
+- Fixed [#81](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/81) - Crash on hot reload.
+- Fixed [#84](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/84) - Background dim does not work in some screens.
+- Fixed [#90](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/90) - ListView Item Support.
 
 ## [0.1.6] - August 21, 2020
 

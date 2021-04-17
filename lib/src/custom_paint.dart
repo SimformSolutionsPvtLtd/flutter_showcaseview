@@ -44,12 +44,12 @@ class ShapePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
     paint.color = color!.withOpacity(opacity!);
-    RRect outer =
+    final outer =
         RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(0));
 
-    double radius = shapeBorder == CircleBorder() ? 50 : 3;
+    final radius = shapeBorder == CircleBorder() ? 50.0 : 3.0;
 
-    RRect inner = RRect.fromRectAndRadius(rect, Radius.circular(radius));
+    final inner = RRect.fromRectAndRadius(rect, Radius.circular(radius));
     canvas.drawDRRect(outer, inner, paint);
   }
 

@@ -49,7 +49,7 @@ class AnchoredOverlay extends StatelessWidget {
   final Widget? child;
 
   AnchoredOverlay({
-    key,
+    Key? key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,
@@ -58,18 +58,18 @@ class AnchoredOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
+      builder: (context, constraints) {
         return OverlayBuilder(
           showOverlay: showOverlay,
-          overlayBuilder: (BuildContext overlayContext) {
+          overlayBuilder: (overlayContext) {
             // To calculate the "anchor" point we grab the render box of
             // our parent Container and then we find the center of that box.
-            RenderBox box = context.findRenderObject() as RenderBox;
+            final box = context.findRenderObject() as RenderBox;
             final topLeft =
                 box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
             final bottomRight =
                 box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-            final Rect anchorBounds = Rect.fromLTRB(
+            final anchorBounds = Rect.fromLTRB(
               topLeft.dx,
               topLeft.dy,
               bottomRight.dx,
@@ -85,26 +85,25 @@ class AnchoredOverlay extends StatelessWidget {
   }
 }
 
-//
-// Displays an overlay Widget as constructed by the given [overlayBuilder].
-//
-// The overlay built by the [overlayBuilder] can be conditionally shown and hidden by settings the [showOverlay]
-// property to true or false.
-//
-// The [overlayBuilder] is invoked every time this Widget is rebuilt.
-//
-// Implementation note: the reason we rebuild the overlay every time our state changes is because there doesn't seem
-// to be any better way to invalidate the overlay itself than to invalidate this Widget.
-// Remember, overlay Widgets exist in [OverlayEntry]s which are inaccessible to outside Widgets.
-// But if a better approach is found then feel free to use it.
-//
+/// Displays an overlay Widget as constructed by the given [overlayBuilder].
+///
+/// The overlay built by the [overlayBuilder] can be conditionally shown and
+/// hidden by settings the [showOverlay] property to true or false.
+///
+/// The [overlayBuilder] is invoked every time this Widget is rebuilt.
+///
+/// Implementation note: the reason we rebuild the overlay every time our state
+/// changes is because there doesn't seem to be any better way to invalidate the
+/// overlay itself than to invalidate this Widget. Remember, overlay Widgets
+/// exist in [OverlayEntry]s which are inaccessible to outside Widgets. But if
+/// a better approach is found then feel free to use it.
 class OverlayBuilder extends StatefulWidget {
   final bool showOverlay;
   final Widget Function(BuildContext)? overlayBuilder;
   final Widget? child;
 
   OverlayBuilder({
-    key,
+    Key? key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,

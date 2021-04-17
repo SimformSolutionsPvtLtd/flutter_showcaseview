@@ -46,15 +46,14 @@ class ShowCaseWidget extends StatefulWidget {
     this.autoPlayLockEnable = false,
   });
 
-  static activeTargetWidget(BuildContext context) {
+  static GlobalKey? activeTargetWidget(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()!
         .activeWidgetIds;
   }
 
   static ShowCaseWidgetState? of(BuildContext context) {
-    ShowCaseWidgetState? state =
-        context.findAncestorStateOfType<ShowCaseWidgetState>();
+    final state = context.findAncestorStateOfType<ShowCaseWidgetState>();
     if (state != null) {
       return context.findAncestorStateOfType<ShowCaseWidgetState>();
     } else {
@@ -76,14 +75,14 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   void initState() {
     super.initState();
-    this.autoPlayDelay = widget.autoPlayDelay;
-    this.autoPlay = widget.autoPlay;
-    this.autoPlayLockEnable = widget.autoPlayLockEnable;
+    autoPlayDelay = widget.autoPlayDelay;
+    autoPlay = widget.autoPlay;
+    autoPlayLockEnable = widget.autoPlayLockEnable;
   }
 
   void startShowCase(List<GlobalKey> widgetIds) {
     setState(() {
-      this.ids = widgetIds;
+      ids = widgetIds;
       activeWidgetId = 0;
       _onStart();
     });
@@ -107,9 +106,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   }
 
   void dismiss() {
-    setState(() {
-      _cleanupAfterSteps();
-    });
+    setState(_cleanupAfterSteps);
   }
 
   void _onStart() {
@@ -141,7 +138,7 @@ class _InheritedShowCaseView extends InheritedWidget {
 
   _InheritedShowCaseView({
     required this.activeWidgetIds,
-    required child,
+    required Widget child,
   }) : super(child: child);
 
   @override

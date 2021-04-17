@@ -53,10 +53,10 @@ class _MeasureSizeState extends State<MeasureSize> {
     );
   }
 
-  var widgetKey = GlobalKey();
-  var oldSize;
+  GlobalKey widgetKey = GlobalKey();
+  Size? oldSize;
 
-  void postFrameCallback(_) {
+  void postFrameCallback(Duration timestamp) {
     var context = widgetKey.currentContext;
     if (context == null) return;
 

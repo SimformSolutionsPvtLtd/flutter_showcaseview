@@ -1,4 +1,4 @@
-name: Dart CI
+name: Publish
 
 on:
   release:
@@ -14,8 +14,13 @@ jobs:
       - name: Install dependencies
         run: flutter packages get
       - name: Code Formatting
-        run: dartfmt -w .
+        run: dart format --fix .
       - name: Check Publish Warnings
-        run: pub publish --dry-run
-      - name: Publish Package
-        run: pub publish -f
+        run: flutter pub publish --dry-run
+      - name: Publish
+        uses: sakebook/actions-flutter-pub-publisher@v1.3.1
+        with:
+          credential: ${{ secrets.CREDENTIAL_JSON }}
+          flutter_package: true
+          skip_test: true
+          dry_run: false

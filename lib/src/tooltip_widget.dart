@@ -202,7 +202,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                     padding:
                         EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(6),
                       child: GestureDetector(
                         onTap: widget.onTooltipTap,
                         child: Container(

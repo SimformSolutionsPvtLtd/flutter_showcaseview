@@ -214,26 +214,26 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
+                              widget.title != null
+                                  ? Text(
+                                      widget.title!,
+                                      style: widget.titleTextStyle ??
+                                          Theme.of(context)
+                                              .textTheme
+                                              .headline6!
+                                              .merge(TextStyle(
+                                                  color: widget.textColor)),
+                                    )
+                                  : Container(),
                               Container(
                                 child: Column(
                                   crossAxisAlignment: widget.title != null
                                       ? CrossAxisAlignment.start
                                       : CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    widget.title != null
-                                        ? Text(
-                                            widget.title!,
-                                            style: widget.titleTextStyle ??
-                                                Theme.of(context)
-                                                    .textTheme
-                                                    .headline6!
-                                                    .merge(TextStyle(
-                                                        color:
-                                                            widget.textColor)),
-                                          )
-                                        : Container(),
                                     Text(
                                       widget.description!,
+                                      textAlign: TextAlign.center,
                                       style: widget.descTextStyle ??
                                           Theme.of(context)
                                               .textTheme
@@ -241,11 +241,18 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                                               .merge(TextStyle(
                                                   color: widget.textColor)),
                                     ),
-                                    widget.toolTipSkipButton ??
-                                        SizedBox.shrink(),
+                                    //   Row(
+                                    //     mainAxisAlignment: MainAxisAlignment
+                                    //         .center,
+                                    //     children: [
+                                    //       widget.toolTipSkipButton ??
+                                    //           SizedBox.shrink(),
+                                    //     ],
+                                    // ),
                                   ],
                                 ),
-                              )
+                              ),
+                              widget.toolTipSkipButton ?? SizedBox.shrink(),
                             ],
                           ),
                         ),

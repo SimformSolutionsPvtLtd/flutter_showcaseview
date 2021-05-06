@@ -38,6 +38,7 @@ class ToolTipWidget extends StatefulWidget {
   final Size? screenSize;
   final String? title;
   final String? description;
+  final Widget? toolTipSkipButton;
   final Animation<double>? animationOffset;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
@@ -65,6 +66,7 @@ class ToolTipWidget extends StatefulWidget {
       this.textColor,
       this.showArrow,
       this.contentHeight,
+      this.toolTipSkipButton,
       this.contentWidth,
       this.onTooltipTap,
       this.contentPadding});
@@ -239,6 +241,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                                               .merge(TextStyle(
                                                   color: widget.textColor)),
                                     ),
+                                    widget.toolTipSkipButton ??
+                                        SizedBox.shrink(),
                                   ],
                                 ),
                               )

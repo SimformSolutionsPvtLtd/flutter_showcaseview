@@ -60,6 +60,7 @@ class Showcase extends StatefulWidget {
   final VoidCallback? onTargetClick;
   final bool? disposeOnTap;
   final bool disableAnimation;
+  final Widget? toolTipSkipButton;
 
   const Showcase({
     required this.key,
@@ -79,6 +80,7 @@ class Showcase extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 2000),
     this.disableAnimation = false,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+    this.toolTipSkipButton,
     this.onToolTipClick,
   })  : height = null,
         width = null,
@@ -116,6 +118,7 @@ class Showcase extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 2000),
     this.disableAnimation = false,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+    this.toolTipSkipButton,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -229,7 +232,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     if (widget.disposeOnTap == true) {
       ShowCaseWidget.of(context)!.dismiss();
     }
-  (widget.onToolTipClick ?? _nextIfAny).call();
+    (widget.onToolTipClick ?? _nextIfAny).call();
   }
 
   Widget buildOverlayOnTarget(
@@ -281,6 +284,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               contentWidth: widget.width,
               onTooltipTap: _getOnTooltipTap,
               contentPadding: widget.contentPadding,
+              toolTipSkipButton: widget.toolTipSkipButton,
             ),
           ],
         ),

@@ -316,16 +316,22 @@ class _TargetWidget extends StatelessWidget {
         translation: const Offset(-0.5, -0.5),
         child: GestureDetector(
           onTap: onTap,
-          child: Container(
-            height: size!.height + 16,
-            width: size!.width + 16,
-            decoration: ShapeDecoration(
-              shape: shapeBorder ??
-                  RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(8),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: size!.height + 16.0,
+              maxWidth: size!.width + 16.0,
+            ),
+            child: Container(
+              height: size!.height + 16.0,
+              width: size!.width + 16.0,
+              decoration: ShapeDecoration(
+                shape: shapeBorder ??
+                    RoundedRectangleBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(8),
+                      ),
                     ),
-                  ),
+              ),
             ),
           ),
         ),

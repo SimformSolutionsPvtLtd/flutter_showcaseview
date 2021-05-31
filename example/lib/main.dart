@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: ShowCaseWidget(
           onStart: (index, key) {
@@ -56,6 +57,7 @@ class _MailPageState extends State<MailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
         child: ListView(
           children: <Widget>[
@@ -98,6 +100,7 @@ class _MailPageState extends State<MailPage> {
                             ),
                           ),
                           Showcase(
+                            overlayPadding: EdgeInsets.all(5),
                             key: _two,
                             title: 'Profile',
                             description:

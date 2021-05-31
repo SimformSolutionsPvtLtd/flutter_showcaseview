@@ -29,8 +29,15 @@ import 'package:flutter/material.dart';
 
 class GetPosition {
   final GlobalKey? key;
+  final EdgeInsets padding;
+  final double? screenWidth;
+  final double? screenHeight;
 
-  GetPosition({this.key});
+  GetPosition(
+      {this.key,
+      this.padding = EdgeInsets.zero,
+      this.screenWidth,
+      this.screenHeight});
 
   Rect getRect() {
     final box = key!.currentContext!.findRenderObject() as RenderBox;
@@ -40,10 +47,14 @@ class GetPosition {
         box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
 
     final rect = Rect.fromLTRB(
-      topLeft.dx,
-      topLeft.dy,
-      bottomRight.dx,
-      bottomRight.dy,
+      topLeft.dx - padding.left < 0 ? 0 : topLeft.dx - padding.left,
+      topLeft.dy - padding.top < 0 ? 0 : topLeft.dy - padding.top,
+      bottomRight.dx + padding.right > screenWidth!
+          ? screenWidth!
+          : bottomRight.dx + padding.right,
+      bottomRight.dy + padding.bottom > screenHeight!
+          ? screenHeight!
+          : bottomRight.dy + padding.bottom,
     );
     return rect;
   }
@@ -53,21 +64,21 @@ class GetPosition {
     final box = key!.currentContext!.findRenderObject() as RenderBox;
     final bottomRight =
         box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-    return bottomRight.dy;
+    return bottomRight.dy + padding.bottom;
   }
 
   ///Get the top position of the widget
   double getTop() {
     final box = key!.currentContext!.findRenderObject() as RenderBox;
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-    return topLeft.dy;
+    return topLeft.dy - padding.top;
   }
 
   ///Get the left position of the widget
   double getLeft() {
     final box = key!.currentContext!.findRenderObject() as RenderBox;
     final topLeft = box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-    return topLeft.dx;
+    return topLeft.dx - padding.left;
   }
 
   ///Get the right position of the widget
@@ -75,7 +86,7 @@ class GetPosition {
     final box = key!.currentContext!.findRenderObject() as RenderBox;
     final bottomRight =
         box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-    return bottomRight.dx;
+    return bottomRight.dx + padding.right;
   }
 
   double getHeight() {

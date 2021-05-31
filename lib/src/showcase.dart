@@ -60,27 +60,29 @@ class Showcase extends StatefulWidget {
   final VoidCallback? onTargetClick;
   final bool? disposeOnTap;
   final bool disableAnimation;
+  final EdgeInsets overlayPadding;
 
-  const Showcase({
-    required this.key,
-    required this.child,
-    this.title,
-    required this.description,
-    this.shapeBorder,
-    this.overlayColor = Colors.black,
-    this.overlayOpacity = 0.75,
-    this.titleTextStyle,
-    this.descTextStyle,
-    this.showcaseBackgroundColor = Colors.white,
-    this.textColor = Colors.black,
-    this.showArrow = true,
-    this.onTargetClick,
-    this.disposeOnTap,
-    this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false,
-    this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
-    this.onToolTipClick,
-  })  : height = null,
+  const Showcase(
+      {required this.key,
+      required this.child,
+      this.title,
+      required this.description,
+      this.shapeBorder,
+      this.overlayColor = Colors.black,
+      this.overlayOpacity = 0.75,
+      this.titleTextStyle,
+      this.descTextStyle,
+      this.showcaseBackgroundColor = Colors.white,
+      this.textColor = Colors.black,
+      this.showArrow = true,
+      this.onTargetClick,
+      this.disposeOnTap,
+      this.animationDuration = const Duration(milliseconds: 2000),
+      this.disableAnimation = false,
+      this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+      this.onToolTipClick,
+      this.overlayPadding = EdgeInsets.zero})
+      : height = null,
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -116,6 +118,7 @@ class Showcase extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 2000),
     this.disableAnimation = false,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+    this.overlayPadding = EdgeInsets.zero,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -154,8 +157,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       parent: _slideAnimationController,
       curve: Curves.easeInOut,
     );
-
-    position = GetPosition(key: widget.key);
   }
 
   @override
@@ -167,6 +168,12 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    position ??= GetPosition(
+      key: widget.key,
+      padding: widget.overlayPadding,
+      screenWidth: MediaQuery.of(context).size.width,
+      screenHeight: MediaQuery.of(context).size.height,
+    );
     showOverlay();
   }
 

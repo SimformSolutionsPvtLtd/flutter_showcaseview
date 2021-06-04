@@ -67,7 +67,7 @@ class ToolTipWidget extends StatefulWidget {
       this.contentHeight,
       this.contentWidth,
       this.onTooltipTap,
-      this.contentPadding});
+      this.contentPadding = const EdgeInsets.symmetric(vertical: 8)});
 
   @override
   _ToolTipWidgetState createState() => _ToolTipWidgetState();
@@ -91,8 +91,25 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   }
 
   double _getTooltipWidth() {
-    final titleLength = widget.title == null ? 0 : widget.title!.length * 10.0;
-    final descriptionLength = widget.description!.length * 7.0;
+    final titleStyle = widget.titleTextStyle ??
+        Theme.of(context)
+            .textTheme
+            .headline6!
+            .merge(TextStyle(color: widget.textColor));
+    final descriptionStyle = widget.descTextStyle ??
+        Theme.of(context)
+            .textTheme
+            .subtitle2!
+            .merge(TextStyle(color: widget.textColor));
+    final titleLength = widget.title == null
+        ? 0
+        : _textSize(widget.title!, titleStyle).width +
+            widget.contentPadding!.right +
+            widget.contentPadding!.left;
+    final descriptionLength =
+        _textSize(widget.description!, descriptionStyle).width +
+            widget.contentPadding!.right +
+            widget.contentPadding!.left;
     var maxTextWidth = max(titleLength, descriptionLength);
     if (maxTextWidth > widget.screenSize!.width - 20) {
       return widget.screenSize!.width - 20;
@@ -325,5 +342,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
         ),
       ),
     );
+  }
+
+  Size _textSize(String text, TextStyle style) {
+    final textPainter = (TextPainter(
+            text: TextSpan(text: text, style: style),
+            maxLines: 1,
+            textScaleFactor: MediaQuery.of(context).textScaleFactor,
+            textDirection: TextDirection.ltr)
+          ..layout())
+        .size;
+    return textPainter;
   }
 }

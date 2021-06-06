@@ -13,10 +13,10 @@ class _DetailState extends State<Detail> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      Future.delayed(Duration(milliseconds: 200),
-          () => ShowCaseWidget.of(myContext!)!.startShowCase([_one]));
-    });
+    WidgetsBinding.instance!.addPostFrameCallback(
+        (_) => Future.delayed(Duration(milliseconds: 200), () {
+              ShowCaseWidget.of(myContext!)!.startShowCase([_one]);
+            }));
   }
 
   @override

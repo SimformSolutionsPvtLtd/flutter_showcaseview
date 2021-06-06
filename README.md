@@ -1,3 +1,6 @@
+![alt text](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/blob/master/banner.png?raw=true)
+
+
 # ShowCaseView
 
 [![Build](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/workflows/Build/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions) [![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)
@@ -68,6 +71,7 @@ Showcase(
   disableAnimation: true,
   shapeBorder: CircleBorder(),
   showArrow: false,
+  overlayPadding: EdgeInsets.all(5),
   slideDuration: Duration(milliseconds: 1500),
   tooltipColor: Colors.blueGrey,
   child: ...,
@@ -130,8 +134,8 @@ This project is a starting point for a Dart
 a library module containing code that can be shared easily across
 multiple Flutter or Dart projects.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
 <br/>
@@ -144,6 +148,7 @@ samples, guidance on mobile development, and a full API reference.
     <td align="center"><a href="https://github.com/DevarshRanpara"><img src="https://avatars.githubusercontent.com/u/26064415?s=100" width="100px;" alt=""/><br /><sub><b>Devarsh Ranpara</b></sub></a></td>
     <td align="center"><a href="https://github.com/AnkitPanchal10"><img src="https://avatars.githubusercontent.com/u/38405884?s=100" width="100px;" alt=""/><br /><sub><b>Ankit Panchal</b></sub></a></td>
     <td align="center"><a href="https://github.com/Kashifalaliwala"><img src="https://avatars.githubusercontent.com/u/30998350?s=100" width="100px;" alt=""/><br /><sub><b>Kashifa Laliwala</b></sub></a></td>
+     <td align="center"><a href="https://github.com/vatsaltanna"><img src="https://avatars.githubusercontent.com/u/25323183?s=100" width="100px;" alt=""/><br /><sub><b>Vatsal Tanna</b></sub></a></td>
   </tr>
 </table>
 <br/>

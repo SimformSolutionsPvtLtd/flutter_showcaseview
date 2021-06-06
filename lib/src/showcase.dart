@@ -188,7 +188,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     });
 
     if (activeStep == widget.key) {
-      _slideAnimationController.forward();
+      if (!widget.disableAnimation) {
+        _slideAnimationController.forward();
+      }
       if (ShowCaseWidget.of(context)!.autoPlay) {
         timer = Timer(
             Duration(

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:example/detailscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 void main() => runApp(MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter ShowCase',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Color(0xffEE5366),
       ),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -22,6 +23,11 @@ class MyApp extends StatelessWidget {
           },
           onComplete: (index, key) {
             log('onComplete: $index, $key');
+            if (index == 4)
+              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
+                  .copyWith(
+                      statusBarIconBrightness: Brightness.dark,
+                      statusBarColor: Colors.white));
           },
           builder: Builder(builder: (context) => MailPage()),
           autoPlay: false,
@@ -44,6 +50,7 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _three = GlobalKey();
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
+  List<Mail> mails = [];
 
   @override
   void initState() {
@@ -52,89 +59,170 @@ class _MailPageState extends State<MailPage> {
     WidgetsBinding.instance!.addPostFrameCallback((_) =>
         ShowCaseWidget.of(context)!
             .startShowCase([_one, _two, _three, _four, _five]));
+    mails = [
+      Mail(
+        sender: 'Medium',
+        sub: 'Showcase View',
+        msg: 'Check new showcase View',
+        date: '25 May',
+        isUnread: false,
+      ),
+      Mail(
+        sender: 'Quora',
+        sub: 'New Question for you',
+        msg: 'Hi, There is new question for you',
+        date: '22 May',
+        isUnread: false,
+      ),
+      Mail(
+        sender: 'Google',
+        sub: 'Flutter 1.5',
+        msg: 'We have launched Flutter 1.5',
+        date: '20 May',
+        isUnread: true,
+      ),
+      Mail(
+        sender: 'Github',
+        sub: 'Showcase View',
+        msg: 'New star on your showcase view.',
+        date: '21 May ',
+        isUnread: false,
+      ),
+      Mail(
+        sender: 'Simform',
+        sub: 'Credit card Plugin',
+        msg: 'Check out our credit card plugin',
+        date: '19 May',
+        isUnread: true,
+      ),
+      Mail(
+        sender: 'Flutter',
+        sub: 'Flutter is Future',
+        msg: 'Flutter laucnhed for Web',
+        date: '18 Jun',
+        isUnread: true,
+      ),
+      Mail(
+        sender: 'Medium',
+        sub: 'Showcase View',
+        msg: 'Check new showcase View',
+        date: '21 May ',
+        isUnread: false,
+      ),
+      Mail(
+        sender: 'Simform',
+        sub: 'Credit card Plugin',
+        msg: 'Check out our credit card plugin',
+        date: '19 May',
+        isUnread: true,
+      ),
+      Mail(
+        sender: 'Flutter',
+        sub: 'Flutter is Future',
+        msg: 'Flutter laucnhed for Web',
+        date: '18 Jun',
+        isUnread: true,
+      ),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: ListView(
+        bottom: false,
+        child: Column(
           children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 3,
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Row(
-                              children: <Widget>[
-                                Showcase(
-                                  key: _one,
-                                  description: 'Tap to see menu options',
-                                  child: Icon(
-                                    Icons.menu,
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  'Search email',
-                                  style: TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Showcase(
-                            overlayPadding: EdgeInsets.all(5),
-                            key: _two,
-                            title: 'Profile',
-                            description:
-                                'Tap to see profile which contains user\'s name, profile picture, mobile number and country',
-                            contentPadding: EdgeInsets.all(8.0),
-                            showcaseBackgroundColor: Colors.blueAccent,
-                            textColor: Colors.white,
-                            shapeBorder: CircleBorder(),
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: AssetImage('assets/simform.png'),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 10, right: 8),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              color: Color(0xffF9F9F9),
+                              border: Border.all(
+                                  color: Color(0xffF3F3F3), width: 2),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Row(
+                                  children: <Widget>[
+                                    Showcase(
+                                      key: _one,
+                                      description: 'Tap to see menu options',
+                                      child: Icon(
+                                        Icons.menu,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      'Search email',
+                                      style: TextStyle(
+                                          color: Colors.black45,
+                                          fontSize: 16,
+                                          letterSpacing: 0.4),
+                                    ),
+                                    Spacer(),
+                                    Icon(
+                                      Icons.search,
+                                      color: Color(0xffADADAD),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    Showcase(
+                      overlayPadding: EdgeInsets.all(5),
+                      key: _two,
+                      title: 'Profile',
+                      description:
+                          'Tap to see profile which contains user\'s name, profile picture, mobile number and country',
+                      contentPadding: EdgeInsets.all(8.0),
+                      showcaseBackgroundColor: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      shapeBorder: CircleBorder(),
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        width: 45,
+                        height: 45,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).primaryColor),
+                        child: Image.asset('assets/simform.png'),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 12,
+                    )
+                  ],
                 ),
                 SizedBox(
-                  height: 7,
+                  height: 10,
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 16, top: 4),
                   child: Text(
                     'PRIMARY',
                     style: TextStyle(
-                      color: Colors.black54,
+                      color: Colors.black,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -143,179 +231,16 @@ class _MailPageState extends State<MailPage> {
               ],
             ),
             Padding(padding: EdgeInsets.only(top: 8)),
-            GestureDetector(
-                onTap: () {
-                  Navigator.push<void>(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (_) => Detail(),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Showcase(
-                    key: _three,
-                    description: 'Tap to check mail',
-                    disposeOnTap: true,
-                    onTargetClick: () {
-                      Navigator.push<void>(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (_) => Detail(),
-                        ),
-                      ).then((_) {
-                        setState(() {
-                          ShowCaseWidget.of(context)!
-                              .startShowCase([_four, _five]);
-                        });
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 6, right: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Showcase.withWidget(
-                                  key: _four,
-                                  height: 50,
-                                  width: 140,
-                                  shapeBorder: CircleBorder(),
-                                  container: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 45,
-                                        height: 45,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.blue[200],
-                                        ),
-                                        child: Center(
-                                          child: Text('S'),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        'Your sender\'s profile ',
-                                        style: TextStyle(color: Colors.white),
-                                      )
-                                    ],
-                                  ),
-                                  child: Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: Container(
-                                      width: 45,
-                                      height: 45,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.blue[200],
-                                      ),
-                                      child: Center(
-                                        child: Text('S'),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(padding: EdgeInsets.only(left: 8)),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      'Slack',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Flutter Notification',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Hi, you have new Notification',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                '1 Jun',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Icon(
-                                Icons.star_border,
-                                color: Colors.grey,
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                )),
-            MailTile(
-              Mail(
-                sender: 'Medium',
-                sub: 'Showcase View',
-                msg: 'Check new showcase View',
-                date: '25 May',
-                isUnread: false,
-              ),
-            ),
-            MailTile(
-              Mail(
-                sender: 'Quora',
-                sub: 'New Question for you',
-                msg: 'Hi, There is new question for you',
-                date: '22 May',
-                isUnread: false,
-              ),
-            ),
-            MailTile(
-              Mail(
-                  sender: 'Google',
-                  sub: 'Flutter 1.5',
-                  msg: 'We have launched Flutter 1.5',
-                  date: '20 May',
-                  isUnread: true),
-            ),
-            MailTile(
-              Mail(
-                  sender: 'Simform',
-                  sub: 'Credit card Plugin',
-                  msg: 'Check out our credit card plugin',
-                  date: '19 May',
-                  isUnread: true),
-            ),
-            MailTile(
-              Mail(
-                sender: 'Flutter',
-                sub: 'Flutter is Future',
-                msg: 'Flutter laucnhed for Web',
-                date: '18 Jun',
-                isUnread: true,
-              ),
-            ),
+            Expanded(
+              child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return showcaseMailTile(context);
+                    }
+                    return MailTile(mails[index % mails.length]);
+                  }),
+            )
           ],
         ),
       ),
@@ -325,7 +250,7 @@ class _MailPageState extends State<MailPage> {
         description: 'Click here to compose mail',
         shapeBorder: CircleBorder(),
         child: FloatingActionButton(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
             setState(() {
               ShowCaseWidget.of(context)!
@@ -334,7 +259,167 @@ class _MailPageState extends State<MailPage> {
           },
           child: Icon(
             Icons.add,
-            color: Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+
+  GestureDetector showcaseMailTile(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push<void>(
+          context,
+          MaterialPageRoute<void>(
+            builder: (_) => Detail(),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Showcase(
+          key: _three,
+          description: 'Tap to check mail',
+          disposeOnTap: true,
+          onTargetClick: () {
+            Navigator.push<void>(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => Detail(),
+              ),
+            ).then((_) {
+              setState(() {
+                ShowCaseWidget.of(context)!.startShowCase([_four, _five]);
+              });
+            });
+          },
+          child: Container(
+            padding:
+                const EdgeInsets.only(left: 6, right: 16, top: 5, bottom: 5),
+            color: Color(0xffFFF6F7),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Showcase.withWidget(
+                        key: _four,
+                        height: 50,
+                        width: 140,
+                        shapeBorder: CircleBorder(),
+                        container: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffFCD8DC),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'S',
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Your sender\'s profile ',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          child: Container(
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xffFCD8DC),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'S',
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(left: 8)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Slack',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                          Text(
+                            'Flutter Notification',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            'Hi, you have new Notification',
+                            style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 50,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        '1 Jun',
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Icon(
+                        Icons.star,
+                        color: Color(0xffFBC800),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -367,6 +452,7 @@ class MailTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 6, right: 16, top: 8, bottom: 8),
+      color: mail.isUnread ? Color(0xffFFF6F7) : Colors.white,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -380,10 +466,17 @@ class MailTile extends StatelessWidget {
                   height: 45,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.blue[200],
+                    color: Color(0xffFCD8DC),
                   ),
                   child: Center(
-                    child: Text(mail.sender[0]),
+                    child: Text(
+                      mail.sender[0],
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ),
                 Padding(padding: EdgeInsets.only(left: 8)),
@@ -401,16 +494,17 @@ class MailTile extends StatelessWidget {
                     Text(
                       mail.sub,
                       style: TextStyle(
-                        fontWeight:
-                            mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: FontWeight.normal,
                         fontSize: 16,
                       ),
                     ),
                     Text(
                       mail.msg,
                       style: TextStyle(
-                        fontWeight:
-                            mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: FontWeight.normal,
+                        color: mail.isUnread
+                            ? Theme.of(context).primaryColor
+                            : Colors.black,
                         fontSize: 15,
                       ),
                     ),
@@ -419,20 +513,30 @@ class MailTile extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            children: <Widget>[
-              Text(
-                mail.date,
-                style: TextStyle(
-                  fontWeight:
-                      mail.isUnread ? FontWeight.bold : FontWeight.normal,
+          Container(
+            width: 50,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 5,
                 ),
-              ),
-              Icon(
-                Icons.star_border,
-                color: Colors.grey,
-              ),
-            ],
+                Text(
+                  mail.date,
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Icon(
+                  mail.isUnread ? Icons.star : Icons.star_border,
+                  color: mail.isUnread ? Color(0xffFBC800) : Colors.grey,
+                ),
+              ],
+            ),
           ),
         ],
       ),

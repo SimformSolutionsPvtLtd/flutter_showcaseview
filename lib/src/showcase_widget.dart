@@ -35,6 +35,7 @@ class ShowCaseWidget extends StatefulWidget {
   final bool autoPlay;
   final Duration autoPlayDelay;
   final bool autoPlayLockEnable;
+  final bool disableBarrierInteraction;
 
   const ShowCaseWidget({
     required this.builder,
@@ -44,6 +45,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.autoPlay = false,
     this.autoPlayDelay = const Duration(milliseconds: 2000),
     this.autoPlayLockEnable = false,
+    this.disableBarrierInteraction = false,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -71,6 +73,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   late bool autoPlay;
   late Duration autoPlayDelay;
   late bool autoPlayLockEnable;
+  late bool disableBarrierInteraction;
 
   @override
   void initState() {
@@ -78,6 +81,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     autoPlayDelay = widget.autoPlayDelay;
     autoPlay = widget.autoPlay;
     autoPlayLockEnable = widget.autoPlayLockEnable;
+    disableBarrierInteraction = widget.disableBarrierInteraction;
   }
 
   void startShowCase(List<GlobalKey> widgetIds) {

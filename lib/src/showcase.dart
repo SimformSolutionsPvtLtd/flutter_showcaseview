@@ -210,6 +210,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   }
 
   void _nextIfAny() {
+    if (ShowCaseWidget.of(context)!.disableBarrierInteraction) {
+      return;
+    }
     if (timer != null && timer!.isActive) {
       if (ShowCaseWidget.of(context)!.autoPlayLockEnable) {
         return;

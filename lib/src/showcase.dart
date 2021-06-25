@@ -200,10 +200,17 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return AnchoredOverlay(
-      overlayBuilder: (context, rectBound, offset) =>
-          buildOverlayOnTarget(offset, rectBound.size, rectBound, size),
+      overlayBuilder: (context, rectBound, offset) {
+        final size = MediaQuery.of(context).size;
+        position = GetPosition(
+          key: widget.key,
+          padding: widget.overlayPadding,
+          screenWidth: size.width,
+          screenHeight: size.height,
+        );
+        return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
+      },
       showOverlay: true,
       child: widget.child,
     );

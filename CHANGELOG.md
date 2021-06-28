@@ -1,4 +1,4 @@
-## [1.0.1] - June 25, 2021 [Unreleased]
+## [1.1.0] - June 28, 2021
 
 - Fixed [#103](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/103) - add overlay padding.
 - Fixed [#105](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/105) - showcase not showing text in one line even if it is not so big.

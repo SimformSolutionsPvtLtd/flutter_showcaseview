@@ -132,7 +132,7 @@ class Showcase extends StatefulWidget {
 class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   bool _showShowCase = false;
   Animation<double>? _slideAnimation;
-  late AnimationController _slideAnimationController;
+  AnimationController? _slideAnimationController;
   Timer? timer;
   GetPosition? position;
 
@@ -145,24 +145,24 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       vsync: this,
     )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          _slideAnimationController.reverse();
+          _slideAnimationController?.reverse();
         }
-        if (_slideAnimationController.isDismissed) {
+        if (_slideAnimationController?.isDismissed == true) {
           if (!widget.disableAnimation) {
-            _slideAnimationController.forward();
+            _slideAnimationController?.forward();
           }
         }
       });
 
     _slideAnimation = CurvedAnimation(
-      parent: _slideAnimationController,
+      parent: _slideAnimationController!,
       curve: Curves.easeInOut,
     );
   }
 
   @override
   void dispose() {
-    _slideAnimationController.dispose();
+    _slideAnimationController?.dispose();
     super.dispose();
   }
 
@@ -188,7 +188,25 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     });
 
     if (activeStep == widget.key) {
-      _slideAnimationController.forward();
+      _slideAnimationController ??= AnimationController(
+        duration: widget.animationDuration,
+        vsync: this,
+      )..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            _slideAnimationController?.reverse();
+          }
+          if (_slideAnimationController?.isDismissed == true) {
+            if (!widget.disableAnimation) {
+              _slideAnimationController?.forward();
+            }
+          }
+          _slideAnimation = CurvedAnimation(
+            parent: _slideAnimationController!,
+            curve: Curves.easeInOut,
+          );
+        });
+
+      _slideAnimationController?.forward();
       if (ShowCaseWidget.of(context)!.autoPlay) {
         timer = Timer(
             Duration(
@@ -227,13 +245,17 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     }
     ShowCaseWidget.of(context)!.completed(widget.key);
     if (!widget.disableAnimation) {
-      _slideAnimationController.forward();
+      _slideAnimationController?.forward();
     }
+    _slideAnimationController?.dispose();
+    _slideAnimationController = null;
   }
 
   void _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
-      ShowCaseWidget.of(context)!.dismiss();
+      ShowCaseWidget.of(context)?.dismiss();
+      _slideAnimationController?.dispose();
+      _slideAnimationController = null;
       widget.onTargetClick!();
     } else {
       (widget.onTargetClick ?? _nextIfAny).call();
@@ -242,7 +264,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 
   void _getOnTooltipTap() {
     if (widget.disposeOnTap == true) {
-      ShowCaseWidget.of(context)!.dismiss();
+      ShowCaseWidget.of(context)?.dismiss();
+      _slideAnimationController?.dispose();
+      _slideAnimationController = null;
     }
     widget.onToolTipClick?.call();
   }

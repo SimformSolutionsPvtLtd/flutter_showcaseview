@@ -99,7 +99,7 @@ Showcase.withWidget(
 6. Starting the `ShowCase`
 ```dart
 someEvent(){
-    ShowCaseWidget.startShowCase(context, [_one, _two, _three]);
+    ShowCaseWidget.of(context).startShowCase([_one, _two, _three]);
 }
 ```
 
@@ -118,7 +118,8 @@ ShowCaseWidget(
 If you want to start the `ShowCaseView` as soon as your UI built up then use below code.
 ```dart
 WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.startShowCase(context, [_one, _two, _three]));
+  ShowCaseWidget.of(context).startShowCase([_one, _two, _three])
+);
 ```
 
 

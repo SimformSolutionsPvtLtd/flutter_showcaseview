@@ -124,15 +124,17 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   @override
   void didUpdateWidget(OverlayBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance!
-        .addPostFrameCallback((_) => syncWidgetAndOverlay());
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (isShowingOverlay()) syncWidgetAndOverlay();
+    });
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    WidgetsBinding.instance!
-        .addPostFrameCallback((_) => syncWidgetAndOverlay());
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (isShowingOverlay()) syncWidgetAndOverlay();
+    });
   }
 
   @override

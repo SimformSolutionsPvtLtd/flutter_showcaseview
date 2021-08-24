@@ -1,6 +1,7 @@
-## [1.1.1] - July 1, 2021 [Unreleased]
+## [1.1.1] - July 24, 2021
 
 - Fixed [#92](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/92) - Showcase in ReorderableListView show at incorrect position
+- License update from BSD 2-Clause "Simplified" to MIT
 
 ## [1.1.0] - June 28, 2021
 

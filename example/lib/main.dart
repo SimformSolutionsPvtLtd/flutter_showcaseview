@@ -161,6 +161,10 @@ class _MailPageState extends State<MailPage> {
                                     Showcase(
                                       key: _one,
                                       description: 'Tap to see menu options',
+                                      centerWidget: Image.asset(
+                                        "assets/simform.png",
+                                        height: 150,
+                                      ),
                                       child: Icon(
                                         Icons.menu,
                                         color: Theme.of(context).primaryColor,

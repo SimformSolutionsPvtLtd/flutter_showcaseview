@@ -38,6 +38,7 @@ class Showcase extends StatefulWidget {
   final Widget child;
   final String? title;
   final String? description;
+  final Widget? centerWidget;
   final ShapeBorder? shapeBorder;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
@@ -62,6 +63,7 @@ class Showcase extends StatefulWidget {
       required this.child,
       this.title,
       required this.description,
+      this.centerWidget,
       this.shapeBorder,
       this.overlayColor = Colors.black,
       this.overlayOpacity = 0.75,
@@ -102,6 +104,7 @@ class Showcase extends StatefulWidget {
     required this.width,
     this.title,
     this.description,
+    this.centerWidget,
     this.shapeBorder,
     this.overlayColor = Colors.black,
     this.overlayOpacity = 0.75,
@@ -274,6 +277,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               onTap: _getOnTargetTap,
               shapeBorder: widget.shapeBorder,
             ),
+            if (widget.centerWidget != null) Center(child: widget.centerWidget),
             ToolTipWidget(
               position: position,
               offset: offset,

@@ -56,6 +56,7 @@ class Showcase extends StatefulWidget {
   final bool? disposeOnTap;
   final bool disableAnimation;
   final EdgeInsets overlayPadding;
+  final Widget? actions;
 
   const Showcase(
       {required this.key,
@@ -77,7 +78,8 @@ class Showcase extends StatefulWidget {
       this.contentPadding =
           const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       this.onToolTipClick,
-      this.overlayPadding = EdgeInsets.zero})
+      this.overlayPadding = EdgeInsets.zero,
+      this.actions,})
       : height = null,
         width = null,
         container = null,
@@ -115,6 +117,7 @@ class Showcase extends StatefulWidget {
     this.disableAnimation = false,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.overlayPadding = EdgeInsets.zero,
+    this.actions,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -229,6 +232,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   void _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
       ShowCaseWidget.of(context)!.dismiss();
+      disposeAnimationController();
       widget.onTargetClick!();
     } else {
       (widget.onTargetClick ?? _nextIfAny).call();
@@ -238,8 +242,13 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   void _getOnTooltipTap() {
     if (widget.disposeOnTap == true) {
       ShowCaseWidget.of(context)!.dismiss();
+      disposeAnimationController();
     }
     widget.onToolTipClick?.call();
+  }
+
+  void disposeAnimationController(){
+    _slideAnimationController.dispose();
   }
 
   Widget buildOverlayOnTarget(
@@ -291,6 +300,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               contentWidth: widget.width,
               onTooltipTap: _getOnTooltipTap,
               contentPadding: widget.contentPadding,
+              actions: widget.actions,
             ),
           ],
         ),

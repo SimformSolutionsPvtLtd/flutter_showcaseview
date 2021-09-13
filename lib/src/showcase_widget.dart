@@ -100,6 +100,23 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     }
   }
 
+  void prev(GlobalKey? id) {
+    if (ids != null && ids![activeWidgetId!] == id &&
+        (activeWidgetId! - 1) >= 0) {
+      setState(() {
+        _onComplete();
+        activeWidgetId = activeWidgetId! - 1;
+        _onStart();
+        if (activeWidgetId! >= ids!.length) {
+          _cleanupAfterSteps();
+          if (widget.onFinish != null) {
+            widget.onFinish!();
+          }
+        }
+      });
+    }
+  }
+
   void dismiss() {
     setState(_cleanupAfterSteps);
   }

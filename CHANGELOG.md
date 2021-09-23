@@ -1,3 +1,11 @@
+## [1.1.2] - September 23, 2021 [Unreleased]
+
+- Fixed [#139](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/139) - Weird position #139
+
+## [1.1.2] - September 15, 2021 [Unreleased]
+
+- Fixed [#138](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/138) - show Unhandled Exception: Null check operator used on a null value error
+
 ## [1.1.1] - July 24, 2021
 
 - Fixed [#92](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/92) - Showcase in ReorderableListView show at incorrect position

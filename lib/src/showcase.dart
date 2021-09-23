@@ -48,8 +48,6 @@ class Showcase extends StatefulWidget {
   final Color showcaseBackgroundColor;
   final Color textColor;
   final bool showArrow;
-  final double? height;
-  final double? width;
   final Duration animationDuration;
   final VoidCallback? onToolTipClick;
   final VoidCallback? onTargetClick;
@@ -78,9 +76,7 @@ class Showcase extends StatefulWidget {
           const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       this.onToolTipClick,
       this.overlayPadding = EdgeInsets.zero})
-      : height = null,
-        width = null,
-        container = null,
+      : container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity should be >= 0.0 and <= 1.0."),
         assert(
@@ -98,8 +94,6 @@ class Showcase extends StatefulWidget {
     this.key,
     required this.child,
     required this.container,
-    required this.height,
-    required this.width,
     this.title,
     this.description,
     this.shapeBorder,
@@ -287,8 +281,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               tooltipColor: widget.showcaseBackgroundColor,
               textColor: widget.textColor,
               showArrow: widget.showArrow,
-              contentHeight: widget.height,
-              contentWidth: widget.width,
               onTooltipTap: _getOnTooltipTap,
               contentPadding: widget.contentPadding,
             ),

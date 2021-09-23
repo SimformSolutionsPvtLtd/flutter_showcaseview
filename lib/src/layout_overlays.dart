@@ -22,7 +22,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:showcaseview/src/showcase_widget.dart';
+import 'showcase_widget.dart';
 
 /// Displays an overlay Widget anchored directly above the center of this
 /// [AnchoredOverlay].

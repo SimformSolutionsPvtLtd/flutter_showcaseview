@@ -40,8 +40,6 @@ class ToolTipWidget extends StatefulWidget {
   final Color? tooltipColor;
   final Color? textColor;
   final bool? showArrow;
-  final double? contentHeight;
-  final double? contentWidth;
   static late bool isArrowUp;
   final VoidCallback? onTooltipTap;
   final EdgeInsets? contentPadding;
@@ -59,8 +57,6 @@ class ToolTipWidget extends StatefulWidget {
       this.tooltipColor,
       this.textColor,
       this.showArrow,
-      this.contentHeight,
-      this.contentWidth,
       this.onTooltipTap,
       this.contentPadding = const EdgeInsets.symmetric(vertical: 8)});
 
@@ -70,10 +66,11 @@ class ToolTipWidget extends StatefulWidget {
 
 class _ToolTipWidgetState extends State<ToolTipWidget> {
   Offset? position;
+  Size? customWidgetMeasureSize = Size(0,120);
 
   bool isCloseToTopOrBottom(Offset position) {
     var height = 120.0;
-    height = widget.contentHeight ?? height;
+    height = customWidgetMeasureSize?.height ?? height;
     return (widget.screenSize!.height - position.dy) <= height;
   }
 
@@ -157,10 +154,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   }
 
   double _getSpace() {
-    var space = widget.position!.getCenter() - (widget.contentWidth! / 2);
-    if (space + widget.contentWidth! > widget.screenSize!.width) {
-      space = widget.screenSize!.width - widget.contentWidth! - 8;
-    } else if (space < (widget.contentWidth! / 2)) {
+    var contentWidth = customWidgetMeasureSize?.width ?? 0;
+    var space = widget.position!.getCenter() - (contentWidth / 2);
+    if (space + contentWidth> widget.screenSize!.width) {
+      space = widget.screenSize!.width - contentWidth- 8;
+    } else if (space < (contentWidth/ 2)) {
       space = 16;
     }
     return space;
@@ -169,11 +167,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   @override
   void initState() {
     super.initState();
-    position = widget.offset;
   }
 
   @override
   Widget build(BuildContext context) {
+    position = widget.offset;
     final contentOrientation = findPositionForContent(position!);
     final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
     ToolTipWidget.isArrowUp = contentOffsetMultiplier == 1.0;
@@ -294,9 +292,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                         child: MeasureSize(
                             onSizeChange: (size) {
                               setState(() {
+                                customWidgetMeasureSize =
+                                    Size(size!.width, size.height);
                                 var tempPos = position;
                                 tempPos = Offset(
-                                    position!.dx, position!.dy + size!.height);
+                                    position!.dx, position!.dy + size.height);
                                 position = tempPos;
                               });
                             },

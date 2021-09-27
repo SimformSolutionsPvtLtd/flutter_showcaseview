@@ -169,11 +169,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   @override
   void initState() {
     super.initState();
-    position = widget.offset;
   }
 
   @override
   Widget build(BuildContext context) {
+    position = widget.offset;
     final contentOrientation = findPositionForContent(position!);
     final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
     ToolTipWidget.isArrowUp = contentOffsetMultiplier == 1.0;

@@ -21,7 +21,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:showcaseview/src/showcase_widget.dart';
+
+import 'showcase_widget.dart';
 
 /// Displays an overlay Widget anchored directly above the center of this
 /// [AnchoredOverlay].
@@ -65,12 +66,18 @@ class AnchoredOverlay extends StatelessWidget {
                 box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
             final bottomRight =
                 box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-            final anchorBounds = Rect.fromLTRB(
-              topLeft.dx,
-              topLeft.dy,
-              bottomRight.dx,
-              bottomRight.dy,
-            );
+            Rect anchorBounds;
+            anchorBounds = (topLeft.dx.isNaN ||
+                    topLeft.dy.isNaN ||
+                    bottomRight.dx.isNaN ||
+                    bottomRight.dy.isNaN)
+                ? Rect.fromLTRB(0.0, 0.0, 0.0, 0.0)
+                : Rect.fromLTRB(
+                    topLeft.dx,
+                    topLeft.dy,
+                    bottomRight.dx,
+                    bottomRight.dy,
+                  );
             final anchorCenter = box.size.center(topLeft);
             return overlayBuilder!(overlayContext, anchorBounds, anchorCenter);
           },

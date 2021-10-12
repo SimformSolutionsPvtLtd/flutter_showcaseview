@@ -1,4 +1,4 @@
-## [1.1.2] - October 04, 2021 [Unreleased]
+## [1.1.2] - October 12, 2021
 
 - Fixed [#78](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/78) - Exception:BoxConstraints has NaN values #78
 - Fixed [#139](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/139) - Weird position #139

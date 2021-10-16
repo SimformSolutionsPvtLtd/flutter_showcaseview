@@ -369,7 +369,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
 
   Widget _buildBottomButtons(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         if (widget.showSkipButton ?? false)
           InkWell(
@@ -386,6 +385,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
               ),
             ),
           ),
+        const Spacer(),
         if (widget.showNextButton ?? false)
           InkWell(
             onTap: widget.onNextButtonTap,

@@ -160,7 +160,7 @@ class _MailPageState extends State<MailPage> {
                                 child: Row(
                                   children: <Widget>[
                                     Showcase(
-                                      showNextButton: true,
+                                      showNextButton: false,
                                       showSkipButton: true,
                                       nextButtonText: 'Next',
                                       skipButtonText: 'Skip',
@@ -292,8 +292,8 @@ class _MailPageState extends State<MailPage> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Showcase(
           showNextButton: true,
-          showSkipButton: true,
-          nextButtonText: 'Next',
+          showSkipButton: false,
+          nextButtonText: 'Next >',
           skipButtonText: 'Skip',
           key: _three,
           description: 'Tap to check mail',

@@ -45,24 +45,37 @@ class ToolTipWidget extends StatefulWidget {
   static late bool isArrowUp;
   final VoidCallback? onTooltipTap;
   final EdgeInsets? contentPadding;
+  final bool? showNextButton;
+  final bool? showSkipButton;
+  final String? nextButtonText;
+  final String? skipButtonText;
+  final VoidCallback? onNextButtonTap;
+  final VoidCallback? onSkipButtonTap;
 
-  ToolTipWidget(
-      {this.position,
-      this.offset,
-      this.screenSize,
-      this.title,
-      this.description,
-      this.animationOffset,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.container,
-      this.tooltipColor,
-      this.textColor,
-      this.showArrow,
-      this.contentHeight,
-      this.contentWidth,
-      this.onTooltipTap,
-      this.contentPadding = const EdgeInsets.symmetric(vertical: 8)});
+  ToolTipWidget({
+    this.position,
+    this.offset,
+    this.screenSize,
+    this.title,
+    this.description,
+    this.animationOffset,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.container,
+    this.tooltipColor,
+    this.textColor,
+    this.showArrow,
+    this.contentHeight,
+    this.contentWidth,
+    this.onTooltipTap,
+    this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+    this.showNextButton,
+    this.showSkipButton,
+    this.nextButtonText,
+    this.skipButtonText,
+    this.onNextButtonTap,
+    this.onSkipButtonTap,
+  });
 
   @override
   _ToolTipWidgetState createState() => _ToolTipWidgetState();
@@ -230,27 +243,31 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                                       ? CrossAxisAlignment.start
                                       : CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    widget.title != null
-                                        ? Text(
-                                            widget.title!,
-                                            style: widget.titleTextStyle ??
-                                                Theme.of(context)
-                                                    .textTheme
-                                                    .headline6!
-                                                    .merge(TextStyle(
-                                                        color:
-                                                            widget.textColor)),
-                                          )
-                                        : Container(),
-                                    Text(
-                                      widget.description!,
-                                      style: widget.descTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .subtitle2!
-                                              .merge(TextStyle(
-                                                  color: widget.textColor)),
-                                    ),
+                                    if (widget.title != null)
+                                      Text(
+                                        widget.title!,
+                                        style: widget.titleTextStyle ??
+                                            Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .merge(TextStyle(
+                                                    color: widget.textColor)),
+                                      ),
+                                    if (widget.description != null)
+                                      Text(
+                                        widget.description!,
+                                        style: widget.descTextStyle ??
+                                            Theme.of(context)
+                                                .textTheme
+                                                .subtitle2!
+                                                .merge(TextStyle(
+                                                    color: widget.textColor)),
+                                      ),
+                                    if ((widget.showNextButton ?? false) ||
+                                        (widget.showSkipButton ?? false)) ...[
+                                      const SizedBox(height: 8.0),
+                                      _buildBottomButtons(context),
+                                    ]
                                   ],
                                 ),
                               )
@@ -348,5 +365,43 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
           ..layout())
         .size;
     return textPainter;
+  }
+
+  Widget _buildBottomButtons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        if (widget.showSkipButton ?? false)
+          InkWell(
+            onTap: widget.onSkipButtonTap,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                widget.skipButtonText ?? "Skip",
+                style: widget.descTextStyle ??
+                    Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .merge(TextStyle(color: widget.textColor)),
+              ),
+            ),
+          ),
+        if (widget.showNextButton ?? false)
+          InkWell(
+            onTap: widget.onNextButtonTap,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                widget.nextButtonText ?? "Next",
+                style: widget.descTextStyle ??
+                    Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .merge(TextStyle(color: widget.textColor)),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }

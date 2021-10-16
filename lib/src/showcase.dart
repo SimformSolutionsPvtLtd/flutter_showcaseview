@@ -56,29 +56,37 @@ class Showcase extends StatefulWidget {
   final bool? disposeOnTap;
   final bool disableAnimation;
   final EdgeInsets overlayPadding;
+  final String? nextButtonText;
+  final String? skipButtonText;
+  final bool showNextButton;
+  final bool showSkipButton;
 
-  const Showcase(
-      {required this.key,
-      required this.child,
-      this.title,
-      required this.description,
-      this.shapeBorder,
-      this.overlayColor = Colors.black,
-      this.overlayOpacity = 0.75,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.showcaseBackgroundColor = Colors.white,
-      this.textColor = Colors.black,
-      this.showArrow = true,
-      this.onTargetClick,
-      this.disposeOnTap,
-      this.animationDuration = const Duration(milliseconds: 2000),
-      this.disableAnimation = false,
-      this.contentPadding =
-          const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      this.onToolTipClick,
-      this.overlayPadding = EdgeInsets.zero})
-      : height = null,
+  const Showcase({
+    required this.key,
+    required this.child,
+    this.title,
+    required this.description,
+    this.shapeBorder,
+    this.overlayColor = Colors.black,
+    this.overlayOpacity = 0.75,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.showArrow = true,
+    this.onTargetClick,
+    this.disposeOnTap,
+    this.animationDuration = const Duration(milliseconds: 2000),
+    this.disableAnimation = false,
+    this.contentPadding =
+        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+    this.onToolTipClick,
+    this.overlayPadding = EdgeInsets.zero,
+    this.nextButtonText = 'Next',
+    this.skipButtonText = 'Skip',
+    this.showNextButton = false,
+    this.showSkipButton = false,
+  })  : height = null,
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -115,6 +123,10 @@ class Showcase extends StatefulWidget {
     this.disableAnimation = false,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.overlayPadding = EdgeInsets.zero,
+    this.nextButtonText = 'Next',
+    this.skipButtonText = 'Skip',
+    this.showNextButton = false,
+    this.showSkipButton = false,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -188,7 +200,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
         timer = Timer(
             Duration(
                 seconds: ShowCaseWidget.of(context)!.autoPlayDelay.inSeconds),
-            _nextIfAny);
+            nextIfAny);
       }
     }
   }
@@ -211,7 +223,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     );
   }
 
-  void _nextIfAny() {
+  void nextIfAny() {
     if (timer != null && timer!.isActive) {
       if (ShowCaseWidget.of(context)!.autoPlayLockEnable) {
         return;
@@ -231,7 +243,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       ShowCaseWidget.of(context)!.dismiss();
       widget.onTargetClick!();
     } else {
-      (widget.onTargetClick ?? _nextIfAny).call();
+      (widget.onTargetClick ?? nextIfAny).call();
     }
   }
 
@@ -255,7 +267,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
         child: Stack(
           children: [
             GestureDetector(
-              onTap: _nextIfAny,
+              onTap: nextIfAny,
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
@@ -291,6 +303,12 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               contentWidth: widget.width,
               onTooltipTap: _getOnTooltipTap,
               contentPadding: widget.contentPadding,
+              showNextButton: widget.showNextButton,
+              showSkipButton: widget.showSkipButton,
+              nextButtonText: widget.nextButtonText,
+              skipButtonText: widget.skipButtonText,
+              onNextButtonTap: nextIfAny,
+              onSkipButtonTap: () => ShowCaseWidget.of(context)!.dismiss(),
             ),
           ],
         ),

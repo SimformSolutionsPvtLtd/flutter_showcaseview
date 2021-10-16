@@ -51,6 +51,7 @@ class _MailPageState extends State<MailPage> {
   GlobalKey _four = GlobalKey();
   GlobalKey _five = GlobalKey();
   List<Mail> mails = [];
+  late final ShowCaseWidget _showCaseWidget;
 
   @override
   void initState() {
@@ -159,6 +160,10 @@ class _MailPageState extends State<MailPage> {
                                 child: Row(
                                   children: <Widget>[
                                     Showcase(
+                                      showNextButton: true,
+                                      showSkipButton: true,
+                                      nextButtonText: 'Next',
+                                      skipButtonText: 'Skip',
                                       key: _one,
                                       description: 'Tap to see menu options',
                                       child: Icon(
@@ -190,6 +195,10 @@ class _MailPageState extends State<MailPage> {
                       ),
                     ),
                     Showcase(
+                      showNextButton: true,
+                      showSkipButton: true,
+                      nextButtonText: 'Next',
+                      skipButtonText: 'Skip',
                       overlayPadding: EdgeInsets.all(5),
                       key: _two,
                       title: 'Profile',
@@ -245,6 +254,10 @@ class _MailPageState extends State<MailPage> {
         ),
       ),
       floatingActionButton: Showcase(
+        showNextButton: true,
+        showSkipButton: true,
+        nextButtonText: 'Next',
+        skipButtonText: 'Skip',
         key: _five,
         title: 'Compose Mail',
         description: 'Click here to compose mail',
@@ -278,6 +291,10 @@ class _MailPageState extends State<MailPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Showcase(
+          showNextButton: true,
+          showSkipButton: true,
+          nextButtonText: 'Next',
+          skipButtonText: 'Skip',
           key: _three,
           description: 'Tap to check mail',
           disposeOnTap: true,

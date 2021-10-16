@@ -254,10 +254,6 @@ class _MailPageState extends State<MailPage> {
         ),
       ),
       floatingActionButton: Showcase(
-        showNextButton: true,
-        showSkipButton: true,
-        nextButtonText: 'Next',
-        skipButtonText: 'Skip',
         key: _five,
         title: 'Compose Mail',
         description: 'Click here to compose mail',

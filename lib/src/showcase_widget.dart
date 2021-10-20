@@ -102,6 +102,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   void dismiss() {
     setState(_cleanupAfterSteps);
+    if (widget.onFinish != null) widget.onFinish!();
   }
 
   void _onStart() {

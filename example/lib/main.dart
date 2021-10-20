@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
                       statusBarIconBrightness: Brightness.dark,
                       statusBarColor: Colors.white));
           },
+          onFinish: () => log('Finish'),
           builder: Builder(builder: (context) => MailPage()),
           autoPlay: false,
           autoPlayDelay: Duration(seconds: 3),

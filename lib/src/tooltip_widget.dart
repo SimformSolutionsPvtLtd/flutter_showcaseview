@@ -111,11 +111,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
             .merge(TextStyle(color: widget.textColor));
     final titleLength = widget.title == null
         ? 0
-        : _textSize(widget.title!, titleStyle).width +
+        : _textSize(widget.title ?? '', titleStyle).width +
             widget.contentPadding!.right +
             widget.contentPadding!.left;
     final descriptionLength =
-        _textSize(widget.description!, descriptionStyle).width +
+        _textSize(widget.description ?? '', descriptionStyle).width +
             widget.contentPadding!.right +
             widget.contentPadding!.left;
     var maxTextWidth = max(titleLength, descriptionLength);

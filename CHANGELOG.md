@@ -1,3 +1,7 @@
+## [1.1.3] - October 28, 2021
+
+- Fixed [#158](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/158) - Arrow animation is not synchronized with tooltip
+
 ## [1.1.2] - October 12, 2021
 
 - Fixed [#78](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/78) - Exception:BoxConstraints has NaN values #78

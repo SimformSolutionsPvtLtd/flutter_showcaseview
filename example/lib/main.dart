@@ -218,6 +218,7 @@ class _MailPageState extends State<MailPage> {
                             color: Theme.of(context).primaryColor),
                         child: Image.asset('assets/simform.png'),
                       ),
+                      onNextItemCalled: () => log('Next item called'),
                     ),
                     SizedBox(
                       width: 12,

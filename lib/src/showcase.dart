@@ -60,6 +60,7 @@ class Showcase extends StatefulWidget {
   final String? skipButtonText;
   final bool showNextButton;
   final bool showSkipButton;
+  final VoidCallback? onNextItemCalled;
 
   const Showcase({
     required this.key,
@@ -86,6 +87,7 @@ class Showcase extends StatefulWidget {
     this.skipButtonText = 'Skip',
     this.showNextButton = false,
     this.showSkipButton = false,
+    this.onNextItemCalled,
   })  : height = null,
         width = null,
         container = null,
@@ -127,6 +129,7 @@ class Showcase extends StatefulWidget {
     this.skipButtonText = 'Skip',
     this.showNextButton = false,
     this.showSkipButton = false,
+    this.onNextItemCalled,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -233,6 +236,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       timer = null;
     }
     ShowCaseWidget.of(context)!.completed(widget.key);
+    if (widget.onNextItemCalled != null) widget.onNextItemCalled!();
+
     if (!widget.disableAnimation) {
       _slideAnimationController.forward();
     }

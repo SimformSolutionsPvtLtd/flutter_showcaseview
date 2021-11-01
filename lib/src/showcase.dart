@@ -60,7 +60,7 @@ class Showcase extends StatefulWidget {
   final String? skipButtonText;
   final bool showNextButton;
   final bool showSkipButton;
-  final VoidCallback? onNextItemCalled;
+  final FutureOr<void> Function()? onNextItemCalled;
 
   const Showcase({
     required this.key,
@@ -226,21 +226,18 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     );
   }
 
-  void nextIfAny() {
-    if (timer != null && timer!.isActive) {
-      if (ShowCaseWidget.of(context)!.autoPlayLockEnable) {
-        return;
-      }
-      timer!.cancel();
-    } else if (timer != null && !timer!.isActive) {
-      timer = null;
-    }
-    ShowCaseWidget.of(context)!.completed(widget.key);
-    if (widget.onNextItemCalled != null) widget.onNextItemCalled!();
+  void nextIfAny() async {
+    if (widget.onNextItemCalled != null) await widget.onNextItemCalled!();
 
-    if (!widget.disableAnimation) {
-      _slideAnimationController.forward();
-    }
+    if (timer != null && timer!.isActive) {
+      if (ShowCaseWidget.of(context)!.autoPlayLockEnable) return;
+
+      timer!.cancel();
+    } else if (timer != null && !timer!.isActive) timer = null;
+
+    ShowCaseWidget.of(context)!.completed(widget.key);
+
+    if (!widget.disableAnimation) _slideAnimationController.forward();
   }
 
   void _getOnTargetTap() {

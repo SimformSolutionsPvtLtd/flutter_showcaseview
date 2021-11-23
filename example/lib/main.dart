@@ -309,6 +309,7 @@ class _MailPageState extends State<MailPage> {
                         height: 50,
                         width: 140,
                         shapeBorder: CircleBorder(),
+                        radius: BorderRadius.all(Radius.circular(150)),
                         container: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -480,35 +481,41 @@ class MailTile extends StatelessWidget {
                   ),
                 ),
                 Padding(padding: EdgeInsets.only(left: 8)),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      mail.sender,
-                      style: TextStyle(
-                        fontWeight:
-                            mail.isUnread ? FontWeight.bold : FontWeight.normal,
-                        fontSize: 17,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        mail.sender,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: mail.isUnread
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontSize: 17,
+                        ),
                       ),
-                    ),
-                    Text(
-                      mail.sub,
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16,
+                      Text(
+                        mail.sub,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                    Text(
-                      mail.msg,
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        color: mail.isUnread
-                            ? Theme.of(context).primaryColor
-                            : Colors.black,
-                        fontSize: 15,
+                      Text(
+                        mail.msg,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: mail.isUnread
+                              ? Theme.of(context).primaryColor
+                              : Colors.black,
+                          fontSize: 15,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 )
               ],
             ),

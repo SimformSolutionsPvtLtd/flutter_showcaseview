@@ -27,12 +27,14 @@ class ShapePainter extends CustomPainter {
   final ShapeBorder? shapeBorder;
   final Color? color;
   final double? opacity;
+  final BorderRadius? radius;
 
   ShapePainter({
     required this.rect,
     this.color,
     this.shapeBorder,
     this.opacity,
+    this.radius,
   });
 
   @override
@@ -42,9 +44,17 @@ class ShapePainter extends CustomPainter {
     final outer =
         RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(0));
 
-    final radius = shapeBorder == CircleBorder() ? 50.0 : 3.0;
+    final customRadius = shapeBorder == CircleBorder()
+        ? Radius.circular(50.0)
+        : Radius.circular(3.0);
 
-    final inner = RRect.fromRectAndRadius(rect, Radius.circular(radius));
+    final inner = RRect.fromRectAndCorners(
+      rect,
+      topLeft: (radius?.topLeft ?? customRadius),
+      topRight: (radius?.topRight ?? customRadius),
+      bottomLeft: (radius?.bottomLeft ?? customRadius),
+      bottomRight: (radius?.bottomRight ?? customRadius),
+    );
     canvas.drawDRRect(outer, inner, paint);
   }
 

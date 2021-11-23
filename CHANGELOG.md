@@ -1,3 +1,7 @@
+## [1.1.4] - November 23, 2021
+
+- Fixed [#166](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/166) - shapeBorder need to be more customisable
+
 ## [1.1.3] - October 28, 2021
 
 - Fixed [#158](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/158) - Arrow animation is not synchronized with tooltip

@@ -39,6 +39,7 @@ class Showcase extends StatefulWidget {
   final String? title;
   final String? description;
   final ShapeBorder? shapeBorder;
+  final BorderRadius? radius;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final EdgeInsets contentPadding;
@@ -63,6 +64,7 @@ class Showcase extends StatefulWidget {
       this.title,
       required this.description,
       this.shapeBorder,
+      this.radius,
       this.overlayColor = Colors.black,
       this.overlayOpacity = 0.75,
       this.titleTextStyle,
@@ -103,6 +105,7 @@ class Showcase extends StatefulWidget {
     this.title,
     this.description,
     this.shapeBorder,
+    this.radius,
     this.overlayColor = Colors.black,
     this.overlayOpacity = 0.75,
     this.titleTextStyle,
@@ -261,10 +264,12 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 height: MediaQuery.of(context).size.height,
                 child: CustomPaint(
                   painter: ShapePainter(
-                      opacity: widget.overlayOpacity,
-                      rect: position!.getRect(),
-                      shapeBorder: widget.shapeBorder,
-                      color: widget.overlayColor),
+                    opacity: widget.overlayOpacity,
+                    rect: position!.getRect(),
+                    shapeBorder: widget.shapeBorder,
+                    radius: widget.radius,
+                    color: widget.overlayColor,
+                  ),
                 ),
               ),
             ),
@@ -303,15 +308,17 @@ class _TargetWidget extends StatelessWidget {
   final Animation<double>? widthAnimation;
   final VoidCallback? onTap;
   final ShapeBorder? shapeBorder;
+  final BorderRadius? radius;
 
-  _TargetWidget({
-    Key? key,
-    required this.offset,
-    this.size,
-    this.widthAnimation,
-    this.onTap,
-    this.shapeBorder,
-  }) : super(key: key);
+  _TargetWidget(
+      {Key? key,
+      required this.offset,
+      this.size,
+      this.widthAnimation,
+      this.onTap,
+      this.shapeBorder,
+      this.radius})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -326,12 +333,14 @@ class _TargetWidget extends StatelessWidget {
             height: size!.height + 16,
             width: size!.width + 16,
             decoration: ShapeDecoration(
-              shape: shapeBorder ??
-                  RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
+              shape: radius != null
+                  ? RoundedRectangleBorder(borderRadius: radius!)
+                  : shapeBorder ??
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
             ),
           ),
         ),

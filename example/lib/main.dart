@@ -486,16 +486,17 @@ class MailTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        mail.sender,overflow: TextOverflow.ellipsis,
+                        mail.sender,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontWeight:
-                              mail.isUnread ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: mail.isUnread
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                           fontSize: 17,
                         ),
                       ),
                       Text(
-                        mail.sub,overflow: TextOverflow.ellipsis,
+                        mail.sub,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
@@ -503,7 +504,7 @@ class MailTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        mail.msg,overflow: TextOverflow.ellipsis,
+                        mail.msg,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,

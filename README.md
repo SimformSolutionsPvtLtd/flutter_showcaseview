@@ -70,6 +70,7 @@ Showcase(
   description: 'Click here to go to your Profile',
   disableAnimation: true,
   shapeBorder: CircleBorder(),
+  radius: BorderRadius.all(Radius.circular(40)),
   showArrow: false,
   overlayPadding: EdgeInsets.all(5),
   slideDuration: Duration(milliseconds: 1500),

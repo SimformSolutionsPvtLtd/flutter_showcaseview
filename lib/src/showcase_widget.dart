@@ -43,8 +43,8 @@ class ShowCaseWidget extends StatefulWidget {
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
     return context
-        .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()!
-        .activeWidgetIds;
+        .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()
+        ?.activeWidgetIds;
   }
 
   static ShowCaseWidgetState? of(BuildContext context) {

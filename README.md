@@ -7,10 +7,6 @@
 
 A Flutter package allows you to Showcase/Highlight your widgets step by step.
 
-It is inspired from [Fluttery's Flutter challenge](https://www.youtube.com/watch?v=Xm0ELlBtNWM).
-
-
-
 ## Preview
 
 ![The example app running in Android](https://github.com/simformsolutions/flutter_showcaseview/blob/master/preview/showcaseview.gif)

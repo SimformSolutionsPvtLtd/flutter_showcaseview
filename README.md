@@ -1,4 +1,4 @@
-![alt text](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/blob/master/banner.png?raw=true)
+![Showcaes View - Simform LLC.](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/blob/master/preview/banner.png?raw=true)
 
 
 # ShowCaseView
@@ -75,6 +75,7 @@ Showcase(
   overlayPadding: EdgeInsets.all(5),
   slideDuration: Duration(milliseconds: 1500),
   tooltipColor: Colors.blueGrey,
+  blurValue: 2,
   child: ...,
 ),
 ```
@@ -117,17 +118,17 @@ ShowCaseWidget(
 ```
 
 If you want to start the `ShowCaseView` as soon as your UI built up then use below code.
+
 ```dart
 WidgetsBinding.instance.addPostFrameCallback((_) =>
   ShowCaseWidget.of(context).startShowCase([_one, _two, _three])
 );
 ```
 
-
 ## How to use
+
 Check out the **example** app in the [example](example) directory or the 'Example' tab on pub.dartlang.org for a more complete example.
 
-<br/>
 
 ## Main Contributors
 
@@ -143,11 +144,12 @@ Check out the **example** app in the [example](example) directory or the 'Exampl
 <br/>
 
 ## Note
+
 We have updated license of flutter_showcaseview from BSD 2-Clause "Simplified" to MIT.
 
 ## License
 
-```
+```text
 MIT License
 
 Copyright (c) 2021 Simform Solutions
@@ -169,6 +171,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-
 ```

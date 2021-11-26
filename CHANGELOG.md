@@ -1,5 +1,6 @@
-## [1.1.4] - November 24, 2021
+## [1.1.4] - November 26, 2021
 
+- Add glassmorphism effect in showcase background.
 - Fixed [#166](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/166) - shapeBorder need to be more customisable
 - Fixed [#163](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/163) - Null check operator used on a null value
 

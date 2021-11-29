@@ -39,7 +39,7 @@ class ToolTipWidget extends StatefulWidget {
   final Widget? container;
   final Color? tooltipColor;
   final Color? textColor;
-  final bool? showArrow;
+  final bool showArrow;
   final double? contentHeight;
   final double? contentWidth;
   static late bool isArrowUp;
@@ -58,7 +58,7 @@ class ToolTipWidget extends StatefulWidget {
       this.container,
       this.tooltipColor,
       this.textColor,
-      this.showArrow,
+      required this.showArrow,
       this.contentHeight,
       this.contentWidth,
       this.onTooltipTap,
@@ -188,7 +188,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     var paddingTop = ToolTipWidget.isArrowUp ? 22.0 : 0.0;
     var paddingBottom = ToolTipWidget.isArrowUp ? 0.0 : 27.0;
 
-    if (!widget.showArrow!) {
+    if (!widget.showArrow) {
       paddingTop = 10;
       paddingBottom = 10;
     }
@@ -211,11 +211,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
             child: Material(
               color: Colors.transparent,
               child: Container(
-                padding: EdgeInsets.only(
-                  top: paddingTop - (ToolTipWidget.isArrowUp ? arrowHeight : 0),
-                  bottom: paddingBottom -
-                      (ToolTipWidget.isArrowUp ? 0 : arrowHeight),
-                ),
+                padding: widget.showArrow
+                    ? EdgeInsets.only(
+                        top: paddingTop -
+                            (ToolTipWidget.isArrowUp ? arrowHeight : 0),
+                        bottom: paddingBottom -
+                            (ToolTipWidget.isArrowUp ? 0 : arrowHeight),
+                      )
+                    : null,
                 child: Stack(
                   alignment: ToolTipWidget.isArrowUp
                       ? Alignment.topLeft
@@ -223,31 +226,32 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                           ? Alignment.bottomRight
                           : Alignment.bottomLeft,
                   children: [
-                    Positioned(
-                      left: _getLeft() == null
-                          ? null
-                          : (widget.position!.getCenter() -
-                              (arrowWidth / 2) -
-                              (_getLeft() ?? 0)),
-                      right: _getLeft() == null
-                          ? (MediaQuery.of(context).size.width -
-                                  widget.position!.getCenter()) -
-                              (_getRight() ?? 0) -
-                              (arrowWidth / 2)
-                          : null,
-                      child: CustomPaint(
-                        painter: _Arrow(
-                          strokeColor: widget.tooltipColor!,
-                          strokeWidth: 10,
-                          paintingStyle: PaintingStyle.fill,
-                          isUpArrow: ToolTipWidget.isArrowUp,
-                        ),
-                        child: SizedBox(
-                          height: arrowHeight,
-                          width: arrowWidth,
+                    if (widget.showArrow)
+                      Positioned(
+                        left: _getLeft() == null
+                            ? null
+                            : (widget.position!.getCenter() -
+                                (arrowWidth / 2) -
+                                (_getLeft() ?? 0)),
+                        right: _getLeft() == null
+                            ? (MediaQuery.of(context).size.width -
+                                    widget.position!.getCenter()) -
+                                (_getRight() ?? 0) -
+                                (arrowWidth / 2)
+                            : null,
+                        child: CustomPaint(
+                          painter: _Arrow(
+                            strokeColor: widget.tooltipColor!,
+                            strokeWidth: 10,
+                            paintingStyle: PaintingStyle.fill,
+                            isUpArrow: ToolTipWidget.isArrowUp,
+                          ),
+                          child: SizedBox(
+                            height: arrowHeight,
+                            width: arrowWidth,
+                          ),
                         ),
                       ),
-                    ),
                     Padding(
                       padding: EdgeInsets.only(
                         top: ToolTipWidget.isArrowUp ? arrowHeight - 1 : 0,

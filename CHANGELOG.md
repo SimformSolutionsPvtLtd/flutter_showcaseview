@@ -1,3 +1,7 @@
+## [1.1.5] - November 29, 2021 [Unreleased]
+
+- Fixed [#173](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/173) - showArrow not working
+
 ## [1.1.4] - November 26, 2021
 
 - Add glassmorphism effect in showcase background.

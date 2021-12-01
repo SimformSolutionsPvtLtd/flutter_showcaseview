@@ -1,6 +1,7 @@
-## [1.1.5] - November 29, 2021 [Unreleased]
+## [1.1.5] - December 2, 2021 [Unreleased]
 
 - Fixed [#173](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/173) - showArrow not working
+- Fixed [#121](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/121) - SlideTransition widget in tooltip_widget.dart is constantly rebuildung even after the showcasing is supposed to have stopped
 
 ## [1.1.4] - November 26, 2021
 

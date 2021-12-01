@@ -33,7 +33,6 @@ class ToolTipWidget extends StatefulWidget {
   final Size? screenSize;
   final String? title;
   final String? description;
-  final Animation<double>? animationOffset;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final Widget? container;
@@ -42,34 +41,43 @@ class ToolTipWidget extends StatefulWidget {
   final bool showArrow;
   final double? contentHeight;
   final double? contentWidth;
-  static late bool isArrowUp;
   final VoidCallback? onTooltipTap;
   final EdgeInsets? contentPadding;
+  final Duration animationDuration;
+  final bool disableAnimation;
 
-  ToolTipWidget(
-      {this.position,
-      this.offset,
-      this.screenSize,
-      this.title,
-      this.description,
-      this.animationOffset,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.container,
-      this.tooltipColor,
-      this.textColor,
-      required this.showArrow,
-      this.contentHeight,
-      this.contentWidth,
-      this.onTooltipTap,
-      this.contentPadding = const EdgeInsets.symmetric(vertical: 8)});
+  ToolTipWidget({
+    required this.position,
+    required this.offset,
+    required this.screenSize,
+    required this.title,
+    required this.description,
+    required this.titleTextStyle,
+    required this.descTextStyle,
+    required this.container,
+    required this.tooltipColor,
+    required this.textColor,
+    required this.showArrow,
+    required this.contentHeight,
+    required this.contentWidth,
+    required this.onTooltipTap,
+    required this.animationDuration,
+    this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+    required this.disableAnimation,
+  });
 
   @override
   _ToolTipWidgetState createState() => _ToolTipWidgetState();
 }
 
-class _ToolTipWidgetState extends State<ToolTipWidget> {
+class _ToolTipWidgetState extends State<ToolTipWidget>
+    with SingleTickerProviderStateMixin {
   Offset? position;
+
+  bool isArrowUp = false;
+
+  late final AnimationController _parentController;
+  late final Animation<double> _curvedAnimation;
 
   bool isCloseToTopOrBottom(Offset position) {
     var height = 120.0;
@@ -169,6 +177,35 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   @override
   void initState() {
     super.initState();
+    _parentController = AnimationController(
+      duration: widget.animationDuration,
+      vsync: this,
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _parentController.reverse();
+        }
+        if (_parentController.isDismissed) {
+          if (!widget.disableAnimation) {
+            _parentController.forward();
+          }
+        }
+      });
+
+    _curvedAnimation = CurvedAnimation(
+      parent: _parentController,
+      curve: Curves.easeInOut,
+    );
+
+    if (!widget.disableAnimation) {
+      _parentController.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _parentController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -176,17 +213,17 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     position = widget.offset;
     final contentOrientation = findPositionForContent(position!);
     final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
-    ToolTipWidget.isArrowUp = contentOffsetMultiplier == 1.0;
+    isArrowUp = contentOffsetMultiplier == 1.0;
 
-    final contentY = ToolTipWidget.isArrowUp
+    final contentY = isArrowUp
         ? widget.position!.getBottom() + (contentOffsetMultiplier * 3)
         : widget.position!.getTop() + (contentOffsetMultiplier * 3);
 
     final num contentFractionalOffset =
         contentOffsetMultiplier.clamp(-1.0, 0.0);
 
-    var paddingTop = ToolTipWidget.isArrowUp ? 22.0 : 0.0;
-    var paddingBottom = ToolTipWidget.isArrowUp ? 0.0 : 27.0;
+    var paddingTop = isArrowUp ? 22.0 : 0.0;
+    var paddingBottom = isArrowUp ? 0.0 : 27.0;
 
     if (!widget.showArrow) {
       paddingTop = 10;
@@ -207,20 +244,18 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
             position: Tween<Offset>(
               begin: Offset(0.0, contentFractionalOffset / 10),
               end: Offset(0.0, 0.100),
-            ).animate(widget.animationOffset!),
+            ).animate(_curvedAnimation),
             child: Material(
               color: Colors.transparent,
               child: Container(
                 padding: widget.showArrow
                     ? EdgeInsets.only(
-                        top: paddingTop -
-                            (ToolTipWidget.isArrowUp ? arrowHeight : 0),
-                        bottom: paddingBottom -
-                            (ToolTipWidget.isArrowUp ? 0 : arrowHeight),
+                        top: paddingTop - (isArrowUp ? arrowHeight : 0),
+                        bottom: paddingBottom - (isArrowUp ? 0 : arrowHeight),
                       )
                     : null,
                 child: Stack(
-                  alignment: ToolTipWidget.isArrowUp
+                  alignment: isArrowUp
                       ? Alignment.topLeft
                       : _getLeft() == null
                           ? Alignment.bottomRight
@@ -244,7 +279,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                             strokeColor: widget.tooltipColor!,
                             strokeWidth: 10,
                             paintingStyle: PaintingStyle.fill,
-                            isUpArrow: ToolTipWidget.isArrowUp,
+                            isUpArrow: isArrowUp,
                           ),
                           child: SizedBox(
                             height: arrowHeight,
@@ -254,8 +289,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                       ),
                     Padding(
                       padding: EdgeInsets.only(
-                        top: ToolTipWidget.isArrowUp ? arrowHeight - 1 : 0,
-                        bottom: ToolTipWidget.isArrowUp ? 0 : arrowHeight - 1,
+                        top: isArrowUp ? arrowHeight - 1 : 0,
+                        bottom: isArrowUp ? 0 : arrowHeight - 1,
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
@@ -325,10 +360,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
               child: SlideTransition(
                 position: Tween<Offset>(
                   begin: Offset(0.0, contentFractionalOffset / 10),
-                  end: !widget.showArrow! && !ToolTipWidget.isArrowUp
+                  end: !widget.showArrow && !isArrowUp
                       ? Offset(0.0, 0.0)
                       : Offset(0.0, 0.100),
-                ).animate(widget.animationOffset!),
+                ).animate(_curvedAnimation),
                 child: Material(
                   color: Colors.transparent,
                   child: GestureDetector(

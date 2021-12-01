@@ -25,7 +25,6 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'get_position.dart';
 import 'layout_overlays.dart';
@@ -95,7 +94,7 @@ class Showcase extends StatefulWidget {
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
+            "overlay opacity must be between 0 and 1."),
         assert(
             onTargetClick == null
                 ? true
@@ -133,48 +132,16 @@ class Showcase extends StatefulWidget {
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0.");
+            "overlay opacity must be between 0 and 1.");
 
   @override
   _ShowcaseState createState() => _ShowcaseState();
 }
 
-class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
+class _ShowcaseState extends State<Showcase> {
   bool _showShowCase = false;
-  Animation<double>? _slideAnimation;
-  late AnimationController _slideAnimationController;
   Timer? timer;
   GetPosition? position;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _slideAnimationController = AnimationController(
-      duration: widget.animationDuration,
-      vsync: this,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _slideAnimationController.reverse();
-        }
-        if (_slideAnimationController.isDismissed) {
-          if (!widget.disableAnimation) {
-            _slideAnimationController.forward();
-          }
-        }
-      });
-
-    _slideAnimation = CurvedAnimation(
-      parent: _slideAnimationController,
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  void dispose() {
-    _slideAnimationController.dispose();
-    super.dispose();
-  }
 
   @override
   void didChangeDependencies() {
@@ -188,7 +155,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     showOverlay();
   }
 
-  ///
   /// show overlay if there is any target widget
   ///
   void showOverlay() {
@@ -198,7 +164,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     });
 
     if (activeStep == widget.key) {
-      _slideAnimationController.forward();
       if (ShowCaseWidget.of(context)!.autoPlay) {
         timer = Timer(
             Duration(
@@ -236,9 +201,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       timer = null;
     }
     ShowCaseWidget.of(context)!.completed(widget.key);
-    if (!widget.disableAnimation) {
-      _slideAnimationController.forward();
-    }
   }
 
   void _getOnTargetTap() {
@@ -288,7 +250,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
                             decoration: BoxDecoration(
-                              color: widget.overlayColor,
+                              color: widget.overlayColor
+                                  .withOpacity(widget.overlayOpacity),
                             ),
                           ),
                         )
@@ -296,7 +259,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
                           decoration: BoxDecoration(
-                            color: widget.overlayColor,
+                            color: widget.overlayColor
+                                .withOpacity(widget.overlayOpacity),
                           ),
                         ),
                 ),
@@ -313,7 +277,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 screenSize: screenSize,
                 title: widget.title,
                 description: widget.description,
-                animationOffset: _slideAnimation,
                 titleTextStyle: widget.titleTextStyle,
                 descTextStyle: widget.descTextStyle,
                 container: widget.container,
@@ -324,6 +287,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 contentWidth: widget.width,
                 onTooltipTap: _getOnTooltipTap,
                 contentPadding: widget.contentPadding,
+                disableAnimation: widget.disableAnimation,
+                animationDuration: widget.animationDuration,
               ),
             ],
           )

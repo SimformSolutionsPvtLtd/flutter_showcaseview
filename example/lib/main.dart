@@ -166,6 +166,38 @@ class _MailPageState extends State<MailPage> {
                                         Icons.menu,
                                         color: Theme.of(context).primaryColor,
                                       ),
+                                      actions: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextButton(
+                                            child: Text(
+                                              'Previous',
+                                            ),
+                                            onPressed: () {
+                                              ShowCaseWidget.of(context)!
+                                                  .prev();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text(
+                                              'Next',
+                                            ),
+                                            onPressed: () {
+                                              ShowCaseWidget.of(context)!
+                                                  .completed(_one);
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text(
+                                              'Stop',
+                                            ),
+                                            onPressed: () {
+                                              ShowCaseWidget.of(context)!
+                                                  .dismiss();
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     SizedBox(
                                       width: 10,
@@ -208,6 +240,10 @@ class _MailPageState extends State<MailPage> {
                             shape: BoxShape.circle,
                             color: Theme.of(context).primaryColor),
                         child: Image.asset('assets/simform.png'),
+                      ),
+                      actions: ShowCaseDefaultActions(
+                        context: context,
+                        textColor: Colors.white,
                       ),
                     ),
                     SizedBox(
@@ -261,6 +297,18 @@ class _MailPageState extends State<MailPage> {
           child: Icon(
             Icons.add,
           ),
+        ),
+        actions: ShowCaseDefaultActions(
+          context: context,
+          onPrev: () {
+            ShowCaseWidget.of(context)!.prev();
+          },
+          onNext: () {
+            ShowCaseWidget.of(context)!.completed(_five);
+          },
+          onStop: () {
+            ShowCaseWidget.of(context)!.dismiss();
+          },
         ),
       ),
     );
@@ -421,6 +469,21 @@ class _MailPageState extends State<MailPage> {
                   ),
                 ),
               ],
+            ),
+          ),
+          actions: Container(
+            child: ShowCaseDefaultActions(
+              onPrev: () {
+                ShowCaseWidget.of(context)!.prev();
+              },
+              textColor: Colors.red,
+              onNext: () {
+                ShowCaseWidget.of(context)!.completed(_three);
+              },
+              onStop: () {
+                ShowCaseWidget.of(context)!.dismiss();
+              },
+              context: context,
             ),
           ),
         ),

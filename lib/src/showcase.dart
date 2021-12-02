@@ -59,6 +59,7 @@ class Showcase extends StatefulWidget {
   final bool? disposeOnTap;
   final bool disableAnimation;
   final EdgeInsets overlayPadding;
+  final Widget? actions;
 
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
@@ -68,30 +69,31 @@ class Showcase extends StatefulWidget {
   ///
   final double? blurValue;
 
-  const Showcase({
-    required this.key,
-    required this.child,
-    this.title,
-    required this.description,
-    this.shapeBorder,
-    this.overlayColor = Colors.black45,
-    this.overlayOpacity = 0.75,
-    this.titleTextStyle,
-    this.descTextStyle,
-    this.showcaseBackgroundColor = Colors.white,
-    this.textColor = Colors.black,
-    this.showArrow = true,
-    this.onTargetClick,
-    this.disposeOnTap,
-    this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false,
-    this.contentPadding =
-        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-    this.onToolTipClick,
-    this.overlayPadding = EdgeInsets.zero,
-    this.blurValue,
-    this.radius,
-  })  : height = null,
+  const Showcase(
+      {required this.key,
+      required this.child,
+      this.title,
+      required this.description,
+      this.shapeBorder,
+      this.overlayColor = Colors.black45,
+      this.overlayOpacity = 0.75,
+      this.titleTextStyle,
+      this.descTextStyle,
+      this.showcaseBackgroundColor = Colors.white,
+      this.textColor = Colors.black,
+      this.showArrow = true,
+      this.onTargetClick,
+      this.disposeOnTap,
+      this.animationDuration = const Duration(milliseconds: 2000),
+      this.disableAnimation = false,
+      this.contentPadding =
+          const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      this.onToolTipClick,
+      this.overlayPadding = EdgeInsets.zero,
+      this.blurValue,
+      this.radius,
+      this.actions})
+      : height = null,
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -130,6 +132,7 @@ class Showcase extends StatefulWidget {
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
+    this.actions,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -244,6 +247,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   void _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
       ShowCaseWidget.of(context)!.dismiss();
+      disposeAnimationController();
       widget.onTargetClick!();
     } else {
       (widget.onTargetClick ?? _nextIfAny).call();
@@ -253,8 +257,13 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
   void _getOnTooltipTap() {
     if (widget.disposeOnTap == true) {
       ShowCaseWidget.of(context)!.dismiss();
+      disposeAnimationController();
     }
     widget.onToolTipClick?.call();
+  }
+
+  void disposeAnimationController() {
+    _slideAnimationController.dispose();
   }
 
   Widget buildOverlayOnTarget(
@@ -324,6 +333,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 contentWidth: widget.width,
                 onTooltipTap: _getOnTooltipTap,
                 contentPadding: widget.contentPadding,
+                actions: widget.actions,
               ),
             ],
           )

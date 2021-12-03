@@ -46,6 +46,7 @@ class ToolTipWidget extends StatefulWidget {
   final Widget? actions;
   final Duration animationDuration;
   final bool disableAnimation;
+  final Rect rect;
 
   ToolTipWidget({
     required this.position,
@@ -66,6 +67,7 @@ class ToolTipWidget extends StatefulWidget {
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     required this.disableAnimation,
     this.actions,
+    required this.rect,
   });
 
   @override
@@ -94,8 +96,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         topPosition >= height;
   }
 
-  String findPositionForContent(Offset position) {
-    if (isCloseToTopOrBottom(position)) {
+  String _findPositionForContent(Offset position) {
+    if (_isCloseToTopOrBottom(position)) {
       return 'ABOVE';
     } else {
       return 'BELOW';
@@ -250,10 +252,27 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     super.dispose();
   }
 
+  void _getSizeAndPosition() {
+    final size = (context.findRenderObject() as RenderBox).size;
+    final position =
+    (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+
+    print("Size: $size, Position: $position");
+
+    var _cardBox = _textKey.currentContext?.findRenderObject() as RenderBox?;
+    if (_cardBox == null) return;
+
+    textSizeTemp = _cardBox.size;
+    cardBox = _cardBox.localToGlobal(Offset.zero);
+    setState(() {
+      // print('Custom Print $cardBox');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     position = widget.offset;
-    final contentOrientation = findPositionForContent(position!);
+    final contentOrientation = _findPositionForContent(position!);
     final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
     isArrowUp = contentOffsetMultiplier == 1.0;
 
@@ -276,6 +295,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final arrowHeight = 9.0;
 
     return Stack(
+      key: _stack,
       children: [
         if (widget.container == null)
           Positioned(

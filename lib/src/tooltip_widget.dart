@@ -46,6 +46,7 @@ class ToolTipWidget extends StatefulWidget {
   final VoidCallback? onTooltipTap;
   final EdgeInsets? contentPadding;
   final Widget? actions;
+  final Rect rect;
 
   ToolTipWidget({
     this.position,
@@ -65,6 +66,7 @@ class ToolTipWidget extends StatefulWidget {
     this.onTooltipTap,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.actions,
+    required this.rect,
   });
 
   @override
@@ -75,14 +77,20 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   Offset? position;
   double tempWidth = 200.0;
 
-  bool isCloseToTopOrBottom(Offset position) {
+  final GlobalKey _textKey = GlobalKey();
+  final GlobalKey _stack = GlobalKey();
+
+  Size textSizeTemp = Size.zero;
+  Offset cardBox = Offset(0, 0);
+
+  bool _isCloseToTopOrBottom(Offset position) {
     var height = 120.0;
     height = widget.contentHeight ?? height;
     return (widget.screenSize!.height - position.dy) <= height;
   }
 
-  String findPositionForContent(Offset position) {
-    if (isCloseToTopOrBottom(position)) {
+  String _findPositionForContent(Offset position) {
+    if (_isCloseToTopOrBottom(position)) {
       return 'ABOVE';
     } else {
       return 'BELOW';
@@ -207,14 +215,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   void initState() {
     super.initState();
     position = widget.offset;
-    WidgetsBinding.instance!.addPostFrameCallback((_) => getSizeAndPosition());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _getSizeAndPosition());
   }
 
-  final GlobalKey _textKey = GlobalKey();
-  Size textSizeTemp = Size.zero;
-  Offset cardBox = Offset(0, 0);
+  void _getSizeAndPosition() {
+    final size = (context.findRenderObject() as RenderBox).size;
+    final position =
+        (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
 
-  void getSizeAndPosition() {
+    print("Size: $size, Position: $position");
+
     var _cardBox = _textKey.currentContext?.findRenderObject() as RenderBox?;
     if (_cardBox == null) return;
 
@@ -228,7 +238,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
   @override
   Widget build(BuildContext context) {
     position = widget.offset;
-    final contentOrientation = findPositionForContent(position!);
+    final contentOrientation = _findPositionForContent(position!);
     final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
     ToolTipWidget.isArrowUp = contentOffsetMultiplier == 1.0;
 
@@ -251,6 +261,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     final arrowHeight = 9.0;
 
     return Stack(
+      key: _stack,
       children: [
         if (widget.container == null)
           Positioned(

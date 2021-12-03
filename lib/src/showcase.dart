@@ -319,6 +319,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
               ToolTipWidget(
                 position: position,
                 offset: offset,
+                rect: rectBound,
                 screenSize: screenSize,
                 title: widget.title,
                 description: widget.description,

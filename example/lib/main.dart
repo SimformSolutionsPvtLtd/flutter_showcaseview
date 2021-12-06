@@ -242,7 +242,6 @@ class _MailPageState extends State<MailPage> {
                         child: Image.asset('assets/simform.png'),
                       ),
                       actions: ShowCaseDefaultActions(
-                        context: context,
                         textColor: Colors.white,
                       ),
                     ),
@@ -299,7 +298,6 @@ class _MailPageState extends State<MailPage> {
           ),
         ),
         actions: ShowCaseDefaultActions(
-          context: context,
           onPrev: () {
             ShowCaseWidget.of(context)!.prev();
           },
@@ -355,8 +353,6 @@ class _MailPageState extends State<MailPage> {
                     children: <Widget>[
                       Showcase.withWidget(
                         key: _four,
-                        height: 50,
-                        width: 140,
                         shapeBorder: CircleBorder(),
                         radius: BorderRadius.all(Radius.circular(150)),
                         container: Column(
@@ -483,7 +479,6 @@ class _MailPageState extends State<MailPage> {
               onStop: () {
                 ShowCaseWidget.of(context)!.dismiss();
               },
-              context: context,
             ),
           ),
         ),

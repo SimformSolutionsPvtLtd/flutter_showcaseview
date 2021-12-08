@@ -42,6 +42,7 @@ class Showcase extends StatefulWidget {
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final EdgeInsets contentPadding;
+  final bool showOverlay;
   final Color overlayColor;
   final double overlayOpacity;
   final Widget? container;
@@ -63,6 +64,7 @@ class Showcase extends StatefulWidget {
       this.title,
       required this.description,
       this.shapeBorder,
+      this.showOverlay = true,
       this.overlayColor = Colors.black,
       this.overlayOpacity = 0.75,
       this.titleTextStyle,
@@ -103,6 +105,7 @@ class Showcase extends StatefulWidget {
     this.title,
     this.description,
     this.shapeBorder,
+    this.showOverlay = true,
     this.overlayColor = Colors.black,
     this.overlayOpacity = 0.75,
     this.titleTextStyle,
@@ -183,7 +186,9 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     });
 
     if (activeStep == widget.key) {
-      _slideAnimationController.forward();
+      if (!widget.disableAnimation) {
+        _slideAnimationController.forward();
+      }
       if (ShowCaseWidget.of(context)!.autoPlay) {
         timer = Timer(
             Duration(
@@ -247,54 +252,63 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     Size size,
     Rect rectBound,
     Size screenSize,
-  ) =>
-      Visibility(
-        visible: _showShowCase,
-        maintainAnimation: true,
-        maintainState: true,
-        child: Stack(
-          children: [
-            GestureDetector(
-              onTap: _nextIfAny,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: CustomPaint(
-                  painter: ShapePainter(
-                      opacity: widget.overlayOpacity,
-                      rect: position!.getRect(),
-                      shapeBorder: widget.shapeBorder,
-                      color: widget.overlayColor),
-                ),
-              ),
+  ) {
+    List<Widget> stackChildren = [];
+    if (widget.showOverlay) {
+      stackChildren.add(
+        GestureDetector(
+          onTap: _nextIfAny,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: CustomPaint(
+              painter: ShapePainter(
+                  opacity: widget.overlayOpacity,
+                  rect: position!.getRect(),
+                  shapeBorder: widget.shapeBorder,
+                  color: widget.overlayColor),
             ),
-            _TargetWidget(
-              offset: offset,
-              size: size,
-              onTap: _getOnTargetTap,
-              shapeBorder: widget.shapeBorder,
-            ),
-            ToolTipWidget(
-              position: position,
-              offset: offset,
-              screenSize: screenSize,
-              title: widget.title,
-              description: widget.description,
-              animationOffset: _slideAnimation,
-              titleTextStyle: widget.titleTextStyle,
-              descTextStyle: widget.descTextStyle,
-              container: widget.container,
-              tooltipColor: widget.showcaseBackgroundColor,
-              textColor: widget.textColor,
-              showArrow: widget.showArrow,
-              contentHeight: widget.height,
-              contentWidth: widget.width,
-              onTooltipTap: _getOnTooltipTap,
-              contentPadding: widget.contentPadding,
-            ),
-          ],
+          ),
         ),
       );
+    }
+    stackChildren.add(
+      _TargetWidget(
+        offset: offset,
+        size: size,
+        onTap: _getOnTargetTap,
+        shapeBorder: widget.shapeBorder,
+      ),
+    );
+    stackChildren.add(
+      ToolTipWidget(
+        position: position,
+        offset: offset,
+        screenSize: screenSize,
+        title: widget.title,
+        description: widget.description,
+        animationOffset: _slideAnimation,
+        titleTextStyle: widget.titleTextStyle,
+        descTextStyle: widget.descTextStyle,
+        container: widget.container,
+        tooltipColor: widget.showcaseBackgroundColor,
+        textColor: widget.textColor,
+        showArrow: widget.showArrow,
+        contentHeight: widget.height,
+        contentWidth: widget.width,
+        onTooltipTap: _getOnTooltipTap,
+        contentPadding: widget.contentPadding,
+      ),
+    );
+    return Visibility(
+      visible: _showShowCase,
+      maintainAnimation: true,
+      maintainState: true,
+      child: Stack(
+        children: stackChildren,
+      ),
+    );
+  }
 }
 
 class _TargetWidget extends StatelessWidget {

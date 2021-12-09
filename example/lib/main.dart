@@ -250,9 +250,7 @@ class _MailPageState extends State<MailPage> {
                         ),
                         child: Image.asset('assets/simform.png'),
                       ),
-                      actions: ShowCaseDefaultActions(
-                        textColor: Colors.white,
-                      ),
+                      actions: ShowCaseDefaultActions(),
                     ),
                     const SizedBox(
                       width: 12,
@@ -308,15 +306,15 @@ class _MailPageState extends State<MailPage> {
           ),
         ),
         actions: ShowCaseDefaultActions(
-          onPrev: () {
-            ShowCaseWidget.of(context)!.prev();
-          },
-          onNext: () {
-            ShowCaseWidget.of(context)!.completed(_five);
-          },
-          onStop: () {
-            ShowCaseWidget.of(context)!.dismiss();
-          },
+          previous: ActionButtonConfig(
+            callback: ShowCaseWidget.of(context)!.prev,
+          ),
+          next: ActionButtonConfig(
+            callback: () => ShowCaseWidget.of(context)!.completed(_five),
+          ),
+          stop: ActionButtonConfig(
+            callback: ShowCaseWidget.of(context)!.dismiss,
+          ),
         ),
       ),
     );
@@ -478,16 +476,18 @@ class _MailPageState extends State<MailPage> {
           ),
           actions: Container(
             child: ShowCaseDefaultActions(
-              onPrev: () {
-                ShowCaseWidget.of(context)!.prev();
-              },
-              textColor: Colors.red,
-              onNext: () {
-                ShowCaseWidget.of(context)!.completed(_three);
-              },
-              onStop: () {
-                ShowCaseWidget.of(context)!.dismiss();
-              },
+              previous: ActionButtonConfig(
+                callback: ShowCaseWidget.of(context)!.prev,
+                textColor: Colors.red,
+              ),
+              stop: ActionButtonConfig(
+                callback: ShowCaseWidget.of(context)!.dismiss,
+                textColor: Colors.red,
+              ),
+              next: ActionButtonConfig(
+                callback: () => ShowCaseWidget.of(context)!.completed(_three),
+                textColor: Colors.red,
+              ),
             ),
           ),
         ),

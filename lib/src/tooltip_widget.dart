@@ -82,7 +82,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   bool isCloseToTopOrBottom(Offset position) {
     var height = 120.0;
     height = widget.contentHeight ?? height;
-    return (widget.screenSize!.height - position.dy) <= height;
+    final bottomPosition =
+        position.dy + ((widget.position?.getHeight() ?? 0) / 2);
+    final topPosition = position.dy - ((widget.position?.getHeight() ?? 0) / 2);
+    return ((widget.screenSize?.height ?? MediaQuery.of(context).size.height) -
+                bottomPosition) <=
+            height &&
+        topPosition >= height;
   }
 
   String findPositionForContent(Offset position) {

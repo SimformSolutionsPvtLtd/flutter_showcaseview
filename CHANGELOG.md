@@ -1,3 +1,13 @@
+## [1.1.4] - November 26, 2021
+
+- Add glassmorphism effect in showcase background.
+- Fixed [#166](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/166) - shapeBorder need to be more customisable
+- Fixed [#163](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/163) - Null check operator used on a null value
+
+## [1.1.3] - October 28, 2021
+
+- Fixed [#158](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/158) - Arrow animation is not synchronized with tooltip
+
 ## [1.1.2] - October 12, 2021
 
 - Fixed [#78](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/78) - Exception:BoxConstraints has NaN values #78

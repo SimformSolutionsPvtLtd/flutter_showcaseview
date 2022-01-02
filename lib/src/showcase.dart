@@ -21,24 +21,27 @@
  */
 
 import 'dart:async';
+import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'custom_paint.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
+import 'shape_clipper.dart';
 import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
   @override
-  final GlobalKey? key;
+  final GlobalKey key;
 
   final Widget child;
   final String? title;
   final String? description;
   final ShapeBorder? shapeBorder;
+  final BorderRadius? radius;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final EdgeInsets contentPadding;
@@ -62,13 +65,21 @@ class Showcase extends StatefulWidget {
   final bool showSkipButton;
   final FutureOr<void> Function()? onNextItemCalled;
 
+  /// Defines blur value.
+  /// This will blur the background while displaying showcase.
+  ///
+  /// If null value is provided,
+  /// [ShowCaseWidget.defaultBlurValue] will be considered.
+  ///
+  final double? blurValue;
+
   const Showcase({
     required this.key,
     required this.child,
     this.title,
     required this.description,
     this.shapeBorder,
-    this.overlayColor = Colors.black,
+    this.overlayColor = Colors.black45,
     this.overlayOpacity = 0.75,
     this.titleTextStyle,
     this.descTextStyle,
@@ -88,6 +99,8 @@ class Showcase extends StatefulWidget {
     this.showNextButton = false,
     this.showSkipButton = false,
     this.onNextItemCalled,
+    this.blurValue,
+    this.radius,
   })  : height = null,
         width = null,
         container = null,
@@ -105,7 +118,7 @@ class Showcase extends StatefulWidget {
             "onTargetClick is required if you're using disposeOnTap");
 
   const Showcase.withWidget({
-    this.key,
+    required this.key,
     required this.child,
     required this.container,
     required this.height,
@@ -113,7 +126,8 @@ class Showcase extends StatefulWidget {
     this.title,
     this.description,
     this.shapeBorder,
-    this.overlayColor = Colors.black,
+    this.overlayColor = Colors.black45,
+    this.radius,
     this.overlayOpacity = 0.75,
     this.titleTextStyle,
     this.descTextStyle,
@@ -130,6 +144,7 @@ class Showcase extends StatefulWidget {
     this.showNextButton = false,
     this.showSkipButton = false,
     this.onNextItemCalled,
+    this.blurValue,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -261,60 +276,79 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     Size size,
     Rect rectBound,
     Size screenSize,
-  ) =>
-      Visibility(
-        visible: _showShowCase,
-        maintainAnimation: true,
-        maintainState: true,
-        child: Stack(
-          children: [
-            GestureDetector(
-              onTap: nextIfAny,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: CustomPaint(
-                  painter: ShapePainter(
-                      opacity: widget.overlayOpacity,
-                      rect: position!.getRect(),
-                      shapeBorder: widget.shapeBorder,
-                      color: widget.overlayColor),
-                ),
+  ) {
+    var blur = widget.blurValue ?? (ShowCaseWidget.of(context)?.blurValue) ?? 0;
+
+    // Set blur to 0 if application is running on web and
+    // provided blur is less than 0.
+    blur = kIsWeb && blur < 0 ? 0 : blur;
+
+    return _showShowCase
+        ? Stack(
+            children: [
+              GestureDetector(
+                  onTap: nextIfAny,
+                  child: ClipPath(
+                    clipper: RRectClipper(
+                      area: rectBound,
+                      isCircle: widget.shapeBorder == CircleBorder(),
+                      radius: widget.radius,
+                      overlayPadding: widget.overlayPadding,
+                    ),
+                    child: blur != 0
+                        ? BackdropFilter(
+                            filter:
+                                ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              decoration: BoxDecoration(
+                                color: widget.overlayColor,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            decoration: BoxDecoration(
+                              color: widget.overlayColor,
+                            ),
+                          ),
+                  )),
+              _TargetWidget(
+                offset: offset,
+                size: size,
+                onTap: _getOnTargetTap,
+                shapeBorder: widget.shapeBorder,
               ),
-            ),
-            _TargetWidget(
-              offset: offset,
-              size: size,
-              onTap: _getOnTargetTap,
-              shapeBorder: widget.shapeBorder,
-            ),
-            ToolTipWidget(
-              position: position,
-              offset: offset,
-              screenSize: screenSize,
-              title: widget.title,
-              description: widget.description,
-              animationOffset: _slideAnimation,
-              titleTextStyle: widget.titleTextStyle,
-              descTextStyle: widget.descTextStyle,
-              container: widget.container,
-              tooltipColor: widget.showcaseBackgroundColor,
-              textColor: widget.textColor,
-              showArrow: widget.showArrow,
-              contentHeight: widget.height,
-              contentWidth: widget.width,
-              onTooltipTap: _getOnTooltipTap,
-              contentPadding: widget.contentPadding,
-              showNextButton: widget.showNextButton,
-              showSkipButton: widget.showSkipButton,
-              nextButtonText: widget.nextButtonText,
-              skipButtonText: widget.skipButtonText,
-              onNextButtonTap: nextIfAny,
-              onSkipButtonTap: () => ShowCaseWidget.of(context)!.dismiss(),
-            ),
-          ],
-        ),
-      );
+              ToolTipWidget(
+                position: position,
+                offset: offset,
+                screenSize: screenSize,
+                title: widget.title,
+                description: widget.description,
+                animationOffset: _slideAnimation,
+                titleTextStyle: widget.titleTextStyle,
+                descTextStyle: widget.descTextStyle,
+                container: widget.container,
+                tooltipColor: widget.showcaseBackgroundColor,
+                textColor: widget.textColor,
+                showArrow: widget.showArrow,
+                contentHeight: widget.height,
+                contentWidth: widget.width,
+                onTooltipTap: _getOnTooltipTap,
+                contentPadding: widget.contentPadding,
+                showNextButton: widget.showNextButton,
+                showSkipButton: widget.showSkipButton,
+                nextButtonText: widget.nextButtonText,
+                skipButtonText: widget.skipButtonText,
+                onNextButtonTap: nextIfAny,
+                onSkipButtonTap: () => ShowCaseWidget.of(context)!.dismiss(),
+              ),
+            ],
+          )
+        : const SizedBox();
+  }
 }
 
 class _TargetWidget extends StatelessWidget {
@@ -323,15 +357,17 @@ class _TargetWidget extends StatelessWidget {
   final Animation<double>? widthAnimation;
   final VoidCallback? onTap;
   final ShapeBorder? shapeBorder;
+  final BorderRadius? radius;
 
-  _TargetWidget({
-    Key? key,
-    required this.offset,
-    this.size,
-    this.widthAnimation,
-    this.onTap,
-    this.shapeBorder,
-  }) : super(key: key);
+  _TargetWidget(
+      {Key? key,
+      required this.offset,
+      this.size,
+      this.widthAnimation,
+      this.onTap,
+      this.shapeBorder,
+      this.radius})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -346,12 +382,14 @@ class _TargetWidget extends StatelessWidget {
             height: size!.height + 16,
             width: size!.width + 16,
             decoration: ShapeDecoration(
-              shape: shapeBorder ??
-                  RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
+              shape: radius != null
+                  ? RoundedRectangleBorder(borderRadius: radius!)
+                  : shapeBorder ??
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
             ),
           ),
         ),

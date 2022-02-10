@@ -100,7 +100,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     var horizontalAxis = TooltipHorizontalAxis.right;
     var verticalAxis = TooltipVerticalPosition.down;
 
-    var leftOffset = widgetCenter.dx - left - (widget.arrowSize.width / 2);
+    var leftOffset = widgetCenter.dx - left;
 
     // If left position is in negative with offset remove the offset.
     if (left < 0) {
@@ -223,39 +223,45 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                                   color: widget.tooltipColor,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: widget.title != null
-                                      ? CrossAxisAlignment.start
-                                      : CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    widget.title != null
-                                        ? Text(
-                                            widget.title!,
-                                            style: widget.titleTextStyle ??
-                                                Theme.of(context)
-                                                    .textTheme
-                                                    .headline6!
-                                                    .merge(
-                                                      TextStyle(
-                                                        color: widget.textColor,
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth: widget.screenSize.width - 42,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: widget.title != null
+                                        ? CrossAxisAlignment.start
+                                        : CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      widget.title != null
+                                          ? Text(
+                                              widget.title!,
+                                              style: widget.titleTextStyle ??
+                                                  Theme.of(context)
+                                                      .textTheme
+                                                      .headline6!
+                                                      .merge(
+                                                        TextStyle(
+                                                          color:
+                                                              widget.textColor,
+                                                        ),
                                                       ),
-                                                    ),
-                                          )
-                                        : SizedBox.shrink(),
-                                    Text(
-                                      widget.description!,
-                                      style: widget.descTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .subtitle2!
-                                              .merge(
-                                                TextStyle(
-                                                  color: widget.textColor,
+                                            )
+                                          : SizedBox.shrink(),
+                                      Text(
+                                        widget.description!,
+                                        style: widget.descTextStyle ??
+                                            Theme.of(context)
+                                                .textTheme
+                                                .subtitle2!
+                                                .merge(
+                                                  TextStyle(
+                                                    color: widget.textColor,
+                                                  ),
                                                 ),
-                                              ),
-                                    ),
-                                  ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

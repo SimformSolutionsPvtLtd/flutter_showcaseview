@@ -197,6 +197,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     final arrowHeight = 9.0;
 
     if (widget.container == null) {
+      print(
+          'painting arrow widget: _getRight()(): ${_getRight()}, pos: ${(MediaQuery.of(context).size.width - widget.position!.getCenter()) - (_getRight() ?? 0) - (arrowWidth / 2)} ');
       return Positioned(
         top: contentY,
         left: _getLeft(),
@@ -226,14 +228,18 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                     Positioned(
                       left: _getLeft() == null
                           ? null
-                          : (widget.position!.getCenter() -
-                              (arrowWidth / 2) -
-                              (_getLeft() ?? 0)),
+                          : max<double>(
+                              (widget.position!.getCenter() -
+                                  (arrowWidth / 2) -
+                                  (_getLeft() ?? 0)),
+                              4),
                       right: _getLeft() == null
-                          ? (MediaQuery.of(context).size.width -
-                                  widget.position!.getCenter()) -
-                              (_getRight() ?? 0) -
-                              (arrowWidth / 2)
+                          ? max<double>(
+                              (MediaQuery.of(context).size.width -
+                                      widget.position!.getCenter()) -
+                                  (_getRight() ?? 0) -
+                                  (arrowWidth / 2),
+                              4)
                           : null,
                       child: CustomPaint(
                         painter: _Arrow(

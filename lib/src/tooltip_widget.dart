@@ -196,9 +196,39 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     final arrowWidth = 18.0;
     final arrowHeight = 9.0;
 
+    final arrowWidget = !widget.showArrow!
+        ? SizedBox.shrink()
+        : Positioned(
+            left: _getLeft() == null
+                ? null
+                : max<double>(
+                    (widget.position!.getCenter() -
+                        (arrowWidth / 2) -
+                        (_getLeft() ?? 0)),
+                    4),
+            right: _getLeft() == null
+                ? max<double>(
+                    (MediaQuery.of(context).size.width -
+                            widget.position!.getCenter()) -
+                        (_getRight() ?? 0) -
+                        (arrowWidth / 2),
+                    4)
+                : null,
+            child: CustomPaint(
+              painter: _Arrow(
+                strokeColor: widget.tooltipColor!,
+                strokeWidth: 10,
+                paintingStyle: PaintingStyle.fill,
+                isUpArrow: ToolTipWidget.isArrowUp,
+              ),
+              child: SizedBox(
+                height: arrowHeight,
+                width: arrowWidth,
+              ),
+            ),
+          );
+
     if (widget.container == null) {
-      print(
-          'painting arrow widget: _getRight()(): ${_getRight()}, pos: ${(MediaQuery.of(context).size.width - widget.position!.getCenter()) - (_getRight() ?? 0) - (arrowWidth / 2)} ');
       return Positioned(
         top: contentY,
         left: _getLeft(),
@@ -225,35 +255,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
                           ? Alignment.bottomRight
                           : Alignment.bottomLeft,
                   children: [
-                    Positioned(
-                      left: _getLeft() == null
-                          ? null
-                          : max<double>(
-                              (widget.position!.getCenter() -
-                                  (arrowWidth / 2) -
-                                  (_getLeft() ?? 0)),
-                              4),
-                      right: _getLeft() == null
-                          ? max<double>(
-                              (MediaQuery.of(context).size.width -
-                                      widget.position!.getCenter()) -
-                                  (_getRight() ?? 0) -
-                                  (arrowWidth / 2),
-                              4)
-                          : null,
-                      child: CustomPaint(
-                        painter: _Arrow(
-                          strokeColor: widget.tooltipColor!,
-                          strokeWidth: 10,
-                          paintingStyle: PaintingStyle.fill,
-                          isUpArrow: ToolTipWidget.isArrowUp,
-                        ),
-                        child: SizedBox(
-                          height: arrowHeight,
-                          width: arrowWidth,
-                        ),
-                      ),
-                    ),
+                    arrowWidget,
                     Padding(
                       padding: EdgeInsets.only(
                         top: ToolTipWidget.isArrowUp ? arrowHeight - 1 : 0,

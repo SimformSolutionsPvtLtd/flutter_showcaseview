@@ -185,8 +185,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget> {
     final num contentFractionalOffset =
         contentOffsetMultiplier.clamp(-1.0, 0.0);
 
-    var paddingTop = ToolTipWidget.isArrowUp ? 22.0 : 0.0;
-    var paddingBottom = ToolTipWidget.isArrowUp ? 0.0 : 27.0;
+    var paddingTop =
+        ToolTipWidget.isArrowUp && widget.showArrow! == true ? 22.0 : 0.0;
+    var paddingBottom =
+        ToolTipWidget.isArrowUp && widget.showArrow! == true ? 0.0 : 27.0;
 
     if (!widget.showArrow!) {
       paddingTop = 10;

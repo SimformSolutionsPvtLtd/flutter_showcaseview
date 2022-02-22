@@ -22,6 +22,7 @@
 
 library showcaseview;
 
+export 'src/actions_container_config.dart';
 export 'src/showcase.dart';
 export 'src/showcase_default_actions.dart';
 export 'src/showcase_widget.dart';

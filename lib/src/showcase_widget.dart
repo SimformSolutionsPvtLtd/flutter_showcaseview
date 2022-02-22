@@ -132,6 +132,19 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     }
   }
 
+  void startShowCaseFromSpecPosition(
+      List<GlobalKey> widgetIds, GlobalKey? widgetId) {
+    if (mounted) {
+      setState(() {
+        ids = widgetIds;
+        if (ids != null && ids!.contains(widgetId)) {
+          activeWidgetId = ids!.indexOf(widgetId!);
+          _onStart();
+        }
+      });
+    }
+  }
+
   void dismiss() {
     if (mounted) {
       setState(_cleanupAfterSteps);

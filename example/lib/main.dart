@@ -288,7 +288,7 @@ class _MailPageState extends State<MailPage> {
           onPressed: () {
             setState(() {
               ShowCaseWidget.of(context)!
-                  .startShowCase([_one, _two, _three, _four, _five]);
+                  .startShowCaseFromSpecPosition([_one, _two, _three, _four, _five], _three);
             });
           },
           child: Icon(

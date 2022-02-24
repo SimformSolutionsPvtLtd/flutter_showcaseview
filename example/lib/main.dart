@@ -5,15 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter ShowCase',
       theme: ThemeData(
-        primaryColor: Color(0xffEE5366),
+        primaryColor: const Color(0xffEE5366),
       ),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -23,17 +25,18 @@ class MyApp extends StatelessWidget {
           },
           onComplete: (index, key) {
             log('onComplete: $index, $key');
-            if (index == 4)
-              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
-                  .copyWith(
-                      statusBarIconBrightness: Brightness.dark,
-                      statusBarColor: Colors.white));
+            if (index == 4) {
+              SystemChrome.setSystemUIOverlayStyle(
+                SystemUiOverlayStyle.light.copyWith(
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarColor: Colors.white,
+                ),
+              );
+            }
           },
           blurValue: 1,
-          builder: Builder(builder: (context) => MailPage()),
-          autoPlay: false,
-          autoPlayDelay: Duration(seconds: 3),
-          autoPlayLockEnable: false,
+          builder: Builder(builder: (context) => const MailPage()),
+          autoPlayDelay: const Duration(seconds: 3),
         ),
       ),
     );
@@ -41,25 +44,28 @@ class MyApp extends StatelessWidget {
 }
 
 class MailPage extends StatefulWidget {
+  const MailPage({Key? key}) : super(key: key);
+
   @override
   _MailPageState createState() => _MailPageState();
 }
 
 class _MailPageState extends State<MailPage> {
-  GlobalKey _one = GlobalKey();
-  GlobalKey _two = GlobalKey();
-  GlobalKey _three = GlobalKey();
-  GlobalKey _four = GlobalKey();
-  GlobalKey _five = GlobalKey();
+  final GlobalKey _one = GlobalKey();
+  final GlobalKey _two = GlobalKey();
+  final GlobalKey _three = GlobalKey();
+  final GlobalKey _four = GlobalKey();
+  final GlobalKey _five = GlobalKey();
   List<Mail> mails = [];
 
   @override
   void initState() {
     super.initState();
     //Start showcase view after current widget frames are drawn.
-    WidgetsBinding.instance!.addPostFrameCallback((_) =>
-        ShowCaseWidget.of(context)!
-            .startShowCase([_one, _two, _three, _four, _five]));
+    WidgetsBinding.instance!.addPostFrameCallback(
+      (_) => ShowCaseWidget.of(context)!
+          .startShowCase([_one, _two, _three, _four, _five]),
+    );
     mails = [
       Mail(
         sender: 'Medium',
@@ -135,14 +141,13 @@ class _MailPageState extends State<MailPage> {
         bottom: false,
         child: Column(
           children: <Widget>[
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Container(
@@ -150,10 +155,13 @@ class _MailPageState extends State<MailPage> {
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                              color: Color(0xffF9F9F9),
-                              border: Border.all(
-                                  color: Color(0xffF3F3F3), width: 2),
-                              borderRadius: BorderRadius.circular(8)),
+                            color: const Color(0xffF9F9F9),
+                            border: Border.all(
+                              color: const Color(0xffF3F3F3),
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -167,18 +175,19 @@ class _MailPageState extends State<MailPage> {
                                         color: Theme.of(context).primaryColor,
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
-                                    Text(
+                                    const Text(
                                       'Search email',
                                       style: TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 16,
-                                          letterSpacing: 0.4),
+                                        color: Colors.black45,
+                                        fontSize: 16,
+                                        letterSpacing: 0.4,
+                                      ),
                                     ),
-                                    Spacer(),
-                                    Icon(
+                                    const Spacer(),
+                                    const Icon(
                                       Icons.search,
                                       color: Color(0xffADADAD),
                                     ),
@@ -191,36 +200,36 @@ class _MailPageState extends State<MailPage> {
                       ),
                     ),
                     Showcase(
-                      overlayPadding: EdgeInsets.all(5),
+                      overlayPadding: const EdgeInsets.all(5),
                       key: _two,
                       title: 'Profile',
                       description:
-                          'Tap to see profile which contains user\'s name, profile picture, mobile number and country',
-                      contentPadding: EdgeInsets.all(8.0),
+                          "Tap to see profile which contains user's name, profile picture, mobile number and country",
                       showcaseBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
-                      shapeBorder: CircleBorder(),
+                      shapeBorder: const CircleBorder(),
                       child: Container(
-                        padding: EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
                         width: 45,
                         height: 45,
                         decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context).primaryColor),
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).primaryColor,
+                        ),
                         child: Image.asset('assets/simform.png'),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 12,
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 16, top: 4),
-                  child: Text(
+                  child: const Text(
                     'PRIMARY',
                     style: TextStyle(
                       color: Colors.black,
@@ -231,16 +240,17 @@ class _MailPageState extends State<MailPage> {
                 ),
               ],
             ),
-            Padding(padding: EdgeInsets.only(top: 8)),
+            const Padding(padding: EdgeInsets.only(top: 8)),
             Expanded(
               child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return showcaseMailTile(context);
-                    }
-                    return MailTile(mails[index % mails.length]);
-                  }),
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return showcaseMailTile(context);
+                  }
+                  return MailTile(mails[index % mails.length]);
+                },
+              ),
             )
           ],
         ),
@@ -249,7 +259,7 @@ class _MailPageState extends State<MailPage> {
         key: _five,
         title: 'Compose Mail',
         description: 'Click here to compose mail',
-        shapeBorder: CircleBorder(),
+        shapeBorder: const CircleBorder(),
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
@@ -258,7 +268,7 @@ class _MailPageState extends State<MailPage> {
                   .startShowCase([_one, _two, _three, _four, _five]);
             });
           },
-          child: Icon(
+          child: const Icon(
             Icons.add,
           ),
         ),
@@ -272,7 +282,7 @@ class _MailPageState extends State<MailPage> {
         Navigator.push<void>(
           context,
           MaterialPageRoute<void>(
-            builder: (_) => Detail(),
+            builder: (_) => const Detail(),
           ),
         );
       },
@@ -286,7 +296,7 @@ class _MailPageState extends State<MailPage> {
             Navigator.push<void>(
               context,
               MaterialPageRoute<void>(
-                builder: (_) => Detail(),
+                builder: (_) => const Detail(),
               ),
             ).then((_) {
               setState(() {
@@ -297,7 +307,7 @@ class _MailPageState extends State<MailPage> {
           child: Container(
             padding:
                 const EdgeInsets.only(left: 6, right: 16, top: 5, bottom: 5),
-            color: Color(0xffFFF6F7),
+            color: const Color(0xffFFF6F7),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -309,15 +319,15 @@ class _MailPageState extends State<MailPage> {
                         key: _four,
                         height: 50,
                         width: 140,
-                        shapeBorder: CircleBorder(),
-                        radius: BorderRadius.all(Radius.circular(150)),
+                        shapeBorder: const CircleBorder(),
+                        radius: const BorderRadius.all(Radius.circular(150)),
                         container: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
                               width: 45,
                               height: 45,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Color(0xffFCD8DC),
                               ),
@@ -332,11 +342,11 @@ class _MailPageState extends State<MailPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
-                            Text(
-                              'Your sender\'s profile ',
+                            const Text(
+                              "Your sender's profile ",
                               style: TextStyle(color: Colors.white),
                             )
                           ],
@@ -346,7 +356,7 @@ class _MailPageState extends State<MailPage> {
                           child: Container(
                             width: 45,
                             height: 45,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Color(0xffFCD8DC),
                             ),
@@ -363,18 +373,18 @@ class _MailPageState extends State<MailPage> {
                           ),
                         ),
                       ),
-                      Padding(padding: EdgeInsets.only(left: 8)),
+                      const Padding(padding: EdgeInsets.only(left: 8)),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
+                          const Text(
                             'Slack',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 17,
                             ),
                           ),
-                          Text(
+                          const Text(
                             'Flutter Notification',
                             style: TextStyle(
                               fontSize: 16,
@@ -393,12 +403,11 @@ class _MailPageState extends State<MailPage> {
                     ],
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 50,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
+                    children: const <Widget>[
                       SizedBox(
                         height: 5,
                       ),
@@ -430,12 +439,6 @@ class _MailPageState extends State<MailPage> {
 }
 
 class Mail {
-  String sender;
-  String sub;
-  String msg;
-  String date;
-  bool isUnread;
-
   Mail({
     required this.sender,
     required this.sub,
@@ -443,18 +446,24 @@ class Mail {
     required this.date,
     required this.isUnread,
   });
+
+  String sender;
+  String sub;
+  String msg;
+  String date;
+  bool isUnread;
 }
 
 class MailTile extends StatelessWidget {
-  final Mail mail;
+  const MailTile(this.mail, {Key? key}) : super(key: key);
 
-  MailTile(this.mail);
+  final Mail mail;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 6, right: 16, top: 8, bottom: 8),
-      color: mail.isUnread ? Color(0xffFFF6F7) : Colors.white,
+      color: mail.isUnread ? const Color(0xffFFF6F7) : Colors.white,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -466,7 +475,7 @@ class MailTile extends StatelessWidget {
                   margin: const EdgeInsets.all(10),
                   width: 45,
                   height: 45,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Color(0xffFCD8DC),
                   ),
@@ -481,7 +490,7 @@ class MailTile extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(padding: EdgeInsets.only(left: 8)),
+                const Padding(padding: EdgeInsets.only(left: 8)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,7 +508,7 @@ class MailTile extends StatelessWidget {
                       Text(
                         mail.sub,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 16,
                         ),
@@ -521,27 +530,27 @@ class MailTile extends StatelessWidget {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             width: 50,
             child: Column(
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Text(
                   mail.date,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 12,
                     color: Colors.grey,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Icon(
                   mail.isUnread ? Icons.star : Icons.star_border,
-                  color: mail.isUnread ? Color(0xffFBC800) : Colors.grey,
+                  color: mail.isUnread ? const Color(0xffFBC800) : Colors.grey,
                 ),
               ],
             ),

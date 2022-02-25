@@ -225,7 +225,10 @@ class _ShowcaseState extends State<Showcase> {
     Rect rectBound,
     Size screenSize,
   ) {
-    var blur = widget.blurValue ?? (ShowCaseWidget.of(context)?.blurValue) ?? 0;
+    var blur = 0.0;
+    if (_showShowCase) {
+      blur = widget.blurValue ?? (ShowCaseWidget.of(context)?.blurValue) ?? 0;
+    }
 
     // Set blur to 0 if application is running on web and
     // provided blur is less than 0.

@@ -59,6 +59,8 @@ class _MailPageState extends State<MailPage> {
   final GlobalKey _six = GlobalKey();
   List<Mail> mails = [];
 
+  final scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -132,6 +134,12 @@ class _MailPageState extends State<MailPage> {
         isUnread: true,
       ),
     ];
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -244,6 +252,7 @@ class _MailPageState extends State<MailPage> {
             const Padding(padding: EdgeInsets.only(top: 8)),
             Expanded(
               child: ListView.builder(
+                controller: scrollController,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   if (index == 0) {
@@ -267,6 +276,10 @@ class _MailPageState extends State<MailPage> {
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
             setState(() {
+              /* reset ListView to ensure that the showcased widgets are
+               * currently rendered so the showcased keys are available in the
+               * render tree. */
+              scrollController.jumpTo(0);
               ShowCaseWidget.of(context)!
                   .startShowCase([_one, _two, _three, _four, _five, _six]);
             });

@@ -255,7 +255,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   void _getSizeAndPosition() {
     final size = (context.findRenderObject() as RenderBox).size;
     final position =
-    (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+        (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
 
     print("Size: $size, Position: $position");
 

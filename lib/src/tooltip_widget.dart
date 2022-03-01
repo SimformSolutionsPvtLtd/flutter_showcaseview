@@ -40,8 +40,6 @@ class ToolTipWidget extends StatefulWidget {
   final Color? tooltipColor;
   final Color? textColor;
   final bool showArrow;
-  final double? contentHeight;
-  final double? contentWidth;
   final VoidCallback? onTooltipTap;
   final EdgeInsets? contentPadding;
   final Widget? actions;
@@ -62,8 +60,6 @@ class ToolTipWidget extends StatefulWidget {
     required this.tooltipColor,
     required this.textColor,
     required this.showArrow,
-    required this.contentHeight,
-    required this.contentWidth,
     required this.onTooltipTap,
     required this.animationDuration,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
@@ -81,8 +77,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     with SingleTickerProviderStateMixin {
   _TooltipCoordinates? _coords;
 
-  Offset? position;
-  double tempWidth = 200.0;
+  late final AnimationController _parentController;
+  late final Animation<double> _curvedAnimation;
 
   bool isArrowUp = false;
   void _getPosition() {
@@ -90,23 +86,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final box = (context.findRenderObject() as RenderBox);
 
     late final AnimationController _parentController;
-    late final Animation<double> _curvedAnimation;
+    late final Animation _curvedAnimation;
     // TODO: get this offset from user if possible.
     final tooltipOffset = Offset(0, 15);
-
-    bool isCloseToTopOrBottom(Offset position) {
-      var height = 120.0;
-      height = widget.contentHeight ?? height;
-      final bottomPosition =
-          position.dy + ((widget.position?.getHeight() ?? 0) / 2);
-      final topPosition =
-          position.dy - ((widget.position?.getHeight() ?? 0) / 2);
-      return ((widget.screenSize?.height ??
-                      MediaQuery.of(context).size.height) -
-                  bottomPosition) <=
-              height &&
-          topPosition >= height;
-    }
 
     final overlayPadding = 14.0;
 
@@ -237,7 +219,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
           position: Tween<Offset>(
             begin: Offset(0.0, 0.0),
             end: Offset(0.0, 0.1),
-          ).animate(widget.animationOffset!),
+          ).animate(_curvedAnimation),
           child: Material(
             color: Colors.transparent,
             child: Column(

@@ -223,7 +223,6 @@ class _ShowcaseState extends State<Showcase> {
   void _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
       ShowCaseWidget.of(context)!.dismiss();
-      disposeAnimationController();
       widget.onTargetClick!();
     } else {
       (widget.onTargetClick ?? _nextIfAny).call();
@@ -233,13 +232,8 @@ class _ShowcaseState extends State<Showcase> {
   void _getOnTooltipTap() {
     if (widget.disposeOnTap == true) {
       ShowCaseWidget.of(context)!.dismiss();
-      disposeAnimationController();
     }
     widget.onToolTipClick?.call();
-  }
-
-  void disposeAnimationController() {
-    _slideAnimationController.dispose();
   }
 
   Widget buildOverlayOnTarget(

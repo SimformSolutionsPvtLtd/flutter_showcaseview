@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import 'actions_container_config.dart';
@@ -50,10 +52,15 @@ class ToolTipWidget extends StatefulWidget {
   final Size arrowSize;
   final ActionsContainer? actionsContainer;
 
+  static final _screenTooltipOffset = 14.0;
+
+  /// Defines a common minimum size of all the tooltips.
+  static final _minimumTooltipSize = Size.square(40);
+
   ToolTipWidget({
     Key? key,
-    this.position,
-    this.offset,
+    required this.position,
+    required this.offset,
     required this.screenSize,
     required this.title,
     required this.description,
@@ -86,76 +93,226 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   late final AnimationController _parentController;
   late final Animation<double> _curvedAnimation;
 
+  late Size _screenSize;
+
+  Size? _tooltipSize;
+
   bool isArrowUp = false;
 
   void _getPosition() {
-    // Tooltip render box.
-    final box = (context.findRenderObject() as RenderBox);
+    //
+    //
+    // Get required parameters.
+    //
+    //
 
-    // TODO: get this offset from user if possible.
+    // Offset that defines how far tooltip will be placed above or
+    // below showcase widget.
     final tooltipOffset = Offset(0, 15);
 
-    final overlayPadding = 14.0;
+    // Defines position and size of showcase widget.
+    final showcaseRect = widget.rect;
 
-    // Size of the widget.
-    final widgetSize = widget.rect.size;
+    // Calculate maximum bottom position tooltip can have.
+    final maximumAllowedBottomPosition =
+        _screenSize.height - ToolTipWidget._screenTooltipOffset;
 
-    // Position of the widget.
-    final widgetPosition = widget.rect.topLeft;
+    // Calculate minimum top position tooltip can have.
+    final minimumAllowedTopPosition = ToolTipWidget._screenTooltipOffset;
 
-    final widgetCenter = (widgetPosition & widgetSize).center;
+    // Calculate minimum left position tooltip can have.
+    final minimumAllowedLeftPosition = ToolTipWidget._screenTooltipOffset;
 
-    // Size of the showcase.
-    final showcaseSize = box.size;
+    // Calculate minimum right position tooltip can have.
+    final maximumAllowedRightPosition =
+        _screenSize.width - ToolTipWidget._screenTooltipOffset;
 
-    var top = widgetPosition.dy + widgetSize.height + tooltipOffset.dy;
-    var left = widgetCenter.dx - (showcaseSize.width / 2);
+    // Calculate maximum width tooltip can have.
+    final maxTooltipWidth =
+        _screenSize.width - (2 * ToolTipWidget._screenTooltipOffset);
 
-    var horizontalAxis = TooltipHorizontalAxis.right;
+    // Calculate maximum height tooltip can have.
+    final maxTooltipHeight =
+        _screenSize.height - (2 * ToolTipWidget._screenTooltipOffset);
+
+    // gets the center of the showcase widget.
+    var showcaseCenter = showcaseRect.center;
+
+    //
+    //
+    // Calculate tooltip size.
+    //
+    //
+
+    // Get tooltip size.
+    _tooltipSize ??= (context.findRenderObject() as RenderBox).size;
+
+    var tooltipSize = _tooltipSize!;
+
+    // Update size of tooltip based on defined constraints.
+    tooltipSize = Size(
+      tooltipSize.width.clamp(
+        ToolTipWidget._minimumTooltipSize.width,
+        maxTooltipWidth,
+      ),
+      tooltipSize.height.clamp(
+        ToolTipWidget._minimumTooltipSize.height,
+        maxTooltipHeight,
+      ),
+    );
+
+    //
+    //
+    // Calculate top and bottom position of tooltip.
+    //
+    //
+    //
+
+    // Place tooltip at bottom position by default and calculate
+    // top & bottom value.
     var verticalAxis = TooltipVerticalPosition.down;
 
-    var leftOffset = widgetCenter.dx - left;
+    // Calculate possible top position of tooltip.
+    var top = showcaseRect.bottom + tooltipOffset.dy;
 
-    // If left position is in negative with offset remove the offset.
-    if (left < 0) {
-      left = overlayPadding;
+    // Calculate possible bottom position of tooltip.
+    var bottom = top + widget.arrowSize.height + tooltipSize.height;
 
-      leftOffset = widgetCenter.dx - left - (widget.arrowSize.width / 2);
-    } else if (left + showcaseSize.width > widget.screenSize.width) {
-      left = widget.screenSize.width - showcaseSize.width - overlayPadding;
-      leftOffset = widgetCenter.dx - left + (widget.arrowSize.width / 2);
-      horizontalAxis = TooltipHorizontalAxis.left;
-    } else if (left + showcaseSize.width < widget.screenSize.width) {
-      horizontalAxis = TooltipHorizontalAxis.center;
-    }
+    // True if bottom position is greater then allowed bottom position.
+    var isBottomOverflowing = bottom > maximumAllowedBottomPosition;
 
-    if (top + showcaseSize.height > widget.screenSize.height) {
-      // TODO: recalculate top
+    // True if space above showcase widget is more than below.
+    //
+    // If above has move space then below then we should display tooltip
+    // above showcase widget, else we should display it below showcase widget.
+    //
+    var shouldPlaceAbove = (_screenSize.height -
+            showcaseRect.bottom -
+            ToolTipWidget._screenTooltipOffset) <=
+        (showcaseRect.top - ToolTipWidget._screenTooltipOffset);
 
-      top = widgetPosition.dy - tooltipOffset.dy - showcaseSize.height;
+    // If bottom position is larger than screen height
+    // and there is not enough space above showcase widget to place tooltip.
+    //
+    // Trim bottom position to maximum allowed bottom position.
+    if (isBottomOverflowing && !shouldPlaceAbove) {
+      bottom = maximumAllowedBottomPosition;
 
+      // If bottom position is larger than screen height
+      // and there is enough space above showcase widget to place tooltip.
+      //
+      // Change tooltip position to above and recalculate top and bottom.
+    } else if (isBottomOverflowing && shouldPlaceAbove) {
       verticalAxis = TooltipVerticalPosition.up;
+
+      top = math.max(showcaseRect.top - tooltipSize.height - tooltipOffset.dy,
+          minimumAllowedTopPosition);
+
+      bottom = showcaseRect.top - tooltipOffset.dy;
     }
 
-    final alignmentLeft = -1 + (2 * (leftOffset / showcaseSize.width));
+    //
+    //
+    // Calculate left and right position of tooltip.
+    //
+    //
+    //
 
-    var right = left + showcaseSize.width;
+    // By default place tooltip at the center of the showcase widget.
+    var horizontalAxis = TooltipHorizontalAxis.center;
 
-    var bottom = top + showcaseSize.height;
+    // Calculate possible left position of showcase.
+    var left = showcaseCenter.dx - tooltipSize.width / 2;
 
-    if (right > widget.screenSize.width) {
-      right = widget.screenSize.width - overlayPadding;
+    // Calculate possible right position of showcase.
+    var right = left + tooltipSize.width;
+
+    // If left position is less then minimum allowed position,
+    // then change left and right position accordingly.
+    if (left < minimumAllowedLeftPosition) {
+      // cache old value of left.
+      final oldLeft = left;
+
+      // If left position of showcase widget is less then minimum
+      // allowed position, then align tooltip with left position of showcase
+      // widget else set left position to minimum allowed position.
+      left = showcaseRect.left < minimumAllowedLeftPosition &&
+              showcaseRect.left >= 0
+          ? showcaseRect.left
+          : minimumAllowedLeftPosition;
+
+      // Change right position to cover offset added by changing left position.
+      right += left - oldLeft;
+
+      // If right position is less then maximum allowed position then change
+      // tooltip axis to left else, keep that center.
+      if (right < maximumAllowedRightPosition) {
+        horizontalAxis = TooltipHorizontalAxis.left;
+      }
     }
-    if (bottom > widget.screenSize.height) {
-      bottom = widget.screenSize.height - overlayPadding;
+
+    // If right position is greater than maximum allowed position,
+    // change left and right accordingly.
+    if (right > maximumAllowedRightPosition) {
+      // cache old value of right.
+      final oldRight = right;
+
+      // If right position of showcase widget is greater then maximum
+      // allowed position, then align tooltip with right position of showcase
+      // widget else set right position to maximum allowed position.
+      right = showcaseRect.right > maximumAllowedRightPosition &&
+              showcaseRect.right <= _screenSize.width
+          ? showcaseRect.right
+          : maximumAllowedRightPosition;
+
+      // Recalculate left to cover offset added by changing right position.
+      left = left - (oldRight - right);
+
+      // IF left is less then zero,
+      if (left < 0) {
+        // If left position of showcase widget is less then minimum
+        // allowed position, then align tooltip with left position of showcase
+        // widget else set left position to minimum allowed position.
+        left = showcaseRect.left > 0 &&
+                showcaseRect.left < minimumAllowedLeftPosition
+            ? showcaseRect.left
+            : minimumAllowedLeftPosition;
+      }
+
+      // If left position is greater then minimum allowed position then change
+      // tooltip axis to right else, keep that center.
+      if (left > minimumAllowedLeftPosition) {
+        horizontalAxis = TooltipHorizontalAxis.right;
+      }
+    }
+
+    final tooltipRect = Rect.fromLTRB(left, top, right, bottom);
+
+    //
+    //
+    // Calculate position of arrow.
+    //
+    //
+
+    // Get the left position arrow can have.
+    final scLeft = horizontalAxis == TooltipHorizontalAxis.right
+        ? showcaseCenter.dx + (widget.arrowSize.width / 2)
+        : showcaseCenter.dx - (widget.arrowSize.width / 2);
+
+    // convert above position to alignment.
+    final arrowLeft = 2 * ((scLeft - tooltipRect.left) / tooltipRect.width) - 1;
+
+    if (showcaseCenter.dx > (tooltipRect.left + tooltipRect.width / 3) &&
+        showcaseCenter.dx < (tooltipRect.left + (tooltipRect.width * 2 / 3))) {
+      horizontalAxis = TooltipHorizontalAxis.center;
     }
 
     final newCoords = _TooltipCoordinates(
       // area: Offset(left, top) & showcaseSize,
-      area: Rect.fromLTRB(left, top, right, bottom),
+      area: tooltipRect,
       horizontalAxis: horizontalAxis,
       verticalAxis: verticalAxis,
-      arrowAlignment: Alignment(alignmentLeft, 0),
+      arrowAlignment: Alignment(arrowLeft, 0),
     );
 
     /// Call set state only if widget is mounted and newly calculated data
@@ -210,12 +367,25 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   @override
   Widget build(BuildContext context) {
+    _screenSize = MediaQuery.of(context).size;
+
     // This will register callback on every build/rebuild.
     WidgetsBinding.instance!.addPostFrameCallback((_) => _getPosition());
 
     final verticalDirection = _coords?.isArrowUp ?? true
         ? VerticalDirection.down
         : VerticalDirection.up;
+
+    late final BoxConstraints boxConstraints;
+
+    if (_coords == null) {
+      boxConstraints = BoxConstraints();
+    } else {
+      boxConstraints = BoxConstraints(
+        maxWidth: _coords!.area.width,
+        maxHeight: _coords!.area.height,
+      );
+    }
 
     return Positioned(
       top: _coords?.area.top ?? 0,
@@ -254,11 +424,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                     ),
                   ),
                 Column(
-                  crossAxisAlignment: _coords != null && _coords!.isArrowLeft
+                  crossAxisAlignment: _coords?.horizontalAxis ==
+                          TooltipHorizontalAxis.left
                       ? CrossAxisAlignment.start
-                      : _coords != null && _coords!.isArrowCenter
-                          ? CrossAxisAlignment.center
-                          : CrossAxisAlignment.end,
+                      : _coords?.horizontalAxis == TooltipHorizontalAxis.right
+                          ? CrossAxisAlignment.end
+                          : CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   verticalDirection: verticalDirection,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -272,14 +444,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                   color: widget.tooltipColor,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                constraints: BoxConstraints(
-                                  maxWidth: widget.screenSize.width - 42,
-                                ),
+                                constraints: boxConstraints,
                                 child: Column(
                                   crossAxisAlignment:
                                       _coords != null && _coords!.isArrowCenter
                                           ? CrossAxisAlignment.center
                                           : CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Padding(
                                       padding: widget.contentPadding ??
@@ -297,8 +468,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                                       widget.titleTextStyle ??
                                                           Theme.of(context)
                                                               .textTheme
-                                                              .headline6!
-                                                              .merge(
+                                                              .headline6
+                                                              ?.merge(
                                                                 TextStyle(
                                                                   color: widget
                                                                       .textColor,

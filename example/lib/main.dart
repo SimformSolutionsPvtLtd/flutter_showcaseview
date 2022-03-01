@@ -379,7 +379,7 @@ class _MailPageState extends State<MailPage> {
           ),
         );
       },
-      child: Container(
+      child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Showcase(
           key: _three,

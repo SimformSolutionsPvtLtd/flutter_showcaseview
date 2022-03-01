@@ -56,18 +56,15 @@ class _MailPageState extends State<MailPage> {
   final GlobalKey _three = GlobalKey();
   final GlobalKey _four = GlobalKey();
   final GlobalKey _five = GlobalKey();
-  final GlobalKey _six = GlobalKey();
   List<Mail> mails = [];
-
-  final scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     //Start showcase view after current widget frames are drawn.
-    WidgetsBinding.instance.addPostFrameCallback(
+    WidgetsBinding.instance!.addPostFrameCallback(
       (_) => ShowCaseWidget.of(context)!
-          .startShowCase([_one, _two, _three, _four, _five, _six]),
+          .startShowCase([_one, _two, _three, _four, _five]),
     );
     mails = [
       Mail(
@@ -137,12 +134,6 @@ class _MailPageState extends State<MailPage> {
   }
 
   @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -178,6 +169,11 @@ class _MailPageState extends State<MailPage> {
                                   children: <Widget>[
                                     Showcase(
                                       key: _one,
+                                      title: "Menu",
+                                      titleTextStyle: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.red,
+                                      ),
                                       description: 'Tap to see menu options',
                                       child: Icon(
                                         Icons.menu,
@@ -227,6 +223,27 @@ class _MailPageState extends State<MailPage> {
                         ),
                         child: Image.asset('assets/simform.png'),
                       ),
+                      actions: ShowCaseDefaultActions(
+                        previous: ActionButtonConfig(
+                          icon: Image.asset(
+                            'assets/left.png',
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        next: ActionButtonConfig(
+                          icon: Image.asset(
+                            'assets/right.png',
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        stop: ActionButtonConfig(
+                          icon: Image.asset(
+                            'assets/close.png',
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 12,
@@ -252,13 +269,10 @@ class _MailPageState extends State<MailPage> {
             const Padding(padding: EdgeInsets.only(top: 8)),
             Expanded(
               child: ListView.builder(
-                controller: scrollController,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return showcaseMailTile(_three, true, context);
-                  } else if (index == mails.length - 1) {
-                    return showcaseMailTile(_six, false, context);
+                    return showcaseMailTile(context);
                   }
                   return MailTile(mails[index % mails.length]);
                 },
@@ -276,12 +290,8 @@ class _MailPageState extends State<MailPage> {
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
             setState(() {
-              /* reset ListView to ensure that the showcased widgets are
-               * currently rendered so the showcased keys are available in the
-               * render tree. */
-              scrollController.jumpTo(0);
               ShowCaseWidget.of(context)!
-                  .startShowCase([_one, _two, _three, _four, _five, _six]);
+                  .startShowCase([_one, _two, _three, _four, _five]);
             });
           },
           child: const Icon(
@@ -292,8 +302,7 @@ class _MailPageState extends State<MailPage> {
     );
   }
 
-  GestureDetector showcaseMailTile(GlobalKey<State<StatefulWidget>> key,
-      bool showCaseDetail, BuildContext context) {
+  GestureDetector showcaseMailTile(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push<void>(
@@ -303,10 +312,10 @@ class _MailPageState extends State<MailPage> {
           ),
         );
       },
-      child: Container(
+      child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Showcase(
-          key: key,
+          key: _three,
           description: 'Tap to check mail',
           disposeOnTap: true,
           onTargetClick: () {
@@ -332,14 +341,13 @@ class _MailPageState extends State<MailPage> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      if (showCaseDetail)
-                        Showcase.withWidget(
-                          key: _four,
-                          height: 50,
-                          width: 140,
-                          shapeBorder: const CircleBorder(),
-                          radius: const BorderRadius.all(Radius.circular(150)),
-                          container: Column(
+                      Showcase.withWidget(
+                        key: _four,
+                        shapeBorder: const CircleBorder(),
+                        radius: const BorderRadius.all(Radius.circular(150)),
+                        container: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
@@ -369,10 +377,29 @@ class _MailPageState extends State<MailPage> {
                               )
                             ],
                           ),
-                          child: const SAvatarExampleChild(),
-                        )
-                      else
-                        const SAvatarExampleChild(),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          child: Container(
+                            width: 45,
+                            height: 45,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xffFCD8DC),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'S',
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       const Padding(padding: EdgeInsets.only(left: 8)),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -430,37 +457,6 @@ class _MailPageState extends State<MailPage> {
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SAvatarExampleChild extends StatelessWidget {
-  const SAvatarExampleChild({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(10),
-      child: Container(
-        width: 45,
-        height: 45,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Color(0xffFCD8DC),
-        ),
-        child: Center(
-          child: Text(
-            'S',
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
             ),
           ),
         ),

@@ -26,11 +26,13 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'actions_container_config.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
 import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
+import 'utilities/_showcase_context_provider.dart';
 
 class Showcase extends StatefulWidget {
   @override
@@ -51,7 +53,16 @@ class Showcase extends StatefulWidget {
   final Color textColor;
   final Widget scrollLoadingWidget;
   final bool showArrow;
+
+  // TODO: Deprecate requirement of height and width in next build and
+  //  remove it in next major build.
+
+  @Deprecated("Height will no longer have any effect on tooltip and will be "
+      "removed in next major release.")
   final double? height;
+
+  @Deprecated("Width will no longer have any effect on tooltip and will be "
+      "removed in next major release.")
   final double? width;
   final Duration animationDuration;
   final VoidCallback? onToolTipClick;
@@ -59,6 +70,8 @@ class Showcase extends StatefulWidget {
   final bool? disposeOnTap;
   final bool disableAnimation;
   final EdgeInsets overlayPadding;
+  final Widget? actions;
+  final ActionsSettings actionSettings;
 
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
@@ -72,7 +85,7 @@ class Showcase extends StatefulWidget {
     required this.key,
     required this.child,
     this.title,
-    required this.description,
+    this.description,
     this.shapeBorder,
     this.overlayColor = Colors.black45,
     this.overlayOpacity = 0.75,
@@ -93,9 +106,15 @@ class Showcase extends StatefulWidget {
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
     this.radius,
+    this.actions,
+    this.actionSettings = const ActionsSettings(),
   })  : height = null,
         width = null,
         container = null,
+        assert(
+            title != null || description != null,
+            "User has to provide either title or description "
+            "in order to display tooltip"),
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(
@@ -113,8 +132,12 @@ class Showcase extends StatefulWidget {
     required this.key,
     required this.child,
     required this.container,
-    required this.height,
-    required this.width,
+    @Deprecated("Height will no longer have any effect on tooltip and will be "
+        "removed in future major release.")
+        this.height,
+    @Deprecated("Width will no longer have any effect on tooltip and will be "
+        "removed in future major release.")
+        this.width,
     this.title,
     this.description,
     this.shapeBorder,
@@ -134,6 +157,8 @@ class Showcase extends StatefulWidget {
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
+    this.actions,
+    this.actionSettings = const ActionsSettings(),
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -258,24 +283,36 @@ class _ShowcaseState extends State<Showcase> {
     blur = kIsWeb && blur < 0 ? 0 : blur;
 
     return _showShowCase
-        ? Stack(
-            children: [
-              GestureDetector(
-                onTap: _nextIfAny,
-                child: ClipPath(
-                  clipper: RRectClipper(
-                    area: _isScrollRunning ? Rect.zero : rectBound,
-                    isCircle: widget.shapeBorder == CircleBorder(),
-                    radius:
-                        _isScrollRunning ? BorderRadius.zero : widget.radius,
-                    overlayPadding: _isScrollRunning
-                        ? EdgeInsets.zero
-                        : widget.overlayPadding,
-                  ),
-                  child: blur != 0
-                      ? BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                          child: Container(
+        ? ShowcaseContextProvider(
+            context: context,
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: _nextIfAny,
+                  child: ClipPath(
+                    clipper: RRectClipper(
+                      area: _isScrollRunning ? Rect.zero : rectBound,
+                      isCircle: widget.shapeBorder == CircleBorder(),
+                      radius:
+                          _isScrollRunning ? BorderRadius.zero : widget.radius,
+                      overlayPadding: _isScrollRunning
+                          ? EdgeInsets.zero
+                          : widget.overlayPadding,
+                    ),
+                    child: blur != 0
+                        ? BackdropFilter(
+                            filter:
+                                ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              decoration: BoxDecoration(
+                                color: widget.overlayColor
+                                    .withOpacity(widget.overlayOpacity),
+                              ),
+                            ),
+                          )
+                        : Container(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
                             decoration: BoxDecoration(
@@ -283,46 +320,40 @@ class _ShowcaseState extends State<Showcase> {
                                   .withOpacity(widget.overlayOpacity),
                             ),
                           ),
-                        )
-                      : Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          decoration: BoxDecoration(
-                            color: widget.overlayColor
-                                .withOpacity(widget.overlayOpacity),
-                          ),
-                        ),
+                  ),
                 ),
-              ),
-              if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
-              if (!_isScrollRunning)
-                _TargetWidget(
-                  offset: offset,
-                  size: size,
-                  onTap: _getOnTargetTap,
-                  shapeBorder: widget.shapeBorder,
-                ),
-              if (!_isScrollRunning)
-                ToolTipWidget(
-                  position: position,
-                  offset: offset,
-                  screenSize: screenSize,
-                  title: widget.title,
-                  description: widget.description,
-                  titleTextStyle: widget.titleTextStyle,
-                  descTextStyle: widget.descTextStyle,
-                  container: widget.container,
-                  tooltipColor: widget.showcaseBackgroundColor,
-                  textColor: widget.textColor,
-                  showArrow: widget.showArrow,
-                  contentHeight: widget.height,
-                  contentWidth: widget.width,
-                  onTooltipTap: _getOnTooltipTap,
-                  contentPadding: widget.contentPadding,
-                  disableAnimation: widget.disableAnimation,
-                  animationDuration: widget.animationDuration,
-                ),
-            ],
+                if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
+                if (!_isScrollRunning)
+                  _TargetWidget(
+                    offset: offset,
+                    size: size,
+                    onTap: _getOnTargetTap,
+                    shapeBorder: widget.shapeBorder,
+                  ),
+                if (!_isScrollRunning)
+                  ToolTipWidget(
+                    position: position,
+                    offset: offset,
+                    rect: rectBound,
+                    screenSize: screenSize,
+                    title: widget.title,
+                    description: widget.description,
+                    titleTextStyle: widget.titleTextStyle,
+                    descTextStyle: widget.descTextStyle,
+                    container: widget.container,
+                    tooltipColor: widget.showcaseBackgroundColor,
+                    textColor: widget.textColor,
+                    showArrow: widget.showArrow,
+                    onTooltipTap: _getOnTooltipTap,
+                    contentPadding: widget.contentPadding,
+                    disableAnimation: widget.disableAnimation,
+                    animationDuration: widget.animationDuration,
+                    actions: widget.actions,
+                    actionSettings: widget.actionSettings,
+                    arrowSize: Size(18, 9), // TODO: get this width from user.
+                  ),
+              ],
+            ),
           )
         : SizedBox.shrink();
   }

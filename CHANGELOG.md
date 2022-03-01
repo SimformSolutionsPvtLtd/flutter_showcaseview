@@ -1,5 +1,6 @@
-## [1.1.6] - May 5, 2022 (Unreleased)
+## [1.1.6] - March 11, 2022 [Unreleased]
 
+- Fixes [#99](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/isseues/99) - https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/99
 - Fixed [#62](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/62) - While using ShowCase widget, not scrolling to respective widget when its not visible.
 
 ## [1.1.5] - March 4, 2022

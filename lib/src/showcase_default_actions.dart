@@ -10,12 +10,17 @@ class ShowCaseDefaultActions extends StatelessWidget {
   final TextDirection? textDirection;
   final VerticalDirection verticalDirection;
   final TextBaseline? textBaseline;
+  final double? dividerThickness;
+  final Color verticalDividerColor;
 
   final ActionButtonConfig next;
   final ActionButtonConfig previous;
   final ActionButtonConfig stop;
 
+  final GlobalKey _keyRow = GlobalKey();
+
   ShowCaseDefaultActions({
+    Key? key,
     this.next = const ActionButtonConfig(),
     this.previous = const ActionButtonConfig(),
     this.stop = const ActionButtonConfig(),
@@ -25,7 +30,9 @@ class ShowCaseDefaultActions extends StatelessWidget {
     this.textDirection,
     this.verticalDirection = VerticalDirection.down,
     this.textBaseline,
-  });
+    this.dividerThickness = 1.0,
+    this.verticalDividerColor = const Color(0xffee5366),
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,30 +43,46 @@ class ShowCaseDefaultActions extends StatelessWidget {
       mainAxisAlignment: mainAxisAlignment,
       verticalDirection: verticalDirection,
       crossAxisAlignment: crossAxisAlignment,
+      key: _keyRow,
       textBaseline: textBaseline,
       textDirection: textDirection,
       children: [
-        if (previous.visible)
-          TextButton(
-            child: Text(
-              'Previous',
-              style: TextStyle(color: previous.textColor),
-            ),
-            onPressed: previous.callback ??
+        if (previous.buttonVisible)
+          _getButtonWidget(
+            previous,
+            showcaseContext,
+            previous.text ?? 'Previous',
+            previous.callback ??
                 () {
                   if (showcaseContext != null &&
-                      ShowCaseWidget.of(showcaseContext)!.ids != null) {
-                    ShowCaseWidget.of(showcaseContext)!.prev();
+                      ShowCaseWidget.of(showcaseContext)?.ids != null) {
+                    ShowCaseWidget.of(showcaseContext)?.prev();
                   }
                 },
           ),
-        if (next.visible)
-          TextButton(
-            child: Text(
-              'Next',
-              style: TextStyle(color: next.textColor),
-            ),
-            onPressed: next.callback ??
+        if (previous.buttonVisible && stop.buttonVisible ||
+            previous.buttonVisible && next.buttonVisible)
+          _getVerticalDivider(),
+        if (stop.buttonVisible)
+          _getButtonWidget(
+            stop,
+            showcaseContext,
+            stop.text ?? 'Stop',
+            stop.callback ??
+                () {
+                  if (showcaseContext != null &&
+                      ShowCaseWidget.of(showcaseContext)!.ids != null) {
+                    ShowCaseWidget.of(showcaseContext)!.dismiss();
+                  }
+                },
+          ),
+        if (stop.buttonVisible && next.buttonVisible) _getVerticalDivider(),
+        if (next.buttonVisible)
+          _getButtonWidget(
+            next,
+            showcaseContext,
+            next.text ?? 'Next',
+            next.callback ??
                 () {
                   if (showcaseContext != null &&
                       ShowCaseWidget.of(showcaseContext)!.ids != null) {
@@ -71,28 +94,59 @@ class ShowCaseDefaultActions extends StatelessWidget {
                   }
                 },
           ),
-        if (stop.visible)
-          TextButton(
-            child: Text(
-              'Stop',
-              style: TextStyle(color: stop.textColor),
-            ),
-            onPressed: stop.callback ??
-                () {
-                  if (showcaseContext != null &&
-                      ShowCaseWidget.of(showcaseContext)!.ids != null) {
-                    ShowCaseWidget.of(showcaseContext)!.dismiss();
-                  }
-                },
-          ),
       ],
     );
+  }
+
+  Widget _getVerticalDivider() {
+    return VerticalDivider(
+      width: 1.0,
+      thickness: dividerThickness,
+      color: verticalDividerColor,
+    );
+  }
+
+  Widget _getButtonWidget(ActionButtonConfig actionConfig,
+      BuildContext? showcaseContext, String buttonText, VoidCallback onClick) {
+    return Expanded(
+      child: Directionality(
+        textDirection: actionConfig.textDirection,
+        child: TextButton.icon(
+          label: actionConfig.buttonTextVisible
+              ? Text(
+                  buttonText,
+                  style: TextStyle(color: actionConfig.textColor),
+                )
+              : SizedBox.shrink(),
+          icon: actionConfig.icon ?? SizedBox.shrink(),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  actionConfig.textButtonBgColor)),
+          onPressed: onClick,
+        ),
+      ),
+    );
+  }
+
+  double? _getDefaultWidth() {
+    return _keyRow.currentContext != null
+        ? (_keyRow.currentContext!.findRenderObject() as RenderBox).size.width
+        : null;
   }
 }
 
 class ActionButtonConfig {
+  /// button text
+  final String? text;
+
+  /// button icon or image
+  final Widget? icon;
+
   /// Color of button text.
   final Color textColor;
+
+  /// Color of button background.
+  final Color textButtonBgColor;
 
   /// Callback on button tap.
   ///
@@ -100,11 +154,22 @@ class ActionButtonConfig {
   final VoidCallback? callback;
 
   /// Defines visibility of button.
-  final bool visible;
+  final bool buttonVisible;
+
+  /// Defines visibility of button.
+  final bool buttonTextVisible;
+
+  /// Defines icon and text direction.
+  final TextDirection textDirection;
 
   const ActionButtonConfig({
-    this.textColor = Colors.white,
+    this.text,
+    this.icon,
+    this.textColor = const Color(0xffee5366),
+    this.textButtonBgColor = Colors.transparent,
     this.callback,
-    this.visible = true,
+    this.buttonVisible = true,
+    this.buttonTextVisible = true,
+    this.textDirection = TextDirection.ltr,
   });
 }

@@ -25,14 +25,14 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:showcaseview/src/utilities/_showcase_context_provider.dart';
 
+import 'actions_container_config.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
 import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
+import 'utilities/_showcase_context_provider.dart';
 
 class Showcase extends StatefulWidget {
   @override
@@ -52,6 +52,7 @@ class Showcase extends StatefulWidget {
   final Color showcaseBackgroundColor;
   final Color textColor;
   final bool showArrow;
+
   // TODO: Deprecate requirement of height and width in next build and
   //  remove it in next major build.
 
@@ -69,6 +70,7 @@ class Showcase extends StatefulWidget {
   final bool disableAnimation;
   final EdgeInsets overlayPadding;
   final Widget? actions;
+  final ActionsContainer actionsContainer;
 
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
@@ -78,31 +80,32 @@ class Showcase extends StatefulWidget {
   ///
   final double? blurValue;
 
-  const Showcase(
-      {required this.key,
-      required this.child,
-      this.title,
-      required this.description,
-      this.shapeBorder,
-      this.overlayColor = Colors.black45,
-      this.overlayOpacity = 0.75,
-      this.titleTextStyle,
-      this.descTextStyle,
-      this.showcaseBackgroundColor = Colors.white,
-      this.textColor = Colors.black,
-      this.showArrow = true,
-      this.onTargetClick,
-      this.disposeOnTap,
-      this.animationDuration = const Duration(milliseconds: 2000),
-      this.disableAnimation = false,
-      this.contentPadding =
-          const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      this.onToolTipClick,
-      this.overlayPadding = EdgeInsets.zero,
-      this.blurValue,
-      this.radius,
-      this.actions})
-      : height = null,
+  const Showcase({
+    required this.key,
+    required this.child,
+    this.title,
+    required this.description,
+    this.shapeBorder,
+    this.overlayColor = Colors.black45,
+    this.overlayOpacity = 0.75,
+    this.titleTextStyle,
+    this.descTextStyle,
+    this.showcaseBackgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.showArrow = true,
+    this.onTargetClick,
+    this.disposeOnTap,
+    this.animationDuration = const Duration(milliseconds: 2000),
+    this.disableAnimation = false,
+    this.contentPadding =
+        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+    this.onToolTipClick,
+    this.overlayPadding = EdgeInsets.zero,
+    this.blurValue,
+    this.radius,
+    this.actions,
+    this.actionsContainer = const ActionsContainer(),
+  })  : height = null,
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -146,6 +149,7 @@ class Showcase extends StatefulWidget {
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
     this.actions,
+    this.actionsContainer = const ActionsContainer(),
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -313,6 +317,7 @@ class _ShowcaseState extends State<Showcase> {
                   disableAnimation: widget.disableAnimation,
                   animationDuration: widget.animationDuration,
                   actions: widget.actions,
+                  actionsContainer: widget.actionsContainer,
                   arrowSize: Size(18, 9), // TODO: get this width from user.
                 ),
               ],

@@ -346,7 +346,7 @@ class _MailPageState extends State<MailPage> {
         ),
         actionsContainer: const ActionsContainer(
           containerColor: Colors.white70,
-          containerWidth: 250,
+          containerWidth: 270,
         ),
         actions: ShowCaseDefaultActions(
           mainAxisSize: MainAxisSize.min,

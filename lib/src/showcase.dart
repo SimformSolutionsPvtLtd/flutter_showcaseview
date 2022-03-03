@@ -108,6 +108,10 @@ class Showcase extends StatefulWidget {
   })  : height = null,
         width = null,
         container = null,
+        assert(
+            title != null || description != null,
+            "User has to provide either title or description "
+            "in order to display tooltip"),
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(

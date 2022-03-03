@@ -17,8 +17,6 @@ class ShowCaseDefaultActions extends StatelessWidget {
   final ActionButtonConfig previous;
   final ActionButtonConfig stop;
 
-  final GlobalKey _keyRow = GlobalKey();
-
   ShowCaseDefaultActions({
     Key? key,
     this.next = const ActionButtonConfig(),
@@ -43,7 +41,6 @@ class ShowCaseDefaultActions extends StatelessWidget {
       mainAxisAlignment: mainAxisAlignment,
       verticalDirection: verticalDirection,
       crossAxisAlignment: crossAxisAlignment,
-      key: _keyRow,
       textBaseline: textBaseline,
       textDirection: textDirection,
       children: [
@@ -126,12 +123,6 @@ class ShowCaseDefaultActions extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  double? _getDefaultWidth() {
-    return _keyRow.currentContext != null
-        ? (_keyRow.currentContext!.findRenderObject() as RenderBox).size.width
-        : null;
   }
 }
 

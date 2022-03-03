@@ -113,6 +113,20 @@ ShowCaseWidget(
 ),
 ```
 
+8. Go to next `ShowCase`
+```dart
+someEvent(){
+  ShowCaseWidget.of(context).next();
+}
+```
+
+9. Go to previous `ShowCase`
+```dart
+someEvent(){
+  ShowCaseWidget.of(context).previous();
+}
+```
+
 If you want to start the `ShowCaseView` as soon as your UI built up then use below code.
 
 ```dart

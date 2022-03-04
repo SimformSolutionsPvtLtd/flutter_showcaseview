@@ -5,6 +5,8 @@
 - Fixed [#121](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/121) - SlideTransition widget in tooltip_widget.dart is constantly rebuildung even after the showcasing is supposed to have stopped
 - Fixed [#152](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/152) - Calculation of tooltip position
 - Fixed [#182](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/182) - Not providing blurValue causes Exception: Please provide ShowCaseView context
+- Fixed [#162](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/162) - Add feature to move back
+- Fixed [#181](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/181) - Add feature to go to previous item
 
 ## [1.1.4] - November 26, 2021
 

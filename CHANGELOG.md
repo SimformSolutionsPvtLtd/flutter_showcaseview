@@ -1,4 +1,4 @@
-## [1.1.5] - February 24, 2022 [Unreleased]
+## [1.1.5] - March 4, 2022
 
 - Fixed [#173](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/173) - showArrow not working
 - Fixed [#150](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/150) - Add condition for determine state is active

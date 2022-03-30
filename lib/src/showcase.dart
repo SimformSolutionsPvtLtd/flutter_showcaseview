@@ -58,6 +58,9 @@ class Showcase extends StatefulWidget {
   final bool? disposeOnTap;
   final bool disableAnimation;
   final EdgeInsets overlayPadding;
+  final double? top;
+  final double? left;
+  final double? right;
 
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
@@ -67,30 +70,33 @@ class Showcase extends StatefulWidget {
   ///
   final double? blurValue;
 
-  const Showcase({
-    required this.key,
-    required this.child,
-    this.title,
-    required this.description,
-    this.shapeBorder,
-    this.overlayColor = Colors.black45,
-    this.overlayOpacity = 0.75,
-    this.titleTextStyle,
-    this.descTextStyle,
-    this.showcaseBackgroundColor = Colors.white,
-    this.textColor = Colors.black,
-    this.showArrow = true,
-    this.onTargetClick,
-    this.disposeOnTap,
-    this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false,
-    this.contentPadding =
-        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-    this.onToolTipClick,
-    this.overlayPadding = EdgeInsets.zero,
-    this.blurValue,
-    this.radius,
-  })  : height = null,
+  const Showcase(
+      {required this.key,
+      required this.child,
+      this.title,
+      required this.description,
+      this.shapeBorder,
+      this.overlayColor = Colors.black45,
+      this.overlayOpacity = 0.75,
+      this.titleTextStyle,
+      this.descTextStyle,
+      this.showcaseBackgroundColor = Colors.white,
+      this.textColor = Colors.black,
+      this.showArrow = true,
+      this.onTargetClick,
+      this.disposeOnTap,
+      this.animationDuration = const Duration(milliseconds: 2000),
+      this.disableAnimation = false,
+      this.contentPadding =
+          const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      this.onToolTipClick,
+      this.overlayPadding = EdgeInsets.zero,
+      this.blurValue,
+      this.radius,
+      this.top,
+      this.left,
+      this.right})
+      : height = null,
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -106,30 +112,33 @@ class Showcase extends StatefulWidget {
                 : (onTargetClick == null ? false : true),
             "onTargetClick is required if you're using disposeOnTap");
 
-  const Showcase.withWidget({
-    required this.key,
-    required this.child,
-    required this.container,
-    required this.height,
-    required this.width,
-    this.title,
-    this.description,
-    this.shapeBorder,
-    this.overlayColor = Colors.black45,
-    this.radius,
-    this.overlayOpacity = 0.75,
-    this.titleTextStyle,
-    this.descTextStyle,
-    this.showcaseBackgroundColor = Colors.white,
-    this.textColor = Colors.black,
-    this.onTargetClick,
-    this.disposeOnTap,
-    this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false,
-    this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
-    this.overlayPadding = EdgeInsets.zero,
-    this.blurValue,
-  })  : showArrow = false,
+  const Showcase.withWidget(
+      {required this.key,
+      required this.child,
+      required this.container,
+      required this.height,
+      required this.width,
+      this.title,
+      this.description,
+      this.shapeBorder,
+      this.overlayColor = Colors.black45,
+      this.radius,
+      this.overlayOpacity = 0.75,
+      this.titleTextStyle,
+      this.descTextStyle,
+      this.showcaseBackgroundColor = Colors.white,
+      this.textColor = Colors.black,
+      this.onTargetClick,
+      this.disposeOnTap,
+      this.animationDuration = const Duration(milliseconds: 2000),
+      this.disableAnimation = false,
+      this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+      this.overlayPadding = EdgeInsets.zero,
+      this.blurValue,
+      this.left,
+      this.right,
+      this.top})
+      : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1.");
@@ -276,6 +285,9 @@ class _ShowcaseState extends State<Showcase> {
               ),
               ToolTipWidget(
                 position: position,
+                top: widget.top,
+                left: widget.left,
+                right: widget.right,
                 offset: offset,
                 screenSize: screenSize,
                 title: widget.title,

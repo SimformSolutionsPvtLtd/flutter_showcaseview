@@ -45,26 +45,31 @@ class ToolTipWidget extends StatefulWidget {
   final EdgeInsets? contentPadding;
   final Duration animationDuration;
   final bool disableAnimation;
+  final double? top;
+  final double? left;
+  final double? right;
 
-  ToolTipWidget({
-    required this.position,
-    required this.offset,
-    required this.screenSize,
-    required this.title,
-    required this.description,
-    required this.titleTextStyle,
-    required this.descTextStyle,
-    required this.container,
-    required this.tooltipColor,
-    required this.textColor,
-    required this.showArrow,
-    required this.contentHeight,
-    required this.contentWidth,
-    required this.onTooltipTap,
-    required this.animationDuration,
-    this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
-    required this.disableAnimation,
-  });
+  ToolTipWidget(
+      {required this.position,
+      required this.offset,
+      required this.screenSize,
+      required this.title,
+      required this.description,
+      required this.titleTextStyle,
+      required this.descTextStyle,
+      required this.container,
+      required this.tooltipColor,
+      required this.textColor,
+      required this.showArrow,
+      required this.contentHeight,
+      required this.contentWidth,
+      required this.onTooltipTap,
+      required this.animationDuration,
+      this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
+      required this.disableAnimation,
+      this.top,
+      this.right,
+      this.left});
 
   @override
   _ToolTipWidgetState createState() => _ToolTipWidgetState();
@@ -75,9 +80,18 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   Offset? position;
 
   bool isArrowUp = false;
+  late bool customPosition;
 
   late final AnimationController _parentController;
   late final Animation<double> _curvedAnimation;
+
+  bool isPositionCustom() {
+    if (widget.top != null || widget.left != null || widget.right != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   bool isCloseToTopOrBottom(Offset position) {
     var height = 120.0;
@@ -239,11 +253,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final arrowWidth = 18.0;
     final arrowHeight = 9.0;
 
+    customPosition = isPositionCustom();
     if (widget.container == null) {
       return Positioned(
-        top: contentY,
-        left: _getLeft(),
-        right: _getRight(),
+        top: customPosition ? widget.top : contentY,
+        left: customPosition ? widget.left : _getLeft(),
+        right: customPosition ? widget.right : _getRight(),
         child: FractionalTranslation(
           translation: Offset(0.0, contentFractionalOffset as double),
           child: SlideTransition(

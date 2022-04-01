@@ -86,7 +86,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   late final Animation<double> _curvedAnimation;
 
   bool isPositionCustom() {
-    if (widget.top != null || widget.left != null || widget.right != null) {
+    if (widget.left != null || widget.right != null) {
       return true;
     } else {
       return false;
@@ -256,7 +256,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     customPosition = isPositionCustom();
     if (widget.container == null) {
       return Positioned(
-        top: customPosition ? widget.top : contentY,
+        top: widget.top ?? contentY,
         left: customPosition ? widget.left : _getLeft(),
         right: customPosition ? widget.right : _getRight(),
         child: FractionalTranslation(

@@ -34,7 +34,6 @@ class ShowCaseWidget extends StatefulWidget {
   final bool autoPlayLockEnable;
   final Duration scrollDuration;
 
-
   /// Default overlay blur used by showcase. if [Showcase.blurValue]
   /// is not provided.
   ///

@@ -32,6 +32,7 @@ class ShowCaseWidget extends StatefulWidget {
   final bool autoPlay;
   final Duration autoPlayDelay;
   final bool autoPlayLockEnable;
+  final Duration scrollDuration;
 
   /// Default overlay blur used by showcase. if [Showcase.blurValue]
   /// is not provided.
@@ -48,6 +49,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.autoPlayDelay = const Duration(milliseconds: 2000),
     this.autoPlayLockEnable = false,
     this.blurValue = 0,
+    this.scrollDuration = const Duration(milliseconds: 300),
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {

@@ -49,6 +49,7 @@ class Showcase extends StatefulWidget {
   final Widget? container;
   final Color showcaseBackgroundColor;
   final Color textColor;
+  final Widget scrollLoadingWidget;
   final bool showArrow;
   final double? height;
   final double? width;
@@ -79,6 +80,8 @@ class Showcase extends StatefulWidget {
     this.descTextStyle,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
+    this.scrollLoadingWidget = const CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation(Colors.white)),
     this.showArrow = true,
     this.onTargetClick,
     this.disposeOnTap,
@@ -122,6 +125,8 @@ class Showcase extends StatefulWidget {
     this.descTextStyle,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
+    this.scrollLoadingWidget = const CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation(Colors.white)),
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
@@ -140,6 +145,7 @@ class Showcase extends StatefulWidget {
 
 class _ShowcaseState extends State<Showcase> {
   bool _showShowCase = false;
+  bool _isScrollRunning = false;
   Timer? timer;
   GetPosition? position;
 
@@ -164,6 +170,7 @@ class _ShowcaseState extends State<Showcase> {
     });
 
     if (activeStep == widget.key) {
+      _scrollIntoView();
       if (ShowCaseWidget.of(context)!.autoPlay) {
         timer = Timer(
             Duration(
@@ -171,6 +178,22 @@ class _ShowcaseState extends State<Showcase> {
             _nextIfAny);
       }
     }
+  }
+
+  void _scrollIntoView() {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      setState(() {
+        _isScrollRunning = true;
+      });
+      await Scrollable.ensureVisible(
+        widget.key.currentContext!,
+        duration: ShowCaseWidget.of(context)!.widget.scrollDuration,
+        alignment: 0.5,
+      );
+      setState(() {
+        _isScrollRunning = false;
+      });
+    });
   }
 
   @override
@@ -241,10 +264,13 @@ class _ShowcaseState extends State<Showcase> {
                 onTap: _nextIfAny,
                 child: ClipPath(
                   clipper: RRectClipper(
-                    area: rectBound,
+                    area: _isScrollRunning ? Rect.zero : rectBound,
                     isCircle: widget.shapeBorder == CircleBorder(),
-                    radius: widget.radius,
-                    overlayPadding: widget.overlayPadding,
+                    radius:
+                        _isScrollRunning ? BorderRadius.zero : widget.radius,
+                    overlayPadding: _isScrollRunning
+                        ? EdgeInsets.zero
+                        : widget.overlayPadding,
                   ),
                   child: blur != 0
                       ? BackdropFilter(
@@ -268,31 +294,34 @@ class _ShowcaseState extends State<Showcase> {
                         ),
                 ),
               ),
-              _TargetWidget(
-                offset: offset,
-                size: size,
-                onTap: _getOnTargetTap,
-                shapeBorder: widget.shapeBorder,
-              ),
-              ToolTipWidget(
-                position: position,
-                offset: offset,
-                screenSize: screenSize,
-                title: widget.title,
-                description: widget.description,
-                titleTextStyle: widget.titleTextStyle,
-                descTextStyle: widget.descTextStyle,
-                container: widget.container,
-                tooltipColor: widget.showcaseBackgroundColor,
-                textColor: widget.textColor,
-                showArrow: widget.showArrow,
-                contentHeight: widget.height,
-                contentWidth: widget.width,
-                onTooltipTap: _getOnTooltipTap,
-                contentPadding: widget.contentPadding,
-                disableAnimation: widget.disableAnimation,
-                animationDuration: widget.animationDuration,
-              ),
+              if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
+              if (!_isScrollRunning)
+                _TargetWidget(
+                  offset: offset,
+                  size: size,
+                  onTap: _getOnTargetTap,
+                  shapeBorder: widget.shapeBorder,
+                ),
+              if (!_isScrollRunning)
+                ToolTipWidget(
+                  position: position,
+                  offset: offset,
+                  screenSize: screenSize,
+                  title: widget.title,
+                  description: widget.description,
+                  titleTextStyle: widget.titleTextStyle,
+                  descTextStyle: widget.descTextStyle,
+                  container: widget.container,
+                  tooltipColor: widget.showcaseBackgroundColor,
+                  textColor: widget.textColor,
+                  showArrow: widget.showArrow,
+                  contentHeight: widget.height,
+                  contentWidth: widget.width,
+                  onTooltipTap: _getOnTooltipTap,
+                  contentPadding: widget.contentPadding,
+                  disableAnimation: widget.disableAnimation,
+                  animationDuration: widget.animationDuration,
+                ),
             ],
           )
         : SizedBox.shrink();

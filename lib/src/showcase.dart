@@ -57,7 +57,7 @@ class Showcase extends StatefulWidget {
   final VoidCallback? onToolTipClick;
   final VoidCallback? onTargetClick;
   final bool? disposeOnTap;
-  final bool disableAnimation;
+  final bool? disableAnimation;
   final EdgeInsets overlayPadding;
   final VoidCallback? onTargetDoubleTap;
   final VoidCallback? onTargetLongPress;
@@ -88,7 +88,7 @@ class Showcase extends StatefulWidget {
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false,
+    this.disableAnimation,
     this.contentPadding =
         const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
     this.onToolTipClick,
@@ -134,7 +134,7 @@ class Showcase extends StatefulWidget {
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation = false,
+    this.disableAnimation,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
@@ -154,6 +154,7 @@ class _ShowcaseState extends State<Showcase> {
   bool _isScrollRunning = false;
   Timer? timer;
   GetPosition? position;
+  ShowCaseWidgetState get showCaseWidgetState => ShowCaseWidget.of(context);
 
   @override
   void didChangeDependencies() {
@@ -177,10 +178,9 @@ class _ShowcaseState extends State<Showcase> {
 
     if (activeStep == widget.key) {
       _scrollIntoView();
-      if (ShowCaseWidget.of(context)!.autoPlay) {
+      if (showCaseWidgetState.autoPlay) {
         timer = Timer(
-            Duration(
-                seconds: ShowCaseWidget.of(context)!.autoPlayDelay.inSeconds),
+            Duration(seconds: showCaseWidgetState.autoPlayDelay.inSeconds),
             _nextIfAny);
       }
     }
@@ -193,7 +193,7 @@ class _ShowcaseState extends State<Showcase> {
       });
       await Scrollable.ensureVisible(
         widget.key.currentContext!,
-        duration: ShowCaseWidget.of(context)!.widget.scrollDuration,
+        duration: showCaseWidgetState.widget.scrollDuration,
         alignment: 0.5,
       );
       setState(() {
@@ -222,19 +222,19 @@ class _ShowcaseState extends State<Showcase> {
 
   void _nextIfAny() {
     if (timer != null && timer!.isActive) {
-      if (ShowCaseWidget.of(context)!.autoPlayLockEnable) {
+      if (showCaseWidgetState.autoPlayLockEnable) {
         return;
       }
       timer!.cancel();
     } else if (timer != null && !timer!.isActive) {
       timer = null;
     }
-    ShowCaseWidget.of(context)!.completed(widget.key);
+    showCaseWidgetState.completed(widget.key);
   }
 
   void _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
-      ShowCaseWidget.of(context)!.dismiss();
+      showCaseWidgetState.dismiss();
       widget.onTargetClick!();
     } else {
       (widget.onTargetClick ?? _nextIfAny).call();
@@ -243,7 +243,7 @@ class _ShowcaseState extends State<Showcase> {
 
   void _getOnTooltipTap() {
     if (widget.disposeOnTap == true) {
-      ShowCaseWidget.of(context)!.dismiss();
+      showCaseWidgetState.dismiss();
     }
     widget.onToolTipClick?.call();
   }
@@ -256,7 +256,7 @@ class _ShowcaseState extends State<Showcase> {
   ) {
     var blur = 0.0;
     if (_showShowCase) {
-      blur = widget.blurValue ?? (ShowCaseWidget.of(context)?.blurValue) ?? 0;
+      blur = widget.blurValue ?? showCaseWidgetState.blurValue;
     }
 
     // Set blur to 0 if application is running on web and
@@ -327,7 +327,8 @@ class _ShowcaseState extends State<Showcase> {
                   contentWidth: widget.width,
                   onTooltipTap: _getOnTooltipTap,
                   contentPadding: widget.contentPadding,
-                  disableAnimation: widget.disableAnimation,
+                  disableAnimation: widget.disableAnimation ??
+                      showCaseWidgetState.disableAnimation,
                   animationDuration: widget.animationDuration,
                 ),
             ],

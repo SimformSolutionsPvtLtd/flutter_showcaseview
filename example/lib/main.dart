@@ -66,7 +66,7 @@ class _MailPageState extends State<MailPage> {
     super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ShowCaseWidget.of(context)!
+      (_) => ShowCaseWidget.of(context)
           .startShowCase([_one, _two, _three, _four, _five, _six]),
     );
     mails = [
@@ -280,7 +280,7 @@ class _MailPageState extends State<MailPage> {
                * currently rendered so the showcased keys are available in the
                * render tree. */
               scrollController.jumpTo(0);
-              ShowCaseWidget.of(context)!
+              ShowCaseWidget.of(context)
                   .startShowCase([_one, _two, _three, _four, _five, _six]);
             });
           },
@@ -317,7 +317,7 @@ class _MailPageState extends State<MailPage> {
               ),
             ).then((_) {
               setState(() {
-                ShowCaseWidget.of(context)!.startShowCase([_four, _five]);
+                ShowCaseWidget.of(context).startShowCase([_four, _five]);
               });
             });
           },

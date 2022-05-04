@@ -32,6 +32,7 @@ class ShowCaseWidget extends StatefulWidget {
   final bool autoPlay;
   final Duration autoPlayDelay;
   final bool autoPlayLockEnable;
+  final bool disableAnimation;
   final Duration scrollDuration;
 
   /// Default overlay blur used by showcase. if [Showcase.blurValue]
@@ -50,6 +51,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.autoPlayLockEnable = false,
     this.blurValue = 0,
     this.scrollDuration = const Duration(milliseconds: 300),
+    this.disableAnimation = false,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -58,10 +60,10 @@ class ShowCaseWidget extends StatefulWidget {
         ?.activeWidgetIds;
   }
 
-  static ShowCaseWidgetState? of(BuildContext context) {
+  static ShowCaseWidgetState of(BuildContext context) {
     final state = context.findAncestorStateOfType<ShowCaseWidgetState>();
     if (state != null) {
-      return context.findAncestorStateOfType<ShowCaseWidgetState>();
+      return state;
     } else {
       throw Exception('Please provide ShowCaseView context');
     }
@@ -75,6 +77,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey>? ids;
   int? activeWidgetId;
   late bool autoPlay;
+  late bool disableAnimation;
   late Duration autoPlayDelay;
   late bool autoPlayLockEnable;
 
@@ -86,6 +89,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     super.initState();
     autoPlayDelay = widget.autoPlayDelay;
     autoPlay = widget.autoPlay;
+    disableAnimation = widget.disableAnimation;
     autoPlayLockEnable = widget.autoPlayLockEnable;
   }
 

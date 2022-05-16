@@ -181,7 +181,7 @@ class _ShowcaseState extends State<Showcase> {
   }
 
   void _scrollIntoView() {
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       setState(() {
         _isScrollRunning = true;
       });
@@ -331,20 +331,16 @@ class _ShowcaseState extends State<Showcase> {
 class _TargetWidget extends StatelessWidget {
   final Offset offset;
   final Size? size;
-  final Animation<double>? widthAnimation;
   final VoidCallback? onTap;
   final ShapeBorder? shapeBorder;
-  final BorderRadius? radius;
 
-  _TargetWidget(
-      {Key? key,
-      required this.offset,
-      this.size,
-      this.widthAnimation,
-      this.onTap,
-      this.shapeBorder,
-      this.radius})
-      : super(key: key);
+  _TargetWidget({
+    Key? key,
+    required this.offset,
+    this.size,
+    this.onTap,
+    this.shapeBorder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -359,14 +355,12 @@ class _TargetWidget extends StatelessWidget {
             height: size!.height + 16,
             width: size!.width + 16,
             decoration: ShapeDecoration(
-              shape: radius != null
-                  ? RoundedRectangleBorder(borderRadius: radius!)
-                  : shapeBorder ??
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                      ),
+              shape: shapeBorder ??
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
             ),
           ),
         ),

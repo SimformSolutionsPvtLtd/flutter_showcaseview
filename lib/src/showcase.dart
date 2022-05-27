@@ -42,7 +42,9 @@ class Showcase extends StatefulWidget {
   final ShapeBorder? shapeBorder;
   final BorderRadius? radius;
   final TextStyle? titleTextStyle;
+  final TextDirection titleTextDirection;
   final TextStyle? descTextStyle;
+  final TextDirection descTextDirection;
   final EdgeInsets contentPadding;
   final Color overlayColor;
   final double overlayOpacity;
@@ -77,18 +79,18 @@ class Showcase extends StatefulWidget {
     this.overlayColor = Colors.black45,
     this.overlayOpacity = 0.75,
     this.titleTextStyle,
+    this.titleTextDirection = TextDirection.ltr,
     this.descTextStyle,
+    this.descTextDirection = TextDirection.ltr,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
-    this.scrollLoadingWidget = const CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation(Colors.white)),
+    this.scrollLoadingWidget = const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white)),
     this.showArrow = true,
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
     this.disableAnimation = false,
-    this.contentPadding =
-        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+    this.contentPadding = const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
     this.onToolTipClick,
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
@@ -96,18 +98,9 @@ class Showcase extends StatefulWidget {
   })  : height = null,
         width = null,
         container = null,
-        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1."),
-        assert(
-            onTargetClick == null
-                ? true
-                : (disposeOnTap == null ? false : true),
-            "disposeOnTap is required if you're using onTargetClick"),
-        assert(
-            disposeOnTap == null
-                ? true
-                : (onTargetClick == null ? false : true),
-            "onTargetClick is required if you're using disposeOnTap");
+        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0, "overlay opacity must be between 0 and 1."),
+        assert(onTargetClick == null ? true : (disposeOnTap == null ? false : true), "disposeOnTap is required if you're using onTargetClick"),
+        assert(disposeOnTap == null ? true : (onTargetClick == null ? false : true), "onTargetClick is required if you're using disposeOnTap");
 
   const Showcase.withWidget({
     required this.key,
@@ -122,11 +115,12 @@ class Showcase extends StatefulWidget {
     this.radius,
     this.overlayOpacity = 0.75,
     this.titleTextStyle,
+    this.titleTextDirection = TextDirection.ltr,
     this.descTextStyle,
+    this.descTextDirection = TextDirection.ltr,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
-    this.scrollLoadingWidget = const CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation(Colors.white)),
+    this.scrollLoadingWidget = const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white)),
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
@@ -136,8 +130,7 @@ class Showcase extends StatefulWidget {
     this.blurValue,
   })  : showArrow = false,
         onToolTipClick = null,
-        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1.");
+        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0, "overlay opacity must be between 0 and 1.");
 
   @override
   _ShowcaseState createState() => _ShowcaseState();
@@ -172,10 +165,7 @@ class _ShowcaseState extends State<Showcase> {
     if (activeStep == widget.key) {
       _scrollIntoView();
       if (ShowCaseWidget.of(context)!.autoPlay) {
-        timer = Timer(
-            Duration(
-                seconds: ShowCaseWidget.of(context)!.autoPlayDelay.inSeconds),
-            _nextIfAny);
+        timer = Timer(Duration(seconds: ShowCaseWidget.of(context)!.autoPlayDelay.inSeconds), _nextIfAny);
       }
     }
   }
@@ -266,11 +256,8 @@ class _ShowcaseState extends State<Showcase> {
                   clipper: RRectClipper(
                     area: _isScrollRunning ? Rect.zero : rectBound,
                     isCircle: widget.shapeBorder == CircleBorder(),
-                    radius:
-                        _isScrollRunning ? BorderRadius.zero : widget.radius,
-                    overlayPadding: _isScrollRunning
-                        ? EdgeInsets.zero
-                        : widget.overlayPadding,
+                    radius: _isScrollRunning ? BorderRadius.zero : widget.radius,
+                    overlayPadding: _isScrollRunning ? EdgeInsets.zero : widget.overlayPadding,
                   ),
                   child: blur != 0
                       ? BackdropFilter(
@@ -279,8 +266,7 @@ class _ShowcaseState extends State<Showcase> {
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
                             decoration: BoxDecoration(
-                              color: widget.overlayColor
-                                  .withOpacity(widget.overlayOpacity),
+                              color: widget.overlayColor.withOpacity(widget.overlayOpacity),
                             ),
                           ),
                         )
@@ -288,8 +274,7 @@ class _ShowcaseState extends State<Showcase> {
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
                           decoration: BoxDecoration(
-                            color: widget.overlayColor
-                                .withOpacity(widget.overlayOpacity),
+                            color: widget.overlayColor.withOpacity(widget.overlayOpacity),
                           ),
                         ),
                 ),
@@ -310,7 +295,9 @@ class _ShowcaseState extends State<Showcase> {
                   title: widget.title,
                   description: widget.description,
                   titleTextStyle: widget.titleTextStyle,
+                  titleTextDirection: widget.titleTextDirection,
                   descTextStyle: widget.descTextStyle,
+                  descTextDirection: widget.descTextDirection,
                   container: widget.container,
                   tooltipColor: widget.showcaseBackgroundColor,
                   textColor: widget.textColor,
@@ -336,15 +323,7 @@ class _TargetWidget extends StatelessWidget {
   final ShapeBorder? shapeBorder;
   final BorderRadius? radius;
 
-  _TargetWidget(
-      {Key? key,
-      required this.offset,
-      this.size,
-      this.widthAnimation,
-      this.onTap,
-      this.shapeBorder,
-      this.radius})
-      : super(key: key);
+  _TargetWidget({Key? key, required this.offset, this.size, this.widthAnimation, this.onTap, this.shapeBorder, this.radius}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

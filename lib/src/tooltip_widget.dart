@@ -67,7 +67,7 @@ class ToolTipWidget extends StatefulWidget {
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     required this.disableAnimation,
     this.titleTextDirection = TextDirection.ltr,
-    this.descriptionTextDirection = TextDirection.ltr,
+    this.descTextDirection = TextDirection.ltr,
   });
 
   @override

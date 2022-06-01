@@ -333,6 +333,7 @@ class _TargetWidget extends StatelessWidget {
   final Size? size;
   final VoidCallback? onTap;
   final ShapeBorder? shapeBorder;
+  final BorderRadius? radius;
 
   _TargetWidget({
     Key? key,
@@ -340,6 +341,7 @@ class _TargetWidget extends StatelessWidget {
     this.size,
     this.onTap,
     this.shapeBorder,
+    this.radius,
   }) : super(key: key);
 
   @override
@@ -355,12 +357,14 @@ class _TargetWidget extends StatelessWidget {
             height: size!.height + 16,
             width: size!.width + 16,
             decoration: ShapeDecoration(
-              shape: shapeBorder ??
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
+              shape: radius != null
+                  ? RoundedRectangleBorder(borderRadius: radius!)
+                  : shapeBorder ??
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
             ),
           ),
         ),

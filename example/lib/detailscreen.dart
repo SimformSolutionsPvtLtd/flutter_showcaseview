@@ -15,7 +15,7 @@ class _DetailState extends State<Detail> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback(
+    WidgetsBinding.instance.addPostFrameCallback(
       (_) => Future.delayed(const Duration(milliseconds: 200), () {
         ShowCaseWidget.of(myContext!)!.startShowCase([_one]);
       }),

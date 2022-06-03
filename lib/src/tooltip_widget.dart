@@ -27,10 +27,12 @@ import 'package:flutter/material.dart';
 import 'get_position.dart';
 import 'measure_size.dart';
 
+enum TooltipVAlign { above, below, inside }
+
 class ToolTipWidget extends StatefulWidget {
-  final GetPosition? position;
+  final GetPosition? widgetPosition;
   final Offset? offset;
-  final Size? screenSize;
+  final Size screenSize;
   final String? title;
   final String? description;
   final TextStyle? titleTextStyle;
@@ -47,7 +49,7 @@ class ToolTipWidget extends StatefulWidget {
   final bool disableAnimation;
 
   ToolTipWidget({
-    required this.position,
+    required this.widgetPosition,
     required this.offset,
     required this.screenSize,
     required this.title,
@@ -79,23 +81,50 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   late final AnimationController _parentController;
   late final Animation<double> _curvedAnimation;
 
-  bool isCloseToTopOrBottom(Offset position) {
-    var height = 120.0;
-    height = widget.contentHeight ?? height;
+  late final double _tooltipHeight;
+
+  bool _isCloseToBottom(Offset widgetCenter) {
+    // Gets the height of the tooltip.
+    //
+    // Get height provided by contentHeight or set default to 120.
+    var height = _tooltipHeight;
+
+    // calculate bottom position.
     final bottomPosition =
-        position.dy + ((widget.position?.getHeight() ?? 0) / 2);
-    final topPosition = position.dy - ((widget.position?.getHeight() ?? 0) / 2);
-    return ((widget.screenSize?.height ?? MediaQuery.of(context).size.height) -
-                bottomPosition) <=
-            height &&
-        topPosition >= height;
+        widgetCenter.dy + ((widget.widgetPosition?.getHeight() ?? 0) / 2);
+
+    return ((widget.screenSize.height) - bottomPosition) <= height;
   }
 
-  String findPositionForContent(Offset position) {
-    if (isCloseToTopOrBottom(position)) {
-      return 'ABOVE';
+  // Checks if tooltip is close to top boundary or not.
+  bool _isCloseToTop(Offset position) {
+    // Gets the height of the tooltip.
+    //
+    // Get height provided by contentHeight or set default to 120.
+    var height = _tooltipHeight;
+
+    // Calculate top position.
+    final topPosition =
+        position.dy - ((widget.widgetPosition?.getHeight() ?? 0) / 2);
+
+    return topPosition < height;
+  }
+
+  TooltipVAlign _findPositionForContent(Offset position) {
+    var isAtBottom = _isCloseToBottom(position);
+    var isAtTop = _isCloseToTop(position);
+
+    if (isAtTop &&
+        isAtBottom &&
+        _tooltipHeight <
+            (widget.widgetPosition?.getHeight() ?? double.maxFinite)) {
+      return TooltipVAlign.inside;
+    }
+
+    if (isAtBottom) {
+      return TooltipVAlign.above;
     } else {
-      return 'BELOW';
+      return TooltipVAlign.below;
     }
   }
 
@@ -120,36 +149,36 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             widget.contentPadding!.right +
             widget.contentPadding!.left;
     var maxTextWidth = max(titleLength, descriptionLength);
-    if (maxTextWidth > widget.screenSize!.width - 20) {
-      return widget.screenSize!.width - 20;
+    if (maxTextWidth > widget.screenSize.width - 20) {
+      return widget.screenSize.width - 20;
     } else {
       return maxTextWidth + 15;
     }
   }
 
   bool _isLeft() {
-    final screenWidth = widget.screenSize!.width / 3;
-    return !(screenWidth <= widget.position!.getCenter());
+    final screenWidth = widget.screenSize.width / 3;
+    return !(screenWidth <= widget.widgetPosition!.getCenter());
   }
 
   bool _isRight() {
-    final screenWidth = widget.screenSize!.width / 3;
-    return ((screenWidth * 2) <= widget.position!.getCenter());
+    final screenWidth = widget.screenSize.width / 3;
+    return ((screenWidth * 2) <= widget.widgetPosition!.getCenter());
   }
 
   double? _getLeft() {
     if (_isLeft()) {
       var leftPadding =
-          widget.position!.getCenter() - (_getTooltipWidth() * 0.1);
-      if (leftPadding + _getTooltipWidth() > widget.screenSize!.width) {
-        leftPadding = (widget.screenSize!.width - 20) - _getTooltipWidth();
+          widget.widgetPosition!.getCenter() - (_getTooltipWidth() * 0.1);
+      if (leftPadding + _getTooltipWidth() > widget.screenSize.width) {
+        leftPadding = (widget.screenSize.width - 20) - _getTooltipWidth();
       }
       if (leftPadding < 20) {
         leftPadding = 14;
       }
       return leftPadding;
     } else if (!(_isRight())) {
-      return widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
+      return widget.widgetPosition!.getCenter() - (_getTooltipWidth() * 0.5);
     } else {
       return null;
     }
@@ -158,22 +187,22 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   double? _getRight() {
     if (_isRight()) {
       var rightPadding =
-          widget.position!.getCenter() + (_getTooltipWidth() / 2);
-      if (rightPadding + _getTooltipWidth() > widget.screenSize!.width) {
+          widget.widgetPosition!.getCenter() + (_getTooltipWidth() / 2);
+      if (rightPadding + _getTooltipWidth() > widget.screenSize.width) {
         rightPadding = 14;
       }
       return rightPadding;
     } else if (!(_isLeft())) {
-      return widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
+      return widget.widgetPosition!.getCenter() - (_getTooltipWidth() * 0.5);
     } else {
       return null;
     }
   }
 
   double _getSpace() {
-    var space = widget.position!.getCenter() - (widget.contentWidth! / 2);
-    if (space + widget.contentWidth! > widget.screenSize!.width) {
-      space = widget.screenSize!.width - widget.contentWidth! - 8;
+    var space = widget.widgetPosition!.getCenter() - (widget.contentWidth! / 2);
+    if (space + widget.contentWidth! > widget.screenSize.width) {
+      space = widget.screenSize.width - widget.contentWidth! - 8;
     } else if (space < (widget.contentWidth! / 2)) {
       space = 16;
     }
@@ -183,6 +212,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   @override
   void initState() {
     super.initState();
+    _tooltipHeight = widget.contentHeight ?? 120.0;
     _parentController = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
@@ -217,13 +247,21 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   @override
   Widget build(BuildContext context) {
     position = widget.offset;
-    final contentOrientation = findPositionForContent(position!);
-    final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
-    isArrowUp = contentOffsetMultiplier == 1.0;
+    final contentOrientation = _findPositionForContent(position!);
 
-    final contentY = isArrowUp
-        ? widget.position!.getBottom() + (contentOffsetMultiplier * 3)
-        : widget.position!.getTop() + (contentOffsetMultiplier * 3);
+    final contentOffsetMultiplier =
+        contentOrientation == TooltipVAlign.below ? 1.0 : -1.0;
+    isArrowUp = contentOrientation == TooltipVAlign.below ||
+        contentOrientation == TooltipVAlign.inside;
+
+    final contentY = contentOrientation == TooltipVAlign.below
+        ? widget.widgetPosition!.getBottom() + (contentOffsetMultiplier * 3)
+        : contentOrientation == TooltipVAlign.above
+            ? widget.widgetPosition!.getTop() + (contentOffsetMultiplier * 3)
+            : widget.widgetPosition!.getTop() +
+                _tooltipHeight -
+                30 +
+                (contentOffsetMultiplier * 3);
 
     final num contentFractionalOffset =
         contentOffsetMultiplier.clamp(-1.0, 0.0);
@@ -271,12 +309,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                       Positioned(
                         left: _getLeft() == null
                             ? null
-                            : (widget.position!.getCenter() -
+                            : (widget.widgetPosition!.getCenter() -
                                 (arrowWidth / 2) -
                                 (_getLeft() ?? 0)),
                         right: _getLeft() == null
                             ? (MediaQuery.of(context).size.width -
-                                    widget.position!.getCenter()) -
+                                    widget.widgetPosition!.getCenter()) -
                                 (_getRight() ?? 0) -
                                 (arrowWidth / 2)
                             : null,

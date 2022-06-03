@@ -40,51 +40,57 @@ import 'showcase_widget.dart';
 /// The [overlayBuilder] is invoked every time this Widget is rebuilt.
 ///
 class AnchoredOverlay extends StatelessWidget {
-  final bool showOverlay;
   final Widget Function(BuildContext, Rect anchorBounds, Offset anchor)?
       overlayBuilder;
   final Widget? child;
 
   AnchoredOverlay({
     Key? key,
-    this.showOverlay = false,
     this.overlayBuilder,
     this.child,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return OverlayBuilder(
-          showOverlay: showOverlay,
-          overlayBuilder: (overlayContext) {
-            // To calculate the "anchor" point we grab the render box of
-            // our parent Container and then we find the center of that box.
-            final box = context.findRenderObject() as RenderBox;
-            final topLeft =
-                box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-            final bottomRight =
-                box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
-            Rect anchorBounds;
-            anchorBounds = (topLeft.dx.isNaN ||
-                    topLeft.dy.isNaN ||
-                    bottomRight.dx.isNaN ||
-                    bottomRight.dy.isNaN)
-                ? Rect.fromLTRB(0.0, 0.0, 0.0, 0.0)
-                : Rect.fromLTRB(
-                    topLeft.dx,
-                    topLeft.dy,
-                    bottomRight.dx,
-                    bottomRight.dy,
-                  );
-            final anchorCenter = box.size.center(topLeft);
-            return overlayBuilder!(overlayContext, anchorBounds, anchorCenter);
-          },
-          child: child,
-        );
-      },
-    );
+    return LayoutBuilder(builder: (_, __) {
+      return OverlayBuilder(
+        overlayBuilder: (overlayContext) {
+          // To calculate the "anchor" point we grab the render box of
+          // our parent Container and then we find the center of that box.
+          final box = context.findRenderObject() as RenderBox;
+          final topLeft =
+              box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
+          final bottomRight =
+              box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+          Rect anchorBounds;
+
+          final screenSize = MediaQuery.of(context).size;
+
+          final right = bottomRight.dx <= screenSize.width
+              ? bottomRight.dx
+              : screenSize.width - topLeft.dx;
+
+          final bottom = bottomRight.dy <= screenSize.height
+              ? bottomRight.dy
+              : screenSize.height - topLeft.dy;
+
+          anchorBounds = (topLeft.dx.isNaN ||
+                  topLeft.dy.isNaN ||
+                  bottomRight.dx.isNaN ||
+                  bottomRight.dy.isNaN)
+              ? Rect.fromLTRB(0.0, 0.0, 0.0, 0.0)
+              : Rect.fromLTRB(
+                  topLeft.dx,
+                  topLeft.dy,
+                  right,
+                  bottom,
+                );
+          final anchorCenter = box.size.center(topLeft);
+          return overlayBuilder!(overlayContext, anchorBounds, anchorCenter);
+        },
+        child: child,
+      );
+    });
   }
 }
 
@@ -101,13 +107,11 @@ class AnchoredOverlay extends StatelessWidget {
 /// exist in [OverlayEntry]s which are inaccessible to outside Widgets. But if
 /// a better approach is found then feel free to use it.
 class OverlayBuilder extends StatefulWidget {
-  final bool showOverlay;
   final Widget Function(BuildContext)? overlayBuilder;
   final Widget? child;
 
   OverlayBuilder({
     Key? key,
-    this.showOverlay = false,
     this.overlayBuilder,
     this.child,
   }) : super(key: key);
@@ -123,9 +127,7 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   void initState() {
     super.initState();
 
-    if (widget.showOverlay) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
   }
 
   @override
@@ -185,9 +187,7 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   }
 
   void syncWidgetAndOverlay() {
-    if (isShowingOverlay() && !widget.showOverlay) {
-      hideOverlay();
-    } else if (!isShowingOverlay() && widget.showOverlay) {
+    if (!isShowingOverlay()) {
       showOverlay();
     }
   }

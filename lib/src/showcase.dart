@@ -200,16 +200,20 @@ class _ShowcaseState extends State<Showcase> {
   Widget build(BuildContext context) {
     return AnchoredOverlay(
       overlayBuilder: (context, rectBound, offset) {
-        final size = MediaQuery.of(context).size;
+        final screenSize = MediaQuery.of(context).size;
         position = GetPosition(
           key: widget.key,
           padding: widget.overlayPadding,
-          screenWidth: size.width,
-          screenHeight: size.height,
+          screenWidth: screenSize.width,
+          screenHeight: screenSize.height,
         );
-        return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
+        return buildOverlayOnTarget(
+          offset,
+          rectBound.size,
+          rectBound,
+          screenSize,
+        );
       },
-      showOverlay: true,
       child: widget.child,
     );
   }
@@ -304,7 +308,7 @@ class _ShowcaseState extends State<Showcase> {
                 ),
               if (!_isScrollRunning)
                 ToolTipWidget(
-                  position: position,
+                  widgetPosition: position,
                   offset: offset,
                   screenSize: screenSize,
                   title: widget.title,

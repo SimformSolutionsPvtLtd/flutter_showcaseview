@@ -26,6 +26,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'extension.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
@@ -187,7 +188,7 @@ class _ShowcaseState extends State<Showcase> {
   }
 
   void _scrollIntoView() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((timeStamp) async {
       setState(() {
         _isScrollRunning = true;
       });

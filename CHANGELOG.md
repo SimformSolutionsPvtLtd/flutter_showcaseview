@@ -3,6 +3,8 @@
 - Fixed [#62](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/62) - While using ShowCase widget, not scrolling to respective widget when its not visible.
 - Fixed [#131](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/131) - Support of other gestures onTargetLongPress and onTargetDoubleTap
 - Fixed [#140](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/140) - disableAnimation at ShowcaseWidget level
+- Fixed [#71](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/71) - Highlight Not working when widget is not visible on screen
+- Add flutter 3.0 support.
 
 ## [1.1.5] - March 4, 2022
 

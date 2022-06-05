@@ -25,7 +25,6 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'get_position.dart';
 import 'layout_overlays.dart';
@@ -50,6 +49,7 @@ class Showcase extends StatefulWidget {
   final Widget? container;
   final Color showcaseBackgroundColor;
   final Color textColor;
+  final Widget scrollLoadingWidget;
   final bool showArrow;
   final double? height;
   final double? width;
@@ -85,6 +85,8 @@ class Showcase extends StatefulWidget {
     this.descTextStyle,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
+    this.scrollLoadingWidget = const CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation(Colors.white)),
     this.showArrow = true,
     this.onTargetClick,
     this.disposeOnTap,
@@ -105,7 +107,7 @@ class Showcase extends StatefulWidget {
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0."),
+            "overlay opacity must be between 0 and 1."),
         assert(
             onTargetClick == null
                 ? true
@@ -133,6 +135,8 @@ class Showcase extends StatefulWidget {
     this.descTextStyle,
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
+    this.scrollLoadingWidget = const CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation(Colors.white)),
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
@@ -148,48 +152,17 @@ class Showcase extends StatefulWidget {
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity should be >= 0.0 and <= 1.0.");
+            "overlay opacity must be between 0 and 1.");
 
   @override
   _ShowcaseState createState() => _ShowcaseState();
 }
 
-class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
+class _ShowcaseState extends State<Showcase> {
   bool _showShowCase = false;
-  Animation<double>? _slideAnimation;
-  late AnimationController _slideAnimationController;
+  bool _isScrollRunning = false;
   Timer? timer;
   GetPosition? position;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _slideAnimationController = AnimationController(
-      duration: widget.animationDuration,
-      vsync: this,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _slideAnimationController.reverse();
-        }
-        if (_slideAnimationController.isDismissed) {
-          if (!widget.disableAnimation) {
-            _slideAnimationController.forward();
-          }
-        }
-      });
-
-    _slideAnimation = CurvedAnimation(
-      parent: _slideAnimationController,
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  void dispose() {
-    _slideAnimationController.dispose();
-    super.dispose();
-  }
 
   @override
   void didChangeDependencies() {
@@ -203,7 +176,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     showOverlay();
   }
 
-  ///
   /// show overlay if there is any target widget
   ///
   void showOverlay() {
@@ -213,7 +185,7 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     });
 
     if (activeStep == widget.key) {
-      _slideAnimationController.forward();
+      _scrollIntoView();
       if (ShowCaseWidget.of(context)!.autoPlay) {
         timer = Timer(
             Duration(
@@ -221,6 +193,22 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             nextIfAny);
       }
     }
+  }
+
+  void _scrollIntoView() {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      setState(() {
+        _isScrollRunning = true;
+      });
+      await Scrollable.ensureVisible(
+        widget.key.currentContext!,
+        duration: ShowCaseWidget.of(context)!.widget.scrollDuration,
+        alignment: 0.5,
+      );
+      setState(() {
+        _isScrollRunning = false;
+      });
+    });
   }
 
   @override
@@ -251,8 +239,6 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     } else if (timer != null && !timer!.isActive) timer = null;
 
     ShowCaseWidget.of(context)!.completed(widget.key);
-
-    if (!widget.disableAnimation) _slideAnimationController.forward();
   }
 
   void _getOnTargetTap() {
@@ -277,7 +263,10 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     Rect rectBound,
     Size screenSize,
   ) {
-    var blur = widget.blurValue ?? (ShowCaseWidget.of(context)?.blurValue) ?? 0;
+    var blur = 0.0;
+    if (_showShowCase) {
+      blur = widget.blurValue ?? (ShowCaseWidget.of(context)?.blurValue) ?? 0;
+    }
 
     // Set blur to 0 if application is running on web and
     // provided blur is less than 0.
@@ -290,10 +279,13 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                   onTap: nextIfAny,
                   child: ClipPath(
                     clipper: RRectClipper(
-                      area: rectBound,
+                      area: _isScrollRunning ? Rect.zero : rectBound,
                       isCircle: widget.shapeBorder == CircleBorder(),
-                      radius: widget.radius,
-                      overlayPadding: widget.overlayPadding,
+                      radius:
+                          _isScrollRunning ? BorderRadius.zero : widget.radius,
+                      overlayPadding: _isScrollRunning
+                          ? EdgeInsets.zero
+                          : widget.overlayPadding,
                     ),
                     child: blur != 0
                         ? BackdropFilter(
@@ -311,23 +303,25 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
                             decoration: BoxDecoration(
-                              color: widget.overlayColor,
+                              color: widget.overlayColor
+                                  .withOpacity(widget.overlayOpacity),
                             ),
                           ),
                   )),
-              _TargetWidget(
-                offset: offset,
-                size: size,
-                onTap: _getOnTargetTap,
-                shapeBorder: widget.shapeBorder,
-              ),
+              if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
+              if (!_isScrollRunning)
+                _TargetWidget(
+                  offset: offset,
+                  size: size,
+                  onTap: _getOnTargetTap,
+                  shapeBorder: widget.shapeBorder,
+                ),
               ToolTipWidget(
                 position: position,
                 offset: offset,
                 screenSize: screenSize,
                 title: widget.title,
                 description: widget.description,
-                animationOffset: _slideAnimation,
                 titleTextStyle: widget.titleTextStyle,
                 descTextStyle: widget.descTextStyle,
                 container: widget.container,
@@ -336,6 +330,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
                 showArrow: widget.showArrow,
                 contentHeight: widget.height,
                 contentWidth: widget.width,
+                disableAnimation: widget.disableAnimation,
+                animationDuration: widget.animationDuration,
                 onTooltipTap: _getOnTooltipTap,
                 contentPadding: widget.contentPadding,
                 showNextButton: widget.showNextButton,
@@ -354,20 +350,18 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
 class _TargetWidget extends StatelessWidget {
   final Offset offset;
   final Size? size;
-  final Animation<double>? widthAnimation;
   final VoidCallback? onTap;
   final ShapeBorder? shapeBorder;
   final BorderRadius? radius;
 
-  _TargetWidget(
-      {Key? key,
-      required this.offset,
-      this.size,
-      this.widthAnimation,
-      this.onTap,
-      this.shapeBorder,
-      this.radius})
-      : super(key: key);
+  _TargetWidget({
+    Key? key,
+    required this.offset,
+    this.size,
+    this.onTap,
+    this.shapeBorder,
+    this.radius,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

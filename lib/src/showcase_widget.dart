@@ -20,8 +20,6 @@
  * SOFTWARE.
  */
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../showcaseview.dart';
@@ -34,6 +32,7 @@ class ShowCaseWidget extends StatefulWidget {
   final bool autoPlay;
   final Duration autoPlayDelay;
   final bool autoPlayLockEnable;
+  final Duration scrollDuration;
 
   /// Default overlay blur used by showcase. if [Showcase.blurValue]
   /// is not provided.
@@ -50,6 +49,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.autoPlayDelay = const Duration(milliseconds: 2000),
     this.autoPlayLockEnable = false,
     this.blurValue = 0,
+    this.scrollDuration = const Duration(milliseconds: 300),
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -106,6 +106,39 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
         activeWidgetId = activeWidgetId! + 1;
         _onStart();
 
+        if (activeWidgetId! >= ids!.length) {
+          _cleanupAfterSteps();
+          if (widget.onFinish != null) {
+            widget.onFinish!();
+          }
+        }
+      });
+    }
+  }
+
+  void next() {
+    if (ids != null && mounted) {
+      setState(() {
+        _onComplete();
+        activeWidgetId = activeWidgetId! + 1;
+        _onStart();
+
+        if (activeWidgetId! >= ids!.length) {
+          _cleanupAfterSteps();
+          if (widget.onFinish != null) {
+            widget.onFinish!();
+          }
+        }
+      });
+    }
+  }
+
+  void previous() {
+    if (ids != null && ((activeWidgetId ?? 0) - 1) >= 0 && mounted) {
+      setState(() {
+        _onComplete();
+        activeWidgetId = activeWidgetId! - 1;
+        _onStart();
         if (activeWidgetId! >= ids!.length) {
           _cleanupAfterSteps();
           if (widget.onFinish != null) {

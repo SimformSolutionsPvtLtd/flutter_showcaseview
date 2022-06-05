@@ -1,3 +1,17 @@
+## [1.1.6] - May 5, 2022 (Unreleased)
+
+- Fixed [#62](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/62) - While using ShowCase widget, not scrolling to respective widget when its not visible.
+
+## [1.1.5] - March 4, 2022
+
+- Fixed [#173](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/173) - showArrow not working
+- Fixed [#150](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/150) - Add condition for determine state is active
+- Fixed [#121](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/121) - SlideTransition widget in tooltip_widget.dart is constantly rebuildung even after the showcasing is supposed to have stopped
+- Fixed [#152](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/152) - Calculation of tooltip position
+- Fixed [#182](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/182) - Not providing blurValue causes Exception: Please provide ShowCaseView context
+- Fixed [#162](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/162) - Add feature to move back
+- Fixed [#181](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/181) - Add feature to go to previous item
+
 ## [1.1.4] - November 26, 2021
 
 - Add glassmorphism effect in showcase background.

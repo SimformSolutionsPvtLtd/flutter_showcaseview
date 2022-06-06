@@ -59,6 +59,8 @@ class Showcase extends StatefulWidget {
   final bool? disposeOnTap;
   final bool disableAnimation;
   final EdgeInsets overlayPadding;
+  final VoidCallback? onTargetDoubleTap;
+  final VoidCallback? onTargetLongPress;
 
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
@@ -93,6 +95,8 @@ class Showcase extends StatefulWidget {
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
     this.radius,
+    this.onTargetLongPress,
+    this.onTargetDoubleTap,
   })  : height = null,
         width = null,
         container = null,
@@ -134,6 +138,8 @@ class Showcase extends StatefulWidget {
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
+    this.onTargetLongPress,
+    this.onTargetDoubleTap,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -300,6 +306,8 @@ class _ShowcaseState extends State<Showcase> {
                   offset: offset,
                   size: size,
                   onTap: _getOnTargetTap,
+                  onDoubleTap: widget.onTargetDoubleTap,
+                  onLongPress: widget.onTargetLongPress,
                   shapeBorder: widget.shapeBorder,
                 ),
               if (!_isScrollRunning)
@@ -332,6 +340,8 @@ class _TargetWidget extends StatelessWidget {
   final Offset offset;
   final Size? size;
   final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
   final ShapeBorder? shapeBorder;
   final BorderRadius? radius;
 
@@ -342,6 +352,8 @@ class _TargetWidget extends StatelessWidget {
     this.onTap,
     this.shapeBorder,
     this.radius,
+    this.onDoubleTap,
+    this.onLongPress,
   }) : super(key: key);
 
   @override
@@ -353,6 +365,8 @@ class _TargetWidget extends StatelessWidget {
         translation: const Offset(-0.5, -0.5),
         child: GestureDetector(
           onTap: onTap,
+          onLongPress: onLongPress,
+          onDoubleTap: onDoubleTap,
           child: Container(
             height: size!.height + 16,
             width: size!.width + 16,

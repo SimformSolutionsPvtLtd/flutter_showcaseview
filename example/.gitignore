@@ -80,3 +80,8 @@ windows/flutter/generated_plugins.cmake
 linux/flutter/generated_plugin_registrant.cc
 linux/flutter/generated_plugin_registrant.h
 linux/flutter/generated_plugins.cmake
+
+# macOS Project
+macos/Flutter/ephemeral/Flutter-Generated.xcconfig
+macos/Flutter/ephemeral/flutter_export_environment.sh
+macos/Flutter/GeneratedPluginRegistrant.swift

@@ -1,4 +1,4 @@
-## [1.1.6] - May 5, 2022 (Unreleased)
+## [1.1.6] - June 23, 2022
 
 - Fixed [#62](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/62) - While using ShowCase widget, not scrolling to respective widget when its not visible.
 - Fixed [#131](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/131) - Support of other gestures onTargetLongPress and onTargetDoubleTap

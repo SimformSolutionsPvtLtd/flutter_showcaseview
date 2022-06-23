@@ -40,7 +40,7 @@ class RRectClipper extends CustomClipper<ui.Path> {
   @override
   ui.Path getClip(ui.Size size) {
     final customRadius =
-        isCircle ? Radius.circular(area.height) : Radius.circular(3.0);
+        isCircle ? Radius.circular(area.height) : const Radius.circular(3.0);
 
     final rect = Rect.fromLTRB(
       area.left - overlayPadding.left,

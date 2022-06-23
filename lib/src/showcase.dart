@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 /*
  * Copyright (c) 2021 Simform Solutions
  *
@@ -112,7 +114,8 @@ class Showcase extends StatefulWidget {
             disposeOnTap == null
                 ? true
                 : (onTargetClick == null ? false : true),
-            "onTargetClick is required if you're using disposeOnTap");
+            "onTargetClick is required if you're using disposeOnTap"),
+        super(key: key);
 
   const Showcase.withWidget({
     required this.key,
@@ -144,10 +147,11 @@ class Showcase extends StatefulWidget {
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1.");
+            "overlay opacity must be between 0 and 1."),
+        super(key: key);
 
   @override
-  _ShowcaseState createState() => _ShowcaseState();
+  State<Showcase> createState() => _ShowcaseState();
 }
 
 class _ShowcaseState extends State<Showcase> {
@@ -272,7 +276,7 @@ class _ShowcaseState extends State<Showcase> {
                 child: ClipPath(
                   clipper: RRectClipper(
                     area: _isScrollRunning ? Rect.zero : rectBound,
-                    isCircle: widget.shapeBorder == CircleBorder(),
+                    isCircle: widget.shapeBorder == const CircleBorder(),
                     radius:
                         _isScrollRunning ? BorderRadius.zero : widget.radius,
                     overlayPadding: _isScrollRunning
@@ -334,7 +338,7 @@ class _ShowcaseState extends State<Showcase> {
                 ),
             ],
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 }
 
@@ -345,15 +349,18 @@ class _TargetWidget extends StatelessWidget {
   final VoidCallback? onDoubleTap;
   final VoidCallback? onLongPress;
   final ShapeBorder? shapeBorder;
-  final BorderRadius? radius;
 
-  _TargetWidget({
+  //Removed as the
+  // A value for optional parameter 'radius' isn't ever given.
+  // final BorderRadius? radius;
+
+  const _TargetWidget({
     Key? key,
     required this.offset,
     this.size,
     this.onTap,
     this.shapeBorder,
-    this.radius,
+    //this.radius,
     this.onDoubleTap,
     this.onLongPress,
   }) : super(key: key);
@@ -373,10 +380,12 @@ class _TargetWidget extends StatelessWidget {
             height: size!.height + 16,
             width: size!.width + 16,
             decoration: ShapeDecoration(
-              shape: radius != null
-                  ? RoundedRectangleBorder(borderRadius: radius!)
-                  : shapeBorder ??
-                      RoundedRectangleBorder(
+              shape:
+                  //  radius != null
+                  //     ? RoundedRectangleBorder(borderRadius: radius!)
+                  //     :
+                  shapeBorder ??
+                      const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(8),
                         ),

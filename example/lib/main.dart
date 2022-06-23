@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:example/detailscreen.dart';
+import 'package:example/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -65,7 +66,9 @@ class _MailPageState extends State<MailPage> {
   void initState() {
     super.initState();
     //Start showcase view after current widget frames are drawn.
-    WidgetsBinding.instance.addPostFrameCallback(
+    //NOTE: remove ambiguate function if you are using
+    //flutter version greater than 3.x and direct use WidgetsBinding.instance
+    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback(
       (_) => ShowCaseWidget.of(context)
           .startShowCase([_one, _two, _three, _four, _five, _six]),
     );

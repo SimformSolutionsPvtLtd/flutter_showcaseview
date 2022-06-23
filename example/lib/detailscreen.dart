@@ -1,3 +1,4 @@
+import 'package:example/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -15,7 +16,9 @@ class _DetailState extends State<Detail> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
+    //NOTE: remove ambiguate function if you are using
+    //flutter version greater than 3.x and direct use WidgetsBinding.instance
+    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback(
       (_) => Future.delayed(const Duration(milliseconds: 200), () {
         ShowCaseWidget.of(myContext!).startShowCase([_one]);
       }),

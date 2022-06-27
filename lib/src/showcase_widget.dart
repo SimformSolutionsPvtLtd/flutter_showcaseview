@@ -30,6 +30,7 @@ class ShowCaseWidget extends StatefulWidget {
   final Function(int?, GlobalKey)? onStart;
   final Function(int?, GlobalKey)? onComplete;
   final bool autoPlay;
+  final bool autoPlayOnlyOnce;
   final Duration autoPlayDelay;
   final bool autoPlayLockEnable;
   final bool disableAnimation;
@@ -47,12 +48,14 @@ class ShowCaseWidget extends StatefulWidget {
     this.onStart,
     this.onComplete,
     this.autoPlay = false,
+    this.autoPlayOnlyOnce = false,
     this.autoPlayDelay = const Duration(milliseconds: 2000),
     this.autoPlayLockEnable = false,
     this.blurValue = 0,
     this.scrollDuration = const Duration(milliseconds: 300),
     this.disableAnimation = false,
-  });
+  }) : assert(autoPlayOnlyOnce != true || autoPlay == true,
+            "autoPlayOnlyOnce can only be used with autoPlay");
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
     return context
@@ -80,6 +83,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   late bool disableAnimation;
   late Duration autoPlayDelay;
   late bool autoPlayLockEnable;
+  late bool autoPlayOnlyOnce;
 
   /// Returns value of  [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
@@ -91,6 +95,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     autoPlay = widget.autoPlay;
     disableAnimation = widget.disableAnimation;
     autoPlayLockEnable = widget.autoPlayLockEnable;
+    autoPlayOnlyOnce = widget.autoPlayOnlyOnce;
   }
 
   void startShowCase(List<GlobalKey> widgetIds) {

@@ -30,6 +30,7 @@ import 'extension.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
+import 'showcase_preferences.dart';
 import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
 
@@ -158,7 +159,7 @@ class _ShowcaseState extends State<Showcase> {
   ShowCaseWidgetState get showCaseWidgetState => ShowCaseWidget.of(context);
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
     position ??= GetPosition(
       key: widget.key,
@@ -171,10 +172,34 @@ class _ShowcaseState extends State<Showcase> {
 
   /// show overlay if there is any target widget
   ///
-  void showOverlay() {
+  void showOverlay() async {
     final activeStep = ShowCaseWidget.activeTargetWidget(context);
+    final activeWidgetId = showCaseWidgetState.activeWidgetId;
+    final ShowcasePreferences preferences =
+        await ShowcasePreferences.getInstance();
+
+    if (activeWidgetId == null) {
+      setState(() {
+        _showShowCase = false;
+      });
+      return;
+    }
+
+    if (showCaseWidgetState.autoPlayOnlyOnce) {
+      bool hasShown = preferences.hasShowcaseEverShown(activeWidgetId);
+      if (hasShown) {
+        setState(() {
+          _showShowCase = false;
+        });
+        return;
+      }
+    }
+
     setState(() {
       _showShowCase = activeStep == widget.key;
+      if (_showShowCase && showCaseWidgetState.autoPlayOnlyOnce) {
+        preferences.setShowcaseHasShown(activeWidgetId);
+      }
     });
 
     if (activeStep == widget.key) {

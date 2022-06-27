@@ -1,6 +1,5 @@
 ![Showcaes View - Simform LLC.](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/blob/master/preview/banner.png?raw=true)
 
-
 # ShowCaseView
 
 [![Build](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/workflows/Build/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions) [![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)
@@ -11,13 +10,11 @@ A Flutter package allows you to Showcase/Highlight your widgets step by step.
 
 ![The example app running in Android](https://github.com/simformsolutions/flutter_showcaseview/blob/master/preview/showcaseview.gif)
 
-
-
 ## Installing
 
 1.  Add dependency to `pubspec.yaml`
 
-    *Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/packages/showcaseview)*
+    _Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/packages/showcaseview)_
 
 ```dart
 dependencies:
@@ -25,11 +22,13 @@ dependencies:
 ```
 
 2.  Import the package
+
 ```dart
 import 'package:showcaseview/showcaseview.dart';
 ```
 
 3. Adding a `ShowCaseWidget` widget.
+
 ```dart
 ShowCaseWidget(
   builder: Builder(
@@ -39,6 +38,7 @@ ShowCaseWidget(
 ```
 
 4. Adding a `Showcase` widget.
+
 ```dart
 GlobalKey _one = GlobalKey();
 GlobalKey _two = GlobalKey();
@@ -95,6 +95,7 @@ Showcase.withWidget(
 ```
 
 6. Starting the `ShowCase`
+
 ```dart
 someEvent(){
     ShowCaseWidget.of(context).startShowCase([_one, _two, _three]);
@@ -102,6 +103,7 @@ someEvent(){
 ```
 
 7. onFinish method for `ShowCase`
+
 ```dart
 ShowCaseWidget(
   onFinish: () {
@@ -114,6 +116,7 @@ ShowCaseWidget(
 ```
 
 8. Go to next `ShowCase`
+
 ```dart
 someEvent(){
   ShowCaseWidget.of(context).next();
@@ -121,6 +124,7 @@ someEvent(){
 ```
 
 9. Go to previous `ShowCase`
+
 ```dart
 someEvent(){
   ShowCaseWidget.of(context).previous();
@@ -133,6 +137,17 @@ If you want to start the `ShowCaseView` as soon as your UI built up then use bel
 WidgetsBinding.instance.addPostFrameCallback((_) =>
   ShowCaseWidget.of(context).startShowCase([_one, _two, _three])
 );
+```
+
+If you want to auto play the `ShowCase` only *one time* in application lifetime just use the `autoPlayOnlyOnce` and `autoPlay` both like this:
+
+```dart
+ShowCaseWidget(
+          autoPlay: true,
+          autoPlayOnlyOnce: true,
+          autoPlayDelay: const Duration(seconds: 3),
+          builder: ...,
+        ),
 ```
 
 ## How to use
@@ -162,7 +177,7 @@ ShowCaseWidget(
        // If showcase widget is at offset 1000 in the listview.
        // If you don't know the exact position of the showcase widget,
        // You can provide nearest possible location.
-       // 
+       //
        // In this case providing 990 instead of 1000 will work as well.
         _controller.jumpTo(1000);
       });

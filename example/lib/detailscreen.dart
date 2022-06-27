@@ -28,6 +28,8 @@ class _DetailState extends State<Detail> {
   @override
   Widget build(BuildContext context) {
     return ShowCaseWidget(
+      autoPlay: true,
+      autoPlayOnlyOnce: true,
       builder: Builder(
         builder: (context) {
           myContext = context;

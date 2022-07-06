@@ -51,6 +51,7 @@ class Showcase extends StatefulWidget {
   final Color showcaseBackgroundColor;
   final Color textColor;
   final Widget scrollLoadingWidget;
+  final bool disableAutoScrollInView;
   final bool showArrow;
   final double? height;
   final double? width;
@@ -85,6 +86,7 @@ class Showcase extends StatefulWidget {
     this.textColor = Colors.black,
     this.scrollLoadingWidget = const CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation(Colors.white)),
+    this.disableAutoScrollInView = false,
     this.showArrow = true,
     this.onTargetClick,
     this.disposeOnTap,
@@ -132,6 +134,7 @@ class Showcase extends StatefulWidget {
     this.textColor = Colors.black,
     this.scrollLoadingWidget = const CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation(Colors.white)),
+    this.disableAutoScrollInView = false,
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
@@ -155,6 +158,7 @@ class _ShowcaseState extends State<Showcase> {
   bool _isScrollRunning = false;
   Timer? timer;
   GetPosition? position;
+
   ShowCaseWidgetState get showCaseWidgetState => ShowCaseWidget.of(context);
 
   @override
@@ -178,7 +182,9 @@ class _ShowcaseState extends State<Showcase> {
     });
 
     if (activeStep == widget.key) {
-      _scrollIntoView();
+      if (!widget.disableAutoScrollInView) {
+        _scrollIntoView();
+      }
       if (showCaseWidgetState.autoPlay) {
         timer = Timer(
             Duration(seconds: showCaseWidgetState.autoPlayDelay.inSeconds),

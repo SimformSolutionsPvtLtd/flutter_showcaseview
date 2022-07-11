@@ -1,4 +1,4 @@
-## [1.1.7] - June 7, 2022
+## [1.1.7] - July 11, 2022
 
 - Fixed [#235](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/235) - 1.1.6 scrolling behavior in PageView.
 - Fixed [#242](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/242) - Error when display showcase on FloatingActionBar inside a TabBar (with more than 1 tab).

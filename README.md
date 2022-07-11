@@ -171,6 +171,14 @@ ShowCaseWidget(
 );
 ```
 
+## Enable Auto Scrolling
+By default, auto-scrolling behavior is off, you can enable it by setting ``enableAutoScroll`` flag to true in ``showCaseWidget``.
+```dart
+ShowCaseWidget(
+  enableAutoScroll: true,
+);
+```
+
 ## Main Contributors
 
 <table>

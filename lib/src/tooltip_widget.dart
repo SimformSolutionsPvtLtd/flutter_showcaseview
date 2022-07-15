@@ -169,12 +169,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       }
       return rightPadding;
     } else if (!(_isLeft())) {
-      var leftPadding =
+      var rightPadding =
           widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
-      if (leftPadding < 20) {
-        leftPadding = 14;
+      if (rightPadding < 20) {
+        rightPadding = 14;
       }
-      return leftPadding;
+      return rightPadding;
     } else {
       return null;
     }

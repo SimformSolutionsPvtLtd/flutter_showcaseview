@@ -149,7 +149,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       }
       return leftPadding;
     } else if (!(_isRight())) {
-      return widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
+      var leftPadding =
+          widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
+      if (leftPadding < 20) {
+        leftPadding = 14;
+      }
+      return leftPadding;
     } else {
       return null;
     }
@@ -164,7 +169,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       }
       return rightPadding;
     } else if (!(_isLeft())) {
-      return widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
+      var leftPadding =
+          widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
+      if (leftPadding < 20) {
+        leftPadding = 14;
+      }
+      return leftPadding;
     } else {
       return null;
     }

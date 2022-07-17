@@ -40,6 +40,7 @@ class ShowCaseWidget extends StatefulWidget {
   ///
   /// Default value is 0.
   final double blurValue;
+  final bool enableAutoScroll;
 
   const ShowCaseWidget({
     Key? key,
@@ -53,7 +54,12 @@ class ShowCaseWidget extends StatefulWidget {
     this.blurValue = 0,
     this.scrollDuration = const Duration(milliseconds: 300),
     this.disableAnimation = false,
+
   }) : super(key: key);
+
+    this.enableAutoScroll = false,
+  });
+
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
     return context
@@ -81,6 +87,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   late bool disableAnimation;
   late Duration autoPlayDelay;
   late bool autoPlayLockEnable;
+  late bool enableAutoScroll;
 
   /// Returns value of  [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
@@ -92,6 +99,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     autoPlay = widget.autoPlay;
     disableAnimation = widget.disableAnimation;
     autoPlayLockEnable = widget.autoPlayLockEnable;
+    enableAutoScroll = widget.enableAutoScroll;
   }
 
   void startShowCase(List<GlobalKey> widgetIds) {

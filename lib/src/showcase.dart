@@ -352,7 +352,7 @@ class _TargetWidget extends StatelessWidget {
 
   //Removed as the
   // A value for optional parameter 'radius' isn't ever given.
-  // final BorderRadius? radius;
+  final BorderRadius? radius;
 
   const _TargetWidget({
     Key? key,
@@ -360,7 +360,7 @@ class _TargetWidget extends StatelessWidget {
     this.size,
     this.onTap,
     this.shapeBorder,
-    //this.radius,
+    this.radius,
     this.onDoubleTap,
     this.onLongPress,
   }) : super(key: key);
@@ -381,9 +381,9 @@ class _TargetWidget extends StatelessWidget {
             width: size!.width + 16,
             decoration: ShapeDecoration(
               shape:
-                  //  radius != null
-                  //     ? RoundedRectangleBorder(borderRadius: radius!)
-                  //     :
+                   radius != null
+                      ? RoundedRectangleBorder(borderRadius: radius!)
+                      :
                   shapeBorder ??
                       const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(

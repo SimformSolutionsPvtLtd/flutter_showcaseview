@@ -34,6 +34,7 @@ class ShowCaseWidget extends StatefulWidget {
   final bool autoPlayLockEnable;
   final bool disableAnimation;
   final Duration scrollDuration;
+  final bool disableBarrierInteraction;
 
   /// Default overlay blur used by showcase. if [Showcase.blurValue]
   /// is not provided.
@@ -47,6 +48,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.onStart,
     this.onComplete,
     this.autoPlay = false,
+    this.disableBarrierInteraction = false,
     this.autoPlayDelay = const Duration(milliseconds: 2000),
     this.autoPlayLockEnable = false,
     this.blurValue = 0,
@@ -55,9 +57,7 @@ class ShowCaseWidget extends StatefulWidget {
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()
-        ?.activeWidgetIds;
+    return context.dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()?.activeWidgetIds;
   }
 
   static ShowCaseWidgetState of(BuildContext context) {
@@ -80,6 +80,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   late bool disableAnimation;
   late Duration autoPlayDelay;
   late bool autoPlayLockEnable;
+  late bool disableBarrierInteraction;
 
   /// Returns value of  [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
@@ -91,6 +92,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     autoPlay = widget.autoPlay;
     disableAnimation = widget.disableAnimation;
     autoPlayLockEnable = widget.autoPlayLockEnable;
+    disableBarrierInteraction = widget.disableBarrierInteraction;
   }
 
   void startShowCase(List<GlobalKey> widgetIds) {
@@ -177,8 +179,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   Widget build(BuildContext context) {
     return _InheritedShowCaseView(
-      child: widget.builder,
       activeWidgetIds: ids?.elementAt(activeWidgetId!),
+      child: widget.builder,
     );
   }
 }
@@ -186,12 +188,11 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 class _InheritedShowCaseView extends InheritedWidget {
   final GlobalKey? activeWidgetIds;
 
-  _InheritedShowCaseView({
+  const _InheritedShowCaseView({
     required this.activeWidgetIds,
     required Widget child,
   }) : super(child: child);
 
   @override
-  bool updateShouldNotify(_InheritedShowCaseView oldWidget) =>
-      oldWidget.activeWidgetIds != activeWidgetIds;
+  bool updateShouldNotify(_InheritedShowCaseView oldWidget) => oldWidget.activeWidgetIds != activeWidgetIds;
 }

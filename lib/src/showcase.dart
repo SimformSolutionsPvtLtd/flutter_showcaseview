@@ -272,7 +272,11 @@ class _ShowcaseState extends State<Showcase> {
         ? Stack(
             children: [
               GestureDetector(
-                onTap: _nextIfAny,
+                onTap: () {
+                  if (!showCaseWidgetState.disableBarrierInteractions) {
+                    _nextIfAny();
+                  }
+                },
                 child: ClipPath(
                   clipper: RRectClipper(
                     area: _isScrollRunning ? Rect.zero : rectBound,

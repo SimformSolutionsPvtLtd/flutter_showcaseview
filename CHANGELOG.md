@@ -1,6 +1,5 @@
 ## [1.1.8] - July 27, 2022 (Unreleased)
-- Fixed [#244](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/244) - Feature added to enable/disable overlay click using `disableBarrierInteractions` parameters 
-- Fixed [#240](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/240) - Added feature as requested using `disableBarrierInteractions` user driven parameters.
+- Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/237) - Feature added to enable/disable overlay click using `disableBarrierInteractions` parameters
 
 ## [1.1.7] - July 11, 2022
 

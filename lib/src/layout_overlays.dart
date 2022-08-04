@@ -46,7 +46,7 @@ class AnchoredOverlay extends StatelessWidget {
       overlayBuilder;
   final Widget? child;
 
-  AnchoredOverlay({
+  const AnchoredOverlay({
     Key? key,
     this.showOverlay = false,
     this.overlayBuilder,
@@ -72,7 +72,7 @@ class AnchoredOverlay extends StatelessWidget {
                     topLeft.dy.isNaN ||
                     bottomRight.dx.isNaN ||
                     bottomRight.dy.isNaN)
-                ? Rect.fromLTRB(0.0, 0.0, 0.0, 0.0)
+                ? const Rect.fromLTRB(0.0, 0.0, 0.0, 0.0)
                 : Rect.fromLTRB(
                     topLeft.dx,
                     topLeft.dy,
@@ -106,7 +106,7 @@ class OverlayBuilder extends StatefulWidget {
   final Widget Function(BuildContext)? overlayBuilder;
   final Widget? child;
 
-  OverlayBuilder({
+  const OverlayBuilder({
     Key? key,
     this.showOverlay = false,
     this.overlayBuilder,
@@ -114,7 +114,7 @@ class OverlayBuilder extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _OverlayBuilderState createState() => _OverlayBuilderState();
+  State<OverlayBuilder> createState() => _OverlayBuilderState();
 }
 
 class _OverlayBuilderState extends State<OverlayBuilder> {

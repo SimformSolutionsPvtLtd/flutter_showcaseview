@@ -68,6 +68,7 @@ Showcase(
   shapeBorder: CircleBorder(),
   radius: BorderRadius.all(Radius.circular(40)),
   showArrow: false,
+  tipBorderRadius: BorderRadius.all(Radius.circular(8)),
   overlayPadding: EdgeInsets.all(5),
   slideDuration: Duration(milliseconds: 1500),
   tooltipColor: Colors.blueGrey,

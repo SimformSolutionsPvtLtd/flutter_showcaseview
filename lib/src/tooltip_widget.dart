@@ -45,6 +45,7 @@ class ToolTipWidget extends StatefulWidget {
   final EdgeInsets? contentPadding;
   final Duration animationDuration;
   final bool disableAnimation;
+  final BorderRadius? borderRadius;
 
   const ToolTipWidget({
     Key? key,
@@ -65,6 +66,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.animationDuration,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     required this.disableAnimation,
+    required this.borderRadius,
   }) : super(key: key);
 
   @override
@@ -300,7 +302,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                         bottom: isArrowUp ? 0 : arrowHeight - 1,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius:
+                            widget.borderRadius ?? BorderRadius.circular(8.0),
                         child: GestureDetector(
                           onTap: widget.onTooltipTap,
                           child: Container(

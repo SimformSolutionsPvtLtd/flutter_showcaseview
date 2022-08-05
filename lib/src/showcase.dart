@@ -99,7 +99,7 @@ class Showcase extends StatefulWidget {
     this.radius,
     this.onTargetLongPress,
     this.onTargetDoubleTap,
-    this.tipBorderRadius
+    this.tipBorderRadius,
   })  : height = null,
         width = null,
         container = null,
@@ -143,7 +143,7 @@ class Showcase extends StatefulWidget {
     this.blurValue,
     this.onTargetLongPress,
     this.onTargetDoubleTap,
-    this.tipBorderRadius
+    this.tipBorderRadius,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,

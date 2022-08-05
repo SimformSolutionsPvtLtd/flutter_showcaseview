@@ -276,7 +276,7 @@ class _ShowcaseState extends State<Showcase> {
             children: [
               GestureDetector(
                 onTap: () {
-                  if (!showCaseWidgetState.disableBarrierInteractions) {
+                  if (!showCaseWidgetState.disableBarrierInteraction) {
                     _nextIfAny();
                   }
                 },

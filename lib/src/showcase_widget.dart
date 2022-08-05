@@ -33,7 +33,7 @@ class ShowCaseWidget extends StatefulWidget {
   final Duration autoPlayDelay;
   final bool autoPlayLockEnable;
   final bool disableAnimation;
-  final bool disableBarrierInteractions;
+  final bool disableBarrierInteraction;
   final Duration scrollDuration;
 
   /// Default overlay blur used by showcase. if [Showcase.blurValue]
@@ -55,7 +55,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.scrollDuration = const Duration(milliseconds: 300),
     this.disableAnimation = false,
     this.enableAutoScroll = false,
-    this.disableBarrierInteractions = false,
+    this.disableBarrierInteraction = false,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -85,7 +85,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   late Duration autoPlayDelay;
   late bool autoPlayLockEnable;
   late bool enableAutoScroll;
-  late bool disableBarrierInteractions;
+  late bool disableBarrierInteraction;
 
   /// Returns value of  [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
@@ -108,7 +108,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     disableAnimation = widget.disableAnimation;
     autoPlayLockEnable = widget.autoPlayLockEnable;
     enableAutoScroll = widget.enableAutoScroll;
-    disableBarrierInteractions = widget.disableBarrierInteractions;
+    disableBarrierInteraction = widget.disableBarrierInteraction;
   }
 
   void startShowCase(List<GlobalKey> widgetIds) {

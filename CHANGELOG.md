@@ -1,5 +1,6 @@
-## [1.1.8] - July 27, 2022 (Unreleased)
+## [1.1.8] - August 5, 2022 (Unreleased)
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/237) - Feature added to enable/disable overlay click using `disableBarrierInteractions` parameters
+- ToolTip BorderRadius setting support
 
 ## [1.1.7] - July 11, 2022
 

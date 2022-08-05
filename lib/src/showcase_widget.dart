@@ -33,6 +33,7 @@ class ShowCaseWidget extends StatefulWidget {
   final Duration autoPlayDelay;
   final bool autoPlayLockEnable;
   final bool disableAnimation;
+  final bool disableBarrierInteractions;
   final Duration scrollDuration;
 
   /// Default overlay blur used by showcase. if [Showcase.blurValue]
@@ -54,6 +55,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.scrollDuration = const Duration(milliseconds: 300),
     this.disableAnimation = false,
     this.enableAutoScroll = false,
+    this.disableBarrierInteractions = false,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -83,6 +85,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   late Duration autoPlayDelay;
   late bool autoPlayLockEnable;
   late bool enableAutoScroll;
+  late bool disableBarrierInteractions;
 
   /// Returns value of  [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
@@ -90,11 +93,22 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   void initState() {
     super.initState();
+    _init();
+  }
+
+  @override
+  void didUpdateWidget(covariant ShowCaseWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _init();
+  }
+
+  void _init() {
     autoPlayDelay = widget.autoPlayDelay;
     autoPlay = widget.autoPlay;
     disableAnimation = widget.disableAnimation;
     autoPlayLockEnable = widget.autoPlayLockEnable;
     enableAutoScroll = widget.enableAutoScroll;
+    disableBarrierInteractions = widget.disableBarrierInteractions;
   }
 
   void startShowCase(List<GlobalKey> widgetIds) {
@@ -181,8 +195,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   Widget build(BuildContext context) {
     return _InheritedShowCaseView(
-      child: widget.builder,
       activeWidgetIds: ids?.elementAt(activeWidgetId!),
+      child: widget.builder,
     );
   }
 }
@@ -190,7 +204,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 class _InheritedShowCaseView extends InheritedWidget {
   final GlobalKey? activeWidgetIds;
 
-  _InheritedShowCaseView({
+  const _InheritedShowCaseView({
     required this.activeWidgetIds,
     required Widget child,
   }) : super(child: child);

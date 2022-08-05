@@ -39,7 +39,7 @@ class GetPosition {
 
     var boxOffset = box.localToGlobal(const Offset(0.0, 0.0));
     if (boxOffset.dx.isNaN || boxOffset.dy.isNaN) {
-      return Rect.fromLTRB(0, 0, 0, 0);
+      return const Rect.fromLTRB(0, 0, 0, 0);
     }
     final topLeft = box.size.topLeft(boxOffset);
     final bottomRight = box.size.bottomRight(boxOffset);

@@ -33,7 +33,7 @@ import 'package:showcaseview/showcaseview.dart';
 ```dart
 ShowCaseWidget(
   builder: Builder(
-    builder : (context) ()=> Somewidget()
+    builder : (context)=> Somewidget()
   ),
 ),
 ```

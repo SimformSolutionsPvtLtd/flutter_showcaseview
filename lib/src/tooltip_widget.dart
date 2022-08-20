@@ -85,6 +85,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   late final Animation<double> _curvedAnimation;
 
   double tooltipWidth = 0;
+  double tooltipScreenEdgePadding = 20;
+  double tooltipTextPadding = 15;
 
   bool isCloseToTopOrBottom(Offset position) {
     var height = 120.0;
@@ -128,24 +130,25 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             widget.contentPadding!.right +
             widget.contentPadding!.left);
     var maxTextWidth = max(titleLength, descriptionLength);
-    if (maxTextWidth > widget.screenSize!.width - 20) {
-      tooltipWidth = widget.screenSize!.width - 20;
+    if (maxTextWidth > widget.screenSize!.width - tooltipScreenEdgePadding) {
+      tooltipWidth = widget.screenSize!.width - tooltipScreenEdgePadding;
     } else {
-      tooltipWidth = maxTextWidth + 15;
+      tooltipWidth = maxTextWidth + tooltipTextPadding;
     }
   }
 
   double? _getLeft() {
     if (widget.position != null) {
-      var leftPositionValue =
+      double leftPositionValue =
           widget.position!.getCenter() - (tooltipWidth * 0.5);
-
-      return (leftPositionValue + tooltipWidth) >
-              MediaQuery.of(context).size.width
-          ? null
-          : (leftPositionValue) < _kDefaultPaddingFromParent
-              ? _kDefaultPaddingFromParent
-              : leftPositionValue;
+      if ((leftPositionValue + tooltipWidth) >
+          MediaQuery.of(context).size.width) {
+        return null;
+      } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
+        return _kDefaultPaddingFromParent;
+      } else {
+        return leftPositionValue;
+      }
     }
     return null;
   }

@@ -73,6 +73,7 @@ Showcase(
   slideDuration: Duration(milliseconds: 1500),
   tooltipColor: Colors.blueGrey,
   blurValue: 2,
+  disableDefaultTargetGestures: true,
   child: ...,
 ),
 ```

@@ -64,6 +64,12 @@ class Showcase extends StatefulWidget {
   final VoidCallback? onTargetLongPress;
   final BorderRadius? tipBorderRadius;
 
+  /// if disableDefaultTargetGestures parameter is true
+  /// onTargetClick, onTargetDoubleTap, onTargetLongPress and
+  /// disposeOnTap parameter will not work
+  ///
+  final bool disableDefaultTargetGestures;
+
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
   ///
@@ -100,6 +106,7 @@ class Showcase extends StatefulWidget {
     this.onTargetLongPress,
     this.onTargetDoubleTap,
     this.tipBorderRadius,
+    this.disableDefaultTargetGestures = false,
   })  : height = null,
         width = null,
         container = null,
@@ -144,6 +151,7 @@ class Showcase extends StatefulWidget {
     this.onTargetLongPress,
     this.onTargetDoubleTap,
     this.tipBorderRadius,
+    this.disableDefaultTargetGestures = false,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -322,6 +330,8 @@ class _ShowcaseState extends State<Showcase> {
                   onDoubleTap: widget.onTargetDoubleTap,
                   onLongPress: widget.onTargetLongPress,
                   shapeBorder: widget.shapeBorder,
+                  disableDefaultChildGestures:
+                      widget.disableDefaultTargetGestures,
                 ),
               if (!_isScrollRunning)
                 ToolTipWidget(
@@ -359,6 +369,7 @@ class _TargetWidget extends StatelessWidget {
   final VoidCallback? onLongPress;
   final ShapeBorder? shapeBorder;
   final BorderRadius? radius;
+  final bool disableDefaultChildGestures;
 
   const _TargetWidget({
     Key? key,
@@ -369,6 +380,7 @@ class _TargetWidget extends StatelessWidget {
     this.radius,
     this.onDoubleTap,
     this.onLongPress,
+    this.disableDefaultChildGestures = false,
   }) : super(key: key);
 
   @override
@@ -376,24 +388,27 @@ class _TargetWidget extends StatelessWidget {
     return Positioned(
       top: offset.dy,
       left: offset.dx,
-      child: FractionalTranslation(
-        translation: const Offset(-0.5, -0.5),
-        child: GestureDetector(
-          onTap: onTap,
-          onLongPress: onLongPress,
-          onDoubleTap: onDoubleTap,
-          child: Container(
-            height: size!.height + 16,
-            width: size!.width + 16,
-            decoration: ShapeDecoration(
-              shape: radius != null
-                  ? RoundedRectangleBorder(borderRadius: radius!)
-                  : shapeBorder ??
-                      const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8),
+      child: IgnorePointer(
+        ignoring: disableDefaultChildGestures,
+        child: FractionalTranslation(
+          translation: const Offset(-0.5, -0.5),
+          child: GestureDetector(
+            onTap: onTap,
+            onLongPress: onLongPress,
+            onDoubleTap: onDoubleTap,
+            child: Container(
+              height: size!.height + 16,
+              width: size!.width + 16,
+              decoration: ShapeDecoration(
+                shape: radius != null
+                    ? RoundedRectangleBorder(borderRadius: radius!)
+                    : shapeBorder ??
+                        const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
                         ),
-                      ),
+              ),
             ),
           ),
         ),

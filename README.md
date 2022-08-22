@@ -137,11 +137,21 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 );
 ```
 
-If you want to  disable barrier interaction then set `disableBarrierInteraction` parameter to true.  
+If you want to disable barrier interaction then set `disableBarrierInteraction` parameter to true.  
 
 ```dart
 ShowCaseWidget(
   disableBarrierInteraction: true,
+),
+```
+
+If you want to disable default gestures of target widget then set `disableDefaultTargetGestures` parameter to true in Showcase.
+Note: Make sure to dismiss current showcase with `ShowCaseWidget.of(context).dismiss()` if you are navigating to other screen.
+This will be handled by default if `disableDefaultTargetGestures` is set to false.
+
+```dart
+ShowCase(
+  disableDefaultTargetGestures: true,
 ),
 ```
 

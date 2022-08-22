@@ -388,28 +388,33 @@ class _TargetWidget extends StatelessWidget {
     return Positioned(
       top: offset.dy,
       left: offset.dx,
-      child: IgnorePointer(
-        ignoring: disableDefaultChildGestures,
-        child: FractionalTranslation(
-          translation: const Offset(-0.5, -0.5),
-          child: GestureDetector(
-            onTap: onTap,
-            onLongPress: onLongPress,
-            onDoubleTap: onDoubleTap,
-            child: Container(
-              height: size!.height + 16,
-              width: size!.width + 16,
-              decoration: ShapeDecoration(
-                shape: radius != null
-                    ? RoundedRectangleBorder(borderRadius: radius!)
-                    : shapeBorder ??
-                        const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
-              ),
-            ),
+      child: disableDefaultChildGestures
+          ? IgnorePointer(
+              child: _targetWidgetLayer(),
+            )
+          : _targetWidgetLayer(),
+    );
+  }
+
+  Widget _targetWidgetLayer() {
+    return FractionalTranslation(
+      translation: const Offset(-0.5, -0.5),
+      child: GestureDetector(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        onDoubleTap: onDoubleTap,
+        child: Container(
+          height: size!.height + 16,
+          width: size!.width + 16,
+          decoration: ShapeDecoration(
+            shape: radius != null
+                ? RoundedRectangleBorder(borderRadius: radius!)
+                : shapeBorder ??
+                    const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8),
+                      ),
+                    ),
           ),
         ),
       ),

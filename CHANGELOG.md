@@ -1,5 +1,6 @@
 ## [2.0.0] - August 21, 2022 (Unreleased)
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/261) - Feature added to enable/disable default gesture of ShowcaseView child using `disableDefaultTargetGestures` parameter
+- Fixed [#268](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/268) - Added smooth transition when tooltip appear on the screen
 
 ## [1.1.8] - August 5, 2022
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/237) - Feature added to enable/disable overlay click using `disableBarrierInteraction` parameters

@@ -182,8 +182,6 @@ class _MailPageState extends State<MailPage> {
                                       key: _one,
                                       description: 'Tap to see menu options',
                                       disableDefaultTargetGestures: true,
-                                      initialAnimationAlignment:
-                                          const Alignment(-0.8, -1),
                                       child: GestureDetector(
                                         onTap: () =>
                                             print('menu button clicked'),
@@ -226,7 +224,6 @@ class _MailPageState extends State<MailPage> {
                       showcaseBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
                       shapeBorder: const CircleBorder(),
-                      initialAnimationAlignment: Alignment.topRight,
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         width: 45,
@@ -282,7 +279,6 @@ class _MailPageState extends State<MailPage> {
         title: 'Compose Mail',
         description: 'Click here to compose mail',
         shapeBorder: const CircleBorder(),
-        initialAnimationAlignment: Alignment.topRight,
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
@@ -419,7 +415,6 @@ class MailTile extends StatelessWidget {
                     width: 140,
                     shapeBorder: const CircleBorder(),
                     radius: const BorderRadius.all(Radius.circular(150)),
-                    initialAnimationAlignment: Alignment.topLeft,
                     container: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[

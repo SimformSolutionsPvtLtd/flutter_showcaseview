@@ -53,7 +53,6 @@ class _DetailState extends State<Detail> {
                     key: _one,
                     title: 'Title',
                     description: 'Desc',
-                    initialAnimationAlignment: Alignment.topCenter,
                     child: InkWell(
                       onTap: () {},
                       child: const Text(

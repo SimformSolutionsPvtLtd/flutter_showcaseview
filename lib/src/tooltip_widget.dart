@@ -24,6 +24,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../showcaseview.dart';
 import 'get_position.dart';
 import 'measure_size.dart';
 import 'tooltip_widget_nav.dart';
@@ -250,6 +251,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
     const arrowWidth = 18.0;
     const arrowHeight = 9.0;
+    const defaultBorderRadius = 8.0;
+    const endIconPaddingAll = 2.0;
+    const endIconSize = 16.0;
+    const endIconTotalWidth = endIconSize + endIconPaddingAll;
 
     if (widget.container == null) {
       return Positioned(
@@ -309,10 +314,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                       padding: EdgeInsets.only(
                         top: isArrowUp ? arrowHeight - 1 : 0,
                         bottom: isArrowUp ? 0 : arrowHeight - 1,
+                        right:
+                            (widget.showEndIcon) ? (endIconTotalWidth) / 2 : 0,
                       ),
                       child: ClipRRect(
-                        borderRadius:
-                            widget.borderRadius ?? BorderRadius.circular(8.0),
+                        borderRadius: widget.borderRadius ??
+                            BorderRadius.circular(defaultBorderRadius),
                         child: GestureDetector(
                           onTap: widget.onTooltipTap,
                           child: Container(
@@ -359,7 +366,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                           widget.showForwardBackNav,
                                       showTipCountIndex:
                                           widget.showTipCountIndex,
-                                      showEndIcon: widget.showEndIcon,
                                       textColor: widget.textColor,
                                     )
                                   ],
@@ -370,6 +376,32 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                         ),
                       ),
                     ),
+                    if (widget.showEndIcon)
+                      Positioned(
+                        right: 0,
+                        top: (isArrowUp) ? arrowHeight - 1 : 0,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            debugPrint("End");
+                            ShowCaseWidget.of(widget.globalKey.currentContext!)
+                                .dismiss();
+                          },
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.zero,
+                              topRight: Radius.circular(50),
+                              bottomRight: Radius.circular(50),
+                              bottomLeft: Radius.circular(50),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(endIconPaddingAll),
+                              color: widget.tooltipColor,
+                              child: const Icon(Icons.close, size: endIconSize),
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

@@ -8,14 +8,12 @@ class TooltipWidgetNav extends StatelessWidget {
   final GlobalKey globalKey;
   final bool showForwardBackNav;
   final bool showTipCountIndex;
-  final bool showEndIcon;
   final Color? textColor;
   const TooltipWidgetNav({
     Key? key,
     required this.globalKey,
     required this.showForwardBackNav,
     required this.showTipCountIndex,
-    required this.showEndIcon,
     required this.textColor,
   }) : super(key: key);
 
@@ -34,34 +32,48 @@ class TooltipWidgetNav extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (showForwardBackNav)
-                IconButton(
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+
                   // Disable if activeWidgetId (index) == 0
-                  onPressed: (isFirstTip)
+                  onTap: (isFirstTip)
                       ? null
                       : () {
                           ShowCaseWidget.of(globalKey.currentContext!)
                               .previous();
                         },
-                  icon: Icon(
-                    Icons.keyboard_arrow_left,
-                    color: (isFirstTip) ? null : textColor,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0, top: 4.0),
+                    child: Icon(
+                      Icons.keyboard_arrow_left,
+                      color: (isFirstTip)
+                          ? textColor?.withOpacity(0.3) ?? Colors.black26
+                          : textColor,
+                    ),
                   ),
                 ),
               if (showTipCountIndex &&
                   ids != null &&
                   activeWidgetId != null) ...[
                 const SizedBox(width: 4.0),
-                Text("${activeWidgetId + 1} / ${ids.length}"),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text("${activeWidgetId + 1} / ${ids.length}"),
+                ),
                 const SizedBox(width: 4.0),
               ],
               if (showForwardBackNav)
-                IconButton(
-                  onPressed: () {
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
                     ShowCaseWidget.of(globalKey.currentContext!).next();
                   },
-                  icon: Icon(
-                    Icons.keyboard_arrow_right,
-                    color: textColor,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0, top: 4.0),
+                    child: Icon(
+                      Icons.keyboard_arrow_right,
+                      color: textColor,
+                    ),
                   ),
                 ),
             ],

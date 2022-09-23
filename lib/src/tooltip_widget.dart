@@ -26,8 +26,10 @@ import 'package:flutter/material.dart';
 
 import 'get_position.dart';
 import 'measure_size.dart';
+import 'tooltip_widget_nav.dart';
 
 class ToolTipWidget extends StatefulWidget {
+  final GlobalKey globalKey;
   final GetPosition? position;
   final Offset? offset;
   final Size? screenSize;
@@ -46,9 +48,13 @@ class ToolTipWidget extends StatefulWidget {
   final Duration animationDuration;
   final bool disableAnimation;
   final BorderRadius? borderRadius;
+  final bool showForwardBackNav;
+  final bool showTipCountIndex;
+  final bool showEndIcon;
 
   const ToolTipWidget({
     Key? key,
+    required this.globalKey,
     required this.position,
     required this.offset,
     required this.screenSize,
@@ -67,6 +73,9 @@ class ToolTipWidget extends StatefulWidget {
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     required this.disableAnimation,
     required this.borderRadius,
+    required this.showForwardBackNav,
+    required this.showTipCountIndex,
+    required this.showEndIcon,
   }) : super(key: key);
 
   @override
@@ -344,6 +353,15 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                                 ),
                                               ),
                                     ),
+                                    TooltipWidgetNav(
+                                      globalKey: widget.globalKey,
+                                      showForwardBackNav:
+                                          widget.showForwardBackNav,
+                                      showTipCountIndex:
+                                          widget.showTipCountIndex,
+                                      showEndIcon: widget.showEndIcon,
+                                      textColor: widget.textColor,
+                                    )
                                   ],
                                 )
                               ],

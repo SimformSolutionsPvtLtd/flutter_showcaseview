@@ -63,6 +63,9 @@ class Showcase extends StatefulWidget {
   final VoidCallback? onTargetDoubleTap;
   final VoidCallback? onTargetLongPress;
   final BorderRadius? tipBorderRadius;
+  final bool showForwardBackNav;
+  final bool showTipCountIndex;
+  final bool showEndIcon;
 
   /// if disableDefaultTargetGestures parameter is true
   /// onTargetClick, onTargetDoubleTap, onTargetLongPress and
@@ -107,6 +110,9 @@ class Showcase extends StatefulWidget {
     this.onTargetDoubleTap,
     this.tipBorderRadius,
     this.disableDefaultTargetGestures = false,
+    this.showForwardBackNav = false,
+    this.showTipCountIndex = false,
+    this.showEndIcon = false,
   })  : height = null,
         width = null,
         container = null,
@@ -123,6 +129,9 @@ class Showcase extends StatefulWidget {
                 : (onTargetClick == null ? false : true),
             "onTargetClick is required if you're using disposeOnTap");
 
+  /// Showcase.withWidget allows a widget to be passed to the tooltip instead of just a description String
+  /// It is expected that a user would build their own implementation of forward / back [showForwardBackNav],
+  /// tip count [showTipCountIndex], and end icon [showEndIcon] with this constructor.
   const Showcase.withWidget({
     required this.key,
     required this.child,
@@ -154,6 +163,9 @@ class Showcase extends StatefulWidget {
     this.disableDefaultTargetGestures = false,
   })  : showArrow = false,
         onToolTipClick = null,
+        showForwardBackNav = false,
+        showTipCountIndex = false,
+        showEndIcon = false,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1.");
 
@@ -335,6 +347,7 @@ class _ShowcaseState extends State<Showcase> {
                 ),
               if (!_isScrollRunning)
                 ToolTipWidget(
+                  globalKey: widget.key,
                   position: position,
                   offset: offset,
                   screenSize: screenSize,
@@ -354,6 +367,9 @@ class _ShowcaseState extends State<Showcase> {
                       showCaseWidgetState.disableAnimation,
                   animationDuration: widget.animationDuration,
                   borderRadius: widget.tipBorderRadius,
+                  showForwardBackNav: widget.showForwardBackNav,
+                  showTipCountIndex: widget.showTipCountIndex,
+                  showEndIcon: widget.showEndIcon,
                 ),
             ],
           )

@@ -394,7 +394,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                             child: Container(
                               padding: const EdgeInsets.all(endIconPaddingAll),
                               color: widget.tooltipColor,
-                              child: const Icon(Icons.close, size: endIconSize),
+                              child: Icon(
+                                Icons.close,
+                                size: endIconSize,
+                                color: widget.textColor,
+                              ),
                             ),
                           ),
                         ),

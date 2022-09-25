@@ -58,7 +58,12 @@ class TooltipWidgetNav extends StatelessWidget {
                 const SizedBox(width: 4.0),
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0),
-                  child: Text("${activeWidgetId + 1} / ${ids.length}"),
+                  child: Text(
+                    "${activeWidgetId + 1} / ${ids.length}",
+                    style: TextStyle(
+                      color: textColor,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 4.0),
               ],

@@ -237,9 +237,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Left: ${_getLeft()}");
-    debugPrint("Right: ${_getRight()}");
-
     position = widget.offset;
     final contentOrientation = findPositionForContent(position!);
     final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;

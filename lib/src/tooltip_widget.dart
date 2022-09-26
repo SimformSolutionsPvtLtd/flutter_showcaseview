@@ -30,6 +30,10 @@ import 'measure_size.dart';
 import 'tooltip_widget_nav.dart';
 
 const _kDefaultPaddingFromParent = 14.0;
+const _kEndIconPaddingAll = 2.0;
+const _kEndIconSize = 16.0;
+const _kEndIconTotalWidth = _kEndIconSize + _kEndIconPaddingAll;
+const _kMinRightPaddingIfEndIconEnabled = 2.0;
 
 class ToolTipWidget extends StatefulWidget {
   final GlobalKey globalKey;
@@ -140,6 +144,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             widget.contentPadding!.right +
             widget.contentPadding!.left);
     var maxTextWidth = max(titleLength, descriptionLength);
+    if (widget.showEndIcon) {
+      maxTextWidth += _kEndIconTotalWidth;
+    }
     if (maxTextWidth > widget.screenSize!.width - tooltipScreenEdgePadding) {
       tooltipWidth = widget.screenSize!.width - tooltipScreenEdgePadding;
     } else {
@@ -165,10 +172,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   double? _getRight() {
     if (widget.position != null) {
+      debugPrint("This condition");
       var rightPosition = widget.position!.getCenter() + (tooltipWidth * 0.5);
 
+      // Accommodate end icon offset width if enabled
+      double minRightPadding = (widget.showEndIcon)
+          ? _kMinRightPaddingIfEndIconEnabled
+          : _kDefaultPaddingFromParent;
+
       return (rightPosition + tooltipWidth) > MediaQuery.of(context).size.width
-          ? _kDefaultPaddingFromParent
+          ? minRightPadding
           : null;
     }
     return null;
@@ -226,6 +239,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("Left: ${_getLeft()}");
+    debugPrint("Right: ${_getRight()}");
+
     position = widget.offset;
     final contentOrientation = findPositionForContent(position!);
     final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
@@ -249,9 +265,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     const arrowWidth = 18.0;
     const arrowHeight = 9.0;
     const defaultBorderRadius = 8.0;
-    const endIconPaddingAll = 2.0;
-    const endIconSize = 16.0;
-    const endIconTotalWidth = endIconSize + endIconPaddingAll;
 
     if (widget.container == null) {
       return Positioned(
@@ -311,98 +324,112 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                       padding: EdgeInsets.only(
                         top: isArrowUp ? arrowHeight - 1 : 0,
                         bottom: isArrowUp ? 0 : arrowHeight - 1,
-                        right:
-                            (widget.showEndIcon) ? (endIconTotalWidth) / 2 : 0,
                       ),
-                      child: ClipRRect(
-                        borderRadius: widget.borderRadius ??
-                            BorderRadius.circular(defaultBorderRadius),
-                        child: GestureDetector(
-                          onTap: widget.onTooltipTap,
-                          child: Container(
-                            width: tooltipWidth,
-                            padding: widget.contentPadding,
-                            color: widget.tooltipColor,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: widget.title != null
-                                      ? CrossAxisAlignment.start
-                                      : CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    widget.title != null
-                                        ? Text(
-                                            widget.title!,
-                                            style: widget.titleTextStyle ??
+                      child: Stack(
+                        children: [
+                          Padding(
+                            // Conditional container padding to accommodate an offset endIcon
+                            padding: EdgeInsets.only(
+                                right: (widget.showEndIcon)
+                                    ? _kEndIconTotalWidth / 2
+                                    : 0),
+                            child: ClipRRect(
+                              borderRadius: widget.borderRadius ??
+                                  BorderRadius.circular(defaultBorderRadius),
+                              child: GestureDetector(
+                                onTap: widget.onTooltipTap,
+                                child: Container(
+                                  width: tooltipWidth,
+                                  padding: widget.contentPadding,
+                                  color: widget.tooltipColor,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Column(
+                                        crossAxisAlignment: widget.title != null
+                                            ? CrossAxisAlignment.start
+                                            : CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          widget.title != null
+                                              ? Text(
+                                                  widget.title!,
+                                                  style:
+                                                      widget.titleTextStyle ??
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .headline6!
+                                                              .merge(
+                                                                TextStyle(
+                                                                  color: widget
+                                                                      .textColor,
+                                                                ),
+                                                              ),
+                                                )
+                                              : const SizedBox(),
+                                          Text(
+                                            widget.description!,
+                                            style: widget.descTextStyle ??
                                                 Theme.of(context)
                                                     .textTheme
-                                                    .headline6!
+                                                    .subtitle2!
                                                     .merge(
                                                       TextStyle(
                                                         color: widget.textColor,
                                                       ),
                                                     ),
+                                          ),
+                                          TooltipWidgetNav(
+                                            globalKey: widget.globalKey,
+                                            showForwardBackNav:
+                                                widget.showForwardBackNav,
+                                            showTipCountIndex:
+                                                widget.showTipCountIndex,
+                                            textColor: widget.textColor,
                                           )
-                                        : const SizedBox(),
-                                    Text(
-                                      widget.description!,
-                                      style: widget.descTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .subtitle2!
-                                              .merge(
-                                                TextStyle(
-                                                  color: widget.textColor,
-                                                ),
-                                              ),
-                                    ),
-                                    TooltipWidgetNav(
-                                      globalKey: widget.globalKey,
-                                      showForwardBackNav:
-                                          widget.showForwardBackNav,
-                                      showTipCountIndex:
-                                          widget.showTipCountIndex,
-                                      textColor: widget.textColor,
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (widget.showEndIcon)
-                      Positioned(
-                        right: 0,
-                        top: (isArrowUp) ? arrowHeight - 1 : 0,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            debugPrint("End");
-                            ShowCaseWidget.of(widget.globalKey.currentContext!)
-                                .dismiss();
-                          },
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.zero,
-                              topRight: Radius.circular(50),
-                              bottomRight: Radius.circular(50),
-                              bottomLeft: Radius.circular(50),
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.all(endIconPaddingAll),
-                              color: widget.tooltipColor,
-                              child: Icon(
-                                Icons.close,
-                                size: endIconSize,
-                                color: widget.textColor,
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          if (widget.showEndIcon)
+                            Positioned(
+                              right: 0,
+                              top: (isArrowUp) ? arrowHeight - 1 : 0,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTap: () {
+                                  debugPrint("End");
+                                  ShowCaseWidget.of(
+                                          widget.globalKey.currentContext!)
+                                      .dismiss();
+                                },
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.zero,
+                                    topRight: Radius.circular(50),
+                                    bottomRight: Radius.circular(50),
+                                    bottomLeft: Radius.circular(50),
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(
+                                        _kEndIconPaddingAll),
+                                    color: widget.tooltipColor,
+                                    child: Icon(
+                                      Icons.close,
+                                      size: _kEndIconSize,
+                                      color: widget.textColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
+                    ),
                   ],
                 ),
               ),

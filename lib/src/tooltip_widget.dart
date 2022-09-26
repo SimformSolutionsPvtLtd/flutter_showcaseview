@@ -90,6 +90,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   final double endIconPaddingAll = 2.0;
   final double endIconSize = 16.0;
   late final double endIconTotalWidth = endIconSize + endIconPaddingAll;
+  final double minLeftRightPosition = 12;
 
   late final AnimationController _parentController;
   late final Animation<double> _curvedAnimation;
@@ -163,11 +164,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         leftPadding = (widget.screenSize!.width - 20) - _getTooltipWidth();
       }
       if (leftPadding < 20) {
-        leftPadding = 14;
+        leftPadding = minLeftRightPosition;
       }
       return leftPadding;
     } else if (!(_isRight())) {
-      return widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
+      var leftPos = widget.position!.getCenter() - (_getTooltipWidth() * 0.5);
+      return (leftPos < minLeftRightPosition) ? minLeftRightPosition : leftPos;
     } else {
       return null;
     }
@@ -178,7 +180,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       var rightPadding =
           widget.position!.getCenter() + (_getTooltipWidth() / 2);
       if (rightPadding + _getTooltipWidth() > widget.screenSize!.width) {
-        rightPadding = 14;
+        rightPadding = minLeftRightPosition;
       }
       return rightPadding;
     } else if (!(_isLeft())) {
@@ -394,7 +396,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
                                 onTap: () {
-                                  debugPrint("End");
                                   ShowCaseWidget.of(
                                           widget.globalKey.currentContext!)
                                       .dismiss();

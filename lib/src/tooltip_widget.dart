@@ -92,7 +92,6 @@ class ToolTipWidget extends StatefulWidget {
 class _ToolTipWidgetState extends State<ToolTipWidget>
     with SingleTickerProviderStateMixin {
   Offset? position;
-
   bool isArrowUp = false;
 
   late final AnimationController _parentController;
@@ -319,7 +318,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                           ),
                         ),
                       ),
-                    Padding(
+                    Container(
                       padding: EdgeInsets.only(
                         top: isArrowUp ? arrowHeight - 1 : 0,
                         bottom: isArrowUp ? 0 : arrowHeight - 1,

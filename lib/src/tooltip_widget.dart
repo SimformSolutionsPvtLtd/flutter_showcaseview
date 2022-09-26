@@ -172,7 +172,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   double? _getRight() {
     if (widget.position != null) {
-      debugPrint("This condition");
       var rightPosition = widget.position!.getCenter() + (tooltipWidth * 0.5);
 
       // Accommodate end icon offset width if enabled
@@ -402,7 +401,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
                                 onTap: () {
-                                  debugPrint("End");
                                   ShowCaseWidget.of(
                                           widget.globalKey.currentContext!)
                                       .dismiss();

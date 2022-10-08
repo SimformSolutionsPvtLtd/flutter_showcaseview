@@ -1,6 +1,7 @@
 ## [2.0.0] - August 21, 2022 (Unreleased)
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/261) - Feature added to enable/disable default gesture of ShowcaseView child using `disableDefaultTargetGestures` parameter
 - Fixed [#206](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/206) getLeft and getRight return wrong result when in middle with a little offset
+- Fixed issue of duplicate key found in example.
 
 ## [1.1.8] - August 5, 2022
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/237) - Feature added to enable/disable overlay click using `disableBarrierInteraction` parameters

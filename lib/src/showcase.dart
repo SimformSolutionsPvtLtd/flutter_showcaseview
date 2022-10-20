@@ -55,11 +55,12 @@ class Showcase extends StatefulWidget {
   final bool showArrow;
   final double? height;
   final double? width;
-  final Duration animationDuration;
+  final Duration movingAnimationDuration;
   final VoidCallback? onToolTipClick;
   final VoidCallback? onTargetClick;
   final bool? disposeOnTap;
-  final bool? disableAnimation;
+  final bool? disableMovingAnimation;
+  final bool? disableScaleAnimation;
   final EdgeInsets overlayPadding;
   final VoidCallback? onTargetDoubleTap;
   final VoidCallback? onTargetLongPress;
@@ -80,6 +81,29 @@ class Showcase extends StatefulWidget {
   ///
   final double? blurValue;
 
+  /// A duration for animation which is going to played when
+  /// tooltip comes first time in the view.
+  ///
+  /// Defaults to 300 ms.
+  final Duration scaleAnimationDuration;
+
+  /// The curve to be used for initial animation of tooltip.
+  ///
+  /// Defaults to Curves.easeIn
+  final Curve scaleAnimationCurve;
+
+  /// An alignment to origin of initial tooltip animation.
+  ///
+  /// Alignment will be pre-calculated but if pre-calculated
+  /// alignment doesn't work then this parameter can be
+  /// used to customise the direct of the tooltip animation.
+  ///
+  /// eg.
+  /// ```dart
+  ///     Alignment(-0.2,0.3) or Alignment.centerLeft
+  /// ```
+  final Alignment? scaleAnimationAlignment;
+
   const Showcase({
     required this.key,
     required this.child,
@@ -99,8 +123,9 @@ class Showcase extends StatefulWidget {
     this.showArrow = true,
     this.onTargetClick,
     this.disposeOnTap,
-    this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation,
+    this.movingAnimationDuration = const Duration(milliseconds: 2000),
+    this.disableMovingAnimation,
+    this.disableScaleAnimation,
     this.contentPadding =
         const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
     this.onToolTipClick,
@@ -111,6 +136,9 @@ class Showcase extends StatefulWidget {
     this.onTargetDoubleTap,
     this.tipBorderRadius,
     this.disableDefaultTargetGestures = false,
+    this.scaleAnimationDuration = const Duration(milliseconds: 300),
+    this.scaleAnimationCurve = Curves.easeIn,
+    this.scaleAnimationAlignment,
   })  : height = null,
         width = null,
         container = null,
@@ -149,8 +177,8 @@ class Showcase extends StatefulWidget {
         valueColor: AlwaysStoppedAnimation(Colors.white)),
     this.onTargetClick,
     this.disposeOnTap,
-    this.animationDuration = const Duration(milliseconds: 2000),
-    this.disableAnimation,
+    this.movingAnimationDuration = const Duration(milliseconds: 2000),
+    this.disableMovingAnimation,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
@@ -160,6 +188,10 @@ class Showcase extends StatefulWidget {
     this.disableDefaultTargetGestures = false,
   })  : showArrow = false,
         onToolTipClick = null,
+        scaleAnimationDuration = const Duration(milliseconds: 300),
+        scaleAnimationCurve = Curves.decelerate,
+        scaleAnimationAlignment = null,
+        disableScaleAnimation = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1.");
 
@@ -170,6 +202,7 @@ class Showcase extends StatefulWidget {
 class _ShowcaseState extends State<Showcase> {
   bool _showShowCase = false;
   bool _isScrollRunning = false;
+  bool _isTooltipDismissed = false;
   Timer? timer;
   GetPosition? position;
 
@@ -242,7 +275,7 @@ class _ShowcaseState extends State<Showcase> {
     );
   }
 
-  void _nextIfAny() {
+  Future<void> _nextIfAny() async {
     if (timer != null && timer!.isActive) {
       if (showCaseWidgetState.autoPlayLockEnable) {
         return;
@@ -251,11 +284,13 @@ class _ShowcaseState extends State<Showcase> {
     } else if (timer != null && !timer!.isActive) {
       timer = null;
     }
+    await _reverseAnimateTooltip();
     showCaseWidgetState.completed(widget.key);
   }
 
-  void _getOnTargetTap() {
+  Future<void> _getOnTargetTap() async {
     if (widget.disposeOnTap == true) {
+      await _reverseAnimateTooltip();
       showCaseWidgetState.dismiss();
       widget.onTargetClick!();
     } else {
@@ -263,11 +298,22 @@ class _ShowcaseState extends State<Showcase> {
     }
   }
 
-  void _getOnTooltipTap() {
+  Future<void> _getOnTooltipTap() async {
     if (widget.disposeOnTap == true) {
+      await _reverseAnimateTooltip();
       showCaseWidgetState.dismiss();
     }
     widget.onToolTipClick?.call();
+  }
+
+  /// Reverse animates the provided tooltip or
+  /// the custom container widget.
+  Future<void> _reverseAnimateTooltip() async {
+    setState(() {
+      _isTooltipDismissed = true;
+    });
+    await Future<dynamic>.delayed(widget.scaleAnimationDuration);
+    _isTooltipDismissed = false;
   }
 
   Widget buildOverlayOnTarget(
@@ -358,10 +404,16 @@ class _ShowcaseState extends State<Showcase> {
                   contentWidth: widget.width,
                   onTooltipTap: _getOnTooltipTap,
                   contentPadding: widget.contentPadding,
-                  disableAnimation: widget.disableAnimation ??
-                      showCaseWidgetState.disableAnimation,
-                  animationDuration: widget.animationDuration,
+                  disableMovingAnimation: widget.disableMovingAnimation ??
+                      showCaseWidgetState.disableMovingAnimation,
+                  disableScaleAnimation: widget.disableScaleAnimation ??
+                      showCaseWidgetState.disableScaleAnimation,
+                  movingAnimationDuration: widget.movingAnimationDuration,
                   borderRadius: widget.tipBorderRadius,
+                  scaleAnimationDuration: widget.scaleAnimationDuration,
+                  scaleAnimationCurve: widget.scaleAnimationCurve,
+                  scaleAnimationAlignment: widget.scaleAnimationAlignment,
+                  isTooltipDismissed: _isTooltipDismissed,
                 ),
             ],
           )

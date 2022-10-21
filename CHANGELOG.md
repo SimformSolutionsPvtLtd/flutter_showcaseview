@@ -4,6 +4,7 @@
 - Fixed issue of duplicate key found in example.
 - Fixed [#253](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/253) - Add TextAlign attribute for title and description
 - `pull_request_template.md.` file updated with proper document
+- `CONTRIBUTING.md` file updated with proper document
 
 ## [1.1.8] - August 5, 2022
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/237) - Feature added to enable/disable overlay click using `disableBarrierInteraction` parameters

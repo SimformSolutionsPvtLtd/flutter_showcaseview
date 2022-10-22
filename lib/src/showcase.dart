@@ -27,12 +27,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'enum.dart';
+import '../showcaseview.dart';
 import 'extension.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
-import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
+import 'utilities/_showcase_context_provider.dart';
 
 class Showcase extends StatefulWidget {
   /// A key that is unique across the entire app.
@@ -221,6 +222,11 @@ class Showcase extends StatefulWidget {
   /// ```
   final Alignment? scaleAnimationAlignment;
 
+  /// Tooltip action button widget
+  final Widget? actions;
+  final ActionsSettings? actionSettings;
+  final ActionButtonsPosition? actionButtonsPosition;
+
   /// Defines vertical position of tooltip respective to Target widget
   ///
   /// Defaults to adaptive into available space.
@@ -273,6 +279,9 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.actions,
+    this.actionSettings = const ActionsSettings(),
+    this.actionButtonsPosition,
   })  : height = null,
         width = null,
         container = null,
@@ -280,8 +289,12 @@ class Showcase extends StatefulWidget {
             "overlay opacity must be between 0 and 1."),
         assert(onTargetClick == null || disposeOnTap != null,
             "disposeOnTap is required if you're using onTargetClick"),
-        assert(disposeOnTap == null || onTargetClick != null,
-            "onTargetClick is required if you're using disposeOnTap");
+        assert(
+            disposeOnTap == null
+                ? true
+                : (onTargetClick == null ? false : true),
+            "onTargetClick is required if you're using disposeOnTap"),
+        super(key: key);
 
   const Showcase.withWidget({
     required this.key,
@@ -309,6 +322,9 @@ class Showcase extends StatefulWidget {
     this.onTargetDoubleTap,
     this.disableDefaultTargetGestures = false,
     this.tooltipPosition,
+    this.actions,
+    this.actionSettings = const ActionsSettings(),
+    this.actionButtonsPosition,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -469,93 +485,105 @@ class _ShowcaseState extends State<Showcase> {
 
     if (!_showShowCase) return const SizedBox.shrink();
 
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: () {
-            if (!showCaseWidgetState.disableBarrierInteraction) {
-              _nextIfAny();
-            }
-          },
-          child: ClipPath(
-            clipper: RRectClipper(
-              area: _isScrollRunning ? Rect.zero : rectBound,
-              isCircle: widget.targetShapeBorder is CircleBorder,
-              radius: _isScrollRunning
-                  ? BorderRadius.zero
-                  : widget.targetBorderRadius,
-              overlayPadding:
-                  _isScrollRunning ? EdgeInsets.zero : widget.targetPadding,
-            ),
-            child: blur != 0
-                ? BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      decoration: BoxDecoration(
-                        color: widget.overlayColor
-                            .withOpacity(widget.overlayOpacity),
-                      ),
+    return _showShowCase
+        ? ShowcaseContextProvider(
+            context: context,
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    if (!showCaseWidgetState.disableBarrierInteraction) {
+                      _nextIfAny();
+                    }
+                  },
+                  child: ClipPath(
+                    clipper: RRectClipper(
+                      area: _isScrollRunning ? Rect.zero : rectBound,
+                      isCircle:
+                      widget.targetShapeBorder is CircleBorder,
+                      radius: _isScrollRunning
+                          ? BorderRadius.zero
+                          : widget.targetBorderRadius,
+                      overlayPadding: _isScrollRunning
+                          ? EdgeInsets.zero
+                          : widget.targetPadding,
                     ),
-                  )
-                : Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    decoration: BoxDecoration(
-                      color: widget.overlayColor
-                          .withOpacity(widget.overlayOpacity),
-                    ),
+                    child: blur != 0
+                        ? BackdropFilter(
+                            filter:
+                                ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              decoration: BoxDecoration(
+                                color: widget.overlayColor
+                                    .withOpacity(widget.overlayOpacity),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            decoration: BoxDecoration(
+                              color: widget.overlayColor
+                                  .withOpacity(widget.overlayOpacity),
+                            ),
+                          ),
                   ),
-          ),
-        ),
-        if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
-        if (!_isScrollRunning) ...[
-          _TargetWidget(
-            offset: offset,
-            size: size,
-            onTap: _getOnTargetTap,
-            radius: widget.targetBorderRadius,
-            onDoubleTap: widget.onTargetDoubleTap,
-            onLongPress: widget.onTargetLongPress,
-            shapeBorder: widget.targetShapeBorder,
-            disableDefaultChildGestures: widget.disableDefaultTargetGestures,
-          ),
-          ToolTipWidget(
-            position: position,
-            offset: offset,
-            screenSize: screenSize,
-            title: widget.title,
-            titleAlignment: widget.titleAlignment,
-            description: widget.description,
-            descriptionAlignment: widget.descriptionAlignment,
-            titleTextStyle: widget.titleTextStyle,
-            descTextStyle: widget.descTextStyle,
-            container: widget.container,
-            tooltipBackgroundColor: widget.tooltipBackgroundColor,
-            textColor: widget.textColor,
-            showArrow: widget.showArrow,
-            contentHeight: widget.height,
-            contentWidth: widget.width,
-            onTooltipTap: _getOnTooltipTap,
-            tooltipPadding: widget.tooltipPadding,
-            disableMovingAnimation: widget.disableMovingAnimation ??
-                showCaseWidgetState.disableMovingAnimation,
-            disableScaleAnimation: widget.disableScaleAnimation ??
-                showCaseWidgetState.disableScaleAnimation,
-            movingAnimationDuration: widget.movingAnimationDuration,
-            tooltipBorderRadius: widget.tooltipBorderRadius,
-            scaleAnimationDuration: widget.scaleAnimationDuration,
-            scaleAnimationCurve: widget.scaleAnimationCurve,
-            scaleAnimationAlignment: widget.scaleAnimationAlignment,
-            isTooltipDismissed: _isTooltipDismissed,
-            tooltipPosition: widget.tooltipPosition,
-            titlePadding: widget.titlePadding,
-            descriptionPadding: widget.descriptionPadding,
-          ),
-        ],
-      ],
-    );
+                ),
+                if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
+                if (!_isScrollRunning) ...[
+                  _TargetWidget(
+                    offset: offset,
+                    size: size,
+                    onTap: _getOnTargetTap,
+                    radius: widget.targetBorderRadius,
+                    onDoubleTap: widget.onTargetDoubleTap,
+                    onLongPress: widget.onTargetLongPress,
+                    shapeBorder: widget.targetShapeBorder,
+                    disableDefaultChildGestures:
+                        widget.disableDefaultTargetGestures,
+                  ),
+                  ToolTipWidget(
+                    position: position,
+                    offset: offset,
+                    screenSize: screenSize,
+                    title: widget.title,
+                    titleAlignment: widget.titleAlignment,
+                    description: widget.description,
+                    descriptionAlignment: widget.descriptionAlignment,
+                    titleTextStyle: widget.titleTextStyle,
+                    descTextStyle: widget.descTextStyle,
+                    container: widget.container,
+                    tooltipBackgroundColor: widget.tooltipBackgroundColor,
+                    textColor: widget.textColor,
+                    showArrow: widget.showArrow,
+                    contentHeight: widget.height,
+                    contentWidth: widget.width,
+                    onTooltipTap: _getOnTooltipTap,
+                    tooltipPadding: widget.tooltipPadding,
+                    disableMovingAnimation: widget.disableMovingAnimation ??
+                        showCaseWidgetState.disableMovingAnimation,
+                    disableScaleAnimation: widget.disableScaleAnimation ??
+                        showCaseWidgetState.disableScaleAnimation,
+                    movingAnimationDuration: widget.movingAnimationDuration,
+                    tooltipBorderRadius: widget.tooltipBorderRadius,
+                    scaleAnimationDuration: widget.scaleAnimationDuration,
+                    scaleAnimationCurve: widget.scaleAnimationCurve,
+                    scaleAnimationAlignment: widget.scaleAnimationAlignment,
+                    isTooltipDismissed: _isTooltipDismissed,
+                    tooltipPosition: widget.tooltipPosition,
+                    titlePadding: widget.titlePadding,
+                    descriptionPadding: widget.descriptionPadding,
+                    actions: widget.actions,
+                    actionSettings: widget.actionSettings,
+                    actionButtonsPosition: widget.actionButtonsPosition,
+                  ),
+  ],
+              ],
+            ),
+          )
+        : const SizedBox.shrink();
   }
 }
 

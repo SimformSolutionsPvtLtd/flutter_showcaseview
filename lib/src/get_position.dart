@@ -95,6 +95,11 @@ class GetPosition {
     return bottomRight.dx + padding.right;
   }
 
+  double getHeightContainer() {
+    final box = key!.currentContext!.findRenderObject() as RenderBox;
+    return box.size.height;
+  }
+
   double getHeight() => getBottom() - getTop();
 
   double getWidth() => getRight() - getLeft();

@@ -20,11 +20,25 @@
  * SOFTWARE.
  */
 
-library showcaseview;
+import 'package:flutter/material.dart';
 
-export 'src/enum.dart';
-export 'src/showcase.dart';
-export 'src/showcase_widget.dart';
-export 'src/showcase_default_actions.dart';
-export 'src/actions_container_config.dart';
-export 'src/action_buttons_position.dart';
+/// This class is used to provide context of Showcase widget to Overlay so
+/// that we can access ShowcaseWidget in widget tree from overlay.
+class ShowcaseContextProvider extends InheritedWidget {
+  final BuildContext context;
+
+  const ShowcaseContextProvider({
+    Key? key,
+    required this.context,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  static ShowcaseContextProvider? of(BuildContext context) {
+    final result =
+        context.dependOnInheritedWidgetOfExactType<ShowcaseContextProvider>();
+    return result;
+  }
+
+  @override
+  bool updateShouldNotify(ShowcaseContextProvider old) => false;
+}

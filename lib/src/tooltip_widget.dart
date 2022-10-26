@@ -405,9 +405,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   Size _textSize(String text, TextStyle style) {
     final String longestLine = text.split('\n').reduce(
-          (String longest, String current) =>
-              longest.length > current.length ? longest : current,
-        );
+        (String value, String element) =>
+            value.length > element.length ? value : element);
     final textPainter = (TextPainter(
             text: TextSpan(text: longestLine, style: style),
             maxLines: 1,

@@ -39,6 +39,7 @@ class Showcase extends StatefulWidget {
 
   final Widget child;
   final String? title;
+  final TextAlign? titleAlignment;
   final String? description;
   final ShapeBorder? shapeBorder;
   final BorderRadius? radius;
@@ -63,6 +64,7 @@ class Showcase extends StatefulWidget {
   final VoidCallback? onTargetDoubleTap;
   final VoidCallback? onTargetLongPress;
   final BorderRadius? tipBorderRadius;
+  final TextAlign descriptionAlignment;
 
   /// if disableDefaultTargetGestures parameter is true
   /// onTargetClick, onTargetDoubleTap, onTargetLongPress and
@@ -82,7 +84,9 @@ class Showcase extends StatefulWidget {
     required this.key,
     required this.child,
     this.title,
+    this.titleAlignment = TextAlign.start,
     required this.description,
+    this.descriptionAlignment = TextAlign.start,
     this.shapeBorder,
     this.overlayColor = Colors.black45,
     this.overlayOpacity = 0.75,
@@ -130,7 +134,9 @@ class Showcase extends StatefulWidget {
     required this.height,
     required this.width,
     this.title,
+    this.titleAlignment = TextAlign.start,
     this.description,
+    this.descriptionAlignment = TextAlign.start,
     this.shapeBorder,
     this.overlayColor = Colors.black45,
     this.radius,
@@ -339,7 +345,9 @@ class _ShowcaseState extends State<Showcase> {
                   offset: offset,
                   screenSize: screenSize,
                   title: widget.title,
+                  titleAlignment: widget.titleAlignment,
                   description: widget.description,
+                  descriptionAlignment: widget.descriptionAlignment,
                   titleTextStyle: widget.titleTextStyle,
                   descTextStyle: widget.descTextStyle,
                   container: widget.container,

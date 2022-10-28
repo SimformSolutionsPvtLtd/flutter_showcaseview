@@ -64,6 +64,8 @@ Showcase(
   key: _two,
   title: 'Profile',
   description: 'Click here to go to your Profile',
+  titleAlignment: TextAlign.start,
+  descriptionAlignment: TextAlign.start,
   disableAnimation: true,
   shapeBorder: CircleBorder(),
   radius: BorderRadius.all(Radius.circular(40)),

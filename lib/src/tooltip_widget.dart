@@ -159,11 +159,19 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   double? _getRight() {
     if (widget.position != null) {
-      var rightPosition = widget.position!.getCenter() + (tooltipWidth * 0.5);
+      if (_getLeft() == null ||
+          ((_getLeft() ?? 0) + tooltipWidth) >
+              MediaQuery.of(context).size.width) {
+        final rightPosition =
+            widget.position!.getCenter() + (tooltipWidth * 0.5);
 
-      return (rightPosition + tooltipWidth) > MediaQuery.of(context).size.width
-          ? _kDefaultPaddingFromParent
-          : null;
+        return (rightPosition + tooltipWidth) >
+                MediaQuery.of(context).size.width
+            ? _kDefaultPaddingFromParent
+            : null;
+      } else {
+        null;
+      }
     }
     return null;
   }

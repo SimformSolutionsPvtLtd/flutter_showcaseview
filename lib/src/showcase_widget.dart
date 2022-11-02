@@ -26,15 +26,48 @@ import '../showcaseview.dart';
 
 class ShowCaseWidget extends StatefulWidget {
   final Builder builder;
+
+  /// Triggered when all the showcases are completed.
   final VoidCallback? onFinish;
+
+  /// Triggered every time on start of each showcase.
   final Function(int?, GlobalKey)? onStart;
+
+  /// Triggered every time on completion of each showcase
   final Function(int?, GlobalKey)? onComplete;
+
+  /// Whether all showcases will auto sequentially start
+  /// having time interval of [autoPlayDelay] .
+  ///
+  /// Default to `false`
   final bool autoPlay;
+
+  /// Visibility time of current showcase when [autoplay] sets to true.
+  ///
+  /// Default to [Duration(seconds: 3)]
   final Duration autoPlayDelay;
+
+  /// Whether blocking user interaction while [autoPlay] is enabled.
+  ///
+  /// Default to `false`
   final bool enableAutoPlayLock;
+
+  /// Whether disabling bouncing/moving animation for all tooltips
+  /// while showcasing
+  ///
+  /// Default to `false`
   final bool disableMovingAnimation;
+
+  /// Whether disabling initial scale animation for all the default tooltips
+  /// when showcase is started and completed
+  ///
+  /// Default to `false`
   final bool disableScaleAnimation;
+
+  /// Whether disabling barrier interaction
   final bool disableBarrierInteraction;
+
+  /// Provides time duration for auto scrolling when [enableAutoScroll] is true
   final Duration scrollDuration;
 
   /// Default overlay blur used by showcase. if [Showcase.blurValue]
@@ -42,6 +75,9 @@ class ShowCaseWidget extends StatefulWidget {
   ///
   /// Default value is 0.
   final double blurValue;
+
+  /// While target widget is out viewport then
+  /// whether enabling auto scroll so as to make the target widget visible.
   final bool enableAutoScroll;
 
   const ShowCaseWidget({
@@ -115,6 +151,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     disableBarrierInteraction = widget.disableBarrierInteraction;
   }
 
+  /// Starts Showcase view from the beginning of specified list of widget ids.
   void startShowCase(List<GlobalKey> widgetIds) {
     if (mounted) {
       setState(() {
@@ -125,8 +162,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     }
   }
 
-  void completed(GlobalKey? id) {
-    if (ids != null && ids![activeWidgetId!] == id && mounted) {
+  /// Completes showcase of given key and starts next one
+  /// otherwise will finish the entire showcase view
+  void completed(GlobalKey? key) {
+    if (ids != null && ids![activeWidgetId!] == key && mounted) {
       setState(() {
         _onComplete();
         activeWidgetId = activeWidgetId! + 1;
@@ -142,6 +181,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     }
   }
 
+  /// Completes current active showcase and starts next one
+  /// otherwise will finish the entire showcase view
   void next() {
     if (ids != null && mounted) {
       setState(() {
@@ -159,6 +200,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     }
   }
 
+  /// Completes current active showcase and starts previous one
+  /// otherwise will finish the entire showcase view
   void previous() {
     if (ids != null && ((activeWidgetId ?? 0) - 1) >= 0 && mounted) {
       setState(() {
@@ -175,6 +218,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     }
   }
 
+  /// Dismiss entire showcase view
   void dismiss() {
     if (mounted) {
       setState(_cleanupAfterSteps);

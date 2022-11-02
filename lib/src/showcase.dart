@@ -35,49 +35,166 @@ import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
   @override
+
+  /// A key that is unique across the entire app.
+  ///
+  /// This Key will be used to control state of individual showcase and also
+  /// used in [ShowCaseWidgetState.startShowCase] to define position of current
+  /// target widget while showcasing.
   final GlobalKey key;
 
+  /// Target widget that will be showcased or highlighted
   final Widget child;
+
+  /// Represents subject line of target widget
   final String? title;
+
+  /// Title alignment with in tooltip widget
+  ///
+  /// Defaults to [TextAlign.start]
   final TextAlign titleAlignment;
+
+  /// Represents summary description of target widget
   final String? description;
+
+  /// ShapeBorder of the highlighted box when target widget will be showcased.
+  ///
+  /// Note: If [targetBorderRadius] is specified, this parameter will be ignored.
+  ///
+  /// Default value is:
+  /// ```dart
+  /// RoundedRectangleBorder(
+  ///   borderRadius: BorderRadius.all(Radius.circular(8)),
+  /// ),
+  /// ```
   final ShapeBorder targetShapeBorder;
+
+  /// Radius of rectangle box while target widget is being showcased.
   final BorderRadius? targetBorderRadius;
+
+  /// TextStyle for default tooltip title
   final TextStyle? titleTextStyle;
+
+  /// TextStyle for default tooltip description
   final TextStyle? descTextStyle;
+
+  /// Empty space around tooltip content.
+  ///
+  /// Default Value for [Showcase] widget is:
+  /// ```dart
+  /// EdgeInsets.symmetric(vertical: 8, horizontal: 8)
+  /// ```
   final EdgeInsets tooltipPadding;
+
+  /// Background color of overlay during showcase.
+  ///
+  /// Default value is [Colors.black45]
   final Color overlayColor;
+
+  /// Opacity apply on [overlayColor] (which ranges from 0.0 to 1.0)
+  ///
+  /// Default to 0.75
   final double overlayOpacity;
+
+  /// Custom tooltip widget when [Showcase.withWidget] is used.
   final Widget? container;
+
+  /// Defines background color for tooltip widget.
+  ///
+  /// Default to [Colors.white]
   final Color tooltipBackgroundColor;
+
+  /// Defines text color of default tooltip when [titleTextStyle] and
+  /// [descTextStyle] is not provided.
+  ///
+  /// Default to [Colors.black]
   final Color textColor;
+
+  /// If [enableAutoScroll] is sets to `true`, this widget will be shown above
+  /// the overlay until the target widget is visible in the viewport.
   final Widget scrollLoadingWidget;
+
+  /// Whether the default tooltip will have arrow to point out the target widget.
+  ///
+  /// Default to `true`
   final bool showArrow;
+
+  /// Height of [container]
   final double? height;
+
+  /// Width of [container]
   final double? width;
+
+  /// The duration of time the bouncing animation of tooltip should last.
+  ///
+  /// Default to [Duration(milliseconds: 2000)]
   final Duration movingAnimationDuration;
+
+  /// Triggered when default tooltip is tapped
   final VoidCallback? onToolTipClick;
+
+  /// Triggered when showcased target widget is tapped
+  ///
+  /// Note: [disposeOnTap] is required if you're using [onTargetClick]
+  /// otherwise throws error
   final VoidCallback? onTargetClick;
+
+  /// Will dispose all showcases if tapped on target widget or tooltip
+  ///
+  /// Note: [onTargetClick] is required if you're using [disposeOnTap]
+  /// otherwise throws error
   final bool? disposeOnTap;
+
+  /// Whether tooltip should have bouncing animation while showcasing
+  ///
+  /// If null value is provided,
+  /// [ShowCaseWidget.disableAnimation] will be considered.
   final bool? disableMovingAnimation;
+
+  /// Whether disabling initial scale animation for default tooltip when
+  /// showcase is started and completed
+  ///
+  /// Default to `false`
   final bool? disableScaleAnimation;
+
+  /// Padding around target widget
+  ///
+  /// Default to [EdgeInsets.zero]
   final EdgeInsets targetPadding;
+
+  /// Triggered when target has been double tapped
   final VoidCallback? onTargetDoubleTap;
+
+  /// Triggered when target has been long pressed.
+  ///
+  /// Detected when a pointer has remained in contact with the screen at the same location for a long period of time.
   final VoidCallback? onTargetLongPress;
+
+  /// Border Radius of default tooltip
+  ///
+  /// Default to [BorderRadius.circular(8)]
   final BorderRadius? tooltipBorderRadius;
+
+  /// Description alignment with in tooltip widget
+  ///
+  /// Defaults to [TextAlign.start]
   final TextAlign descriptionAlignment;
 
-  /// if disableDefaultTargetGestures parameter is true
+  /// if `disableDefaultTargetGestures` parameter is true
   /// onTargetClick, onTargetDoubleTap, onTargetLongPress and
   /// disposeOnTap parameter will not work
   ///
+  /// Note: If `disableDefaultTargetGestures` is true then make sure to
+  /// dismiss current showcase with `ShowCaseWidget.of(context).dismiss()`
+  /// if you are navigating to other screen. This will be handled by default
+  /// if `disableDefaultTargetGestures` is set to false.
   final bool disableDefaultTargetGestures;
 
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
   ///
   /// If null value is provided,
-  /// [ShowCaseWidget.defaultBlurValue] will be considered.
+  /// [ShowCaseWidget.blurValue] will be considered.
   ///
   final double? blurValue;
 

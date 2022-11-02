@@ -32,7 +32,8 @@ class ShowCaseWidget extends StatefulWidget {
   final bool autoPlay;
   final Duration autoPlayDelay;
   final bool autoPlayLockEnable;
-  final bool disableAnimation;
+  final bool disableMovingAnimation;
+  final bool disableScaleAnimation;
   final bool disableBarrierInteraction;
   final Duration scrollDuration;
 
@@ -53,7 +54,8 @@ class ShowCaseWidget extends StatefulWidget {
     this.autoPlayLockEnable = false,
     this.blurValue = 0,
     this.scrollDuration = const Duration(milliseconds: 300),
-    this.disableAnimation = false,
+    this.disableMovingAnimation = false,
+    this.disableScaleAnimation = false,
     this.enableAutoScroll = false,
     this.disableBarrierInteraction = false,
   });
@@ -81,7 +83,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey>? ids;
   int? activeWidgetId;
   late bool autoPlay;
-  late bool disableAnimation;
+  late bool disableMovingAnimation;
+  late bool disableScaleAnimation;
   late Duration autoPlayDelay;
   late bool autoPlayLockEnable;
   late bool enableAutoScroll;
@@ -105,7 +108,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   void _init() {
     autoPlayDelay = widget.autoPlayDelay;
     autoPlay = widget.autoPlay;
-    disableAnimation = widget.disableAnimation;
+    disableMovingAnimation = widget.disableMovingAnimation;
+    disableScaleAnimation = widget.disableScaleAnimation;
     autoPlayLockEnable = widget.autoPlayLockEnable;
     enableAutoScroll = widget.enableAutoScroll;
     disableBarrierInteraction = widget.disableBarrierInteraction;

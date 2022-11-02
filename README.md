@@ -76,6 +76,9 @@ Showcase(
   tooltipColor: Colors.blueGrey,
   blurValue: 2,
   disableDefaultTargetGestures: true,
+  scaleAnimationCurve: Curves.easeIn,
+  scaleAnimationDuration: const Duration(milliseconds: 300),
+  scaleAnimationAlignment: Alignment.center,
   child: ...,
 ),
 ```

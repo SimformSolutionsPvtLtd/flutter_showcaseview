@@ -6,6 +6,7 @@
 - `pull_request_template.md.` file updated with proper document
 - `CONTRIBUTING.md` file updated with proper document
 - Fixed [#268](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/268) - Added smooth scale transition when tooltip appear on the screen
+- Updated parameter name of `ShowCaseWidget` and `Showcase` class
 
 ## [1.1.8] - August 5, 2022
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/237) - Feature added to enable/disable overlay click using `disableBarrierInteraction` parameters

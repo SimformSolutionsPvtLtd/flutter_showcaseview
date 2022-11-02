@@ -182,7 +182,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             ? _kDefaultPaddingFromParent
             : null;
       } else {
-        null;
+        return null;
       }
     }
     return null;

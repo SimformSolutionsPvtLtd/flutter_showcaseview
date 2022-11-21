@@ -24,6 +24,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'enum.dart';
 import 'get_position.dart';
 import 'measure_size.dart';
 
@@ -55,6 +56,7 @@ class ToolTipWidget extends StatefulWidget {
   final Curve scaleAnimationCurve;
   final Alignment? scaleAnimationAlignment;
   final bool isTooltipDismissed;
+  final TooltipPosition? tooltipPosition;
 
   const ToolTipWidget({
     Key? key,
@@ -83,6 +85,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.scaleAnimationCurve,
     this.scaleAnimationAlignment,
     this.isTooltipDismissed = false,
+    this.tooltipPosition,
   }) : super(key: key);
 
   @override
@@ -104,24 +107,21 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   double tooltipScreenEdgePadding = 20;
   double tooltipTextPadding = 15;
 
-  bool isCloseToTopOrBottom(Offset position) {
+  TooltipPosition findPositionForContent(Offset position) {
     var height = 120.0;
     height = widget.contentHeight ?? height;
     final bottomPosition =
         position.dy + ((widget.position?.getHeight() ?? 0) / 2);
     final topPosition = position.dy - ((widget.position?.getHeight() ?? 0) / 2);
-    return ((widget.screenSize?.height ?? MediaQuery.of(context).size.height) -
-                bottomPosition) <=
-            height &&
-        topPosition >= height;
-  }
-
-  String findPositionForContent(Offset position) {
-    if (isCloseToTopOrBottom(position)) {
-      return 'ABOVE';
-    } else {
-      return 'BELOW';
-    }
+    final hasSpaceInTop = topPosition >= height;
+    final hasSpaceInBottom =
+        ((widget.screenSize?.height ?? MediaQuery.of(context).size.height) -
+                bottomPosition) >=
+            height;
+    return widget.tooltipPosition ??
+        (hasSpaceInTop && !hasSpaceInBottom
+            ? TooltipPosition.top
+            : TooltipPosition.bottom);
   }
 
   void _getTooltipWidth() {
@@ -305,7 +305,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   Widget build(BuildContext context) {
     position = widget.offset;
     final contentOrientation = findPositionForContent(position!);
-    final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
+    final contentOffsetMultiplier =
+        contentOrientation == TooltipPosition.bottom ? 1.0 : -1.0;
     isArrowUp = contentOffsetMultiplier == 1.0;
 
     final contentY = isArrowUp

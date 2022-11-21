@@ -1,5 +1,6 @@
 ## [2.0.1] (Unreleased)
 - Add support for enabling/disabling showcase globally.
+- Added support of manual vertical tooltip position.
 
 ## [2.0.0+1] - November 2, 2022
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/261) - Feature added to enable/disable default gesture of ShowcaseView child using `disableDefaultTargetGestures` parameter
@@ -80,7 +81,6 @@
 - [Feature #63](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/63) method callback after individual showcase start and end
 - [Fix #57](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/57) Position of the Showcase.withWidget is different on iPhone 11
 - [Feature #49](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/49) Add autoplay tooltip on showcase view plugin.
-
 
 ## [0.1.5] - January 09, 2020
 

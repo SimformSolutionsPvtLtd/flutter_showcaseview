@@ -1,0 +1,1 @@
+enum TooltipPosition { top, bottom }

@@ -26,6 +26,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'enum.dart';
 import 'extension.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
@@ -221,6 +222,11 @@ class Showcase extends StatefulWidget {
   /// ```
   final Alignment? scaleAnimationAlignment;
 
+  /// Defines vertical position of tooltip respective to Target widget
+  ///
+  /// Defaults to adaptive into available space.
+  final TooltipPosition? tooltipPosition;
+
   const Showcase({
     required this.key,
     required this.child,
@@ -260,6 +266,7 @@ class Showcase extends StatefulWidget {
     this.scaleAnimationDuration = const Duration(milliseconds: 300),
     this.scaleAnimationCurve = Curves.easeIn,
     this.scaleAnimationAlignment,
+    this.tooltipPosition,
   })  : height = null,
         width = null,
         container = null,
@@ -301,6 +308,7 @@ class Showcase extends StatefulWidget {
     this.onTargetLongPress,
     this.onTargetDoubleTap,
     this.disableDefaultTargetGestures = false,
+    this.tooltipPosition,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -548,6 +556,7 @@ class _ShowcaseState extends State<Showcase> {
                   scaleAnimationCurve: widget.scaleAnimationCurve,
                   scaleAnimationAlignment: widget.scaleAnimationAlignment,
                   isTooltipDismissed: _isTooltipDismissed,
+                  tooltipPosition: widget.tooltipPosition,
                 ),
             ],
           )

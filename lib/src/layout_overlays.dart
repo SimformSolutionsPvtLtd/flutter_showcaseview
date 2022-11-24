@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 
 import 'extension.dart';
 import 'showcase_widget.dart';
+import 'get_position.dart';
 
 /// Displays an overlay Widget anchored directly above the center of this
 /// [AnchoredOverlay].
@@ -63,10 +64,11 @@ class AnchoredOverlay extends StatelessWidget {
             // To calculate the "anchor" point we grab the render box of
             // our parent Container and then we find the center of that box.
             final box = context.findRenderObject() as RenderBox;
+            final materialAppOffset = GetPosition.getMaterialAppOffset(context);
             final topLeft =
-                box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
+                box.size.topLeft(box.localToGlobal(-materialAppOffset));
             final bottomRight =
-                box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+                box.size.bottomRight(box.localToGlobal(-materialAppOffset));
             Rect anchorBounds;
             anchorBounds = (topLeft.dx.isNaN ||
                     topLeft.dy.isNaN ||

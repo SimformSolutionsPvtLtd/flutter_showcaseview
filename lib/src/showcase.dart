@@ -339,8 +339,6 @@ class _ShowcaseState extends State<Showcase> {
     position ??= GetPosition(
       key: widget.key,
       padding: widget.targetPadding,
-      screenWidth: MediaQuery.of(context).size.width,
-      screenHeight: MediaQuery.of(context).size.height,
     );
     showOverlay();
   }
@@ -386,12 +384,10 @@ class _ShowcaseState extends State<Showcase> {
   Widget build(BuildContext context) {
     return AnchoredOverlay(
       overlayBuilder: (context, rectBound, offset) {
-        final size = MediaQuery.of(context).size;
+        final size = GetPosition.getMaterialAppSize(context);
         position = GetPosition(
           key: widget.key,
           padding: widget.targetPadding,
-          screenWidth: size.width,
-          screenHeight: size.height,
         );
         return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
       },
@@ -480,8 +476,10 @@ class _ShowcaseState extends State<Showcase> {
                       ? BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
                           child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
+                            width:
+                                GetPosition.getMaterialAppSize(context).width,
+                            height:
+                                GetPosition.getMaterialAppSize(context).height,
                             decoration: BoxDecoration(
                               color: widget.overlayColor
                                   .withOpacity(widget.overlayOpacity),
@@ -489,8 +487,9 @@ class _ShowcaseState extends State<Showcase> {
                           ),
                         )
                       : Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
+                          width: GetPosition.getMaterialAppSize(context).width,
+                          height:
+                              GetPosition.getMaterialAppSize(context).height,
                           decoration: BoxDecoration(
                             color: widget.overlayColor
                                 .withOpacity(widget.overlayOpacity),

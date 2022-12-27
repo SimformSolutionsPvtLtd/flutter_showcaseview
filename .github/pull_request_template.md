@@ -10,7 +10,7 @@ changed.
 ## Checklist
 <!--
 Before you create this PR confirm that it meets all requirements listed below by checking the
-relevant checkboxes with `[x]`. If some checkbox is not applicable, mark it as `[-]`.
+relevant checkboxes with `[x]`. If some checkbox is not applicable, mark it as `[ ]`.
 -->
 
 - [ ] The title of my PR starts with a [Conventional Commit] prefix (`fix:`, `feat:`, `docs:` etc).

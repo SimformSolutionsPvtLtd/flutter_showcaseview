@@ -214,7 +214,7 @@ class Showcase extends StatefulWidget {
   ///
   /// Alignment will be pre-calculated but if pre-calculated
   /// alignment doesn't work then this parameter can be
-  /// used to customise the direct of the tooltip animation.
+  /// used to customise the direction of the tooltip animation.
   ///
   /// eg.
   /// ```dart
@@ -226,6 +226,12 @@ class Showcase extends StatefulWidget {
   ///
   /// Defaults to adaptive into available space.
   final TooltipPosition? tooltipPosition;
+
+  /// Provides padding around the title. Default padding is zero.
+  final EdgeInsets? titlePadding;
+
+  /// Provides padding around the description. Default padding is zero.
+  final EdgeInsets? descriptionPadding;
 
   const Showcase({
     required this.key,
@@ -267,6 +273,8 @@ class Showcase extends StatefulWidget {
     this.scaleAnimationCurve = Curves.easeIn,
     this.scaleAnimationAlignment,
     this.tooltipPosition,
+    this.titlePadding,
+    this.descriptionPadding,
   })  : height = null,
         width = null,
         container = null,
@@ -325,6 +333,8 @@ class Showcase extends StatefulWidget {
         textColor = Colors.black,
         tooltipBorderRadius = null,
         tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
+        titlePadding = null,
+        descriptionPadding = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1.");
 
@@ -557,6 +567,8 @@ class _ShowcaseState extends State<Showcase> {
                   scaleAnimationAlignment: widget.scaleAnimationAlignment,
                   isTooltipDismissed: _isTooltipDismissed,
                   tooltipPosition: widget.tooltipPosition,
+                  titlePadding: widget.titlePadding,
+                  descriptionPadding: widget.descriptionPadding,
                 ),
             ],
           )

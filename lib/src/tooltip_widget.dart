@@ -57,6 +57,8 @@ class ToolTipWidget extends StatefulWidget {
   final Alignment? scaleAnimationAlignment;
   final bool isTooltipDismissed;
   final TooltipPosition? tooltipPosition;
+  final EdgeInsets? titlePadding;
+  final EdgeInsets? descriptionPadding;
 
   const ToolTipWidget({
     Key? key,
@@ -86,6 +88,8 @@ class ToolTipWidget extends StatefulWidget {
     this.scaleAnimationAlignment,
     this.isTooltipDismissed = false,
     this.tooltipPosition,
+    this.titlePadding,
+    this.descriptionPadding,
   }) : super(key: key);
 
   @override
@@ -139,12 +143,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         ? 0
         : _textSize(widget.title!, titleStyle).width +
             widget.tooltipPadding!.right +
-            widget.tooltipPadding!.left;
+            widget.tooltipPadding!.left +
+            (widget.titlePadding?.right ?? 0) +
+            (widget.titlePadding?.left ?? 0);
     final descriptionLength = widget.description == null
         ? 0
         : (_textSize(widget.description!, descriptionStyle).width +
             widget.tooltipPadding!.right +
-            widget.tooltipPadding!.left);
+            widget.tooltipPadding!.left +
+            (widget.descriptionPadding?.right ?? 0) +
+            (widget.descriptionPadding?.left ?? 0));
     var maxTextWidth = max(titleLength, descriptionLength);
     if (maxTextWidth > widget.screenSize!.width - tooltipScreenEdgePadding) {
       tooltipWidth = widget.screenSize!.width - tooltipScreenEdgePadding;
@@ -407,44 +415,46 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                               padding: widget.tooltipPadding,
                               color: widget.tooltipBackgroundColor,
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: widget.title != null
+                                    ? CrossAxisAlignment.start
+                                    : CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment: widget.title != null
-                                        ? CrossAxisAlignment.start
-                                        : CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      widget.title != null
-                                          ? Text(
-                                              widget.title!,
-                                              textAlign: widget.titleAlignment,
-                                              style: widget.titleTextStyle ??
-                                                  Theme.of(context)
-                                                      .textTheme
-                                                      .headline6!
-                                                      .merge(
-                                                        TextStyle(
-                                                          color:
-                                                              widget.textColor,
-                                                        ),
+                                  widget.title != null
+                                      ? Padding(
+                                          padding: widget.titlePadding ??
+                                              EdgeInsets.zero,
+                                          child: Text(
+                                            widget.title!,
+                                            textAlign: widget.titleAlignment,
+                                            style: widget.titleTextStyle ??
+                                                Theme.of(context)
+                                                    .textTheme
+                                                    .headline6!
+                                                    .merge(
+                                                      TextStyle(
+                                                        color: widget.textColor,
                                                       ),
-                                            )
-                                          : const SizedBox(),
-                                      Text(
-                                        widget.description!,
-                                        textAlign: widget.descriptionAlignment,
-                                        style: widget.descTextStyle ??
-                                            Theme.of(context)
-                                                .textTheme
-                                                .subtitle2!
-                                                .merge(
-                                                  TextStyle(
-                                                    color: widget.textColor,
-                                                  ),
+                                                    ),
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                  Padding(
+                                    padding: widget.descriptionPadding ??
+                                        EdgeInsets.zero,
+                                    child: Text(
+                                      widget.description!,
+                                      textAlign: widget.descriptionAlignment,
+                                      style: widget.descTextStyle ??
+                                          Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!
+                                              .merge(
+                                                TextStyle(
+                                                  color: widget.textColor,
                                                 ),
-                                      ),
-                                    ],
-                                  )
+                                              ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

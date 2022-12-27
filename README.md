@@ -180,7 +180,8 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | onTargetDoubleTap            | VoidCallback?    |                                                  | Triggers when target widget is being double clicked                                                | ✅          | ✅                |
 | onTargetLongPress            | VoidCallback?    |                                                  | Triggers when target widget is being long pressed                                                  | ✅          | ✅                |
 | tooltipPosition              | TooltipPosition? |                                                  | Defines vertical position of tooltip respective to Target widget                                   | ✅          | ✅                |
-
+| titlePadding                 | EdgeInsets?      | EdgeInsets.zero                                  | Padding to title                                                                                   | ✅          |                   |
+| descriptionPadding           | EdgeInsets?      | EdgeInsets.zero                                  | Padding to description                                                                             | ✅          |                   |
 
 ## How to use
 

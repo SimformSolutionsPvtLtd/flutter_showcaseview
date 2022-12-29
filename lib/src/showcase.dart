@@ -328,6 +328,7 @@ class _ShowcaseState extends State<Showcase> {
   bool _showShowCase = false;
   bool _isScrollRunning = false;
   bool _isTooltipDismissed = false;
+  bool _enableShowcase = true;
   Timer? timer;
   GetPosition? position;
 
@@ -336,17 +337,20 @@ class _ShowcaseState extends State<Showcase> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    position ??= GetPosition(
-      key: widget.key,
-      padding: widget.targetPadding,
-      screenWidth: MediaQuery.of(context).size.width,
-      screenHeight: MediaQuery.of(context).size.height,
-    );
-    showOverlay();
+    _enableShowcase = ShowCaseWidget.of(context).enableShowcase;
+
+    if (_enableShowcase) {
+      position ??= GetPosition(
+        key: widget.key,
+        padding: widget.targetPadding,
+        screenWidth: MediaQuery.of(context).size.width,
+        screenHeight: MediaQuery.of(context).size.height,
+      );
+      showOverlay();
+    }
   }
 
   /// show overlay if there is any target widget
-  ///
   void showOverlay() {
     final activeStep = ShowCaseWidget.activeTargetWidget(context);
     setState(() {
@@ -384,20 +388,24 @@ class _ShowcaseState extends State<Showcase> {
 
   @override
   Widget build(BuildContext context) {
-    return AnchoredOverlay(
-      overlayBuilder: (context, rectBound, offset) {
-        final size = MediaQuery.of(context).size;
-        position = GetPosition(
-          key: widget.key,
-          padding: widget.targetPadding,
-          screenWidth: size.width,
-          screenHeight: size.height,
-        );
-        return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
-      },
-      showOverlay: true,
-      child: widget.child,
-    );
+    if (_enableShowcase) {
+      return AnchoredOverlay(
+        overlayBuilder: (context, rectBound, offset) {
+          final size = MediaQuery.of(context).size;
+          position = GetPosition(
+            key: widget.key,
+            padding: widget.targetPadding,
+            screenWidth: size.width,
+            screenHeight: size.height,
+          );
+          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
+        },
+        showOverlay: true,
+        child: widget.child,
+      );
+    } else {
+      return widget.child;
+    }
   }
 
   Future<void> _nextIfAny() async {

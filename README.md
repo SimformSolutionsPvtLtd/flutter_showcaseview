@@ -138,6 +138,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | onStart                   | Function(int?, GlobalKey)?  |                              | Triggered on start of each showcase.                                           |
 | onComplete                | Function(int?, GlobalKey)?  |                              | Triggered on completion of each showcase.                                      |
 | onFinish                  | VoidCallback?               |                              | Triggered when all the showcases are completed                                 |
+| enableShowcase            | bool                        | true                         | Enable or disable showcase globally.                                           |
 
 ## Properties of `Showcase` and `Showcase.withWidget`:
 
@@ -231,6 +232,7 @@ ShowCaseWidget(
      <td align="center"><a href="https://github.com/MehulKK"><img src="https://avatars.githubusercontent.com/u/60209725?s=100" width="100px;" alt=""/><br /><sub><b>Mehul Kabaria</b></sub></a></td>
      <td align="center"><a href="https://github.com/DhavalRKansara"><img src="https://avatars.githubusercontent.com/u/44993081?v=4" width="100px;" alt=""/><br /><sub><b>Dhaval Kansara</b></sub></a></td>
      <td align="center"><a href="https://github.com/HappyMakadiyaS"><img src="https://avatars.githubusercontent.com/u/97177197?v=4" width="100px;" alt=""/><br /><sub><b>Happy Makadiya</b></sub></a></td>
+     <td align="center"><a href="https://github.com/Ujas-Majithiya"><img src="https://avatars.githubusercontent.com/u/56400956?v=4" width="100px;" alt=""/><br /><sub><b>Ujas Majithiya</b></sub></a></td>
   </tr>
 </table>
 

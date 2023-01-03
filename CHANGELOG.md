@@ -1,5 +1,5 @@
-## [2.0.1] - December 30, 2022 (Unreleased)
-- Added PR title validation workflow
+## [2.0.1] (Unreleased)
+- Add support for enabling/disabling showcase globally.
 
 ## [2.0.0+1] - November 2, 2022
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/261) - Feature added to enable/disable default gesture of ShowcaseView child using `disableDefaultTargetGestures` parameter

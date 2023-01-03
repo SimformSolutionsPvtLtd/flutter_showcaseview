@@ -80,6 +80,9 @@ class ShowCaseWidget extends StatefulWidget {
   /// whether enabling auto scroll so as to make the target widget visible.
   final bool enableAutoScroll;
 
+  /// Enable/disable showcase globally. Enabled by default.
+  final bool enableShowcase;
+
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -94,6 +97,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.disableScaleAnimation = false,
     this.enableAutoScroll = false,
     this.disableBarrierInteraction = false,
+    this.enableShowcase = true,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -125,6 +129,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   late bool enableAutoPlayLock;
   late bool enableAutoScroll;
   late bool disableBarrierInteraction;
+  late bool enableShowcase;
 
   /// Returns value of  [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
@@ -149,10 +154,19 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     enableAutoPlayLock = widget.enableAutoPlayLock;
     enableAutoScroll = widget.enableAutoScroll;
     disableBarrierInteraction = widget.disableBarrierInteraction;
+    enableShowcase = widget.enableShowcase;
   }
 
   /// Starts Showcase view from the beginning of specified list of widget ids.
+  /// If this function is used when showcase has been disabled then it will
+  /// throw an exception.
   void startShowCase(List<GlobalKey> widgetIds) {
+    if (!enableShowcase) {
+      throw Exception(
+        "You are trying to start Showcase while it has been disabled with "
+        "`enableShowcase` parameter to false from ShowCaseWidget",
+      );
+    }
     if (mounted) {
       setState(() {
         ids = widgetIds;

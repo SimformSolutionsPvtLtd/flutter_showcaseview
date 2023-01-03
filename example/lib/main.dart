@@ -315,6 +315,7 @@ class _MailPageState extends State<MailPage> {
         child: Showcase(
             key: key,
             description: 'Tap to check mail',
+            tooltipPosition: TooltipPosition.top,
             disposeOnTap: true,
             onTargetClick: () {
               Navigator.push<void>(

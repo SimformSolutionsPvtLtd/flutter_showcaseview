@@ -59,6 +59,8 @@ class ToolTipWidget extends StatefulWidget {
   final TooltipPosition? tooltipPosition;
   final EdgeInsets? titlePadding;
   final EdgeInsets? descriptionPadding;
+  final double tooltipScreenEdgePadding;
+  final double tooltipTextPadding;
 
   const ToolTipWidget({
     Key? key,
@@ -90,6 +92,8 @@ class ToolTipWidget extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.tooltipScreenEdgePadding = 20,
+    this.tooltipTextPadding = 15,
   }) : super(key: key);
 
   @override
@@ -108,8 +112,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   late final Animation<double> _scaleAnimation;
 
   double tooltipWidth = 0;
-  double tooltipScreenEdgePadding = 20;
-  double tooltipTextPadding = 15;
 
   TooltipPosition findPositionForContent(Offset position) {
     var height = 120.0;
@@ -154,10 +156,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             (widget.descriptionPadding?.right ?? 0) +
             (widget.descriptionPadding?.left ?? 0));
     var maxTextWidth = max(titleLength, descriptionLength);
-    if (maxTextWidth > widget.screenSize!.width - tooltipScreenEdgePadding) {
-      tooltipWidth = widget.screenSize!.width - tooltipScreenEdgePadding;
+    if (maxTextWidth > widget.screenSize!.width - widget.tooltipScreenEdgePadding) {
+      tooltipWidth = widget.screenSize!.width - widget.tooltipScreenEdgePadding;
     } else {
-      tooltipWidth = maxTextWidth + tooltipTextPadding;
+      tooltipWidth = maxTextWidth + widget.tooltipTextPadding;
     }
   }
 

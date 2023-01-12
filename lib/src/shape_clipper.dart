@@ -64,10 +64,9 @@ class RRectClipper extends CustomClipper<ui.Path> {
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) =>
-      oldClipper is RRectClipper &&
-      (isCircle != oldClipper.isCircle ||
-          radius != oldClipper.radius ||
-          overlayPadding != oldClipper.overlayPadding ||
-          area != oldClipper.area);
+  bool shouldReclip(covariant RRectClipper oldClipper) =>
+      isCircle != oldClipper.isCircle ||
+      radius != oldClipper.radius ||
+      overlayPadding != oldClipper.overlayPadding ||
+      area != oldClipper.area;
 }

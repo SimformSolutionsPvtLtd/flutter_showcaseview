@@ -28,11 +28,12 @@ class GetPosition {
   final double? screenWidth;
   final double? screenHeight;
 
-  GetPosition(
-      {this.key,
-      this.padding = EdgeInsets.zero,
-      this.screenWidth,
-      this.screenHeight});
+  GetPosition({
+    this.key,
+    this.padding = EdgeInsets.zero,
+    this.screenWidth,
+    this.screenHeight,
+  });
 
   Rect getRect() {
     final box = key!.currentContext!.findRenderObject() as RenderBox;
@@ -94,15 +95,9 @@ class GetPosition {
     return bottomRight.dx + padding.right;
   }
 
-  double getHeight() {
-    return getBottom() - getTop();
-  }
+  double getHeight() => getBottom() - getTop();
 
-  double getWidth() {
-    return getRight() - getLeft();
-  }
+  double getWidth() => getRight() - getLeft();
 
-  double getCenter() {
-    return (getLeft() + getRight()) / 2;
-  }
+  double getCenter() => (getLeft() + getRight()) / 2;
 }

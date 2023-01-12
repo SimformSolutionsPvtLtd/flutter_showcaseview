@@ -25,6 +25,9 @@ import 'package:flutter/material.dart';
 import 'extension.dart';
 import 'showcase_widget.dart';
 
+typedef OverlayBuilderCallback = Widget Function(
+    BuildContext, Rect anchorBounds, Offset anchor);
+
 /// Displays an overlay Widget anchored directly above the center of this
 /// [AnchoredOverlay].
 ///
@@ -42,8 +45,7 @@ import 'showcase_widget.dart';
 ///
 class AnchoredOverlay extends StatelessWidget {
   final bool showOverlay;
-  final Widget Function(BuildContext, Rect anchorBounds, Offset anchor)?
-      overlayBuilder;
+  final OverlayBuilderCallback? overlayBuilder;
   final Widget? child;
 
   const AnchoredOverlay({
@@ -103,7 +105,7 @@ class AnchoredOverlay extends StatelessWidget {
 /// a better approach is found then feel free to use it.
 class OverlayBuilder extends StatefulWidget {
   final bool showOverlay;
-  final Widget Function(BuildContext)? overlayBuilder;
+  final WidgetBuilder? overlayBuilder;
   final Widget? child;
 
   const OverlayBuilder({

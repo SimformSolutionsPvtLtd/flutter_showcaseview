@@ -118,10 +118,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         position.dy + ((widget.position?.getHeight() ?? 0) / 2);
     final topPosition = position.dy - ((widget.position?.getHeight() ?? 0) / 2);
     final hasSpaceInTop = topPosition >= height;
+    final EdgeInsets viewInsets = EdgeInsets.fromWindowPadding(
+        WidgetsBinding.instance.window.viewInsets,
+        WidgetsBinding.instance.window.devicePixelRatio);
+    final double actualVisibleScreenHeight =
+        (widget.screenSize?.height ?? MediaQuery.of(context).size.height) -
+            viewInsets.bottom;
     final hasSpaceInBottom =
-        ((widget.screenSize?.height ?? MediaQuery.of(context).size.height) -
-                bottomPosition) >=
-            height;
+        (actualVisibleScreenHeight - bottomPosition) >= height;
     return widget.tooltipPosition ??
         (hasSpaceInTop && !hasSpaceInBottom
             ? TooltipPosition.top
@@ -132,12 +136,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final titleStyle = widget.titleTextStyle ??
         Theme.of(context)
             .textTheme
-            .headline6!
+            .titleLarge!
             .merge(TextStyle(color: widget.textColor));
     final descriptionStyle = widget.descTextStyle ??
         Theme.of(context)
             .textTheme
-            .subtitle2!
+            .titleSmall!
             .merge(TextStyle(color: widget.textColor));
     final titleLength = widget.title == null
         ? 0
@@ -424,7 +428,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                         style: widget.titleTextStyle ??
                                             Theme.of(context)
                                                 .textTheme
-                                                .headline6!
+                                                .titleLarge!
                                                 .merge(
                                                   TextStyle(
                                                     color: widget.textColor,
@@ -441,7 +445,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                       style: widget.descTextStyle ??
                                           Theme.of(context)
                                               .textTheme
-                                              .subtitle2!
+                                              .titleSmall!
                                               .merge(
                                                 TextStyle(
                                                   color: widget.textColor,

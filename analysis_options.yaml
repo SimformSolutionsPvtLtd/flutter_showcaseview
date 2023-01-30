@@ -8,6 +8,8 @@ analyzer:
     argument_type_not_assignable: error
     invalid_assignment: error
     dead_code: warning
+    overridden_fields: ignore
+    use_key_in_widget_constructors: ignore
 
 linter:
   rules:

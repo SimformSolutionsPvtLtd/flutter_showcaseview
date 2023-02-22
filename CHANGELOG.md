@@ -1,11 +1,11 @@
-## [2.0.1] (Unreleased)
-- Fixed [#318](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/318) - Add support for enable/disable showcase globally.
+## [2.0.1]
 - Feature [#306](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/306) - Added support of manual vertical tooltip position.
-- Added PR title validation workflow
+- Fixed [#318](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/318) - Add support for enable/disable showcase globally.
 - Fixed [#316](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/316) - Add title and description padding
 - Fixed [#330](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/330) - Overlay not showing in flutter 3.7.0
 - Fixed [#288](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/288) - Take in account view insets (such as keyboard)
 - Fixed [#334](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/334) - Move code line to resolve no context issue
+- Add PR title validation workflow
 
 ## [2.0.0+1]
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/261) - Feature added to enable/disable default gesture of ShowcaseView child using `disableDefaultTargetGestures` parameter

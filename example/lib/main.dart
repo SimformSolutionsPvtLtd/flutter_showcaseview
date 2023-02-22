@@ -184,7 +184,7 @@ class _MailPageState extends State<MailPage> {
                                       disableDefaultTargetGestures: true,
                                       child: GestureDetector(
                                         onTap: () =>
-                                            print('menu button clicked'),
+                                            debugPrint('menu button clicked'),
                                         child: Icon(
                                           Icons.menu,
                                           color: Theme.of(context).primaryColor,

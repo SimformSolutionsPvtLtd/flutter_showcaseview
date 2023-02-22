@@ -145,6 +145,9 @@ class Showcase extends StatefulWidget {
   /// otherwise throws error
   final bool? disposeOnTap;
 
+  /// Will dispose all showcases if drag on target widget or tooltip
+  final bool? disposeOnDrag;
+
   /// Whether tooltip should have bouncing animation while showcasing
   ///
   /// If null value is provided,
@@ -169,6 +172,9 @@ class Showcase extends StatefulWidget {
   ///
   /// Detected when a pointer has remained in contact with the screen at the same location for a long period of time.
   final VoidCallback? onTargetLongPress;
+
+  /// Triggered when target has been scrolled horizontal.
+  final Function(DragUpdateDetails details)? onTargetHorizontalDragUpdate;
 
   /// Border Radius of default tooltip
   ///
@@ -254,6 +260,7 @@ class Showcase extends StatefulWidget {
     this.showArrow = true,
     this.onTargetClick,
     this.disposeOnTap,
+    this.disposeOnDrag,
     this.movingAnimationDuration = const Duration(milliseconds: 2000),
     this.disableMovingAnimation,
     this.disableScaleAnimation,
@@ -265,6 +272,7 @@ class Showcase extends StatefulWidget {
     this.targetBorderRadius,
     this.onTargetLongPress,
     this.onTargetDoubleTap,
+    this.onTargetHorizontalDragUpdate,
     this.tooltipBorderRadius,
     this.disableDefaultTargetGestures = false,
     this.scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -301,12 +309,14 @@ class Showcase extends StatefulWidget {
         valueColor: AlwaysStoppedAnimation(Colors.white)),
     this.onTargetClick,
     this.disposeOnTap,
+    this.disposeOnDrag,
     this.movingAnimationDuration = const Duration(milliseconds: 2000),
     this.disableMovingAnimation,
     this.targetPadding = EdgeInsets.zero,
     this.blurValue,
     this.onTargetLongPress,
     this.onTargetDoubleTap,
+    this.onTargetHorizontalDragUpdate,
     this.disableDefaultTargetGestures = false,
     this.tooltipPosition,
   })  : showArrow = false,
@@ -426,6 +436,14 @@ class _ShowcaseState extends State<Showcase> {
     showCaseWidgetState.completed(widget.key);
   }
 
+  Future<void> _getOnTargetDrag(DragUpdateDetails details) async {
+    if (widget.disposeOnDrag == true) {
+      await _reverseAnimateTooltip();
+      showCaseWidgetState.dismiss();
+    }
+    widget.onTargetHorizontalDragUpdate?.call(details);
+  }
+
   Future<void> _getOnTargetTap() async {
     if (widget.disposeOnTap == true) {
       await _reverseAnimateTooltip();
@@ -518,6 +536,7 @@ class _ShowcaseState extends State<Showcase> {
             radius: widget.targetBorderRadius,
             onDoubleTap: widget.onTargetDoubleTap,
             onLongPress: widget.onTargetLongPress,
+            onHorizontalDragUpdate: _getOnTargetDrag,
             shapeBorder: widget.targetShapeBorder,
             disableDefaultChildGestures: widget.disableDefaultTargetGestures,
           ),
@@ -565,6 +584,7 @@ class _TargetWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onDoubleTap;
   final VoidCallback? onLongPress;
+  final Function(DragUpdateDetails details)? onHorizontalDragUpdate;
   final ShapeBorder? shapeBorder;
   final BorderRadius? radius;
   final bool disableDefaultChildGestures;
@@ -578,6 +598,7 @@ class _TargetWidget extends StatelessWidget {
     this.radius,
     this.onDoubleTap,
     this.onLongPress,
+    this.onHorizontalDragUpdate,
     this.disableDefaultChildGestures = false,
   }) : super(key: key);
 
@@ -594,6 +615,7 @@ class _TargetWidget extends StatelessWidget {
             onTap: onTap,
             onLongPress: onLongPress,
             onDoubleTap: onDoubleTap,
+            onHorizontalDragUpdate: onHorizontalDragUpdate,
             child: Container(
               height: size!.height + 16,
               width: size!.width + 16,

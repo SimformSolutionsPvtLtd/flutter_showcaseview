@@ -84,6 +84,7 @@ class ShowCaseWidget extends StatefulWidget {
   final bool enableShowcase;
 
   const ShowCaseWidget({
+    Key? key,
     required this.builder,
     this.onFinish,
     this.onStart,
@@ -98,7 +99,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.enableAutoScroll = false,
     this.disableBarrierInteraction = false,
     this.enableShowcase = true,
-  });
+  }) : super(key: key);
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
     return context

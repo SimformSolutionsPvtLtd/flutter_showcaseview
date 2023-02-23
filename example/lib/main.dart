@@ -190,6 +190,33 @@ class _MailPageState extends State<MailPage> {
                                           color: Theme.of(context).primaryColor,
                                         ),
                                       ),
+                                      actions: ShowCaseDefaultActions(
+                                        previous: ActionButtonConfig(
+                                          icon: Image.asset(
+                                            'assets/left.png',
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                            buttonTextVisible: false,
+                                        ),
+                                        next: ActionButtonConfig(
+                                          icon: Image.asset(
+                                            'assets/right.png',
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                          textDirection: TextDirection.rtl,
+                                          buttonTextVisible: false,
+                                        ),
+                                        stop: ActionButtonConfig(
+                                          icon: Image.asset(
+                                            'assets/close.png',
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                          buttonTextVisible: false,
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(
                                       width: 10,
@@ -233,6 +260,29 @@ class _MailPageState extends State<MailPage> {
                           color: Theme.of(context).primaryColor,
                         ),
                         child: Image.asset('assets/simform.png'),
+                      ),
+                      actions: ShowCaseDefaultActions(
+                        previous: ActionButtonConfig(
+                          icon: Image.asset(
+                            'assets/left.png',
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        next: ActionButtonConfig(
+                          icon: Image.asset(
+                            'assets/right.png',
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        stop: ActionButtonConfig(
+                          icon: Image.asset(
+                            'assets/close.png',
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        dividerThickness: 0.0,
+                        verticalDividerColor: Colors.transparent,
                       ),
                     ),
                     const SizedBox(
@@ -295,6 +345,35 @@ class _MailPageState extends State<MailPage> {
             Icons.add,
           ),
         ),
+        actions: Row(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                if (ShowCaseWidget.of(context).ids != null) {
+                  ShowCaseWidget.of(context).previous();
+                }
+              },
+              child: const Text('Prev'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (ShowCaseWidget.of(context).ids != null) {
+                  ShowCaseWidget.of(context).dismiss();
+                }
+              },
+              child: const Text('Stop'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (ShowCaseWidget.of(context).ids != null) {
+                  ShowCaseWidget.of(context).next();
+                }
+              },
+              child: const Text('Next'),
+            ),
+          ],
+        ),
+        actionButtonsPosition: const ActionButtonsPosition(),
       ),
     );
   }
@@ -313,27 +392,52 @@ class _MailPageState extends State<MailPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Showcase(
-            key: key,
-            description: 'Tap to check mail',
-            tooltipPosition: TooltipPosition.top,
-            disposeOnTap: true,
-            onTargetClick: () {
-              Navigator.push<void>(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (_) => const Detail(),
-                ),
-              ).then((_) {
-                setState(() {
-                  ShowCaseWidget.of(context).startShowCase([_four, _five]);
-                });
+          key: key,
+          description: 'Tap to check mail',
+          tooltipPosition: TooltipPosition.top,
+          disposeOnTap: true,
+          onTargetClick: () {
+            Navigator.push<void>(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const Detail(),
+              ),
+            ).then((_) {
+              setState(() {
+                ShowCaseWidget.of(context).startShowCase([_four, _five]);
               });
-            },
-            child: MailTile(
-              mail: mail,
-              showCaseKey: _four,
-              showCaseDetail: showCaseDetail,
-            )),
+            });
+          },
+          child: MailTile(
+            mail: mail,
+            showCaseKey: _four,
+            showCaseDetail: showCaseDetail,
+          ),
+          actions: ShowCaseDefaultActions(
+            previous: ActionButtonConfig(
+              icon: Image.asset(
+                'assets/left.png',
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            next: ActionButtonConfig(
+              icon: Image.asset(
+                'assets/right.png',
+                color: Theme.of(context).primaryColor,
+              ),
+              textDirection: TextDirection.rtl,
+            ),
+            stop: ActionButtonConfig(
+              icon: Image.asset(
+                'assets/close.png',
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            dividerThickness: 0.0,
+            verticalDividerColor: Colors.transparent,
+          ),
+          actionButtonsPosition: const ActionButtonsPosition(),
+        ),
       ),
     );
   }
@@ -449,6 +553,28 @@ class MailTile extends StatelessWidget {
                       ],
                     ),
                     child: const SAvatarExampleChild(),
+                    actions: ShowCaseDefaultActions(
+                      previous: ActionButtonConfig(
+                        icon: Image.asset(
+                          'assets/left.png',
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      next: ActionButtonConfig(
+                        icon: Image.asset(
+                          'assets/right.png',
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        textDirection: TextDirection.rtl,
+                      ),
+                      stop: ActionButtonConfig(
+                        icon: Image.asset(
+                          'assets/close.png',
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                    actionButtonsPosition: const ActionButtonsPosition(),
                   )
                 else
                   const SAvatarExampleChild(),

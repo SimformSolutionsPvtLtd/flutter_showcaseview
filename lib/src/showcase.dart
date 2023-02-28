@@ -584,12 +584,12 @@ class _TargetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: offset.dy,
-      left: offset.dx,
+      top: offset.dy - (size == null ? 0 : size!.height / 2),
+      left: offset.dx - (size == null ? 0 : size!.width / 2),
       child: IgnorePointer(
         ignoring: disableDefaultChildGestures,
         child: FractionalTranslation(
-          translation: const Offset(-0.5, -0.5),
+          translation: size == null ? const Offset(-0.5, -0.5) : Offset.zero,
           child: GestureDetector(
             onTap: onTap,
             onLongPress: onLongPress,

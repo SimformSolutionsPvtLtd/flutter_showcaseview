@@ -1,3 +1,6 @@
+## [2.0.2]
+- Fixed [#335](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/335) - Fixed flutter inspector makes screen grey
+
 ## [2.0.1]
 - Feature [#306](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/306) - Added support of manual vertical tooltip position.
 - Fixed [#318](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/318) - Add support for enable/disable showcase globally.

@@ -467,7 +467,7 @@ class _ShowcaseState extends State<Showcase> {
     // provided blur is less than 0.
     blur = kIsWeb && blur < 0 ? 0 : blur;
 
-    if (!_showShowCase) return const SizedBox.shrink();
+    if (!_showShowCase) return const Offstage();
 
     return Stack(
       children: [

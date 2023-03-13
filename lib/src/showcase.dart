@@ -62,6 +62,7 @@ class Showcase extends StatefulWidget {
   final EdgeInsets overlayPadding;
   final VoidCallback? onTargetDoubleTap;
   final VoidCallback? onTargetLongPress;
+  final Widget? customWidget;
 
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
@@ -98,6 +99,7 @@ class Showcase extends StatefulWidget {
     this.radius,
     this.onTargetLongPress,
     this.onTargetDoubleTap,
+    this.customWidget,
   })  : height = null,
         width = null,
         container = null,
@@ -141,6 +143,7 @@ class Showcase extends StatefulWidget {
     this.blurValue,
     this.onTargetLongPress,
     this.onTargetDoubleTap,
+    this.customWidget,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -276,7 +279,7 @@ class _ShowcaseState extends State<Showcase> {
                 child: ClipPath(
                   clipper: RRectClipper(
                     area: _isScrollRunning ? Rect.zero : rectBound,
-                    isCircle: widget.shapeBorder == CircleBorder(),
+                    isCircle: widget.shapeBorder == const CircleBorder(),
                     radius:
                         _isScrollRunning ? BorderRadius.zero : widget.radius,
                     overlayPadding: _isScrollRunning
@@ -337,9 +340,10 @@ class _ShowcaseState extends State<Showcase> {
                       showCaseWidgetState.disableAnimation,
                   animationDuration: widget.animationDuration,
                 ),
+              if (widget.customWidget != null) widget.customWidget!,
             ],
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 }
 
@@ -352,7 +356,7 @@ class _TargetWidget extends StatelessWidget {
   final ShapeBorder? shapeBorder;
   final BorderRadius? radius;
 
-  _TargetWidget({
+  const _TargetWidget({
     Key? key,
     required this.offset,
     this.size,
@@ -381,7 +385,7 @@ class _TargetWidget extends StatelessWidget {
               shape: radius != null
                   ? RoundedRectangleBorder(borderRadius: radius!)
                   : shapeBorder ??
-                      RoundedRectangleBorder(
+                      const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(8),
                         ),

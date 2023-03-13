@@ -181,9 +181,14 @@ class _MailPageState extends State<MailPage> {
                                     Showcase(
                                       key: _one,
                                       description: 'Tap to see menu options',
-                                      child: Icon(
-                                        Icons.menu,
-                                        color: Theme.of(context).primaryColor,
+                                      disableDefaultTargetGestures: true,
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            debugPrint('menu button clicked'),
+                                        child: Icon(
+                                          Icons.menu,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(
@@ -211,14 +216,14 @@ class _MailPageState extends State<MailPage> {
                       ),
                     ),
                     Showcase(
-                      overlayPadding: const EdgeInsets.all(5),
+                      targetPadding: const EdgeInsets.all(5),
                       key: _two,
                       title: 'Profile',
                       description:
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",
-                      showcaseBackgroundColor: Theme.of(context).primaryColor,
+                      tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
-                      shapeBorder: const CircleBorder(),
+                      targetShapeBorder: const CircleBorder(),
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         width: 45,
@@ -273,7 +278,7 @@ class _MailPageState extends State<MailPage> {
         key: _five,
         title: 'Compose Mail',
         description: 'Click here to compose mail',
-        shapeBorder: const CircleBorder(),
+        targetShapeBorder: const CircleBorder(),
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
@@ -310,6 +315,7 @@ class _MailPageState extends State<MailPage> {
         child: Showcase(
             key: key,
             description: 'Tap to check mail',
+            tooltipPosition: TooltipPosition.top,
             disposeOnTap: true,
             onTargetClick: () {
               Navigator.push<void>(
@@ -408,8 +414,10 @@ class MailTile extends StatelessWidget {
                     key: showCaseKey!,
                     height: 50,
                     width: 140,
-                    shapeBorder: const CircleBorder(),
-                    radius: const BorderRadius.all(Radius.circular(150)),
+                    targetShapeBorder: const CircleBorder(),
+                    targetBorderRadius: const BorderRadius.all(
+                      Radius.circular(150),
+                    ),
                     container: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[

@@ -169,6 +169,8 @@ class Showcase extends StatefulWidget {
   ///
   /// Detected when a pointer has remained in contact with the screen at the same location for a long period of time.
   final VoidCallback? onTargetLongPress;
+
+  /// For custom widget in Stack (example for skip button)
   final Widget? customWidget;
 
   /// Border Radius of default tooltip
@@ -556,6 +558,7 @@ class _ShowcaseState extends State<Showcase> {
             titlePadding: widget.titlePadding,
             descriptionPadding: widget.descriptionPadding,
           ),
+          if (widget.customWidget != null) widget.customWidget!
         ],
       ],
     );
@@ -598,20 +601,20 @@ class _TargetWidget extends StatelessWidget {
   }
 
   Widget targetWidgetContent() {
-    returnFractionalTranslation(
-        translation: const Offset(-0.5, -0.5),
-        child: GestureDetector(
-          onTap: onTap,
-          onLongPress: onLongPress,
-          onDoubleTap: onDoubleTap,
-          child: Container(
-            height: size!.height + 16,
-            width: size!.width + 16,
-            decoration: ShapeDecoration(
-              shape: radius != null
-                  ? RoundedRectangleBorder(borderRadius: radius!)
-                  : shapeBorder ??
-                      const RoundedRectangleBorder(
+    return FractionalTranslation(
+      translation: const Offset(-0.5, -0.5),
+      child: GestureDetector(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        onDoubleTap: onDoubleTap,
+        child: Container(
+          height: size!.height + 16,
+          width: size!.width + 16,
+          decoration: ShapeDecoration(
+            shape: radius != null
+                ? RoundedRectangleBorder(borderRadius: radius!)
+                : shapeBorder ??
+                    const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
           ),

@@ -480,7 +480,7 @@ class _ShowcaseState extends State<Showcase> {
           onTap: () {
             if (!showCaseWidgetState.disableBarrierInteraction) {
               if(widget.onBarrierTapped !=null){
-                widget.onBarrierTapped.call()
+                widget.onBarrierTapped!.call();
               }else{
                 _nextIfAny();
               }

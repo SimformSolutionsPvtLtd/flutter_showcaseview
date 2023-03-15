@@ -56,7 +56,7 @@ class ToolTipWidget extends StatefulWidget {
   final Curve scaleAnimationCurve;
   final Alignment? scaleAnimationAlignment;
   final bool isTooltipDismissed;
-  final TooltipPosition? tooltipPosition;
+  final ShowCaseTooltipPosition? tooltipPosition;
   final EdgeInsets? titlePadding;
   final EdgeInsets? descriptionPadding;
 

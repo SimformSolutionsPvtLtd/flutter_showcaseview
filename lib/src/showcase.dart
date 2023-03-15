@@ -231,6 +231,9 @@ class Showcase extends StatefulWidget {
 
   /// Provides padding around the description. Default padding is zero.
   final EdgeInsets? descriptionPadding;
+  
+  /// Triggered when barrier tapped
+  final VoidCallback? onBarrierTapped;
 
   const Showcase({
     required this.key,
@@ -273,6 +276,7 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.onBarrierTapped
   })  : height = null,
         width = null,
         container = null,
@@ -309,6 +313,7 @@ class Showcase extends StatefulWidget {
     this.onTargetDoubleTap,
     this.disableDefaultTargetGestures = false,
     this.tooltipPosition,
+    this.onBarrierTapped
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -474,7 +479,7 @@ class _ShowcaseState extends State<Showcase> {
         GestureDetector(
           onTap: () {
             if (!showCaseWidgetState.disableBarrierInteraction) {
-              _nextIfAny();
+                widget.onBarrierTapped?.call()??_nextIfAny();
             }
           },
           child: ClipPath(

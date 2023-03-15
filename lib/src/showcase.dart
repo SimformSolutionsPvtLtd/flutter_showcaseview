@@ -232,6 +232,12 @@ class Showcase extends StatefulWidget {
   /// Provides padding around the description. Default padding is zero.
   final EdgeInsets? descriptionPadding;
 
+  /// Provides text direction of tooltip title.
+  final TextDirection? titleTextDirection;
+
+  /// Provides text direction of tooltip description.
+  final TextDirection? descriptionTextDirection;
+
   const Showcase({
     required this.key,
     required this.child,
@@ -273,6 +279,8 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.titleTextDirection,
+    this.descriptionTextDirection,
   })  : height = null,
         width = null,
         container = null,
@@ -327,6 +335,8 @@ class Showcase extends StatefulWidget {
         tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
         titlePadding = null,
         descriptionPadding = null,
+        titleTextDirection = null,
+        descriptionTextDirection = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1.");
 
@@ -552,6 +562,8 @@ class _ShowcaseState extends State<Showcase> {
             tooltipPosition: widget.tooltipPosition,
             titlePadding: widget.titlePadding,
             descriptionPadding: widget.descriptionPadding,
+            titleTextDirection: widget.titleTextDirection,
+            descriptionTextDirection: widget.descriptionTextDirection,
           ),
         ],
       ],

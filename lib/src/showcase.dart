@@ -224,7 +224,7 @@ class Showcase extends StatefulWidget {
   /// Defines vertical position of tooltip respective to Target widget
   ///
   /// Defaults to adaptive into available space.
-  final TooltipPosition? tooltipPosition;
+  final ShowCaseTooltipPosition? tooltipPosition;
 
   /// Provides padding around the title. Default padding is zero.
   final EdgeInsets? titlePadding;

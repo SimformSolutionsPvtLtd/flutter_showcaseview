@@ -20,4 +20,4 @@
  * SOFTWARE.
  */
 
-enum TooltipPosition { top, bottom }
+enum ShowCaseTooltipPosition { top, bottom }

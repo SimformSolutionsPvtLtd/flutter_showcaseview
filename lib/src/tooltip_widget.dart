@@ -111,7 +111,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   double tooltipScreenEdgePadding = 20;
   double tooltipTextPadding = 15;
 
-  TooltipPosition findPositionForContent(Offset position) {
+  ShowCaseTooltipPosition findPositionForContent(Offset position) {
     var height = 120.0;
     height = widget.contentHeight ?? height;
     final bottomPosition =
@@ -128,8 +128,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         (actualVisibleScreenHeight - bottomPosition) >= height;
     return widget.tooltipPosition ??
         (hasSpaceInTop && !hasSpaceInBottom
-            ? TooltipPosition.top
-            : TooltipPosition.bottom);
+            ? ShowCaseTooltipPosition.top
+            : ShowCaseTooltipPosition.bottom);
   }
 
   void _getTooltipWidth() {
@@ -322,7 +322,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     position = widget.offset;
     final contentOrientation = findPositionForContent(position!);
     final contentOffsetMultiplier =
-        contentOrientation == TooltipPosition.bottom ? 1.0 : -1.0;
+        contentOrientation == ShowCaseTooltipPosition.bottom ? 1.0 : -1.0;
     isArrowUp = contentOffsetMultiplier == 1.0;
 
     final contentY = isArrowUp

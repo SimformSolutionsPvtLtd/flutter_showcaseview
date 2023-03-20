@@ -1,3 +1,5 @@
+##(Unreleased)
+- Feature [#279](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/279) - Add `onTargetWidgetSize` callback for getting size.
 ## [2.0.2]
 - Fixed [#335](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/335) - Fixed flutter inspector makes screen grey
 - Fixed [#346](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/346) - Dont respond to any clicks in target.

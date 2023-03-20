@@ -182,6 +182,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | tooltipPosition              | TooltipPosition? |                                                  | Defines vertical position of tooltip respective to Target widget                                   | ✅          | ✅                |
 | titlePadding                 | EdgeInsets?      | EdgeInsets.zero                                  | Padding to title                                                                                   | ✅          |                   |
 | descriptionPadding           | EdgeInsets?      | EdgeInsets.zero                                  | Padding to description                                                                             | ✅          |                   |
+| onTargetWidgetSize           | Function(Size)   |                                                  | Gives size of target widget                                                                        | ✅          | ✅                 |
 
 ## How to use
 

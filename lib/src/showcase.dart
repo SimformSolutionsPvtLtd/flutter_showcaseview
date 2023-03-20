@@ -232,6 +232,9 @@ class Showcase extends StatefulWidget {
   /// Provides padding around the description. Default padding is zero.
   final EdgeInsets? descriptionPadding;
 
+  /// Provides size of target widget.
+  final void Function(Size)? onTargetWidgetSize;
+
   const Showcase({
     required this.key,
     required this.child,
@@ -273,6 +276,7 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.onTargetWidgetSize,
   })  : height = null,
         width = null,
         container = null,
@@ -309,6 +313,7 @@ class Showcase extends StatefulWidget {
     this.onTargetDoubleTap,
     this.disableDefaultTargetGestures = false,
     this.tooltipPosition,
+    this.onTargetWidgetSize,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -468,7 +473,7 @@ class _ShowcaseState extends State<Showcase> {
     blur = kIsWeb && blur < 0 ? 0 : blur;
 
     if (!_showShowCase) return const Offstage();
-
+    widget.onTargetWidgetSize?.call(size);
     return Stack(
       children: [
         GestureDetector(

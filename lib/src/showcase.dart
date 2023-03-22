@@ -240,10 +240,10 @@ class Showcase extends StatefulWidget {
 
   const Showcase({
     required this.key,
+    required this.description,
     required this.child,
     this.title,
     this.titleAlignment = TextAlign.start,
-    required this.description,
     this.descriptionAlignment = TextAlign.start,
     this.targetShapeBorder = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -293,10 +293,10 @@ class Showcase extends StatefulWidget {
 
   const Showcase.withWidget({
     required this.key,
-    required this.child,
-    required this.container,
     required this.height,
     required this.width,
+    required this.container,
+    required this.child,
     this.targetShapeBorder = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8),

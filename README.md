@@ -182,6 +182,8 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | tooltipPosition              | TooltipPosition? |                                                  | Defines vertical position of tooltip respective to Target widget                                   | ✅          | ✅                |
 | titlePadding                 | EdgeInsets?      | EdgeInsets.zero                                  | Padding to title                                                                                   | ✅          |                   |
 | descriptionPadding           | EdgeInsets?      | EdgeInsets.zero                                  | Padding to description                                                                             | ✅          |                   |
+| titleTextDirection           | TextDirection?      |                                   | Give textDirection to title                                                                             | ✅          |                   |
+| descriptionTextDirection     | TextDirection?      |                                   | Give textDirection to description                                                                             | ✅          |                   |
 
 ## How to use
 

@@ -59,6 +59,8 @@ class ToolTipWidget extends StatefulWidget {
   final TooltipPosition? tooltipPosition;
   final EdgeInsets? titlePadding;
   final EdgeInsets? descriptionPadding;
+  final TextDirection? titleTextDirection;
+  final TextDirection? descriptionTextDirection;
 
   const ToolTipWidget({
     Key? key,
@@ -90,6 +92,8 @@ class ToolTipWidget extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.titleTextDirection,
+    this.descriptionTextDirection,
   }) : super(key: key);
 
   @override
@@ -425,6 +429,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                       child: Text(
                                         widget.title!,
                                         textAlign: widget.titleAlignment,
+                                        textDirection:
+                                            widget.titleTextDirection,
                                         style: widget.titleTextStyle ??
                                             Theme.of(context)
                                                 .textTheme
@@ -442,6 +448,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                     child: Text(
                                       widget.description!,
                                       textAlign: widget.descriptionAlignment,
+                                      textDirection:
+                                          widget.descriptionTextDirection,
                                       style: widget.descTextStyle ??
                                           Theme.of(context)
                                               .textTheme

@@ -1,8 +1,9 @@
-## (Unreleased)
+## [2.0.3] (Unreleased)
 - Feature [#148](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/148) Add feasibility to add `textDirection` of `title` and `description`.
+- Feature [#272](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/272) - Add barrier click callback.
 
 ## [2.0.2]
-- Fixed [#335](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/335) - Fixed flutter inspector makes screen grey
+- Fixed [#335](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/335) - Flutter inspector makes screen grey
 - Fixed [#346](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/346) - Dont respond to any clicks in target.
 
 ## [2.0.1]

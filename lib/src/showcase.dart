@@ -244,6 +244,12 @@ class Showcase extends StatefulWidget {
   /// Provides text direction of tooltip description.
   final TextDirection? descriptionTextDirection;
 
+  /// Provides a callback when barrier has been clicked.
+  ///
+  /// Note-: Even if barrier interactions are disabled, this handler
+  /// will still provide a callback.
+  final VoidCallback? onBarrierClick;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -289,6 +295,7 @@ class Showcase extends StatefulWidget {
     this.tooltipTextPadding = 15,
     this.titleTextDirection,
     this.descriptionTextDirection,
+    this.onBarrierClick,
   })  : height = null,
         width = null,
         container = null,
@@ -327,6 +334,7 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.tooltipScreenEdgePadding = 20,
     this.tooltipTextPadding = 15,
+    this.onBarrierClick,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -496,6 +504,7 @@ class _ShowcaseState extends State<Showcase> {
             if (!showCaseWidgetState.disableBarrierInteraction) {
               _nextIfAny();
             }
+            widget.onBarrierClick?.call();
           },
           child: ClipPath(
             clipper: RRectClipper(

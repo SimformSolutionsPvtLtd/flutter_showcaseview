@@ -23,36 +23,49 @@
 import 'package:flutter/material.dart';
 
 class GetPosition {
-  final GlobalKey? key;
-  final EdgeInsets padding;
-  final double? screenWidth;
-  final double? screenHeight;
-
   GetPosition({
-    this.key,
+    required this.key,
+    required this.screenWidth,
+    required this.screenHeight,
     this.padding = EdgeInsets.zero,
-    this.screenWidth,
-    this.screenHeight,
-  });
+  }) {
+    getRenderBox();
+  }
+
+  final GlobalKey key;
+  final EdgeInsets padding;
+  final double screenWidth;
+  final double screenHeight;
+
+  late final RenderBox? _box;
+  late final Offset? _boxOffset;
+
+  void getRenderBox() {
+    var renderBox = key.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox != null) {
+      _box = renderBox;
+      _boxOffset = _box?.localToGlobal(Offset.zero);
+    }
+  }
 
   Rect getRect() {
-    final box = key!.currentContext!.findRenderObject() as RenderBox;
-
-    var boxOffset = box.localToGlobal(const Offset(0.0, 0.0));
-    if (boxOffset.dx.isNaN || boxOffset.dy.isNaN) {
-      return const Rect.fromLTRB(0, 0, 0, 0);
+    if (_box == null ||
+        _boxOffset == null ||
+        (_boxOffset?.dx.isNaN ?? true) ||
+        (_boxOffset?.dy.isNaN ?? true)) {
+      return Rect.zero;
     }
-    final topLeft = box.size.topLeft(boxOffset);
-    final bottomRight = box.size.bottomRight(boxOffset);
+    final topLeft = _box!.size.topLeft(_boxOffset!);
+    final bottomRight = _box!.size.bottomRight(_boxOffset!);
 
     final rect = Rect.fromLTRB(
       topLeft.dx - padding.left < 0 ? 0 : topLeft.dx - padding.left,
       topLeft.dy - padding.top < 0 ? 0 : topLeft.dy - padding.top,
-      bottomRight.dx + padding.right > screenWidth!
-          ? screenWidth!
+      bottomRight.dx + padding.right > screenWidth
+          ? screenWidth
           : bottomRight.dx + padding.right,
-      bottomRight.dy + padding.bottom > screenHeight!
-          ? screenHeight!
+      bottomRight.dy + padding.bottom > screenHeight
+          ? screenHeight
           : bottomRight.dy + padding.bottom,
     );
     return rect;
@@ -60,38 +73,37 @@ class GetPosition {
 
   ///Get the bottom position of the widget
   double getBottom() {
-    final box = key!.currentContext!.findRenderObject() as RenderBox;
-    final boxOffset = box.localToGlobal(const Offset(0.0, 0.0));
-    if (boxOffset.dy.isNaN) return padding.bottom;
-    final bottomRight = box.size.bottomRight(boxOffset);
+    if (_box == null || _boxOffset == null || (_boxOffset?.dy.isNaN ?? true)) {
+      return padding.bottom;
+    }
+    final bottomRight = _box!.size.bottomRight(_boxOffset!);
     return bottomRight.dy + padding.bottom;
   }
 
   ///Get the top position of the widget
   double getTop() {
-    final box = key!.currentContext!.findRenderObject() as RenderBox;
-    final boxOffset = box.localToGlobal(const Offset(0.0, 0.0));
-    if (boxOffset.dy.isNaN) return 0 - padding.top;
-    final topLeft = box.size.topLeft(boxOffset);
+    if (_box == null || _boxOffset == null || (_boxOffset?.dy.isNaN ?? true)) {
+      return 0 - padding.top;
+    }
+    final topLeft = _box!.size.topLeft(_boxOffset!);
     return topLeft.dy - padding.top;
   }
 
   ///Get the left position of the widget
   double getLeft() {
-    final box = key!.currentContext!.findRenderObject() as RenderBox;
-    final boxOffset = box.localToGlobal(const Offset(0.0, 0.0));
-    if (boxOffset.dx.isNaN) return 0 - padding.left;
-    final topLeft = box.size.topLeft(boxOffset);
+    if (_box == null || _boxOffset == null || (_boxOffset?.dx.isNaN ?? true)) {
+      return 0 - padding.left;
+    }
+    final topLeft = _box!.size.topLeft(_boxOffset!);
     return topLeft.dx - padding.left;
   }
 
   ///Get the right position of the widget
   double getRight() {
-    final box = key!.currentContext!.findRenderObject() as RenderBox;
-    final boxOffset = box.localToGlobal(const Offset(0.0, 0.0));
-    if (boxOffset.dx.isNaN) return padding.right;
-    final bottomRight =
-        box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+    if (_box == null || _boxOffset == null || (_boxOffset?.dx.isNaN ?? true)) {
+      return padding.right;
+    }
+    final bottomRight = _box!.size.bottomRight(_boxOffset!);
     return bottomRight.dx + padding.right;
   }
 

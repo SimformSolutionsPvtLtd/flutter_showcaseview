@@ -247,6 +247,12 @@ class Showcase extends StatefulWidget {
   /// Disables barrier interaction for a particular showCase.
   final bool disableBarrierInteraction;
 
+  /// Defines motion range for tooltip slide animation.
+  /// Which is from 0 to [toolTipSlideEndDistance].
+  ///
+  /// Defaults to 7.
+  final double toolTipSlideEndDistance;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -292,6 +298,7 @@ class Showcase extends StatefulWidget {
     this.descriptionTextDirection,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
+    this.toolTipSlideEndDistance = 7,
   })  : height = null,
         width = null,
         container = null,
@@ -332,6 +339,7 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
+    this.toolTipSlideEndDistance = 7,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -621,6 +629,7 @@ class _ShowcaseState extends State<Showcase> {
             descriptionPadding: widget.descriptionPadding,
             titleTextDirection: widget.titleTextDirection,
             descriptionTextDirection: widget.descriptionTextDirection,
+            toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
           ),
         ],
       ],

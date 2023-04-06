@@ -1,4 +1,4 @@
-## [2.0.4] (Un-Released)
+## [2.0.4]
 - Improvement [#413](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/413) - Improved `Showcase` class
 - Fixed [#369](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/369) - Fixed ToolTip Slide Transition
 - Fixed [#388](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/388) - Can't scroll horizontal list with showcase
@@ -8,7 +8,6 @@
 - Improvement [#370](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/370) - Improved `GetPosition` class.
 - Feature [#387](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/387) - Provided barrier click disable functionality for a particular showcase.
 - Fixed [#383](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/383) - Targeted widget focusing issue when we applying size constraint on root widget(MaterialApp).
-- Improved internal `findRenderObject` calls.
 
 ## [2.0.3]
 - Feature [#148](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/148) - Add feasibility to add `textDirection` of `title` and `description`.

@@ -47,12 +47,14 @@ class AnchoredOverlay extends StatelessWidget {
   final bool showOverlay;
   final OverlayBuilderCallback? overlayBuilder;
   final Widget? child;
+  final double adjustWidthSize;
 
   const AnchoredOverlay({
     Key? key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,
+    this.adjustWidthSize = 0.0,
   }) : super(key: key);
 
   @override
@@ -66,7 +68,10 @@ class AnchoredOverlay extends StatelessWidget {
             // our parent Container and then we find the center of that box.
             final box = context.findRenderObject() as RenderBox;
             final offset = box.globalToLocal(Offset.zero);
-            final positiveOffset = Offset(offset.dx.abs(), offset.dy.abs());
+            final positiveOffset = Offset(
+              offset.dx.abs() - adjustWidthSize,
+              offset.dy.abs(),
+            );
             final topLeft = box.size.topLeft(
               positiveOffset,
             );

@@ -28,6 +28,7 @@ class GetPosition {
     required this.screenWidth,
     required this.screenHeight,
     this.padding = EdgeInsets.zero,
+    this.adjustWidthSize = 0.0,
   }) {
     getRenderBox();
   }
@@ -36,6 +37,7 @@ class GetPosition {
   final EdgeInsets padding;
   final double screenWidth;
   final double screenHeight;
+  final double adjustWidthSize;
 
   late final RenderBox? _box;
   late final Offset? _boxOffset;
@@ -46,7 +48,10 @@ class GetPosition {
       _box = renderBox;
       final offset = _box?.globalToLocal(Offset.zero);
       if (offset != null) {
-        _boxOffset = Offset(offset.dx.abs(), offset.dy.abs());
+        _boxOffset = Offset(
+          offset.dx.abs() - adjustWidthSize,
+          offset.dy.abs(),
+        );
       }
     }
   }

@@ -244,6 +244,10 @@ class Showcase extends StatefulWidget {
   /// will still provide a callback.
   final VoidCallback? onBarrierClick;
 
+  /// A way to adjust the target offset calculation
+  /// if you limited the app size
+  final double adjustWidthSize;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -288,6 +292,7 @@ class Showcase extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
+    this.adjustWidthSize = 0.0,
   })  : height = null,
         width = null,
         container = null,
@@ -325,6 +330,7 @@ class Showcase extends StatefulWidget {
     this.disableDefaultTargetGestures = false,
     this.tooltipPosition,
     this.onBarrierClick,
+    this.adjustWidthSize = 0.0,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -373,8 +379,17 @@ class _ShowcaseState extends State<Showcase> {
         padding: widget.targetPadding,
         screenWidth: MediaQuery.of(context).size.width,
         screenHeight: MediaQuery.of(context).size.height,
+        adjustWidthSize: widget.adjustWidthSize,
       );
       showOverlay();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant Showcase oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.adjustWidthSize != oldWidget.adjustWidthSize) {
+      setState(() {});
     }
   }
 
@@ -415,16 +430,23 @@ class _ShowcaseState extends State<Showcase> {
     if (_enableShowcase) {
       return AnchoredOverlay(
         overlayBuilder: (context, rectBound, offset) {
-          final size = MediaQuery.of(context).size;
+          final screenSize = MediaQuery.of(context).size;
           position = GetPosition(
             key: widget.key,
             padding: widget.targetPadding,
-            screenWidth: size.width,
-            screenHeight: size.height,
+            screenWidth: screenSize.width,
+            screenHeight: screenSize.height,
+            adjustWidthSize: widget.adjustWidthSize,
           );
-          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
+          return _buildOverlayOnTarget(
+            offset,
+            rectBound.size,
+            rectBound,
+            screenSize,
+          );
         },
         showOverlay: true,
+        adjustWidthSize: widget.adjustWidthSize,
         child: widget.child,
       );
     }
@@ -470,7 +492,7 @@ class _ShowcaseState extends State<Showcase> {
     _isTooltipDismissed = false;
   }
 
-  Widget buildOverlayOnTarget(
+  Widget _buildOverlayOnTarget(
     Offset offset,
     Size size,
     Rect rectBound,

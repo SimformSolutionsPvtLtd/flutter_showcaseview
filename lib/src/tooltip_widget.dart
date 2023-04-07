@@ -494,11 +494,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                 color: Colors.transparent,
                 child: GestureDetector(
                   onTap: widget.onTooltipTap,
-                  child: Container(
+                  child: Padding(
                     padding: EdgeInsets.only(
                       top: paddingTop,
                     ),
-                    color: Colors.transparent,
                     child: Center(
                       child: MeasureSize(
                         onSizeChange: onSizeChange,

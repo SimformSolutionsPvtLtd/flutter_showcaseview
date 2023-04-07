@@ -45,7 +45,6 @@ class GetPosition {
     if (renderBox != null) {
       _box = renderBox;
       final offset = _box?.globalToLocal(Offset.zero);
-      // final offset = _box?.localToGlobal(Offset.zero);
       if (offset != null) {
         _boxOffset = Offset(offset.dx.abs(), offset.dy.abs());
       }

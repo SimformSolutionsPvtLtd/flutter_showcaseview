@@ -32,7 +32,7 @@ const _kDefaultPaddingFromParent = 14.0;
 
 class ToolTipWidget extends StatefulWidget {
   final GetPosition? position;
-  final Offset? offset;
+  final Offset offset;
   final Size? screenSize;
   final String? title;
   final TextAlign? titleAlignment;
@@ -61,6 +61,7 @@ class ToolTipWidget extends StatefulWidget {
   final EdgeInsets? descriptionPadding;
   final TextDirection? titleTextDirection;
   final TextDirection? descriptionTextDirection;
+  final Widget Function(double)? containerBuilder;
 
   const ToolTipWidget({
     Key? key,
@@ -94,6 +95,7 @@ class ToolTipWidget extends StatefulWidget {
     this.descriptionPadding,
     this.titleTextDirection,
     this.descriptionTextDirection,
+    this.containerBuilder,
   }) : super(key: key);
 
   @override
@@ -207,7 +209,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   double _getSpace() {
     var space = widget.position!.getCenter() - (widget.contentWidth! / 2);
     if (space + widget.contentWidth! > widget.screenSize!.width) {
-      space = widget.screenSize!.width - widget.contentWidth! - 8;
+      space = (widget.screenSize!.width - widget.contentWidth!) / 2;
     } else if (space < (widget.contentWidth! / 2)) {
       space = 16;
     }
@@ -480,7 +482,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       children: <Widget>[
         Positioned(
           left: _getSpace(),
-          top: contentY + (widget.disableMovingAnimation? 10: -10),
+          top: contentY + (widget.disableMovingAnimation ? 10 : -10),
           child: FractionalTranslation(
             translation: Offset(0.0, contentFractionalOffset as double),
             child: SlideTransition(
@@ -501,7 +503,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                     child: Center(
                       child: MeasureSize(
                         onSizeChange: onSizeChange,
-                        child: widget.container,
+                        child: widget.containerBuilder?.call(
+                              ((widget.position?.getLeft() ?? 0.0) + 16),
+                            ) ??
+                            widget.container,
                       ),
                     ),
                   ),

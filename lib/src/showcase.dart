@@ -99,6 +99,11 @@ class Showcase extends StatefulWidget {
   /// Custom tooltip widget when [Showcase.withWidget] is used.
   final Widget? container;
 
+  /// Custom tooltip widget builder when [Showcase.withWidget] is used.
+  /// it provides the left offset position based on
+  /// the target center
+  final Widget Function(double)? containerBuilder;
+
   /// Defines background color for tooltip widget.
   ///
   /// Default to [Colors.white]
@@ -296,6 +301,7 @@ class Showcase extends StatefulWidget {
   })  : height = null,
         width = null,
         container = null,
+        containerBuilder = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(onTargetClick == null || disposeOnTap != null,
@@ -308,6 +314,7 @@ class Showcase extends StatefulWidget {
     required this.height,
     required this.width,
     required this.container,
+    this.containerBuilder,
     required this.child,
     this.targetShapeBorder = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(
@@ -573,6 +580,7 @@ class _ShowcaseState extends State<Showcase> {
             titleTextStyle: widget.titleTextStyle,
             descTextStyle: widget.descTextStyle,
             container: widget.container,
+            containerBuilder: widget.containerBuilder,
             tooltipBackgroundColor: widget.tooltipBackgroundColor,
             textColor: widget.textColor,
             showArrow: widget.showArrow,

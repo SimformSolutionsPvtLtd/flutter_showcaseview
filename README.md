@@ -179,9 +179,12 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | onTargetClick                | VoidCallback?    |                                                  | Triggers when target widget is being clicked                                                       | ✅          | ✅                |
 | onTargetDoubleTap            | VoidCallback?    |                                                  | Triggers when target widget is being double clicked                                                | ✅          | ✅                |
 | onTargetLongPress            | VoidCallback?    |                                                  | Triggers when target widget is being long pressed                                                  | ✅          | ✅                |
+| onBarrierClick               | VoidCallback?    |                                                  | Triggers when barrier is clicked                                                                   | ✅          | ✅                |
 | tooltipPosition              | TooltipPosition? |                                                  | Defines vertical position of tooltip respective to Target widget                                   | ✅          | ✅                |
 | titlePadding                 | EdgeInsets?      | EdgeInsets.zero                                  | Padding to title                                                                                   | ✅          |                   |
 | descriptionPadding           | EdgeInsets?      | EdgeInsets.zero                                  | Padding to description                                                                             | ✅          |                   |
+| titleTextDirection           | TextDirection?      |                                   | Give textDirection to title                                                                             | ✅          |                   |
+| descriptionTextDirection     | TextDirection?      |                                   | Give textDirection to description                                                                             | ✅          |                   |
 
 ## How to use
 

@@ -244,6 +244,7 @@ class Showcase extends StatefulWidget {
   /// will still provide a callback.
   final VoidCallback? onBarrierClick;
 
+  final bool disableAutoScroll;
   const Showcase({
     required this.key,
     required this.description,
@@ -288,6 +289,7 @@ class Showcase extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
+    this.disableAutoScroll = false
   })  : height = null,
         width = null,
         container = null,
@@ -325,6 +327,7 @@ class Showcase extends StatefulWidget {
     this.disableDefaultTargetGestures = false,
     this.tooltipPosition,
     this.onBarrierClick,
+    this.disableAutoScroll = false
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -386,7 +389,7 @@ class _ShowcaseState extends State<Showcase> {
     });
 
     if (activeStep == widget.key) {
-      if (showCaseWidgetState.enableAutoScroll) {
+      if (showCaseWidgetState.enableAutoScroll && !this.widget.disableAutoScroll) {
         _scrollIntoView();
       }
 

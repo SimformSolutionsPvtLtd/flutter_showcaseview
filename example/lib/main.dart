@@ -564,6 +564,33 @@ class MailTile extends StatelessWidget {
                     targetBorderRadius: const BorderRadius.all(
                       Radius.circular(150),
                     ),
+                    staticContainer: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Theme.of(context).primaryColor),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            child: const Text('Skip Showcase'),
+                            onPressed: () =>
+                                ShowCaseWidget.of(context).dismiss(),
+                          ),
+                        ),
+                      ],
+                    ),
                     container: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: const BoxDecoration(

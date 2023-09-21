@@ -41,6 +41,7 @@ class ToolTipWidget extends StatefulWidget {
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final Widget? container;
+  final Widget? staticContainer;
   final Color? tooltipBackgroundColor;
   final Color? textColor;
   final bool showArrow;
@@ -73,6 +74,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.titleTextStyle,
     required this.descTextStyle,
     required this.container,
+    required this.staticContainer,
     required this.tooltipBackgroundColor,
     required this.textColor,
     required this.showArrow,
@@ -476,6 +478,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         ),
       );
     }
+
     return Stack(
       children: <Widget>[
         Positioned(
@@ -511,6 +514,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             ),
           ),
         ),
+        if (widget.staticContainer != null) ...[widget.staticContainer!],
       ],
     );
   }

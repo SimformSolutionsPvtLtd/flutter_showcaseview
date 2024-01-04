@@ -360,12 +360,18 @@ class _ShowcaseState extends State<Showcase> {
   Timer? timer;
   GetPosition? position;
 
-  ShowCaseWidgetState get showCaseWidgetState => ShowCaseWidget.of(context);
+  ShowCaseWidgetState? get showCaseWidgetState {
+    try {
+      return ShowCaseWidget.of(context);
+    } catch (_) {
+      return null;
+    }
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _enableShowcase = showCaseWidgetState.enableShowcase;
+    _enableShowcase = showCaseWidgetState?.enableShowcase ?? false;
 
     if (_enableShowcase) {
       position ??= GetPosition(
@@ -386,14 +392,17 @@ class _ShowcaseState extends State<Showcase> {
     });
 
     if (activeStep == widget.key && mounted) {
-      if (showCaseWidgetState.enableAutoScroll) {
+      if (showCaseWidgetState?.enableAutoScroll ?? false) {
         _scrollIntoView();
       }
 
-      if (showCaseWidgetState.autoPlay) {
+      if (showCaseWidgetState?.autoPlay ?? false) {
         timer = Timer(
-            Duration(seconds: showCaseWidgetState.autoPlayDelay.inSeconds),
-            _nextIfAny);
+          Duration(
+            seconds: showCaseWidgetState?.autoPlayDelay.inSeconds ?? 0,
+          ),
+          _nextIfAny,
+        );
       }
     }
   }
@@ -402,9 +411,10 @@ class _ShowcaseState extends State<Showcase> {
     ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((timeStamp) async {
       if (mounted) {
         setState(() => _isScrollRunning = true);
+        if (showCaseWidgetState == null) return;
         await Scrollable.ensureVisible(
           widget.key.currentContext!,
-          duration: showCaseWidgetState.widget.scrollDuration,
+          duration: showCaseWidgetState?.widget.scrollDuration ?? Duration.zero,
           alignment: 0.5,
         );
         if (mounted) setState(() => _isScrollRunning = false);
@@ -436,7 +446,7 @@ class _ShowcaseState extends State<Showcase> {
   Future<void> _nextIfAny() async {
     if (mounted) {
       if (timer != null && timer!.isActive) {
-        if (showCaseWidgetState.enableAutoPlayLock) {
+        if (showCaseWidgetState?.enableAutoPlayLock ?? false) {
           return;
         }
         timer!.cancel();
@@ -444,14 +454,14 @@ class _ShowcaseState extends State<Showcase> {
         timer = null;
       }
       await _reverseAnimateTooltip();
-      if (mounted) showCaseWidgetState.completed(widget.key);
+      if (mounted) showCaseWidgetState?.completed(widget.key);
     }
   }
 
   Future<void> _getOnTargetTap() async {
     if (widget.disposeOnTap == true && mounted) {
       await _reverseAnimateTooltip();
-      showCaseWidgetState.dismiss();
+      showCaseWidgetState?.dismiss();
       widget.onTargetClick!();
     } else if (mounted) {
       (widget.onTargetClick ?? _nextIfAny).call();
@@ -461,7 +471,7 @@ class _ShowcaseState extends State<Showcase> {
   Future<void> _getOnTooltipTap() async {
     if (widget.disposeOnTap == true && mounted) {
       await _reverseAnimateTooltip();
-      showCaseWidgetState.dismiss();
+      showCaseWidgetState?.dismiss();
     }
     if (mounted) widget.onToolTipClick?.call();
   }
@@ -482,7 +492,7 @@ class _ShowcaseState extends State<Showcase> {
   ) {
     var blur = 0.0;
     if (_showShowCase && mounted) {
-      blur = widget.blurValue ?? showCaseWidgetState.blurValue;
+      blur = widget.blurValue ?? showCaseWidgetState?.blurValue ?? 0.0;
     }
 
     // Set blur to 0 if application is running on web and
@@ -495,7 +505,7 @@ class _ShowcaseState extends State<Showcase> {
       children: [
         GestureDetector(
           onTap: () {
-            if (!showCaseWidgetState.disableBarrierInteraction) {
+            if (!(showCaseWidgetState?.disableBarrierInteraction ?? false)) {
               _nextIfAny();
             }
             widget.onBarrierClick?.call();
@@ -563,9 +573,11 @@ class _ShowcaseState extends State<Showcase> {
             onTooltipTap: _getOnTooltipTap,
             tooltipPadding: widget.tooltipPadding,
             disableMovingAnimation: widget.disableMovingAnimation ??
-                showCaseWidgetState.disableMovingAnimation,
+                showCaseWidgetState?.disableMovingAnimation ??
+                false,
             disableScaleAnimation: widget.disableScaleAnimation ??
-                showCaseWidgetState.disableScaleAnimation,
+                showCaseWidgetState?.disableScaleAnimation ??
+                false,
             movingAnimationDuration: widget.movingAnimationDuration,
             tooltipBorderRadius: widget.tooltipBorderRadius,
             scaleAnimationDuration: widget.scaleAnimationDuration,

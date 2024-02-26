@@ -244,6 +244,9 @@ class Showcase extends StatefulWidget {
   /// will still provide a callback.
   final VoidCallback? onBarrierClick;
 
+  /// Disables barrier interaction for a particular showCase.
+  final bool disableBarrierInteraction;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -288,6 +291,7 @@ class Showcase extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
+    this.disableBarrierInteraction = false,
   })  : height = null,
         width = null,
         container = null,
@@ -296,7 +300,9 @@ class Showcase extends StatefulWidget {
         assert(onTargetClick == null || disposeOnTap != null,
             "disposeOnTap is required if you're using onTargetClick"),
         assert(disposeOnTap == null || onTargetClick != null,
-            "onTargetClick is required if you're using disposeOnTap");
+            "onTargetClick is required if you're using disposeOnTap"),
+        assert(onBarrierClick == null || disableBarrierInteraction == false,
+            "can't use onBarrierClick & disableBarrierInteraction property at same time");
 
   const Showcase.withWidget({
     required this.key,
@@ -325,6 +331,7 @@ class Showcase extends StatefulWidget {
     this.disableDefaultTargetGestures = false,
     this.tooltipPosition,
     this.onBarrierClick,
+    this.disableBarrierInteraction = false,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -346,7 +353,9 @@ class Showcase extends StatefulWidget {
         titleTextDirection = null,
         descriptionTextDirection = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1.");
+            "overlay opacity must be between 0 and 1."),
+        assert(onBarrierClick == null || disableBarrierInteraction == false,
+            "can't use onBarrierClick & disableBarrierInteraction property at same time");
 
   @override
   State<Showcase> createState() => _ShowcaseState();
@@ -491,7 +500,8 @@ class _ShowcaseState extends State<Showcase> {
       children: [
         GestureDetector(
           onTap: () {
-            if (!showCaseWidgetState.disableBarrierInteraction) {
+            if (!showCaseWidgetState.disableBarrierInteraction &&
+                !widget.disableBarrierInteraction) {
               _nextIfAny();
             }
             widget.onBarrierClick?.call();

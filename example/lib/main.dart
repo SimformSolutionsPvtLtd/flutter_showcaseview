@@ -181,7 +181,6 @@ class _MailPageState extends State<MailPage> {
                                     Showcase(
                                       key: _one,
                                       description: 'Tap to see menu options',
-                                      disableDefaultTargetGestures: true,
                                       onBarrierClick: () =>
                                           debugPrint('Barrier clicked'),
                                       child: GestureDetector(

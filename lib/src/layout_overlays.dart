@@ -47,12 +47,14 @@ class AnchoredOverlay extends StatelessWidget {
   final bool showOverlay;
   final OverlayBuilderCallback? overlayBuilder;
   final Widget? child;
+  final RenderObject? rootRenderObject;
 
   const AnchoredOverlay({
     Key? key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,
+    this.rootRenderObject,
   }) : super(key: key);
 
   @override
@@ -65,10 +67,19 @@ class AnchoredOverlay extends StatelessWidget {
             // To calculate the "anchor" point we grab the render box of
             // our parent Container and then we find the center of that box.
             final box = context.findRenderObject() as RenderBox;
-            final topLeft =
-                box.size.topLeft(box.localToGlobal(const Offset(0.0, 0.0)));
-            final bottomRight =
-                box.size.bottomRight(box.localToGlobal(const Offset(0.0, 0.0)));
+
+            final topLeft = box.size.topLeft(
+              box.localToGlobal(
+                const Offset(0.0, 0.0),
+                ancestor: rootRenderObject,
+              ),
+            );
+            final bottomRight = box.size.bottomRight(
+              box.localToGlobal(
+                const Offset(0.0, 0.0),
+                ancestor: rootRenderObject,
+              ),
+            );
             Rect anchorBounds;
             anchorBounds = (topLeft.dx.isNaN ||
                     topLeft.dy.isNaN ||

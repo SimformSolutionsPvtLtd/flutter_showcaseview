@@ -575,7 +575,7 @@ class _ShowcaseState extends State<Showcase> {
         if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
         if (!_isScrollRunning) ...[
           _TargetWidget(
-            offset: offset,
+            offset: rectBound.topLeft,
             size: size,
             onTap: _getOnTargetTap,
             radius: widget.targetBorderRadius,
@@ -626,20 +626,20 @@ class _ShowcaseState extends State<Showcase> {
 
 class _TargetWidget extends StatelessWidget {
   final Offset offset;
-  final Size? size;
+  final Size size;
   final VoidCallback? onTap;
   final VoidCallback? onDoubleTap;
   final VoidCallback? onLongPress;
-  final ShapeBorder? shapeBorder;
+  final ShapeBorder shapeBorder;
   final BorderRadius? radius;
   final bool disableDefaultChildGestures;
 
   const _TargetWidget({
     Key? key,
     required this.offset,
-    this.size,
+    required this.size,
+    required this.shapeBorder,
     this.onTap,
-    this.shapeBorder,
     this.radius,
     this.onDoubleTap,
     this.onLongPress,
@@ -649,10 +649,11 @@ class _TargetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
+      //TODO: Add target padding in major version upgrade
       top: offset.dy,
       left: offset.dx,
       child: disableDefaultChildGestures
-          ? IgnorePointer(
+          ? AbsorbPointer(
               child: targetWidgetContent(),
             )
           : targetWidgetContent(),
@@ -660,23 +661,19 @@ class _TargetWidget extends StatelessWidget {
   }
 
   Widget targetWidgetContent() {
-    return FractionalTranslation(
-      translation: const Offset(-0.5, -0.5),
-      child: GestureDetector(
-        onTap: onTap,
-        onLongPress: onLongPress,
-        onDoubleTap: onDoubleTap,
-        child: Container(
-          height: size!.height + 16,
-          width: size!.width + 16,
-          decoration: ShapeDecoration(
-            shape: radius != null
-                ? RoundedRectangleBorder(borderRadius: radius!)
-                : shapeBorder ??
-                    const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      onDoubleTap: onDoubleTap,
+      child: Container(
+        //TODO: Add target padding in major version upgrade and
+        // remove default 16 padding from this widget
+        height: size.height + 16,
+        width: size.width + 16,
+        decoration: ShapeDecoration(
+          shape: radius != null
+              ? RoundedRectangleBorder(borderRadius: radius!)
+              : shapeBorder,
         ),
       ),
     );

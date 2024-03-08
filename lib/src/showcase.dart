@@ -657,7 +657,7 @@ class _TargetWidget extends StatelessWidget {
       top: offset.dy,
       left: offset.dx,
       child: disableDefaultChildGestures
-          ? AbsorbPointer(
+          ? IgnorePointer(
               child: targetWidgetContent(),
             )
           : targetWidgetContent(),

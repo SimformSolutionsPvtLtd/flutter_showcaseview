@@ -145,6 +145,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   bool get enableShowcase => widget.enableShowcase;
 
+  bool get isShowCaseCompleted => ids == null && activeWidgetId == null;
+
   /// Returns value of [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
 

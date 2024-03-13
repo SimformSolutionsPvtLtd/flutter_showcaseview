@@ -9,7 +9,7 @@ A Flutter package allows you to Showcase/Highlight your widgets step by step.
 
 ## Preview
 
-![The example app running in Android](https://github.com/simformsolutions/flutter_showcaseview/blob/master/preview/showcaseview.gif)
+![The example app running in Android](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
 
 ## Migration guide for release 2.0.0
 Renamed properties/fields of widgets mentioned below in the table.

@@ -371,7 +371,7 @@ class _ShowcaseState extends State<Showcase> {
   Size? rootWidgetSize;
   RenderBox? rootRenderObject;
 
-  ShowCaseWidgetState get showCaseWidgetState => ShowCaseWidget.of(context);
+  late final showCaseWidgetState = ShowCaseWidget.of(context);
 
   @override
   void initState() {

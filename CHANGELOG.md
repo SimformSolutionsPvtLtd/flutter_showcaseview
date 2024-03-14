@@ -1,4 +1,10 @@
 ## [2.0.4] (Un-Released)
+- Fixed [#369](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/369) - Fixed ToolTip Slide Transition
+- Fixed [#388](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/388) - Can't scroll horizontal list with showcase
+- Fixed [#366](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/366) - Null check operator used on a null value
+- Fixed [#389](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/389) - Ignore extra `_nextIfAny` function operations
+- Fixed [#409](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/409) - Fixed target hit area.
+- Improvement [#370](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/370) - Improved `GetPosition` class.
 - Feature [#387](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/387) - Provided barrier click disable functionality for a particular showcase.
 - Fixed [#383](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/383) - Targeted widget focusing issue when we applying size constraint on root widget(MaterialApp).
 - Improved internal `findRenderObject` calls.

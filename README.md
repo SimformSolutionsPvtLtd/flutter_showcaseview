@@ -124,21 +124,22 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 
 ## Properties of `ShowCaseWidget`:
 
-| Name                      | Type                        | Default Behaviour            | Description                                                                    |
-|---------------------------|-----------------------------|------------------------------|--------------------------------------------------------------------------------|
-| blurValue                 | double                      | 0                            | Provides blur effect on overlay                                                |
-| autoPlay                  | bool                        | false                        | Automatically display Next showcase                                            |
-| autoPlayDelay             | Duration                    | Duration(milliseconds: 2000) | Visibility time of showcase when `autoplay` is enabled                         |
-| enableAutoPlayLock        | bool                        | false                        | Block the user interaction on overlay when autoPlay is enabled.                |
-| enableAutoScroll          | bool                        | false                        | Allows to auto scroll to next showcase so as to make the given target visible. |
-| scrollDuration            | Duration                    | Duration(milliseconds: 300)  | Time duration for auto scrolling                                               |
-| disableBarrierInteraction | bool                        | false                        | Disable barrier interaction                                                    |
-| disableScaleAnimation     | bool                        | false                        | Disable scale transition for all showcases                                     |
-| disableMovingAnimation    | bool                        | false                        | Disable bouncing/moving transition for all showcases                           |
-| onStart                   | Function(int?, GlobalKey)?  |                              | Triggered on start of each showcase.                                           |
-| onComplete                | Function(int?, GlobalKey)?  |                              | Triggered on completion of each showcase.                                      |
-| onFinish                  | VoidCallback?               |                              | Triggered when all the showcases are completed                                 |
-| enableShowcase            | bool                        | true                         | Enable or disable showcase globally.                                           |
+| Name                      | Type                       | Default Behaviour            | Description                                                                    |
+|---------------------------|----------------------------|------------------------------|--------------------------------------------------------------------------------|
+| builder                   | Builder                    |                              |                                                                                |
+| blurValue                 | double                     | 0                            | Provides blur effect on overlay                                                |
+| autoPlay                  | bool                       | false                        | Automatically display Next showcase                                            |
+| autoPlayDelay             | Duration                   | Duration(milliseconds: 2000) | Visibility time of showcase when `autoplay` is enabled                         |
+| enableAutoPlayLock        | bool                       | false                        | Block the user interaction on overlay when autoPlay is enabled.                |
+| enableAutoScroll          | bool                       | false                        | Allows to auto scroll to next showcase so as to make the given target visible. |
+| scrollDuration            | Duration                   | Duration(milliseconds: 300)  | Time duration for auto scrolling                                               |
+| disableBarrierInteraction | bool                       | false                        | Disable barrier interaction                                                    |
+| disableScaleAnimation     | bool                       | false                        | Disable scale transition for all showcases                                     |
+| disableMovingAnimation    | bool                       | false                        | Disable bouncing/moving transition for all showcases                           |
+| onStart                   | Function(int?, GlobalKey)? |                              | Triggered on start of each showcase.                                           |
+| onComplete                | Function(int?, GlobalKey)? |                              | Triggered on completion of each showcase.                                      |
+| onFinish                  | VoidCallback?              |                              | Triggered when all the showcases are completed                                 |
+| enableShowcase            | bool                       | true                         | Enable or disable showcase globally.                                           |
 
 ## Properties of `Showcase` and `Showcase.withWidget`:
 
@@ -181,10 +182,13 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | onTargetLongPress            | VoidCallback?    |                                                  | Triggers when target widget is being long pressed                                                  | ✅          | ✅                |
 | onBarrierClick               | VoidCallback?    |                                                  | Triggers when barrier is clicked                                                                   | ✅          | ✅                |
 | tooltipPosition              | TooltipPosition? |                                                  | Defines vertical position of tooltip respective to Target widget                                   | ✅          | ✅                |
-| titlePadding                 | EdgeInsets?      | EdgeInsets.zero                                  | Padding to title                                                                                   | ✅          |                   |
-| descriptionPadding           | EdgeInsets?      | EdgeInsets.zero                                  | Padding to description                                                                             | ✅          |                   |
-| titleTextDirection           | TextDirection?      |                                   | Give textDirection to title                                                                             | ✅          |                   |
-| descriptionTextDirection     | TextDirection?      |                                   | Give textDirection to description                                                                             | ✅          |                   |
+| titlePadding                 | EdgeInsets?      | EdgeInsets.zero                                  | Padding to title                                                                                   | ✅          |                  |
+| descriptionPadding           | EdgeInsets?      | EdgeInsets.zero                                  | Padding to description                                                                             | ✅          |                  |
+| titleTextDirection           | TextDirection?   |                                                  | Give textDirection to title                                                                        | ✅          |                  |
+| descriptionTextDirection     | TextDirection?   |                                                  | Give textDirection to description                                                                  | ✅          |                  |
+| descriptionTextDirection     | TextDirection?   |                                                  | Give textDirection to description                                                                  | ✅          |                  |
+| disableBarrierInteraction    | bool             | false                                            | Disables barrier interaction for a particular showCase                                             | ✅          | ✅                |
+| toolTipSlideEndDistance      | double           | 7                                                | Defines motion range for tooltip slide animation                                                   | ✅          | ✅                |
 
 ## How to use
 

@@ -32,6 +32,7 @@ import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
 import 'showcase_widget.dart';
+import 'tooltip_action.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
@@ -232,6 +233,11 @@ class Showcase extends StatefulWidget {
   /// Provides padding around the description. Default padding is zero.
   final EdgeInsets? descriptionPadding;
 
+  /// Provides tooTip action widgets at bottom in tool tip.
+  ///
+  /// one can use [DefaultToolTipActionWidget] class to use default action
+  final Widget? toolTipAction;
+
   /// Provides text direction of tooltip title.
   final TextDirection? titleTextDirection;
 
@@ -288,6 +294,7 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.toolTipAction,
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
@@ -350,6 +357,7 @@ class Showcase extends StatefulWidget {
         tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
         titlePadding = null,
         descriptionPadding = null,
+        toolTipAction = null,
         titleTextDirection = null,
         descriptionTextDirection = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -619,6 +627,7 @@ class _ShowcaseState extends State<Showcase> {
             tooltipPosition: widget.tooltipPosition,
             titlePadding: widget.titlePadding,
             descriptionPadding: widget.descriptionPadding,
+            toolTipAction: widget.toolTipAction,
             titleTextDirection: widget.titleTextDirection,
             descriptionTextDirection: widget.descriptionTextDirection,
           ),

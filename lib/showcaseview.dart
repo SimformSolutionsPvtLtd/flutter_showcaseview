@@ -25,3 +25,4 @@ library showcaseview;
 export 'src/enum.dart';
 export 'src/showcase.dart';
 export 'src/showcase_widget.dart';
+export 'src/tooltip_action.dart';

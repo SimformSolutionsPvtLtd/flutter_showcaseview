@@ -14,7 +14,6 @@ analyzer:
 linter:
   rules:
     public_member_api_docs: false
-    avoid_returning_null: false
     avoid_print: true
     avoid_empty_else: true
     annotate_overrides: true

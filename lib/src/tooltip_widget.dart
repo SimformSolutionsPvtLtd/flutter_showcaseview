@@ -29,6 +29,7 @@ import 'enum.dart';
 import 'extension.dart';
 import 'get_position.dart';
 import 'measure_size.dart';
+import 'widget/tooltip_slide_transition.dart';
 
 const _kDefaultPaddingFromParent = 14.0;
 
@@ -63,6 +64,7 @@ class ToolTipWidget extends StatefulWidget {
   final EdgeInsets? descriptionPadding;
   final TextDirection? titleTextDirection;
   final TextDirection? descriptionTextDirection;
+  final double toolTipSlideEndDistance;
 
   const ToolTipWidget({
     Key? key,
@@ -96,6 +98,7 @@ class ToolTipWidget extends StatefulWidget {
     this.descriptionPadding,
     this.titleTextDirection,
     this.descriptionTextDirection,
+    this.toolTipSlideEndDistance = 7,
   }) : super(key: key);
 
   @override
@@ -349,7 +352,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         contentOffsetMultiplier.clamp(-1.0, 0.0);
 
     var paddingTop = isArrowUp ? 22.0 : 0.0;
-    var paddingBottom = isArrowUp ? 0.0 : 27.0;
+    var paddingBottom = isArrowUp ? 0.0 : 22.0;
 
     if (!widget.showArrow) {
       paddingTop = 10;
@@ -377,10 +380,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
               ),
           child: FractionalTranslation(
             translation: Offset(0.0, contentFractionalOffset as double),
-            child: SlideTransition(
+            child: ToolTipSlideTransition(
               position: Tween<Offset>(
-                begin: Offset(0.0, contentFractionalOffset / 10),
-                end: const Offset(0.0, 0.100),
+                begin: Offset.zero,
+                end: Offset(
+                  0,
+                  widget.toolTipSlideEndDistance * contentOffsetMultiplier,
+                ),
               ).animate(_movingAnimation),
               child: Material(
                 type: MaterialType.transparency,
@@ -492,15 +498,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       children: <Widget>[
         Positioned(
           left: _getSpace(),
-          top: contentY - 10,
+          top: contentY - (10 * contentOffsetMultiplier),
           child: FractionalTranslation(
             translation: Offset(0.0, contentFractionalOffset as double),
-            child: SlideTransition(
+            child: ToolTipSlideTransition(
               position: Tween<Offset>(
-                begin: Offset(0.0, contentFractionalOffset / 10),
-                end: !widget.showArrow && !isArrowUp
-                    ? const Offset(0.0, 0.0)
-                    : const Offset(0.0, 0.100),
+                begin: Offset.zero,
+                end: Offset(
+                  0,
+                  widget.toolTipSlideEndDistance * contentOffsetMultiplier,
+                ),
               ).animate(_movingAnimation),
               child: Material(
                 color: Colors.transparent,
@@ -509,6 +516,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                   child: Container(
                     padding: EdgeInsets.only(
                       top: paddingTop,
+                      bottom: paddingBottom,
                     ),
                     color: Colors.transparent,
                     child: Center(

@@ -545,6 +545,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,
+      // TODO: replace this once we support sdk v3.12.
+      // ignore: deprecated_member_use
       textScaleFactor: MediaQuery.of(context).textScaleFactor,
       textDirection: TextDirection.ltr,
     )..layout();

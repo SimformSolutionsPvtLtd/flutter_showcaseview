@@ -131,7 +131,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     // ignore: deprecated_member_use
     final EdgeInsets viewInsets = EdgeInsets.fromWindowPadding(
       // ignore: deprecated_member_use
-      ambiguate(WidgetsBinding.instance)?.window.viewInsets ?? ViewPadding.zero,
+      ambiguate(WidgetsBinding.instance)?.window.viewInsets ??
+          // ignore: deprecated_member_use
+          WindowPadding.zero,
       // ignore: deprecated_member_use
       ambiguate(WidgetsBinding.instance)?.window.devicePixelRatio ?? 1,
     );
@@ -149,12 +151,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final titleStyle = widget.titleTextStyle ??
         Theme.of(context)
             .textTheme
-            .titleLarge!
+            // TODO: replace once support for 3.1.0 and above is provided.
+            // ignore: deprecated_member_use
+            .headline6!
             .merge(TextStyle(color: widget.textColor));
     final descriptionStyle = widget.descTextStyle ??
         Theme.of(context)
             .textTheme
-            .titleSmall!
+            // TODO: replace once support for 3.1.0 and above is provided.
+            // ignore: deprecated_member_use
+            .subtitle2!
             .merge(TextStyle(color: widget.textColor));
     final titleLength = widget.title == null
         ? 0
@@ -257,7 +263,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) {
       if (widget.container != null &&
           _customContainerKey.currentContext != null &&
           _customContainerKey.currentContext?.size != null) {
@@ -452,7 +458,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                         style: widget.titleTextStyle ??
                                             Theme.of(context)
                                                 .textTheme
-                                                .titleLarge!
+                                                // TODO: replace once support for 3.1.0 and above is provided.
+                                                // ignore: deprecated_member_use
+                                                .headline6!
                                                 .merge(
                                                   TextStyle(
                                                     color: widget.textColor,
@@ -471,7 +479,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                       style: widget.descTextStyle ??
                                           Theme.of(context)
                                               .textTheme
-                                              .titleSmall!
+                                              // TODO: replace once support for 3.1.0 and above is provided.
+                                              // ignore: deprecated_member_use
+                                              .subtitle2!
                                               .merge(
                                                 TextStyle(
                                                   color: widget.textColor,

@@ -472,6 +472,7 @@ class _ShowcaseState extends State<Showcase> {
 
   void recalculateRootWidgetSize() {
     ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) {
+      if (!mounted) return;
       final rootWidget =
           context.findRootAncestorStateOfType<State<WidgetsApp>>();
       rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;

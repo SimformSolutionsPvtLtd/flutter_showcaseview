@@ -65,6 +65,7 @@ class ToolTipWidget extends StatefulWidget {
   final TextDirection? titleTextDirection;
   final TextDirection? descriptionTextDirection;
   final double toolTipSlideEndDistance;
+  final Offset tooltipOffset;
 
   const ToolTipWidget({
     Key? key,
@@ -91,6 +92,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.tooltipBorderRadius,
     required this.scaleAnimationDuration,
     required this.scaleAnimationCurve,
+    required this.tooltipOffset,
     this.scaleAnimationAlignment,
     this.isTooltipDismissed = false,
     this.tooltipPosition,
@@ -186,9 +188,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       if ((leftPositionValue + width) > widget.screenSize.width) {
         return null;
       } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
-        return _kDefaultPaddingFromParent;
+        return _kDefaultPaddingFromParent + widget.tooltipOffset.dx;
       } else {
-        return leftPositionValue;
+        return leftPositionValue + widget.tooltipOffset.dx;
       }
     }
     return null;
@@ -204,7 +206,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         final rightPosition = widget.position!.getCenter() + (width * 0.5);
 
         return (rightPosition + width) > widget.screenSize.width
-            ? _kDefaultPaddingFromParent
+            ? _kDefaultPaddingFromParent + widget.tooltipOffset.dx
             : null;
       } else {
         return null;
@@ -220,7 +222,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     } else if (space < (widget.contentWidth! / 2)) {
       space = 16;
     }
-    return space;
+    return space + widget.tooltipOffset.dx;
   }
 
   double _getAlignmentX() {
@@ -344,9 +346,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         contentOrientation == TooltipPosition.bottom ? 1.0 : -1.0;
     isArrowUp = contentOffsetMultiplier == 1.0;
 
-    final contentY = isArrowUp
+    var contentY = isArrowUp
         ? widget.position!.getBottom() + (contentOffsetMultiplier * 3)
         : widget.position!.getTop() + (contentOffsetMultiplier * 3);
+
+    contentY = contentY + widget.tooltipOffset.dy;
 
     final num contentFractionalOffset =
         contentOffsetMultiplier.clamp(-1.0, 0.0);
@@ -556,14 +560,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   double? _getArrowLeft(double arrowWidth) {
     final left = _getLeft();
     if (left == null) return null;
-    return (widget.position!.getCenter() - (arrowWidth / 2) - left);
+    return (widget.position!.getCenter() - (arrowWidth / 2) - left) +
+        widget.tooltipOffset.dx;
   }
 
   double? _getArrowRight(double arrowWidth) {
     if (_getLeft() != null) return null;
     return (widget.screenSize.width - widget.position!.getCenter()) -
         (_getRight() ?? 0) -
-        (arrowWidth / 2);
+        (arrowWidth / 2) +
+        widget.tooltipOffset.dx;
   }
 }
 

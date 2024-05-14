@@ -1,3 +1,6 @@
+## [2.1.2]
+- Fixed removed deprecated text style after Flutter 3.22 for headline6 to headlineMedium and subtitle2 to labelMedium
+
 ## [2.1.1]
 - Fixed [#425](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/425) - Unhandled breaking change in v2.1.0
 - Fixed [#428](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/428) - _ShowcaseState.recalculateRootWidgetSize null value

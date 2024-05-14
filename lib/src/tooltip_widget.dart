@@ -151,16 +151,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final titleStyle = widget.titleTextStyle ??
         Theme.of(context)
             .textTheme
-            // TODO: replace once support for 3.1.0 and above is provided.
-            // ignore: deprecated_member_use
-            .headline6!
+            .headlineMedium!
             .merge(TextStyle(color: widget.textColor));
     final descriptionStyle = widget.descTextStyle ??
         Theme.of(context)
             .textTheme
-            // TODO: replace once support for 3.1.0 and above is provided.
-            // ignore: deprecated_member_use
-            .subtitle2!
+            .labelMedium!
             .merge(TextStyle(color: widget.textColor));
     final titleLength = widget.title == null
         ? 0
@@ -458,9 +454,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                         style: widget.titleTextStyle ??
                                             Theme.of(context)
                                                 .textTheme
-                                                // TODO: replace once support for 3.1.0 and above is provided.
-                                                // ignore: deprecated_member_use
-                                                .headline6!
+                                                .headlineMedium!
                                                 .merge(
                                                   TextStyle(
                                                     color: widget.textColor,
@@ -479,9 +473,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                       style: widget.descTextStyle ??
                                           Theme.of(context)
                                               .textTheme
-                                              // TODO: replace once support for 3.1.0 and above is provided.
-                                              // ignore: deprecated_member_use
-                                              .subtitle2!
+                                              .labelMedium!
                                               .merge(
                                                 TextStyle(
                                                   color: widget.textColor,

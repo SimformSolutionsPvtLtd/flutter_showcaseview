@@ -460,7 +460,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                                 .textTheme
                                                 // TODO: replace once support for 3.1.0 and above is provided.
                                                 // ignore: deprecated_member_use
-                                                .headline6!
+                                                .titleLarge!
                                                 .merge(
                                                   TextStyle(
                                                     color: widget.textColor,

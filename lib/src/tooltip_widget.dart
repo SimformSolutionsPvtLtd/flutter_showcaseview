@@ -153,14 +153,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             .textTheme
             // TODO: replace once support for 3.1.0 and above is provided.
             // ignore: deprecated_member_use
-            .headline6!
+            .titleLarge!
             .merge(TextStyle(color: widget.textColor));
     final descriptionStyle = widget.descTextStyle ??
         Theme.of(context)
             .textTheme
             // TODO: replace once support for 3.1.0 and above is provided.
             // ignore: deprecated_member_use
-            .subtitle2!
+            .titleMedium!
             .merge(TextStyle(color: widget.textColor));
     final titleLength = widget.title == null
         ? 0
@@ -460,7 +460,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                                 .textTheme
                                                 // TODO: replace once support for 3.1.0 and above is provided.
                                                 // ignore: deprecated_member_use
-                                                .headline6!
+                                                .titleLarge!
                                                 .merge(
                                                   TextStyle(
                                                     color: widget.textColor,
@@ -481,7 +481,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                               .textTheme
                                               // TODO: replace once support for 3.1.0 and above is provided.
                                               // ignore: deprecated_member_use
-                                              .subtitle2!
+                                              .titleMedium!
                                               .merge(
                                                 TextStyle(
                                                   color: widget.textColor,

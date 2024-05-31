@@ -11,6 +11,25 @@ A Flutter package allows you to Showcase/Highlight your widgets step by step.
 
 ![The example app running in Android](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
 
+## Migration guide for release 3.0.0
+Removed builder widget from `ShowCaseWidget` and replaced it with builder function
+
+Before:
+```dart
+ShowCaseWidget(
+  builder: Builder(
+    builder : (context) => Somewidget()
+  ),
+),
+```
+
+After:
+```dart
+ShowCaseWidget(
+  builder : (context) => Somewidget(),
+),
+```
+
 ## Migration guide for release 2.0.0
 Renamed properties/fields of widgets mentioned below in the table.
 

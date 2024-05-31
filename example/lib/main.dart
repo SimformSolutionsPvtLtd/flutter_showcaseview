@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
             }
           },
           blurValue: 1,
-          builder: Builder(builder: (context) => const MailPage()),
           autoPlayDelay: const Duration(seconds: 3),
+          builder: (context) => const MailPage(),
         ),
       ),
     );

@@ -596,6 +596,7 @@ class _ShowcaseState extends State<Showcase> {
             onLongPress: widget.onTargetLongPress,
             shapeBorder: widget.targetShapeBorder,
             disableDefaultChildGestures: widget.disableDefaultTargetGestures,
+            targetPadding: widget.targetPadding,
           ),
           ToolTipWidget(
             position: position,
@@ -647,11 +648,13 @@ class _TargetWidget extends StatelessWidget {
   final ShapeBorder shapeBorder;
   final BorderRadius? radius;
   final bool disableDefaultChildGestures;
+  final EdgeInsets targetPadding;
 
   const _TargetWidget({
     required this.offset,
     required this.size,
     required this.shapeBorder,
+    required this.targetPadding,
     this.onTap,
     this.radius,
     this.onDoubleTap,
@@ -662,9 +665,8 @@ class _TargetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      //TODO: Add target padding in major version upgrade
-      top: offset.dy,
-      left: offset.dx,
+      top: offset.dy - targetPadding.top,
+      left: offset.dx - targetPadding.left,
       child: disableDefaultChildGestures
           ? IgnorePointer(
               child: targetWidgetContent(),
@@ -678,11 +680,11 @@ class _TargetWidget extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       onDoubleTap: onDoubleTap,
+      behavior: HitTestBehavior.translucent,
       child: Container(
-        //TODO: Add target padding in major version upgrade and
-        // remove default 16 padding from this widget
-        height: size.height + 16,
-        width: size.width + 16,
+        height: size.height,
+        width: size.width,
+        margin: targetPadding,
         decoration: ShapeDecoration(
           shape: radius != null
               ? RoundedRectangleBorder(borderRadius: radius!)

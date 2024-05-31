@@ -30,35 +30,6 @@ ShowCaseWidget(
 ),
 ```
 
-## Migration guide for release 2.0.0
-Renamed properties/fields of widgets mentioned below in the table.
-
-| Before                  | After                    |
-|-------------------------|--------------------------|
-| autoPlayLockEnable      | enableAutoPlayLock       |
-| shapeBorder             | targetShapeBorder        |
-| showcaseBackgroundColor | tooltipBackgroundColor   |
-| contentPadding          | tooltipPadding           |
-| overlayPadding          | targetPadding            |
-| radius                  | targetBorderRadius       |
-| tipBorderRadius         | tooltipBorderRadius      |
-| disableAnimation        | disableMovingAnimation   |
-| animationDuration       | movingAnimationDuration  |
-
-Removed unused parameter of `Showcase.withWidget()` mentioned below:
-<ul>
-<li>title</li>
-<li>titleAlignment</li>
-<li>titleTextStyle</li>
-<li>description</li>
-<li>descriptionAlignment</li>
-<li>descTextStyle</li>
-<li>textColor</li>
-<li>tooltipBackgroundColor</li>
-<li>tooltipBorderRadius</li>
-<li>tooltipPadding</li>
-</ul>
-
 ## Installing
 
 1.  Add dependency to `pubspec.yaml`

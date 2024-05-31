@@ -22,7 +22,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'extension.dart';
 import 'showcase_widget.dart';
 
 typedef OverlayBuilderCallback = Widget Function(
@@ -50,12 +49,12 @@ class AnchoredOverlay extends StatelessWidget {
   final RenderObject? rootRenderObject;
 
   const AnchoredOverlay({
-    Key? key,
+    super.key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,
     this.rootRenderObject,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -120,11 +119,11 @@ class OverlayBuilder extends StatefulWidget {
   final Widget? child;
 
   const OverlayBuilder({
-    Key? key,
+    super.key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<OverlayBuilder> createState() => _OverlayBuilderState();
@@ -138,23 +137,20 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
     super.initState();
 
     if (widget.showOverlay) {
-      ambiguate(WidgetsBinding.instance)
-          ?.addPostFrameCallback((_) => showOverlay());
+      WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
     }
   }
 
   @override
   void didUpdateWidget(OverlayBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    ambiguate(WidgetsBinding.instance)
-        ?.addPostFrameCallback((_) => syncWidgetAndOverlay());
+    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    ambiguate(WidgetsBinding.instance)
-        ?.addPostFrameCallback((_) => syncWidgetAndOverlay());
+    WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
   }
 
   @override
@@ -208,8 +204,8 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   }
 
   void buildOverlay() async {
-    ambiguate(WidgetsBinding.instance)
-        ?.addPostFrameCallback((_) => _overlayEntry?.markNeedsBuild());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _overlayEntry?.markNeedsBuild());
   }
 
   @override

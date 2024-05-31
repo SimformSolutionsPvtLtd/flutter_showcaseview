@@ -21,12 +21,10 @@
  */
 
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
 import 'enum.dart';
-import 'extension.dart';
 import 'get_position.dart';
 import 'measure_size.dart';
 import 'widget/tooltip_slide_transition.dart';
@@ -67,7 +65,7 @@ class ToolTipWidget extends StatefulWidget {
   final double toolTipSlideEndDistance;
 
   const ToolTipWidget({
-    Key? key,
+    super.key,
     required this.position,
     required this.offset,
     required this.screenSize,
@@ -99,7 +97,7 @@ class ToolTipWidget extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.toolTipSlideEndDistance = 7,
-  }) : super(key: key);
+  });
 
   @override
   State<ToolTipWidget> createState() => _ToolTipWidgetState();
@@ -131,11 +129,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     // ignore: deprecated_member_use
     final EdgeInsets viewInsets = EdgeInsets.fromWindowPadding(
       // ignore: deprecated_member_use
-      ambiguate(WidgetsBinding.instance)?.window.viewInsets ??
-          // ignore: deprecated_member_use
-          WindowPadding.zero,
+      WidgetsBinding.instance.window.viewInsets,
       // ignore: deprecated_member_use
-      ambiguate(WidgetsBinding.instance)?.window.devicePixelRatio ?? 1,
+      WidgetsBinding.instance.window.devicePixelRatio,
     );
     final double actualVisibleScreenHeight =
         widget.screenSize.height - viewInsets.bottom;
@@ -259,7 +255,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   @override
   void initState() {
     super.initState();
-    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.container != null &&
           _customContainerKey.currentContext != null &&
           _customContainerKey.currentContext?.size != null) {

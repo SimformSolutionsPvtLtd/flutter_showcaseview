@@ -27,7 +27,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'enum.dart';
-import 'extension.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
@@ -428,7 +427,7 @@ class _ShowcaseState extends State<Showcase> {
   }
 
   void _scrollIntoView() {
-    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       setState(() => _isScrollRunning = true);
       await Scrollable.ensureVisible(
         widget.key.currentContext!,
@@ -464,14 +463,14 @@ class _ShowcaseState extends State<Showcase> {
   }
 
   void initRootWidget() {
-    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       rootWidgetSize = showCaseWidgetState.rootWidgetSize;
       rootRenderObject = showCaseWidgetState.rootRenderObject;
     });
   }
 
   void recalculateRootWidgetSize() {
-    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final rootWidget =
           context.findRootAncestorStateOfType<State<WidgetsApp>>();
@@ -649,7 +648,6 @@ class _TargetWidget extends StatelessWidget {
   final bool disableDefaultChildGestures;
 
   const _TargetWidget({
-    Key? key,
     required this.offset,
     required this.size,
     required this.shapeBorder,
@@ -658,7 +656,7 @@ class _TargetWidget extends StatelessWidget {
     this.onDoubleTap,
     this.onLongPress,
     this.disableDefaultChildGestures = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

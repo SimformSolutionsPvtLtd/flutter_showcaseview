@@ -464,6 +464,7 @@ class _ShowcaseState extends State<Showcase> {
 
   void initRootWidget() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       rootWidgetSize = showCaseWidgetState.rootWidgetSize;
       rootRenderObject = showCaseWidgetState.rootRenderObject;
     });

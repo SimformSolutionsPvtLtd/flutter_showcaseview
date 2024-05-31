@@ -1,4 +1,4 @@
-## [2.1.2]
+## [3.0.0]
 - Fixed removed deprecated text style after Flutter 3.22 follow [migration guide](https://docs.flutter.dev/release/breaking-changes/3-19-deprecations#texttheme)
 
 ## [2.1.1]

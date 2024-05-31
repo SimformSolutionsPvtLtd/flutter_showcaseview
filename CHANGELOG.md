@@ -1,6 +1,7 @@
 ## [3.0.0]
 - [BREAKING] Fixed [#434](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/434) removed deprecated text style after Flutter 3.22 follow [migration guide](https://docs.flutter.dev/release/breaking-changes/3-19-deprecations#texttheme)
 - Updated minimum support to dart sdk 2.18.0
+- Fixed [#449](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/449) - Null check operator used on a null value
 
 ## [2.1.1]
 - Fixed [#425](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/425) - Unhandled breaking change in v2.1.0

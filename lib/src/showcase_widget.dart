@@ -157,6 +157,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   void initRootWidget() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final rootWidget = context.findAncestorStateOfType<State<WidgetsApp>>();
       rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
       rootWidgetSize = rootWidget == null

@@ -416,6 +416,7 @@ class MailTile extends StatelessWidget {
                     targetBorderRadius: const BorderRadius.all(
                       Radius.circular(150),
                     ),
+                    tooltipOffset: const Offset(20, -5),
                     container: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[

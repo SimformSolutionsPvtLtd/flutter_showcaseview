@@ -252,6 +252,11 @@ class Showcase extends StatefulWidget {
   /// Defaults to 7.
   final double toolTipSlideEndDistance;
 
+  /// Defines the tooltip offset from the target widget.
+  ///
+  /// Default to Offset.zero
+  final Offset tooltipOffset;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -298,6 +303,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.tooltipOffset = Offset.zero,
   })  : height = null,
         width = null,
         container = null,
@@ -339,6 +345,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.tooltipOffset = Offset.zero,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -632,6 +639,7 @@ class _ShowcaseState extends State<Showcase> {
             titleTextDirection: widget.titleTextDirection,
             descriptionTextDirection: widget.descriptionTextDirection,
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
+            tooltipOffset: widget.tooltipOffset,
           ),
         ],
       ],

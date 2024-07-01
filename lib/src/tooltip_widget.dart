@@ -36,9 +36,11 @@ class ToolTipWidget extends StatefulWidget {
   final Offset? offset;
   final Size screenSize;
   final String? title;
-  final TextAlign? titleAlignment;
+  final TextAlign? titleTextAlign;
   final String? description;
-  final TextAlign? descriptionAlignment;
+  final TextAlign? descriptionTextAlign;
+  final AlignmentGeometry titleAlignment;
+  final AlignmentGeometry descriptionAlignment;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final Widget? container;
@@ -73,7 +75,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.offset,
     required this.screenSize,
     required this.title,
-    required this.titleAlignment,
+    required this.titleTextAlign,
     required this.description,
     required this.titleTextStyle,
     required this.descTextStyle,
@@ -85,6 +87,8 @@ class ToolTipWidget extends StatefulWidget {
     required this.contentWidth,
     required this.onTooltipTap,
     required this.movingAnimationDuration,
+    required this.descriptionTextAlign,
+    required this.titleAlignment,
     required this.descriptionAlignment,
     this.tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
     required this.disableMovingAnimation,

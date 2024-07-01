@@ -11,6 +11,9 @@ A Flutter package allows you to Showcase/Highlight your widgets step by step.
 
 ![The example app running in Android](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
 
+## Migration guide for release 4.0.0
+Renamed parameters `titleAlignment` to `titleTextAlign` and `descriptionAlignment` to `descriptionTextAlign` to correspond it more with the TextAlign property
+
 ## Migration guide for release 3.0.0
 Removed builder widget from `ShowCaseWidget` and replaced it with builder function
 
@@ -147,8 +150,10 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | width                        | double?                    |                                                  | Width of custom tooltip widget                                                                     |            | ✅                |
 | titleTextStyle               | TextStyle?                 |                                                  | Text Style of title                                                                                | ✅          |                  |
 | descTextStyle                | TextStyle?                 |                                                  | Text Style of description                                                                          | ✅          |                  |
-| titleAlignment               | TextAlign                  | TextAlign.start                                  | Alignment of title                                                                                 | ✅          |                  |
-| descriptionAlignment         | TextAlign                  | TextAlign.start                                  | Alignment of description                                                                           | ✅          |                  |
+| titleTextAlign               | TextAlign                  | TextAlign.start                                  | Alignment of title text                                                                            | ✅          |                  |
+| descriptionTextAlign         | TextAlign                  | TextAlign.start                                  | Alignment of description text                                                                      | ✅          |                  |
+| titleAlignment               | AlignmentGeometry          | Alignment.center                                 | Alignment of title                                                                                 | ✅          |                  |
+| descriptionAlignment         | AlignmentGeometry          | Alignment.center                                 | Alignment of description                                                                           | ✅          |                  |
 | targetShapeBorder            | ShapeBorder                |                                                  | If `targetBorderRadius` param is not provided then it applies shape border to target widget        | ✅          | ✅                |
 | targetBorderRadius           | BorderRadius?              |                                                  | Border radius of target widget                                                                     | ✅          | ✅                |
 | tooltipBorderRadius          | BorderRadius?              | BorderRadius.circular(8.0)                       | Border radius of tooltip                                                                           | ✅          |                  |

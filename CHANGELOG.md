@@ -1,4 +1,5 @@
-## [4.0.0]
+## [4.0.0] (unreleased)
+- [BREAKING] Fixed [#457](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/457) titleAlignment property does not work
 - Feature ✨: Added Action widget for tooltip
 - Feature [#475](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/475) - Add
   feasibility to change margin of tooltip with `toolTipMargin`.

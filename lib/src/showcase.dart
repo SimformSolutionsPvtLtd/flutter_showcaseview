@@ -48,10 +48,11 @@ class Showcase extends StatefulWidget {
   /// Represents subject line of target widget
   final String? title;
 
-  /// Title alignment with in tooltip widget
+  /// Title text alignment with in tooltip widget
   ///
   /// Defaults to [TextAlign.start]
-  final TextAlign titleAlignment;
+  /// To understand how text is aligned, check [TextAlign]
+  final TextAlign titleTextAlign;
 
   /// Represents summary description of target widget
   final String? description;
@@ -174,10 +175,11 @@ class Showcase extends StatefulWidget {
   /// Default to [BorderRadius.circular(8)]
   final BorderRadius? tooltipBorderRadius;
 
-  /// Description alignment with in tooltip widget
+  /// Description text alignment with in tooltip widget
   ///
   /// Defaults to [TextAlign.start]
-  final TextAlign descriptionAlignment;
+  /// To understand how text is aligned, check [TextAlign]
+  final TextAlign descriptionTextAlign;
 
   /// if `disableDefaultTargetGestures` parameter is true
   /// onTargetClick, onTargetDoubleTap, onTargetLongPress and
@@ -252,13 +254,25 @@ class Showcase extends StatefulWidget {
   /// Defaults to 7.
   final double toolTipSlideEndDistance;
 
+  /// Title alignment within tooltip widget
+  ///
+  /// Defaults to [Alignment.center]
+  final AlignmentGeometry titleAlignment;
+
+  /// Description alignment within tooltip widget
+  ///
+  /// Defaults to [Alignment.center]
+  final AlignmentGeometry descriptionAlignment;
+
   const Showcase({
     required this.key,
     required this.description,
     required this.child,
     this.title,
-    this.titleAlignment = TextAlign.start,
-    this.descriptionAlignment = TextAlign.start,
+    this.titleTextAlign = TextAlign.start,
+    this.descriptionTextAlign = TextAlign.start,
+    this.titleAlignment = Alignment.center,
+    this.descriptionAlignment = Alignment.center,
     this.targetShapeBorder = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(8)),
     ),
@@ -347,8 +361,10 @@ class Showcase extends StatefulWidget {
         disableScaleAnimation = null,
         title = null,
         description = null,
-        titleAlignment = TextAlign.start,
-        descriptionAlignment = TextAlign.start,
+        titleTextAlign = TextAlign.start,
+        descriptionTextAlign = TextAlign.start,
+        titleAlignment = Alignment.center,
+        descriptionAlignment = Alignment.center,
         titleTextStyle = null,
         descTextStyle = null,
         tooltipBackgroundColor = Colors.white,
@@ -603,8 +619,10 @@ class _ShowcaseState extends State<Showcase> {
             offset: offset,
             screenSize: screenSize,
             title: widget.title,
-            titleAlignment: widget.titleAlignment,
+            titleTextAlign: widget.titleTextAlign,
             description: widget.description,
+            descriptionTextAlign: widget.descriptionTextAlign,
+            titleAlignment: widget.titleAlignment,
             descriptionAlignment: widget.descriptionAlignment,
             titleTextStyle: widget.titleTextStyle,
             descTextStyle: widget.descTextStyle,

@@ -36,9 +36,11 @@ class ToolTipWidget extends StatefulWidget {
   final Offset? offset;
   final Size screenSize;
   final String? title;
-  final TextAlign? titleAlignment;
+  final TextAlign? titleTextAlign;
   final String? description;
-  final TextAlign? descriptionAlignment;
+  final TextAlign? descriptionTextAlign;
+  final AlignmentGeometry titleAlignment;
+  final AlignmentGeometry descriptionAlignment;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final Widget? container;
@@ -70,7 +72,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.offset,
     required this.screenSize,
     required this.title,
-    required this.titleAlignment,
+    required this.titleTextAlign,
     required this.description,
     required this.titleTextStyle,
     required this.descTextStyle,
@@ -82,6 +84,8 @@ class ToolTipWidget extends StatefulWidget {
     required this.contentWidth,
     required this.onTooltipTap,
     required this.movingAnimationDuration,
+    required this.descriptionTextAlign,
+    required this.titleAlignment,
     required this.descriptionAlignment,
     this.tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
     required this.disableMovingAnimation,
@@ -439,44 +443,52 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                     : CrossAxisAlignment.center,
                                 children: <Widget>[
                                   if (widget.title != null)
-                                    Padding(
-                                      padding: widget.titlePadding ??
-                                          EdgeInsets.zero,
-                                      child: Text(
-                                        widget.title!,
-                                        textAlign: widget.titleAlignment,
-                                        textDirection:
-                                            widget.titleTextDirection,
-                                        style: widget.titleTextStyle ??
-                                            Theme.of(context)
-                                                .textTheme
-                                                .titleLarge!
-                                                .merge(
-                                                  TextStyle(
-                                                    color: widget.textColor,
+                                    Align(
+                                      alignment: widget.titleAlignment,
+                                      child: Padding(
+                                        padding: widget.titlePadding ??
+                                            EdgeInsets.zero,
+                                        child: Text(
+                                          widget.title!,
+                                          textAlign: widget.titleTextAlign,
+                                          textDirection:
+                                              widget.titleTextDirection,
+                                          style: widget.titleTextStyle ??
+                                              Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge!
+                                                  .merge(
+                                                    TextStyle(
+                                                      color: widget.textColor,
+                                                    ),
                                                   ),
-                                                ),
+                                        ),
                                       ),
                                     ),
-                                  Padding(
-                                    padding: widget.descriptionPadding ??
-                                        EdgeInsets.zero,
-                                    child: Text(
-                                      widget.description!,
-                                      textAlign: widget.descriptionAlignment,
-                                      textDirection:
-                                          widget.descriptionTextDirection,
-                                      style: widget.descTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .merge(
-                                                TextStyle(
-                                                  color: widget.textColor,
-                                                ),
-                                              ),
+                                  if (widget.description != null)
+                                    Align(
+                                      alignment: widget.descriptionAlignment,
+                                      child: Padding(
+                                        padding: widget.descriptionPadding ??
+                                            EdgeInsets.zero,
+                                        child: Text(
+                                          widget.description!,
+                                          textAlign:
+                                              widget.descriptionTextAlign,
+                                          textDirection:
+                                              widget.descriptionTextDirection,
+                                          style: widget.descTextStyle ??
+                                              Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall!
+                                                  .merge(
+                                                    TextStyle(
+                                                      color: widget.textColor,
+                                                    ),
+                                                  ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
                                 ],
                               ),
                             ),

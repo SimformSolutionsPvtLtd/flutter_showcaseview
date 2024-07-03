@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'showcase_widget.dart';
+import 'toottip_action_button.dart';
 
 /// Default Tooltip action Widget Nav
 /// Shows tooltip navigation and index / count elements if the conditions are
@@ -26,28 +27,23 @@ class DefaultToolTipActionWidget extends StatelessWidget {
     var ids = showCaseWidgetState.ids;
     var activeWidgetId = showCaseWidgetState.activeWidgetId;
     bool isFirstTip = activeWidgetId == 0;
+    bool isLastTip = activeWidgetId == (ids!.length - 1);
+    Color disabledIconColor = color?.withOpacity(0.3) ?? Colors.black26;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: (isFirstTip)
-              ? null
-              : () {
-                  showCaseWidgetState.previous();
-                },
-          child: Padding(
+        if (ids.isNotEmpty && activeWidgetId != null) ...[
+          ToolTipActionButton(
+            action: (isFirstTip)
+                ? null
+                : () {
+                    showCaseWidgetState.previous();
+                  },
             padding: padding,
-            child: Icon(
-              Icons.keyboard_arrow_left,
-              size: iconSize,
-              color: (isFirstTip)
-                  ? color?.withOpacity(0.3) ?? Colors.black26
-                  : color,
-            ),
+            icon: Icons.keyboard_arrow_left,
+            iconSize: iconSize,
+            color: (isFirstTip) ? disabledIconColor : color,
           ),
-        ),
-        if (ids != null && activeWidgetId != null) ...[
           const SizedBox(width: 4.0),
           Padding(
             padding: padding,
@@ -60,21 +56,18 @@ class DefaultToolTipActionWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 4.0),
-        ],
-        GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () {
-            showCaseWidgetState.next();
-          },
-          child: Padding(
+          ToolTipActionButton(
+            action: (isLastTip)
+                ? null
+                : () {
+                    showCaseWidgetState.next();
+                  },
             padding: padding,
-            child: Icon(
-              Icons.keyboard_arrow_right,
-              color: color,
-              size: iconSize,
-            ),
-          ),
-        ),
+            icon: Icons.keyboard_arrow_right,
+            iconSize: iconSize,
+            color: (isLastTip) ? disabledIconColor : color,
+          )
+        ],
       ],
     );
   }

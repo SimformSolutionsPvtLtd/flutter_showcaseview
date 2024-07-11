@@ -31,7 +31,6 @@ import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
 import 'showcase_widget.dart';
-import 'tooltip_action.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
@@ -346,6 +345,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.toolTipAction,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -364,7 +364,6 @@ class Showcase extends StatefulWidget {
         tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
         titlePadding = null,
         descriptionPadding = null,
-        toolTipAction = null,
         titleTextDirection = null,
         descriptionTextDirection = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,

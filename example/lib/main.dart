@@ -180,6 +180,17 @@ class _MailPageState extends State<MailPage> {
                                       description: 'Tap to see menu options',
                                       onBarrierClick: () =>
                                           debugPrint('Barrier clicked'),
+                                      toolTipAction: DefaultToolTipAction(
+                                        color: Colors.white,
+                                        showCaseWidgetState:
+                                            ShowCaseWidget.of(context),
+                                        onBackPress: () =>
+                                            debugPrint('Back Pressed!'),
+                                        onForwardPress: () =>
+                                            debugPrint('Forward Pressed!'),
+                                      ),
+                                      tooltipActionPosition:
+                                          TooltipActionPosition.outsideTop,
                                       child: GestureDetector(
                                         onTap: () =>
                                             debugPrint('menu button clicked'),
@@ -222,6 +233,33 @@ class _MailPageState extends State<MailPage> {
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
                       targetShapeBorder: const CircleBorder(),
+                      toolTipAction: DefaultToolTipAction(
+                        color: Colors.white,
+                        showCaseWidgetState: ShowCaseWidget.of(context),
+                        back: const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          child: Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
+                        ),
+                        forward: const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                          ),
+                        ),
+                        onBackPress: () => debugPrint('Back Pressed!'),
+                        onForwardPress: () => debugPrint('Forward Pressed!'),
+                      ),
+                      tooltipActionPosition: TooltipActionPosition.outsideTop,
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         width: 45,
@@ -231,20 +269,6 @@ class _MailPageState extends State<MailPage> {
                           color: Theme.of(context).primaryColor,
                         ),
                         child: Image.asset('assets/simform.png'),
-                      ),
-                      toolTipAction: DefaultToolTipAction(
-                        color: Colors.white,
-                        showCaseWidgetState: ShowCaseWidget.of(context),
-                        back: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        ),
-                        forward: const Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ),
-                        onBackPress: () => debugPrint('Back Pressed!'),
-                        onForwardPress: () => debugPrint('Forward Pressed!'),
                       ),
                     ),
                     const SizedBox(
@@ -291,6 +315,47 @@ class _MailPageState extends State<MailPage> {
         title: 'Compose Mail',
         description: 'Click here to compose mail',
         targetShapeBorder: const CircleBorder(),
+        toolTipAction: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: ShowCaseWidget.of(context).previous,
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Colors.white,
+                    size: 17,
+                  ),
+                ),
+                Text(
+                  "${ShowCaseWidget.of(context).activeWidgetId! + 1} / ${ShowCaseWidget.of(context).ids?.length}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: ShowCaseWidget.of(context).next,
+                  child: const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                    size: 17,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        tooltipActionPosition: TooltipActionPosition.outsideTop,
+        // showArrow: false,
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
@@ -341,6 +406,12 @@ class _MailPageState extends State<MailPage> {
               });
             });
           },
+          toolTipAction: DefaultToolTipAction(
+            color: Colors.white,
+            showCaseWidgetState: ShowCaseWidget.of(context),
+          ),
+          tooltipActionPosition: TooltipActionPosition.outsideBottom,
+          showArrow: true,
           child: MailTile(
             mail: mail,
             showCaseKey: _four,

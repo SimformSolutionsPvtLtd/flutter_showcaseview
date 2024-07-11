@@ -21,3 +21,5 @@
  */
 
 enum TooltipPosition { top, bottom }
+
+enum TooltipActionPosition { outsideTop, outsideBottom, inside }

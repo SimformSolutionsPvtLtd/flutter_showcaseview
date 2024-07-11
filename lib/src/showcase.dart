@@ -263,6 +263,12 @@ class Showcase extends StatefulWidget {
   /// Defaults to 14.
   final double toolTipMargin;
 
+  /// Defines tooltip action widget position.
+  /// It can be inside the tooltip widget or outside.
+  ///
+  /// Default to [TooltipActionPosition.inside]
+  final TooltipActionPosition tooltipActionPosition;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -311,6 +317,7 @@ class Showcase extends StatefulWidget {
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
     this.toolTipMargin = 14,
+    this.tooltipActionPosition = TooltipActionPosition.inside,
   })  : height = null,
         width = null,
         container = null,
@@ -377,7 +384,8 @@ class Showcase extends StatefulWidget {
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(onBarrierClick == null || disableBarrierInteraction == false,
-            "can't use onBarrierClick & disableBarrierInteraction property at same time");
+            "can't use onBarrierClick & disableBarrierInteraction property at same time"),
+        tooltipActionPosition = TooltipActionPosition.inside;
 
   @override
   State<Showcase> createState() => _ShowcaseState();
@@ -649,6 +657,7 @@ class _ShowcaseState extends State<Showcase> {
             descriptionTextDirection: widget.descriptionTextDirection,
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
             toolTipMargin: widget.toolTipMargin,
+            tooltipActionPosition: widget.tooltipActionPosition,
           ),
         ],
       ],

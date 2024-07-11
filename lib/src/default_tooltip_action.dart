@@ -1,26 +1,36 @@
 import 'package:flutter/material.dart';
 
 import 'showcase_widget.dart';
-import 'toottip_action_button.dart';
+import 'tooltip_action_button.dart';
 
 /// Default Tooltip action Widget Nav
 /// Shows tooltip navigation and index / count elements if the conditions are
 /// indicated.
-class DefaultToolTipActionWidget extends StatelessWidget {
-  const DefaultToolTipActionWidget({
-    Key? key,
-    required this.color,
+class DefaultToolTipAction extends StatelessWidget {
+  const DefaultToolTipAction({
+    super.key,
+    this.color = Colors.black,
     required this.showCaseWidgetState,
     this.padding = const EdgeInsets.only(top: 5),
     this.textStyle,
     this.iconSize,
-  }) : super(key: key);
+    this.back,
+    this.forward,
+    this.buttonColor,
+    this.onBackPress,
+    this.onForwardPress,
+  });
 
-  final Color? color;
+  final Color color;
   final ShowCaseWidgetState showCaseWidgetState;
   final EdgeInsets padding;
   final TextStyle? textStyle;
   final double? iconSize;
+  final Widget? back;
+  final Widget? forward;
+  final Color? buttonColor;
+  final VoidCallback? onBackPress;
+  final VoidCallback? onForwardPress;
 
   @override
   Widget build(BuildContext context) {
@@ -28,23 +38,30 @@ class DefaultToolTipActionWidget extends StatelessWidget {
     var activeWidgetId = showCaseWidgetState.activeWidgetId;
     bool isFirstTip = activeWidgetId == 0;
     bool isLastTip = activeWidgetId == (ids!.length - 1);
-    Color disabledIconColor = color?.withOpacity(0.3) ?? Colors.black26;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (ids.isNotEmpty && activeWidgetId != null) ...[
           ToolTipActionButton(
-            action: (isFirstTip)
+            action: isFirstTip
                 ? null
                 : () {
                     showCaseWidgetState.previous();
+                    onBackPress?.call();
                   },
             padding: padding,
-            icon: Icons.keyboard_arrow_left,
-            iconSize: iconSize,
-            color: (isFirstTip) ? disabledIconColor : color,
+            widget: back ??
+                Icon(
+                  Icons.keyboard_arrow_left,
+                  color: buttonColor ?? color,
+                ),
+            opacity: isFirstTip ? 0.3 : 1,
           ),
-          const SizedBox(width: 4.0),
+          const SizedBox(
+            width: 4.0,
+          ),
           Padding(
             padding: padding,
             child: Text(
@@ -55,17 +72,23 @@ class DefaultToolTipActionWidget extends StatelessWidget {
                       ),
             ),
           ),
-          const SizedBox(width: 4.0),
+          const SizedBox(
+            width: 4.0,
+          ),
           ToolTipActionButton(
-            action: (isLastTip)
+            action: isLastTip
                 ? null
                 : () {
                     showCaseWidgetState.next();
+                    onForwardPress?.call();
                   },
             padding: padding,
-            icon: Icons.keyboard_arrow_right,
-            iconSize: iconSize,
-            color: (isLastTip) ? disabledIconColor : color,
+            widget: forward ??
+                Icon(
+                  Icons.keyboard_arrow_right,
+                  color: buttonColor ?? color,
+                ),
+            opacity: isLastTip ? 0.3 : 1,
           )
         ],
       ],

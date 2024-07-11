@@ -432,29 +432,54 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                 BorderRadius.circular(8.0),
                             child: GestureDetector(
                               onTap: widget.onTooltipTap,
-                              child: Container(
-                                width: tooltipWidth,
-                                padding: widget.tooltipPadding,
-                                color: widget.tooltipBackgroundColor,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: widget.title != null
-                                      ? CrossAxisAlignment.start
-                                      : CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    if (widget.title != null)
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width - 30,
+                                ),
+                                child: Container(
+                                  width: tooltipWidth,
+                                  padding: widget.tooltipPadding,
+                                  color: widget.tooltipBackgroundColor,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: widget.title != null
+                                        ? CrossAxisAlignment.start
+                                        : CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      if (widget.title != null)
+                                        Padding(
+                                          padding: widget.titlePadding ??
+                                              EdgeInsets.zero,
+                                          child: Text(
+                                            widget.title!,
+                                            textAlign: widget.titleAlignment,
+                                            textDirection:
+                                                widget.titleTextDirection,
+                                            style: widget.titleTextStyle ??
+                                                Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge!
+                                                    .merge(
+                                                      TextStyle(
+                                                        color: widget.textColor,
+                                                      ),
+                                                    ),
+                                          ),
+                                        ),
                                       Padding(
-                                        padding: widget.titlePadding ??
+                                        padding: widget.descriptionPadding ??
                                             EdgeInsets.zero,
                                         child: Text(
-                                          widget.title!,
-                                          textAlign: widget.titleAlignment,
+                                          widget.description!,
+                                          textAlign:
+                                              widget.descriptionAlignment,
                                           textDirection:
-                                              widget.titleTextDirection,
-                                          style: widget.titleTextStyle ??
+                                              widget.descriptionTextDirection,
+                                          style: widget.descTextStyle ??
                                               Theme.of(context)
                                                   .textTheme
-                                                  .titleLarge!
+                                                  .titleSmall!
                                                   .merge(
                                                     TextStyle(
                                                       color: widget.textColor,
@@ -462,28 +487,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                                   ),
                                         ),
                                       ),
-                                    Padding(
-                                      padding: widget.descriptionPadding ??
-                                          EdgeInsets.zero,
-                                      child: Text(
-                                        widget.description!,
-                                        textAlign: widget.descriptionAlignment,
-                                        textDirection:
-                                            widget.descriptionTextDirection,
-                                        style: widget.descTextStyle ??
-                                            Theme.of(context)
-                                                .textTheme
-                                                .titleSmall!
-                                                .merge(
-                                                  TextStyle(
-                                                    color: widget.textColor,
-                                                  ),
-                                                ),
-                                      ),
-                                    ),
-                                    widget.toolTipAction ??
-                                        const SizedBox.shrink()
-                                  ],
+                                      widget.toolTipAction ??
+                                          const SizedBox.shrink()
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -504,30 +511,47 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         Positioned(
           left: _getSpace(),
           top: contentY - (10 * contentOffsetMultiplier),
-          child: FractionalTranslation(
-            translation: Offset(0.0, contentFractionalOffset as double),
-            child: ToolTipSlideTransition(
-              position: Tween<Offset>(
-                begin: Offset.zero,
-                end: Offset(
-                  0,
-                  widget.toolTipSlideEndDistance * contentOffsetMultiplier,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            alignment: widget.scaleAnimationAlignment ??
+                Alignment(
+                  _getAlignmentX(),
+                  _getAlignmentY(),
                 ),
-              ).animate(_movingAnimation),
-              child: Material(
-                color: Colors.transparent,
-                child: GestureDetector(
-                  onTap: widget.onTooltipTap,
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      top: paddingTop,
-                      bottom: paddingBottom,
-                    ),
-                    color: Colors.transparent,
-                    child: Center(
-                      child: MeasureSize(
-                        onSizeChange: onSizeChange,
-                        child: widget.container,
+            child: FractionalTranslation(
+              translation: Offset(0.0, contentFractionalOffset as double),
+              child: ToolTipSlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset.zero,
+                  end: Offset(
+                    0,
+                    widget.toolTipSlideEndDistance * contentOffsetMultiplier,
+                  ),
+                ).animate(_movingAnimation),
+                child: Material(
+                  color: Colors.transparent,
+                  child: GestureDetector(
+                    onTap: widget.onTooltipTap,
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        top: paddingTop,
+                        bottom: paddingBottom,
+                      ),
+                      color: Colors.transparent,
+                      child: Center(
+                        child: MeasureSize(
+                          onSizeChange: onSizeChange,
+                          child: Column(
+                            children: [
+                              widget.container!,
+                              SizedBox(
+                                width: widget.contentWidth,
+                                child: widget.toolTipAction ??
+                                    const SizedBox.shrink(),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -561,14 +585,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   double? _getArrowLeft(double arrowWidth) {
     final left = _getLeft();
     if (left == null) return null;
-    return (widget.position!.getCenter() - (arrowWidth / 2) - left);
+    return (widget.position!.getCenter() - (arrowWidth * 0.5) - left);
   }
 
   double? _getArrowRight(double arrowWidth) {
     if (_getLeft() != null) return null;
     return (widget.screenSize.width - widget.position!.getCenter()) -
         (_getRight() ?? 0) -
-        (arrowWidth / 2);
+        (arrowWidth * 0.5);
   }
 
   void onTooltipSizeChanged(Size? size) {
@@ -603,21 +627,24 @@ class _Arrow extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawPath(getTrianglePath(size.width, size.height), _paint);
+    canvas.drawPath(
+      getTrianglePath(size.width, size.height),
+      _paint,
+    );
   }
 
   Path getTrianglePath(double x, double y) {
     if (isUpArrow) {
       return Path()
         ..moveTo(0, y)
-        ..lineTo(x / 2, 0)
+        ..lineTo(x * 0.5, 0)
         ..lineTo(x, y)
         ..lineTo(0, y);
     }
     return Path()
       ..moveTo(0, 0)
       ..lineTo(x, 0)
-      ..lineTo(x / 2, y)
+      ..lineTo(x * 0.5, y)
       ..lineTo(0, 0);
   }
 

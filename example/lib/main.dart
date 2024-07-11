@@ -232,9 +232,19 @@ class _MailPageState extends State<MailPage> {
                         ),
                         child: Image.asset('assets/simform.png'),
                       ),
-                      toolTipAction: DefaultToolTipActionWidget(
+                      toolTipAction: DefaultToolTipAction(
                         color: Colors.white,
                         showCaseWidgetState: ShowCaseWidget.of(context),
+                        back: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                        forward: const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
+                        onBackPress: () => debugPrint('Back Pressed!'),
+                        onForwardPress: () => debugPrint('Forward Pressed!'),
                       ),
                     ),
                     const SizedBox(
@@ -450,6 +460,12 @@ class MailTile extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         )
                       ],
+                    ),
+                    toolTipAction: DefaultToolTipAction(
+                      color: Colors.white,
+                      showCaseWidgetState: ShowCaseWidget.of(context),
+                      onBackPress: () => debugPrint('Back Pressed!'),
+                      onForwardPress: () => debugPrint('Forward Pressed!'),
                     ),
                     child: const SAvatarExampleChild(),
                   )

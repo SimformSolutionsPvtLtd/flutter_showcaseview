@@ -64,6 +64,7 @@ class ToolTipWidget extends StatefulWidget {
   final double toolTipSlideEndDistance;
   final double toolTipMargin;
   final TooltipActionPosition tooltipActionPosition;
+  final double gapBetweenContentAndAction;
 
   const ToolTipWidget({
     super.key,
@@ -92,6 +93,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.scaleAnimationCurve,
     required this.toolTipMargin,
     required this.tooltipActionPosition,
+    required this.gapBetweenContentAndAction,
     this.scaleAnimationAlignment,
     this.isTooltipDismissed = false,
     this.tooltipPosition,
@@ -399,7 +401,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                             bottom:
                                 paddingBottom - (isArrowUp ? 0 : arrowHeight),
                           )
-                        : null,
+                        : EdgeInsets.symmetric(
+                            vertical: paddingTop,
+                          ),
                     child: SizedBox(
                       width: tooltipWidth,
                       child: Column(
@@ -407,8 +411,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                           if (widget.tooltipActionPosition ==
                               TooltipActionPosition.outsideTop) ...[
                             widget.toolTipAction ?? const SizedBox.shrink(),
-                            const SizedBox(
-                              height: arrowHeight,
+                            SizedBox(
+                              height: widget.gapBetweenContentAndAction,
                             ),
                           ],
                           Stack(
@@ -438,8 +442,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                 ),
                               Padding(
                                 padding: EdgeInsets.only(
-                                  top: isArrowUp ? arrowHeight - 1 : 0,
-                                  bottom: isArrowUp ? 0 : arrowHeight - 1,
+                                  top: widget.showArrow && isArrowUp
+                                      ? arrowHeight - 1
+                                      : 0,
+                                  bottom: widget.showArrow && !isArrowUp
+                                      ? arrowHeight - 1
+                                      : 0,
                                 ),
                                 child: ClipRRect(
                                   borderRadius: widget.tooltipBorderRadius ??
@@ -509,9 +517,15 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                               ),
                                             ),
                                             if (widget.tooltipActionPosition ==
-                                                TooltipActionPosition.inside)
+                                                TooltipActionPosition
+                                                    .inside) ...[
+                                              SizedBox(
+                                                height: widget
+                                                    .gapBetweenContentAndAction,
+                                              ),
                                               widget.toolTipAction ??
-                                                  const SizedBox.shrink(),
+                                                  const SizedBox.shrink()
+                                            ],
                                           ],
                                         ),
                                       ),
@@ -523,8 +537,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                           ),
                           if (widget.tooltipActionPosition ==
                               TooltipActionPosition.outsideBottom) ...[
-                            const SizedBox(
-                              height: arrowHeight,
+                            SizedBox(
+                              height: widget.gapBetweenContentAndAction,
                             ),
                             widget.toolTipAction ?? const SizedBox.shrink(),
                           ],

@@ -11,7 +11,7 @@ class DefaultToolTipAction extends StatelessWidget {
     super.key,
     this.color = Colors.black,
     required this.showCaseWidgetState,
-    this.padding = const EdgeInsets.only(top: 5),
+    this.padding = EdgeInsets.zero,
     this.textStyle,
     this.iconSize,
     this.back,

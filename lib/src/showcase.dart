@@ -269,6 +269,11 @@ class Showcase extends StatefulWidget {
   /// Default to [TooltipActionPosition.inside]
   final TooltipActionPosition tooltipActionPosition;
 
+  /// Defines gap between tooltip content and actions.
+  ///
+  /// Default to 10
+  final double gapBetweenContentAndAction;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -318,6 +323,7 @@ class Showcase extends StatefulWidget {
     this.toolTipSlideEndDistance = 7,
     this.toolTipMargin = 14,
     this.tooltipActionPosition = TooltipActionPosition.inside,
+    this.gapBetweenContentAndAction = 8,
   })  : height = null,
         width = null,
         container = null,
@@ -360,6 +366,7 @@ class Showcase extends StatefulWidget {
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
     this.toolTipAction,
+    this.gapBetweenContentAndAction = 10,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -658,6 +665,7 @@ class _ShowcaseState extends State<Showcase> {
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
             toolTipMargin: widget.toolTipMargin,
             tooltipActionPosition: widget.tooltipActionPosition,
+            gapBetweenContentAndAction: widget.gapBetweenContentAndAction,
           ),
         ],
       ],

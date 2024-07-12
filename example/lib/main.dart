@@ -181,7 +181,7 @@ class _MailPageState extends State<MailPage> {
                                       onBarrierClick: () =>
                                           debugPrint('Barrier clicked'),
                                       toolTipAction: DefaultToolTipAction(
-                                        color: Colors.white,
+                                        color: Colors.red,
                                         showCaseWidgetState:
                                             ShowCaseWidget.of(context),
                                         onBackPress: () =>
@@ -190,7 +190,8 @@ class _MailPageState extends State<MailPage> {
                                             debugPrint('Forward Pressed!'),
                                       ),
                                       tooltipActionPosition:
-                                          TooltipActionPosition.outsideTop,
+                                          TooltipActionPosition.inside,
+                                      showArrow: true,
                                       child: GestureDetector(
                                         onTap: () =>
                                             debugPrint('menu button clicked'),
@@ -234,6 +235,7 @@ class _MailPageState extends State<MailPage> {
                       textColor: Colors.white,
                       targetShapeBorder: const CircleBorder(),
                       toolTipAction: DefaultToolTipAction(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
                         color: Colors.white,
                         showCaseWidgetState: ShowCaseWidget.of(context),
                         back: const Padding(
@@ -259,7 +261,6 @@ class _MailPageState extends State<MailPage> {
                         onBackPress: () => debugPrint('Back Pressed!'),
                         onForwardPress: () => debugPrint('Forward Pressed!'),
                       ),
-                      tooltipActionPosition: TooltipActionPosition.outsideTop,
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         width: 45,
@@ -337,7 +338,7 @@ class _MailPageState extends State<MailPage> {
                   ),
                 ),
                 Text(
-                  "${ShowCaseWidget.of(context).activeWidgetId! + 1} / ${ShowCaseWidget.of(context).ids?.length}",
+                  "${(ShowCaseWidget.of(context).activeWidgetId ?? 0) + 1} / ${ShowCaseWidget.of(context).ids?.length}",
                   style: const TextStyle(
                     color: Colors.white,
                   ),
@@ -355,7 +356,7 @@ class _MailPageState extends State<MailPage> {
           ),
         ),
         tooltipActionPosition: TooltipActionPosition.outsideTop,
-        // showArrow: false,
+        showArrow: false,
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
@@ -410,8 +411,7 @@ class _MailPageState extends State<MailPage> {
             color: Colors.white,
             showCaseWidgetState: ShowCaseWidget.of(context),
           ),
-          tooltipActionPosition: TooltipActionPosition.outsideBottom,
-          showArrow: true,
+          tooltipActionPosition: TooltipActionPosition.outsideTop,
           child: MailTile(
             mail: mail,
             showCaseKey: _four,

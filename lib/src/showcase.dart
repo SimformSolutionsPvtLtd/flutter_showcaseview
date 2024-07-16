@@ -56,6 +56,8 @@ class Showcase extends StatefulWidget {
   /// Represents summary description of target widget
   final String? description;
 
+  final Widget? descriptionStatusWidget;
+
   /// ShapeBorder of the highlighted box when target widget will be showcased.
   ///
   /// Note: If [targetBorderRadius] is specified, this parameter will be ignored.
@@ -256,6 +258,7 @@ class Showcase extends StatefulWidget {
     required this.key,
     required this.description,
     required this.child,
+    this.descriptionStatusWidget,
     this.title,
     this.titleAlignment = TextAlign.start,
     this.descriptionAlignment = TextAlign.start,
@@ -321,6 +324,7 @@ class Showcase extends StatefulWidget {
         Radius.circular(8),
       ),
     ),
+    this.descriptionStatusWidget,
     this.overlayColor = Colors.black45,
     this.targetBorderRadius,
     this.overlayOpacity = 0.75,
@@ -599,6 +603,7 @@ class _ShowcaseState extends State<Showcase> {
             targetPadding: widget.targetPadding,
           ),
           ToolTipWidget(
+            descriptionStatusWidget: widget.descriptionStatusWidget,
             position: position,
             offset: offset,
             screenSize: screenSize,

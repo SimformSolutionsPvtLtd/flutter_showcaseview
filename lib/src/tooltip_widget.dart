@@ -38,6 +38,7 @@ class ToolTipWidget extends StatefulWidget {
   final String? title;
   final TextAlign? titleAlignment;
   final String? description;
+  final Widget? descriptionStatusWidget;
   final TextAlign? descriptionAlignment;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
@@ -72,6 +73,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.title,
     required this.titleAlignment,
     required this.description,
+    required this.descriptionStatusWidget,
     required this.titleTextStyle,
     required this.descTextStyle,
     required this.container,
@@ -461,20 +463,27 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                   Padding(
                                     padding: widget.descriptionPadding ??
                                         EdgeInsets.zero,
-                                    child: Text(
-                                      widget.description!,
-                                      textAlign: widget.descriptionAlignment,
-                                      textDirection:
-                                          widget.descriptionTextDirection,
-                                      style: widget.descTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .merge(
-                                                TextStyle(
-                                                  color: widget.textColor,
-                                                ),
-                                              ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          widget.description!,
+                                          textAlign:
+                                              widget.descriptionAlignment,
+                                          textDirection:
+                                              widget.descriptionTextDirection,
+                                          style: widget.descTextStyle ??
+                                              Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall!
+                                                  .merge(
+                                                    TextStyle(
+                                                      color: widget.textColor,
+                                                    ),
+                                                  ),
+                                        ),
+                                        widget.descriptionStatusWidget ??
+                                            const SizedBox()
+                                      ],
                                     ),
                                   ),
                                 ],

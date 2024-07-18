@@ -252,10 +252,18 @@ class Showcase extends StatefulWidget {
   /// Defaults to 7.
   final double toolTipSlideEndDistance;
 
+  // Defines an action Widget to use over the overlay
+  final Widget? actionWidget;
+  final double? actionStartPadding;
+  final double? actionTopPadding;
+
   const Showcase({
     required this.key,
     required this.description,
     required this.child,
+    this.actionWidget,
+    this.actionStartPadding,
+    this.actionTopPadding,
     this.title,
     this.titleAlignment = TextAlign.start,
     this.descriptionAlignment = TextAlign.start,
@@ -316,6 +324,9 @@ class Showcase extends StatefulWidget {
     required this.width,
     required this.container,
     required this.child,
+    this.actionWidget,
+    this.actionStartPadding,
+    this.actionTopPadding,
     this.targetShapeBorder = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8),
@@ -441,22 +452,34 @@ class _ShowcaseState extends State<Showcase> {
   @override
   Widget build(BuildContext context) {
     if (_enableShowcase) {
-      return AnchoredOverlay(
-        key: showCaseWidgetState.anchoredOverlayKey,
-        rootRenderObject: rootRenderObject,
-        overlayBuilder: (context, rectBound, offset) {
-          final size = rootWidgetSize ?? MediaQuery.of(context).size;
-          position = GetPosition(
+      return Stack(
+        children: [
+          AnchoredOverlay(
+            key: showCaseWidgetState.anchoredOverlayKey,
             rootRenderObject: rootRenderObject,
-            key: widget.key,
-            padding: widget.targetPadding,
-            screenWidth: size.width,
-            screenHeight: size.height,
-          );
-          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
-        },
-        showOverlay: true,
-        child: widget.child,
+            overlayBuilder: (context, rectBound, offset) {
+              final size = rootWidgetSize ?? MediaQuery.of(context).size;
+              position = GetPosition(
+                rootRenderObject: rootRenderObject,
+                key: widget.key,
+                padding: widget.targetPadding,
+                screenWidth: size.width,
+                screenHeight: size.height,
+              );
+              return buildOverlayOnTarget(
+                  offset, rectBound.size, rectBound, size);
+            },
+            showOverlay: true,
+            child: widget.child,
+          ),
+          Visibility(
+            visible: widget.actionWidget != null,
+            child: PositionedDirectional(
+                start: widget.actionStartPadding,
+                top: widget.actionTopPadding,
+                child: widget.actionWidget!),
+          ),
+        ],
       );
     }
     return widget.child;

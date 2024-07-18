@@ -477,7 +477,7 @@ class _ShowcaseState extends State<Showcase> {
             child: PositionedDirectional(
                 start: widget.actionStartPadding,
                 top: widget.actionTopPadding,
-                child: widget.actionWidget!),
+                child: widget.actionWidget ?? Container()),
           ),
         ],
       );

@@ -38,7 +38,7 @@ class ToolTipWidget extends StatefulWidget {
   final String? title;
   final TextAlign? titleAlignment;
   final String? description;
-  final Widget? descriptionStatusWidget;
+  final Widget? additionalDescriptionWidget;
   final TextAlign? descriptionAlignment;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
@@ -73,7 +73,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.title,
     required this.titleAlignment,
     required this.description,
-    required this.descriptionStatusWidget,
+    required this.additionalDescriptionWidget,
     required this.titleTextStyle,
     required this.descTextStyle,
     required this.container,
@@ -175,9 +175,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       tooltipWidth = widget.screenSize.width - tooltipScreenEdgePadding;
     } else {
       tooltipWidth = maxTextWidth + tooltipTextPadding;
-      if (tooltipWidth < 200) {
-        tooltipWidth = 200;
-      }
     }
   }
 
@@ -484,8 +481,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                                     ),
                                                   ),
                                         ),
-                                        widget.descriptionStatusWidget ??
-                                            const SizedBox()
+                                        widget.additionalDescriptionWidget ??
+                                            const SizedBox(),
                                       ],
                                     ),
                                   ),

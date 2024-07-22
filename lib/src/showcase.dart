@@ -54,9 +54,14 @@ class Showcase extends StatefulWidget {
   final TextAlign titleAlignment;
 
   /// Represents summary description of target widget
-  final String? description;
+  final Widget? additionalDescriptionWidget;
 
-  final Widget? descriptionStatusWidget;
+  /// The `additionalDescriptionWidget` allows you to place any desired widget
+  /// below the description text. This can be used to provide additional
+  /// context, status indicators, or any other relevant information
+  /// directly beneath the description.
+
+  final String? description;
 
   /// ShapeBorder of the highlighted box when target widget will be showcased.
   ///
@@ -258,7 +263,7 @@ class Showcase extends StatefulWidget {
     required this.key,
     required this.description,
     required this.child,
-    this.descriptionStatusWidget,
+    this.additionalDescriptionWidget,
     this.title,
     this.titleAlignment = TextAlign.start,
     this.descriptionAlignment = TextAlign.start,
@@ -324,7 +329,7 @@ class Showcase extends StatefulWidget {
         Radius.circular(8),
       ),
     ),
-    this.descriptionStatusWidget,
+    this.additionalDescriptionWidget,
     this.overlayColor = Colors.black45,
     this.targetBorderRadius,
     this.overlayOpacity = 0.75,
@@ -603,7 +608,7 @@ class _ShowcaseState extends State<Showcase> {
             targetPadding: widget.targetPadding,
           ),
           ToolTipWidget(
-            descriptionStatusWidget: widget.descriptionStatusWidget,
+            additionalDescriptionWidget: widget.additionalDescriptionWidget,
             position: position,
             offset: offset,
             screenSize: screenSize,

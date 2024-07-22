@@ -175,6 +175,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       tooltipWidth = widget.screenSize.width - tooltipScreenEdgePadding;
     } else {
       tooltipWidth = maxTextWidth + tooltipTextPadding;
+      if (tooltipWidth < 200) {
+        tooltipWidth = 200;
+      }
     }
   }
 

@@ -20,6 +20,31 @@
  * SOFTWARE.
  */
 
+import 'package:flutter/cupertino.dart';
+
 enum TooltipPosition { top, bottom }
 
-enum TooltipActionPosition { outsideTop, outsideBottom, inside }
+enum TooltipActionPosition { outside, inside }
+
+enum TooltipActionAlignment {
+  left(MainAxisAlignment.start),
+  right(MainAxisAlignment.end),
+  spread(MainAxisAlignment.spaceBetween),
+  center(MainAxisAlignment.center);
+
+  const TooltipActionAlignment(this.alignment);
+
+  final MainAxisAlignment alignment;
+}
+
+enum TooltipDefaultActionType {
+  next(actionName: 'Next'),
+  skip(actionName: 'Skip'),
+  previous(actionName: 'Previous');
+
+  const TooltipDefaultActionType({
+    required this.actionName,
+  });
+
+  final String actionName;
+}

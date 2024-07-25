@@ -37,6 +37,10 @@ class MyApp extends StatelessWidget {
           blurValue: 1,
           autoPlayDelay: const Duration(seconds: 3),
           builder: (context) => const MailPage(),
+          globalTooltipActionConfig: const TooltipActionConfig(
+            position: TooltipActionPosition.inside,
+            alignment: TooltipActionAlignment.spread,
+          ),
         ),
       ),
     );
@@ -180,18 +184,17 @@ class _MailPageState extends State<MailPage> {
                                       description: 'Tap to see menu options',
                                       onBarrierClick: () =>
                                           debugPrint('Barrier clicked'),
-                                      toolTipAction: DefaultToolTipAction(
-                                        color: Colors.red,
-                                        showCaseWidgetState:
-                                            ShowCaseWidget.of(context),
-                                        onBackPress: () =>
-                                            debugPrint('Back Pressed!'),
-                                        onForwardPress: () =>
-                                            debugPrint('Forward Pressed!'),
+                                      tooltipActionConfig:
+                                          const TooltipActionConfig(
+                                        alignment: TooltipActionAlignment.right,
+                                        position: TooltipActionPosition.outside,
+                                        gapBetweenContentAndAction: 10,
                                       ),
-                                      tooltipActionPosition:
-                                          TooltipActionPosition.inside,
-                                      showArrow: true,
+                                      tooltipActions: [
+                                        TooltipActionButton.withDefault(
+                                          type: TooltipDefaultActionType.next,
+                                        ),
+                                      ],
                                       child: GestureDetector(
                                         onTap: () =>
                                             debugPrint('menu button clicked'),
@@ -234,33 +237,20 @@ class _MailPageState extends State<MailPage> {
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
                       targetShapeBorder: const CircleBorder(),
-                      toolTipAction: DefaultToolTipAction(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        color: Colors.white,
-                        showCaseWidgetState: ShowCaseWidget.of(context),
-                        back: const Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                          ),
+                      tooltipActions: [
+                        TooltipActionButton.withDefault(
+                          backgroundColor: Colors.transparent,
+                          type: TooltipDefaultActionType.previous,
+                          padding: EdgeInsets.zero,
                         ),
-                        forward: const Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
+                        TooltipActionButton.withDefault(
+                          type: TooltipDefaultActionType.next,
+                          backgroundColor: Colors.white,
+                          textStyle: const TextStyle(
+                            color: Colors.pinkAccent,
                           ),
-                          child: Icon(
-                            Icons.arrow_forward,
-                            color: Colors.white,
-                          ),
-                        ),
-                        onBackPress: () => debugPrint('Back Pressed!'),
-                        onForwardPress: () => debugPrint('Forward Pressed!'),
-                      ),
+                        )
+                      ],
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         width: 45,
@@ -316,47 +306,39 @@ class _MailPageState extends State<MailPage> {
         title: 'Compose Mail',
         description: 'Click here to compose mail',
         targetShapeBorder: const CircleBorder(),
-        toolTipAction: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(
-              color: Colors.redAccent,
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
+        showArrow: false,
+        tooltipActionConfig: const TooltipActionConfig(
+          alignment: TooltipActionAlignment.spread,
+          actionGap: 15,
+        ),
+        tooltipActions: [
+          TooltipActionButton.withDefault(
+              type: TooltipDefaultActionType.previous,
+              name: 'Back',
+              onTap: () {
+                // Write your code on button tap
+                ShowCaseWidget.of(context).previous();
+              },
+              backgroundColor: Colors.pink.shade50,
+              textStyle: const TextStyle(
+                color: Colors.pink,
+              )),
+          TooltipActionButton.withDefault(
+            type: TooltipDefaultActionType.next,
+            name: 'Close',
+            tailIcon: const ActionButtonIcon.withIcon(
+              icon: Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 15,
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: ShowCaseWidget.of(context).previous,
-                  child: const Icon(
-                    Icons.arrow_back_ios_new,
-                    color: Colors.white,
-                    size: 17,
-                  ),
-                ),
-                Text(
-                  "${(ShowCaseWidget.of(context).activeWidgetId ?? 0) + 1} / ${ShowCaseWidget.of(context).ids?.length}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: ShowCaseWidget.of(context).next,
-                  child: const Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                    size: 17,
-                  ),
-                ),
-              ],
-            ),
+            onTap: () {
+              // Write your code on button tap
+              ShowCaseWidget.of(context).next();
+            },
           ),
-        ),
-        tooltipActionPosition: TooltipActionPosition.outsideTop,
-        showArrow: false,
+        ],
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
@@ -407,11 +389,6 @@ class _MailPageState extends State<MailPage> {
               });
             });
           },
-          toolTipAction: DefaultToolTipAction(
-            color: Colors.white,
-            showCaseWidgetState: ShowCaseWidget.of(context),
-          ),
-          tooltipActionPosition: TooltipActionPosition.outsideTop,
           child: MailTile(
             mail: mail,
             showCaseKey: _four,
@@ -502,41 +479,44 @@ class MailTile extends StatelessWidget {
                     targetBorderRadius: const BorderRadius.all(
                       Radius.circular(150),
                     ),
-                    container: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          width: 45,
-                          height: 45,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color(0xffFCD8DC),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'S',
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                    container: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15),
+                        ),
+                      ),
+                      width: 140,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: 45,
+                            height: 45,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xffFCD8DC),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'S',
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text(
-                          "Your sender's profile ",
-                          style: TextStyle(color: Colors.white),
-                        )
-                      ],
-                    ),
-                    toolTipAction: DefaultToolTipAction(
-                      color: Colors.white,
-                      showCaseWidgetState: ShowCaseWidget.of(context),
-                      onBackPress: () => debugPrint('Back Pressed!'),
-                      onForwardPress: () => debugPrint('Forward Pressed!'),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                            "Your sender's profile",
+                          )
+                        ],
+                      ),
                     ),
                     child: const SAvatarExampleChild(),
                   )

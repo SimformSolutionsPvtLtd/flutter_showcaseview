@@ -25,12 +25,11 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 
-import 'enum.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
-import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
@@ -231,11 +230,6 @@ class Showcase extends StatefulWidget {
   /// Provides padding around the description. Default padding is zero.
   final EdgeInsets? descriptionPadding;
 
-  /// Provides tooTip action widgets at bottom in tool tip.
-  ///
-  /// one can use [DefaultToolTipActionWidget] class to use default action
-  final Widget? toolTipAction;
-
   /// Provides text direction of tooltip title.
   final TextDirection? titleTextDirection;
 
@@ -263,16 +257,16 @@ class Showcase extends StatefulWidget {
   /// Defaults to 14.
   final double toolTipMargin;
 
-  /// Defines tooltip action widget position.
-  /// It can be inside the tooltip widget or outside.
+  /// Provides tooTip action widgets at bottom in tooltip.
   ///
-  /// Default to [TooltipActionPosition.inside]
-  final TooltipActionPosition tooltipActionPosition;
+  /// one can use [TooltipActionButton] class to use default action
+  final List<TooltipActionButton>? tooltipActions;
 
-  /// Defines gap between tooltip content and actions.
+  /// Provide a configuration for tooltip action widget like alignment,
+  /// position, gap, etc...
   ///
-  /// Default to 10
-  final double gapBetweenContentAndAction;
+  /// Default to [const TooltipActionConfig()]
+  final TooltipActionConfig? tooltipActionConfig;
 
   const Showcase({
     required this.key,
@@ -315,17 +309,16 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
-    this.toolTipAction,
+    this.tooltipActions,
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
     this.toolTipMargin = 14,
-    this.tooltipActionPosition = TooltipActionPosition.inside,
-    this.gapBetweenContentAndAction = 8,
-  })  : height = null,
-        width = null,
+    this.tooltipActionConfig,
+  })  : width = null,
+        height = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
@@ -365,8 +358,8 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
-    this.toolTipAction,
-    this.gapBetweenContentAndAction = 10,
+    this.tooltipActions,
+    this.tooltipActionConfig,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -391,8 +384,7 @@ class Showcase extends StatefulWidget {
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(onBarrierClick == null || disableBarrierInteraction == false,
-            "can't use onBarrierClick & disableBarrierInteraction property at same time"),
-        tooltipActionPosition = TooltipActionPosition.inside;
+            "can't use onBarrierClick & disableBarrierInteraction property at same time");
 
   @override
   State<Showcase> createState() => _ShowcaseState();
@@ -659,17 +651,35 @@ class _ShowcaseState extends State<Showcase> {
             tooltipPosition: widget.tooltipPosition,
             titlePadding: widget.titlePadding,
             descriptionPadding: widget.descriptionPadding,
-            toolTipAction: widget.toolTipAction,
             titleTextDirection: widget.titleTextDirection,
             descriptionTextDirection: widget.descriptionTextDirection,
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
             toolTipMargin: widget.toolTipMargin,
             tooltipActionPosition: widget.tooltipActionPosition,
             gapBetweenContentAndAction: widget.gapBetweenContentAndAction,
+            showCaseState: ShowCaseWidget.of(context),
+            tooltipActionConfig: _getTooltipActionConfig(),
+            tooltipActions: _getTooltipActions(),
           ),
         ],
       ],
     );
+  }
+
+  List<TooltipActionButton> _getTooltipActions() =>
+      (widget.tooltipActions?.isEmpty ?? true)
+          ? ShowCaseWidget.of(context).globalTooltipActions ?? []
+          : widget.tooltipActions ?? [];
+
+  TooltipActionConfig _getTooltipActionConfig() {
+    final showCaseState = ShowCaseWidget.of(context);
+    if (widget.tooltipActionConfig != null) {
+      return widget.tooltipActionConfig!;
+    } else if (showCaseState.globalTooltipActionConfig != null) {
+      return showCaseState.globalTooltipActionConfig!;
+    } else {
+      return const TooltipActionConfig();
+    }
   }
 }
 

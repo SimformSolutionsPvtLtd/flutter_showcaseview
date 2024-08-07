@@ -252,6 +252,8 @@ class Showcase extends StatefulWidget {
   /// Defaults to 7.
   final double toolTipSlideEndDistance;
 
+  final bool allowTargetInteraction;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -298,6 +300,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.allowTargetInteraction = false
   })  : height = null,
         width = null,
         container = null,
@@ -339,6 +342,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.allowTargetInteraction = false
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -587,6 +591,7 @@ class _ShowcaseState extends State<Showcase> {
         ),
         if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
         if (!_isScrollRunning) ...[
+          if(!widget.allowTargetInteraction)
           _TargetWidget(
             offset: rectBound.topLeft,
             size: size,

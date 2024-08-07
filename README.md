@@ -179,6 +179,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | descriptionTextDirection     | TextDirection?   |                                                  | Give textDirection to description                                                                  | ✅          |                  |
 | disableBarrierInteraction    | bool             | false                                            | Disables barrier interaction for a particular showCase                                             | ✅          | ✅                |
 | toolTipSlideEndDistance      | double           | 7                                                | Defines motion range for tooltip slide animation                                                   | ✅          | ✅                |
+| allowTargetInteraction      | boolean           | false                                            | Defines if target should be interactive                                                            | ✅          | ✅                |
 
 ## How to use
 

@@ -311,7 +311,9 @@ class Showcase extends StatefulWidget {
         assert(disposeOnTap == null || onTargetClick != null,
             "onTargetClick is required if you're using disposeOnTap"),
         assert(onBarrierClick == null || disableBarrierInteraction == false,
-            "can't use onBarrierClick & disableBarrierInteraction property at same time");
+            "can't use onBarrierClick & disableBarrierInteraction property at same time"),
+        assert(allowTargetInteraction == true && (onTargetClick != null || onTargetDoubleTap !=null || onTargetLongPress!=null),
+            "can't use allowTargetInteraction & onTargetClick,onTargetDoubleTap,onTargetLongPress property at same time");
 
   const Showcase.withWidget({
     required this.key,
@@ -366,7 +368,9 @@ class Showcase extends StatefulWidget {
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(onBarrierClick == null || disableBarrierInteraction == false,
-            "can't use onBarrierClick & disableBarrierInteraction property at same time");
+            "can't use onBarrierClick & disableBarrierInteraction property at same time"),
+        assert(allowTargetInteraction == true && (onTargetClick != null || onTargetDoubleTap !=null || onTargetLongPress!=null),
+            "can't use allowTargetInteraction & onTargetClick,onTargetDoubleTap,onTargetLongPress property at same time");
 
   @override
   State<Showcase> createState() => _ShowcaseState();

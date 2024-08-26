@@ -63,6 +63,7 @@ class ToolTipWidget extends StatefulWidget {
   final TextDirection? titleTextDirection;
   final TextDirection? descriptionTextDirection;
   final double toolTipSlideEndDistance;
+  final CrossAxisAlignment? titleDesCrossAxisAlignment;
 
   const ToolTipWidget({
     super.key,
@@ -97,6 +98,7 @@ class ToolTipWidget extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.toolTipSlideEndDistance = 7,
+    this.titleDesCrossAxisAlignment,
   });
 
   @override
@@ -434,9 +436,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                               padding: widget.tooltipPadding,
                               color: widget.tooltipBackgroundColor,
                               child: Column(
-                                crossAxisAlignment: widget.title != null
-                                    ? CrossAxisAlignment.start
-                                    : CrossAxisAlignment.center,
+                                crossAxisAlignment:
+                                    widget.titleDesCrossAxisAlignment ??
+                                        (widget.title != null
+                                            ? CrossAxisAlignment.start
+                                            : CrossAxisAlignment.center),
                                 children: <Widget>[
                                   if (widget.title != null)
                                     Padding(

@@ -27,6 +27,10 @@ import '../showcaseview.dart';
 class ShowCaseWidget extends StatefulWidget {
   final WidgetBuilder builder;
 
+  /// Creates a button that can be used to skip showCase. For onTap: create a
+  /// global key (final showCaseKey = GlobalKey<ShowCaseWidgetState>()
+  /// assign the key to ShowCaseWidget and use it like this:
+  /// onTap: () => showcaseKey.currentState?.dismiss();
   final Positioned? skipShowcaseWidget;
 
   /// Triggered when all the showcases are completed.

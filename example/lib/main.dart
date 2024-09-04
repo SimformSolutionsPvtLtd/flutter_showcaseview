@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final GlobalKey<ShowCaseWidgetState> _myWidgetKey =
+      GlobalKey<ShowCaseWidgetState>();
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +23,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: ShowCaseWidget(
+          key: _myWidgetKey,
+          skipShowcaseWidget: Positioned(
+            bottom: 10,
+            left: 10,
+            child: ElevatedButton(
+              child: const Text('Skip Showcase'),
+              onPressed: () => _myWidgetKey.currentState?.dismiss(),
+            ),
+          ),
           onStart: (index, key) {
             log('onStart: $index, $key');
           },

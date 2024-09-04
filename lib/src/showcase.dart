@@ -612,6 +612,7 @@ class _ShowcaseState extends State<Showcase> {
             tooltipBackgroundColor: widget.tooltipBackgroundColor,
             textColor: widget.textColor,
             showArrow: widget.showArrow,
+            staticContainer: showCaseWidgetState.skipShowcaseWidget,
             contentHeight: widget.height,
             contentWidth: widget.width,
             onTooltipTap: _getOnTooltipTap,

@@ -226,14 +226,14 @@ class _MailPageState extends State<MailPage> {
                       ),
                     ),
                     Showcase(
-                      // targetPadding: const EdgeInsets.all(5),
+                      targetPadding: const EdgeInsets.all(5),
                       key: _two,
-                      // title: 'Profile',
+                      title: 'Profile',
                       description:
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",
-                      // tooltipBackgroundColor: Theme.of(context).primaryColor,
-                      // textColor: Colors.white,
-                      // targetShapeBorder: const CircleBorder(),
+                      tooltipBackgroundColor: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      targetShapeBorder: const CircleBorder(),
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         width: 45,

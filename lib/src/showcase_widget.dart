@@ -27,6 +27,8 @@ import '../showcaseview.dart';
 class ShowCaseWidget extends StatefulWidget {
   final WidgetBuilder builder;
 
+  final Positioned? skipShowcaseWidget;
+
   /// Triggered when all the showcases are completed.
   final VoidCallback? onFinish;
 
@@ -83,22 +85,25 @@ class ShowCaseWidget extends StatefulWidget {
   /// Enable/disable showcase globally. Enabled by default.
   final bool enableShowcase;
 
-  const ShowCaseWidget({
-    required this.builder,
-    this.onFinish,
-    this.onStart,
-    this.onComplete,
-    this.autoPlay = false,
-    this.autoPlayDelay = const Duration(milliseconds: 2000),
-    this.enableAutoPlayLock = false,
-    this.blurValue = 0,
-    this.scrollDuration = const Duration(milliseconds: 300),
-    this.disableMovingAnimation = false,
-    this.disableScaleAnimation = false,
-    this.enableAutoScroll = false,
-    this.disableBarrierInteraction = false,
-    this.enableShowcase = true,
-  });
+  const ShowCaseWidget(
+      {required this.builder,
+      this.onFinish,
+      this.onStart,
+      this.onComplete,
+      this.autoPlay = false,
+      this.autoPlayDelay = const Duration(milliseconds: 2000),
+      this.enableAutoPlayLock = false,
+      this.blurValue = 0,
+      this.scrollDuration = const Duration(milliseconds: 300),
+      this.disableMovingAnimation = false,
+      this.disableScaleAnimation = false,
+      this.enableAutoScroll = false,
+      this.disableBarrierInteraction = false,
+      this.enableShowcase = true,
+      this.skipShowcaseWidget,
+      super.key});
+
+  void dismiss() {}
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
     return context
@@ -148,6 +153,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Returns value of [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
+
+  get skipShowcaseWidget => widget.skipShowcaseWidget;
 
   @override
   void initState() {

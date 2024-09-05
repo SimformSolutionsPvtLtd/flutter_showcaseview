@@ -27,7 +27,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'enum.dart';
-import 'extension.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
@@ -244,6 +243,15 @@ class Showcase extends StatefulWidget {
   /// will still provide a callback.
   final VoidCallback? onBarrierClick;
 
+  /// Disables barrier interaction for a particular showCase.
+  final bool disableBarrierInteraction;
+
+  /// Defines motion range for tooltip slide animation.
+  /// Which is from 0 to [toolTipSlideEndDistance].
+  ///
+  /// Defaults to 7.
+  final double toolTipSlideEndDistance;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -288,6 +296,8 @@ class Showcase extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
+    this.disableBarrierInteraction = false,
+    this.toolTipSlideEndDistance = 7,
   })  : height = null,
         width = null,
         container = null,
@@ -296,7 +306,9 @@ class Showcase extends StatefulWidget {
         assert(onTargetClick == null || disposeOnTap != null,
             "disposeOnTap is required if you're using onTargetClick"),
         assert(disposeOnTap == null || onTargetClick != null,
-            "onTargetClick is required if you're using disposeOnTap");
+            "onTargetClick is required if you're using disposeOnTap"),
+        assert(onBarrierClick == null || disableBarrierInteraction == false,
+            "can't use onBarrierClick & disableBarrierInteraction property at same time");
 
   const Showcase.withWidget({
     required this.key,
@@ -326,6 +338,8 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.onBarrierClick,
     this.onToolTipClick,
+    this.disableBarrierInteraction = false,
+    this.toolTipSlideEndDistance = 7,
   })  : showArrow = false,
         scaleAnimationDuration = const Duration(milliseconds: 300),
         scaleAnimationCurve = Curves.decelerate,
@@ -346,7 +360,9 @@ class Showcase extends StatefulWidget {
         titleTextDirection = null,
         descriptionTextDirection = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1.");
+            "overlay opacity must be between 0 and 1."),
+        assert(onBarrierClick == null || disableBarrierInteraction == false,
+            "can't use onBarrierClick & disableBarrierInteraction property at same time");
 
   @override
   State<Showcase> createState() => _ShowcaseState();
@@ -359,20 +375,32 @@ class _ShowcaseState extends State<Showcase> {
   bool _enableShowcase = true;
   Timer? timer;
   GetPosition? position;
+  Size? rootWidgetSize;
+  RenderBox? rootRenderObject;
 
-  ShowCaseWidgetState get showCaseWidgetState => ShowCaseWidget.of(context);
+  late final showCaseWidgetState = ShowCaseWidget.of(context);
+
+  @override
+  void initState() {
+    super.initState();
+    initRootWidget();
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _enableShowcase = showCaseWidgetState.enableShowcase;
 
+    recalculateRootWidgetSize();
+
     if (_enableShowcase) {
+      final size = MediaQuery.of(context).size;
       position ??= GetPosition(
+        rootRenderObject: rootRenderObject,
         key: widget.key,
         padding: widget.targetPadding,
-        screenWidth: MediaQuery.of(context).size.width,
-        screenHeight: MediaQuery.of(context).size.height,
+        screenWidth: rootWidgetSize?.width ?? size.width,
+        screenHeight: rootWidgetSize?.height ?? size.height,
       );
       showOverlay();
     }
@@ -399,7 +427,7 @@ class _ShowcaseState extends State<Showcase> {
   }
 
   void _scrollIntoView() {
-    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       setState(() => _isScrollRunning = true);
       await Scrollable.ensureVisible(
         widget.key.currentContext!,
@@ -414,9 +442,12 @@ class _ShowcaseState extends State<Showcase> {
   Widget build(BuildContext context) {
     if (_enableShowcase) {
       return AnchoredOverlay(
+        key: showCaseWidgetState.anchoredOverlayKey,
+        rootRenderObject: rootRenderObject,
         overlayBuilder: (context, rectBound, offset) {
-          final size = MediaQuery.of(context).size;
+          final size = rootWidgetSize ?? MediaQuery.of(context).size;
           position = GetPosition(
+            rootRenderObject: rootRenderObject,
             key: widget.key,
             padding: widget.targetPadding,
             screenWidth: size.width,
@@ -431,7 +462,29 @@ class _ShowcaseState extends State<Showcase> {
     return widget.child;
   }
 
+  void initRootWidget() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      rootWidgetSize = showCaseWidgetState.rootWidgetSize;
+      rootRenderObject = showCaseWidgetState.rootRenderObject;
+    });
+  }
+
+  void recalculateRootWidgetSize() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final rootWidget =
+          context.findRootAncestorStateOfType<State<WidgetsApp>>();
+      rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
+      rootWidgetSize = rootWidget == null
+          ? MediaQuery.of(context).size
+          : rootRenderObject?.size;
+    });
+  }
+
   Future<void> _nextIfAny() async {
+    if (showCaseWidgetState.isShowCaseCompleted) return;
+
     if (timer != null && timer!.isActive) {
       if (showCaseWidgetState.enableAutoPlayLock) {
         return;
@@ -441,6 +494,7 @@ class _ShowcaseState extends State<Showcase> {
       timer = null;
     }
     await _reverseAnimateTooltip();
+    if (showCaseWidgetState.isShowCaseCompleted) return;
     showCaseWidgetState.completed(widget.key);
   }
 
@@ -465,6 +519,7 @@ class _ShowcaseState extends State<Showcase> {
   /// Reverse animates the provided tooltip or
   /// the custom container widget.
   Future<void> _reverseAnimateTooltip() async {
+    if (!mounted) return;
     setState(() => _isTooltipDismissed = true);
     await Future<dynamic>.delayed(widget.scaleAnimationDuration);
     _isTooltipDismissed = false;
@@ -476,6 +531,7 @@ class _ShowcaseState extends State<Showcase> {
     Rect rectBound,
     Size screenSize,
   ) {
+    final mediaQuerySize = MediaQuery.of(context).size;
     var blur = 0.0;
     if (_showShowCase) {
       blur = widget.blurValue ?? showCaseWidgetState.blurValue;
@@ -491,7 +547,8 @@ class _ShowcaseState extends State<Showcase> {
       children: [
         GestureDetector(
           onTap: () {
-            if (!showCaseWidgetState.disableBarrierInteraction) {
+            if (!showCaseWidgetState.disableBarrierInteraction &&
+                !widget.disableBarrierInteraction) {
               _nextIfAny();
             }
             widget.onBarrierClick?.call();
@@ -510,8 +567,8 @@ class _ShowcaseState extends State<Showcase> {
                 ? BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
                     child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
+                      width: mediaQuerySize.width,
+                      height: mediaQuerySize.height,
                       decoration: BoxDecoration(
                         color: widget.overlayColor
                             .withOpacity(widget.overlayOpacity),
@@ -519,8 +576,8 @@ class _ShowcaseState extends State<Showcase> {
                     ),
                   )
                 : Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
+                    width: mediaQuerySize.width,
+                    height: mediaQuerySize.height,
                     decoration: BoxDecoration(
                       color: widget.overlayColor
                           .withOpacity(widget.overlayOpacity),
@@ -531,7 +588,7 @@ class _ShowcaseState extends State<Showcase> {
         if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
         if (!_isScrollRunning) ...[
           _TargetWidget(
-            offset: offset,
+            offset: rectBound.topLeft,
             size: size,
             onTap: _getOnTargetTap,
             radius: widget.targetBorderRadius,
@@ -539,6 +596,7 @@ class _ShowcaseState extends State<Showcase> {
             onLongPress: widget.onTargetLongPress,
             shapeBorder: widget.targetShapeBorder,
             disableDefaultChildGestures: widget.disableDefaultTargetGestures,
+            targetPadding: widget.targetPadding,
           ),
           ToolTipWidget(
             position: position,
@@ -573,6 +631,7 @@ class _ShowcaseState extends State<Showcase> {
             descriptionPadding: widget.descriptionPadding,
             titleTextDirection: widget.titleTextDirection,
             descriptionTextDirection: widget.descriptionTextDirection,
+            toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
           ),
         ],
       ],
@@ -582,31 +641,32 @@ class _ShowcaseState extends State<Showcase> {
 
 class _TargetWidget extends StatelessWidget {
   final Offset offset;
-  final Size? size;
+  final Size size;
   final VoidCallback? onTap;
   final VoidCallback? onDoubleTap;
   final VoidCallback? onLongPress;
-  final ShapeBorder? shapeBorder;
+  final ShapeBorder shapeBorder;
   final BorderRadius? radius;
   final bool disableDefaultChildGestures;
+  final EdgeInsets targetPadding;
 
   const _TargetWidget({
-    Key? key,
     required this.offset,
-    this.size,
+    required this.size,
+    required this.shapeBorder,
+    required this.targetPadding,
     this.onTap,
-    this.shapeBorder,
     this.radius,
     this.onDoubleTap,
     this.onLongPress,
     this.disableDefaultChildGestures = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: offset.dy,
-      left: offset.dx,
+      top: offset.dy - targetPadding.top,
+      left: offset.dx - targetPadding.left,
       child: disableDefaultChildGestures
           ? IgnorePointer(
               child: targetWidgetContent(),
@@ -616,23 +676,19 @@ class _TargetWidget extends StatelessWidget {
   }
 
   Widget targetWidgetContent() {
-    return FractionalTranslation(
-      translation: const Offset(-0.5, -0.5),
-      child: GestureDetector(
-        onTap: onTap,
-        onLongPress: onLongPress,
-        onDoubleTap: onDoubleTap,
-        child: Container(
-          height: size!.height + 16,
-          width: size!.width + 16,
-          decoration: ShapeDecoration(
-            shape: radius != null
-                ? RoundedRectangleBorder(borderRadius: radius!)
-                : shapeBorder ??
-                    const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      onDoubleTap: onDoubleTap,
+      behavior: HitTestBehavior.translucent,
+      child: Container(
+        height: size.height,
+        width: size.width,
+        margin: targetPadding,
+        decoration: ShapeDecoration(
+          shape: radius != null
+              ? RoundedRectangleBorder(borderRadius: radius!)
+              : shapeBorder,
         ),
       ),
     );

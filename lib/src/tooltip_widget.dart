@@ -27,13 +27,14 @@ import 'package:flutter/material.dart';
 import 'enum.dart';
 import 'get_position.dart';
 import 'measure_size.dart';
+import 'widget/tooltip_slide_transition.dart';
 
 const _kDefaultPaddingFromParent = 14.0;
 
 class ToolTipWidget extends StatefulWidget {
   final GetPosition? position;
   final Offset? offset;
-  final Size? screenSize;
+  final Size screenSize;
   final String? title;
   final TextAlign? titleAlignment;
   final String? description;
@@ -61,9 +62,10 @@ class ToolTipWidget extends StatefulWidget {
   final EdgeInsets? descriptionPadding;
   final TextDirection? titleTextDirection;
   final TextDirection? descriptionTextDirection;
+  final double toolTipSlideEndDistance;
 
   const ToolTipWidget({
-    Key? key,
+    super.key,
     required this.position,
     required this.offset,
     required this.screenSize,
@@ -94,7 +96,8 @@ class ToolTipWidget extends StatefulWidget {
     this.descriptionPadding,
     this.titleTextDirection,
     this.descriptionTextDirection,
-  }) : super(key: key);
+    this.toolTipSlideEndDistance = 7,
+  });
 
   @override
   State<ToolTipWidget> createState() => _ToolTipWidgetState();
@@ -122,12 +125,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         position.dy + ((widget.position?.getHeight() ?? 0) / 2);
     final topPosition = position.dy - ((widget.position?.getHeight() ?? 0) / 2);
     final hasSpaceInTop = topPosition >= height;
+    // TODO: need to update for flutter version > 3.8.X
+    // ignore: deprecated_member_use
     final EdgeInsets viewInsets = EdgeInsets.fromWindowPadding(
-        WidgetsBinding.instance.window.viewInsets,
-        WidgetsBinding.instance.window.devicePixelRatio);
+      // ignore: deprecated_member_use
+      WidgetsBinding.instance.window.viewInsets,
+      // ignore: deprecated_member_use
+      WidgetsBinding.instance.window.devicePixelRatio,
+    );
     final double actualVisibleScreenHeight =
-        (widget.screenSize?.height ?? MediaQuery.of(context).size.height) -
-            viewInsets.bottom;
+        widget.screenSize.height - viewInsets.bottom;
     final hasSpaceInBottom =
         (actualVisibleScreenHeight - bottomPosition) >= height;
     return widget.tooltipPosition ??
@@ -162,8 +169,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             (widget.descriptionPadding?.right ?? 0) +
             (widget.descriptionPadding?.left ?? 0));
     var maxTextWidth = max(titleLength, descriptionLength);
-    if (maxTextWidth > widget.screenSize!.width - tooltipScreenEdgePadding) {
-      tooltipWidth = widget.screenSize!.width - tooltipScreenEdgePadding;
+    if (maxTextWidth > widget.screenSize.width - tooltipScreenEdgePadding) {
+      tooltipWidth = widget.screenSize.width - tooltipScreenEdgePadding;
     } else {
       tooltipWidth = maxTextWidth + tooltipTextPadding;
     }
@@ -174,7 +181,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       final width =
           widget.container != null ? _customContainerWidth.value : tooltipWidth;
       double leftPositionValue = widget.position!.getCenter() - (width * 0.5);
-      if ((leftPositionValue + width) > MediaQuery.of(context).size.width) {
+      if ((leftPositionValue + width) > widget.screenSize.width) {
         return null;
       } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
         return _kDefaultPaddingFromParent;
@@ -191,10 +198,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
           widget.container != null ? _customContainerWidth.value : tooltipWidth;
 
       final left = _getLeft();
-      if (left == null || (left + width) > MediaQuery.of(context).size.width) {
+      if (left == null || (left + width) > widget.screenSize.width) {
         final rightPosition = widget.position!.getCenter() + (width * 0.5);
 
-        return (rightPosition + width) > MediaQuery.of(context).size.width
+        return (rightPosition + width) > widget.screenSize.width
             ? _kDefaultPaddingFromParent
             : null;
       } else {
@@ -206,8 +213,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   double _getSpace() {
     var space = widget.position!.getCenter() - (widget.contentWidth! / 2);
-    if (space + widget.contentWidth! > widget.screenSize!.width) {
-      space = widget.screenSize!.width - widget.contentWidth! - 8;
+    if (space + widget.contentWidth! > widget.screenSize.width) {
+      space = widget.screenSize.width - widget.contentWidth! - 8;
     } else if (space < (widget.contentWidth! / 2)) {
       space = 16;
     }
@@ -220,7 +227,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         ? 0
         : (widget.position!.getCenter() - calculatedLeft);
     var right = _getLeft() == null
-        ? (MediaQuery.of(context).size.width - widget.position!.getCenter()) -
+        ? (widget.screenSize.width - widget.position!.getCenter()) -
             (_getRight() ?? 0)
         : 0;
     final containerWidth =
@@ -308,8 +315,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   @override
   void didChangeDependencies() {
-    _getTooltipWidth();
     super.didChangeDependencies();
+    _getTooltipWidth();
+  }
+
+  @override
+  void didUpdateWidget(covariant ToolTipWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _getTooltipWidth();
   }
 
   @override
@@ -337,7 +350,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         contentOffsetMultiplier.clamp(-1.0, 0.0);
 
     var paddingTop = isArrowUp ? 22.0 : 0.0;
-    var paddingBottom = isArrowUp ? 0.0 : 27.0;
+    var paddingBottom = isArrowUp ? 0.0 : 22.0;
 
     if (!widget.showArrow) {
       paddingTop = 10;
@@ -365,10 +378,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
               ),
           child: FractionalTranslation(
             translation: Offset(0.0, contentFractionalOffset as double),
-            child: SlideTransition(
+            child: ToolTipSlideTransition(
               position: Tween<Offset>(
-                begin: Offset(0.0, contentFractionalOffset / 10),
-                end: const Offset(0.0, 0.100),
+                begin: Offset.zero,
+                end: Offset(
+                  0,
+                  widget.toolTipSlideEndDistance * contentOffsetMultiplier,
+                ),
               ).animate(_movingAnimation),
               child: Material(
                 type: MaterialType.transparency,
@@ -480,15 +496,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       children: <Widget>[
         Positioned(
           left: _getSpace(),
-          top: contentY - 10,
+          top: contentY - (10 * contentOffsetMultiplier),
           child: FractionalTranslation(
             translation: Offset(0.0, contentFractionalOffset as double),
-            child: SlideTransition(
+            child: ToolTipSlideTransition(
               position: Tween<Offset>(
-                begin: Offset(0.0, contentFractionalOffset / 10),
-                end: !widget.showArrow && !isArrowUp
-                    ? const Offset(0.0, 0.0)
-                    : const Offset(0.0, 0.100),
+                begin: Offset.zero,
+                end: Offset(
+                  0,
+                  widget.toolTipSlideEndDistance * contentOffsetMultiplier,
+                ),
               ).animate(_movingAnimation),
               child: Material(
                 color: Colors.transparent,
@@ -497,6 +514,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                   child: Container(
                     padding: EdgeInsets.only(
                       top: paddingTop,
+                      bottom: paddingBottom,
                     ),
                     color: Colors.transparent,
                     child: Center(
@@ -525,6 +543,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,
+      // TODO: replace this once we support sdk v3.12.
+      // ignore: deprecated_member_use
       textScaleFactor: MediaQuery.of(context).textScaleFactor,
       textDirection: TextDirection.ltr,
     )..layout();
@@ -539,7 +559,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
   double? _getArrowRight(double arrowWidth) {
     if (_getLeft() != null) return null;
-    return (MediaQuery.of(context).size.width - widget.position!.getCenter()) -
+    return (widget.screenSize.width - widget.position!.getCenter()) -
         (_getRight() ?? 0) -
         (arrowWidth / 2);
   }

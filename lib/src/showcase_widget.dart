@@ -25,7 +25,7 @@ import 'package:flutter/material.dart';
 import '../showcaseview.dart';
 
 class ShowCaseWidget extends StatefulWidget {
-  final Builder builder;
+  final WidgetBuilder builder;
 
   /// Triggered when all the showcases are completed.
   final VoidCallback? onFinish;
@@ -122,6 +122,9 @@ class ShowCaseWidget extends StatefulWidget {
 class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey>? ids;
   int? activeWidgetId;
+  RenderBox? rootRenderObject;
+  Size? rootWidgetSize;
+  Key? anchoredOverlayKey;
 
   /// These properties are only here so that it can be accessed by
   /// [Showcase]
@@ -141,8 +144,28 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   bool get enableShowcase => widget.enableShowcase;
 
+  bool get isShowCaseCompleted => ids == null && activeWidgetId == null;
+
   /// Returns value of [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
+
+  @override
+  void initState() {
+    super.initState();
+    initRootWidget();
+  }
+
+  void initRootWidget() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final rootWidget = context.findAncestorStateOfType<State<WidgetsApp>>();
+      rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
+      rootWidgetSize = rootWidget == null
+          ? MediaQuery.of(context).size
+          : rootRenderObject?.size;
+      anchoredOverlayKey = UniqueKey();
+    });
+  }
 
   /// Starts Showcase view from the beginning of specified list of widget ids.
   /// If this function is used when showcase has been disabled then it will
@@ -236,7 +259,9 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   Widget build(BuildContext context) {
     return _InheritedShowCaseView(
       activeWidgetIds: ids?.elementAt(activeWidgetId!),
-      child: widget.builder,
+      child: Builder(
+        builder: widget.builder,
+      ),
     );
   }
 }
@@ -246,8 +271,8 @@ class _InheritedShowCaseView extends InheritedWidget {
 
   const _InheritedShowCaseView({
     required this.activeWidgetIds,
-    required Widget child,
-  }) : super(child: child);
+    required super.child,
+  });
 
   @override
   bool updateShouldNotify(_InheritedShowCaseView oldWidget) =>

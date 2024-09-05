@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:example/detailscreen.dart';
-import 'package:example/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -36,8 +35,8 @@ class MyApp extends StatelessWidget {
             }
           },
           blurValue: 1,
-          builder: Builder(builder: (context) => const MailPage()),
           autoPlayDelay: const Duration(seconds: 3),
+          builder: (context) => const MailPage(),
         ),
       ),
     );
@@ -48,7 +47,7 @@ class MailPage extends StatefulWidget {
   const MailPage({Key? key}) : super(key: key);
 
   @override
-  _MailPageState createState() => _MailPageState();
+  State<MailPage> createState() => _MailPageState();
 }
 
 class _MailPageState extends State<MailPage> {
@@ -65,9 +64,7 @@ class _MailPageState extends State<MailPage> {
   void initState() {
     super.initState();
     //Start showcase view after current widget frames are drawn.
-    //NOTE: remove ambiguate function if you are using
-    //flutter version greater than 3.x and direct use WidgetsBinding.instance
-    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback(
+    WidgetsBinding.instance.addPostFrameCallback(
       (_) => ShowCaseWidget.of(context)
           .startShowCase([_one, _two, _three, _four, _five]),
     );
@@ -181,7 +178,6 @@ class _MailPageState extends State<MailPage> {
                                     Showcase(
                                       key: _one,
                                       description: 'Tap to see menu options',
-                                      disableDefaultTargetGestures: true,
                                       onBarrierClick: () =>
                                           debugPrint('Barrier clicked'),
                                       child: GestureDetector(

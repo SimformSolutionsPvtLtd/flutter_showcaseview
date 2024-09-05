@@ -1,3 +1,27 @@
+## [3.0.0]
+- [BREAKING] Fixed [#434](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/434) removed deprecated text style after Flutter 3.22 follow [migration guide](https://docs.flutter.dev/release/breaking-changes/3-19-deprecations#texttheme)
+- Updated minimum support to dart sdk 2.18.0
+- Fixed [#449](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/449) - Null check operator used on a null value
+- [BREAKING] Improvement [#400](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/400) - remove Builder widget
+- Fixed [#435](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/435) - Extra padding when add targetShapeBorder
+
+## [2.1.1]
+- Fixed [#425](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/425) - Unhandled breaking change in v2.1.0
+- Fixed [#428](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/428) - _ShowcaseState.recalculateRootWidgetSize null value
+
+## [2.1.0]
+- Feature [#420](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/420) - Dart SDK Upgrade
+- Fixed [#419](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/419) - Suppress Text Scale Factor Warning
+- Improvement [#413](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/413) - Improved `Showcase` class
+- Fixed [#369](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/369) - Fixed ToolTip Slide Transition
+- Fixed [#388](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/388) - Can't scroll horizontal list with showcase
+- Fixed [#366](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/366) - Null check operator used on a null value
+- Fixed [#389](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/389) - Ignore extra `_nextIfAny` function operations
+- Fixed [#409](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/409) - Fixed target hit area.
+- Improvement [#370](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/370) - Improved `GetPosition` class.
+- Feature [#387](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/387) - Provided barrier click disable functionality for a particular showcase.
+- Fixed [#383](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/383) - Targeted widget focusing issue when we applying size constraint on root widget(MaterialApp).
+
 ## [2.0.3]
 - Feature [#148](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/148) - Add feasibility to add `textDirection` of `title` and `description`.
 - Feature [#272](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/272) - Add barrier click callback.

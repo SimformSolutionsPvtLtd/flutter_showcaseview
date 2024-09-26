@@ -544,6 +544,7 @@ class _ShowcaseState extends State<Showcase> {
     if (!_showShowCase) return const Offstage();
 
     return Stack(
+      key: ValueKey<GlobalKey>(widget.key),
       children: [
         GestureDetector(
           onTap: () {

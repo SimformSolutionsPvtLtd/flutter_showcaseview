@@ -278,6 +278,32 @@ ShowCaseWidget(
 );
 ```
 
+## How to test
+
+In order to make sure that particular showcase was shown you can check for a presence of showcase
+overlay root widget. Key of that widget is `ValueKey(showcaseGlobalKey)`. Here `showcaseGlobalKey`
+is a key you defined for relevant `Showcase` widget.
+
+```dart
+void main() {
+  // ...
+  testWidgets('showcase', (tester) async {
+    final overlay = find.byKey(ValueKey(showcaseGlobalKey));
+    expect(overlay, findsOneWidget);
+
+    await tap(overlay);
+
+    // Make few pumps (note, that pumpAndSettle doesn't work for infinite animations)
+    for (int i = 0; i != 5; ++i) {
+      await pump(Duration(milliseconds: 200));
+    }
+
+    final overlayTapped = find.byKey(_overlayKeyFor(w1Key));
+    expect(overlayTapped, findsNothing);
+  });
+}
+```
+
 ## Main Contributors
 
 <table>

@@ -1,3 +1,7 @@
+## [3.0.1]
+- Support for tests: introduced a key for overlay root widget (which is Stack). It simplifies checks when we want to make sure that Showcase tooltip is shown (or is not shown)
+- Android: sdkVersions binded to flutter defaults.
+- Android: Kotlin Version set to 1.7.10 (former one is not supported anymore)
 ## [3.0.0]
 - [BREAKING] Fixed [#434](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/434) removed deprecated text style after Flutter 3.22 follow [migration guide](https://docs.flutter.dev/release/breaking-changes/3-19-deprecations#texttheme)
 - Updated minimum support to dart sdk 2.18.0

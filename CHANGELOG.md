@@ -1,3 +1,8 @@
+## [3.0.1]
+
+- Feature [#475](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/475) - Add
+  feasibility to change margin of tooltip with `toolTipMargin`.
+
 ## [3.0.0]
 - [BREAKING] Fixed [#434](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/434) removed deprecated text style after Flutter 3.22 follow [migration guide](https://docs.flutter.dev/release/breaking-changes/3-19-deprecations#texttheme)
 - Updated minimum support to dart sdk 2.18.0

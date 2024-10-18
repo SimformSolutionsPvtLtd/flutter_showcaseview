@@ -252,6 +252,9 @@ class Showcase extends StatefulWidget {
   /// Defaults to 7.
   final double toolTipSlideEndDistance;
 
+  /// Defines the position of the tooltip content.
+  final EdgeInsets? contentPosition;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -298,6 +301,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.contentPosition,
   })  : height = null,
         width = null,
         container = null,
@@ -322,6 +326,7 @@ class Showcase extends StatefulWidget {
       ),
     ),
     this.overlayColor = Colors.black45,
+    this.contentPosition,
     this.targetBorderRadius,
     this.overlayOpacity = 0.75,
     this.scrollLoadingWidget = const CircularProgressIndicator(
@@ -600,6 +605,7 @@ class _ShowcaseState extends State<Showcase> {
           ),
           ToolTipWidget(
             position: position,
+            contentPosition: widget.contentPosition,
             offset: offset,
             screenSize: screenSize,
             title: widget.title,

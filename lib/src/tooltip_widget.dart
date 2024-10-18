@@ -63,6 +63,7 @@ class ToolTipWidget extends StatefulWidget {
   final TextDirection? titleTextDirection;
   final TextDirection? descriptionTextDirection;
   final double toolTipSlideEndDistance;
+  final EdgeInsets? contentPosition;
 
   const ToolTipWidget({
     super.key,
@@ -97,6 +98,7 @@ class ToolTipWidget extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.toolTipSlideEndDistance = 7,
+    this.contentPosition,
   });
 
   @override
@@ -495,7 +497,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     return Stack(
       children: <Widget>[
         Positioned(
-          left: _getSpace(),
+          left: widget.contentPosition?.left ?? _getSpace(),
           top: contentY - (10 * contentOffsetMultiplier),
           child: FractionalTranslation(
             translation: Offset(0.0, contentFractionalOffset as double),

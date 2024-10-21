@@ -29,8 +29,6 @@ import 'get_position.dart';
 import 'measure_size.dart';
 import 'widget/tooltip_slide_transition.dart';
 
-const _kDefaultPaddingFromParent = 14.0;
-
 class ToolTipWidget extends StatefulWidget {
   final GetPosition? position;
   final Offset? offset;
@@ -63,6 +61,7 @@ class ToolTipWidget extends StatefulWidget {
   final TextDirection? titleTextDirection;
   final TextDirection? descriptionTextDirection;
   final double toolTipSlideEndDistance;
+  final double toolTipMargin;
 
   const ToolTipWidget({
     super.key,
@@ -89,6 +88,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.tooltipBorderRadius,
     required this.scaleAnimationDuration,
     required this.scaleAnimationCurve,
+    required this.toolTipMargin,
     this.scaleAnimationAlignment,
     this.isTooltipDismissed = false,
     this.tooltipPosition,
@@ -183,8 +183,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       double leftPositionValue = widget.position!.getCenter() - (width * 0.5);
       if ((leftPositionValue + width) > widget.screenSize.width) {
         return null;
-      } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
-        return _kDefaultPaddingFromParent;
+      } else if ((leftPositionValue) < widget.toolTipMargin) {
+        return widget.toolTipMargin;
       } else {
         return leftPositionValue;
       }
@@ -202,7 +202,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         final rightPosition = widget.position!.getCenter() + (width * 0.5);
 
         return (rightPosition + width) > widget.screenSize.width
-            ? _kDefaultPaddingFromParent
+            ? widget.toolTipMargin
             : null;
       } else {
         return null;

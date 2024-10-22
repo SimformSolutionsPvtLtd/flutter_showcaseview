@@ -284,6 +284,11 @@ class Showcase extends StatefulWidget {
   /// Default to [const TooltipActionConfig()]
   final TooltipActionConfig? tooltipActionConfig;
 
+  /// Defines the alignment for the auto scroll function.
+  ///
+  /// Defaults to 0.5.
+  final double scrollAlignment;
+
   /// Highlights a specific widget on the screen with an informative tooltip.
   ///
   /// This widget helps you showcase specific parts of your UI by drawing an
@@ -344,6 +349,7 @@ class Showcase extends StatefulWidget {
   ///   - `toolTipMargin`: The margin around the tooltip (defaults to 14dp).
   ///   - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
   ///   - `tooltipActionConfig`: Configuration options for custom tooltip actions.
+  ///   - `scrollAlignment`: Defines the alignment for the auto scroll function.
   ///
   /// **Assertions:**
   ///
@@ -400,6 +406,7 @@ class Showcase extends StatefulWidget {
     this.toolTipMargin = 14,
     this.tooltipActions,
     this.tooltipActionConfig,
+    this.scrollAlignment = 0.5,
   })  : height = null,
         width = null,
         container = null,
@@ -494,6 +501,7 @@ class Showcase extends StatefulWidget {
     this.toolTipSlideEndDistance = 7,
     this.tooltipActions,
     this.tooltipActionConfig,
+    this.scrollAlignment = 0.5,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -590,7 +598,7 @@ class _ShowcaseState extends State<Showcase> {
       await Scrollable.ensureVisible(
         widget.key.currentContext!,
         duration: showCaseWidgetState.widget.scrollDuration,
-        alignment: 0.5,
+        alignment: widget.scrollAlignment,
       );
       setState(() => _isScrollRunning = false);
     });

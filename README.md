@@ -131,6 +131,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | onFinish                  | VoidCallback?              |                              | Triggered when all the showcases are completed                                 |
 | enableShowcase            | bool                       | true                         | Enable or disable showcase globally.                                           |
 | toolTipMargin             | double                     | 14                           | For tooltip margin                                                             |
+| scrollAlignment           | double                     | 0.5                          | For Auto scroll widget alignment                                               |
 
 ## Properties of `Showcase` and `Showcase.withWidget`:
 

@@ -253,10 +253,14 @@ class Showcase extends StatefulWidget {
   final double toolTipSlideEndDistance;
 
   /// Defines the margin for the tooltip.
-  /// Which is from 0 to [toolTipSlideEndDistance].
   ///
   /// Defaults to 14.
   final double toolTipMargin;
+
+  /// Defines the alignment for the auto scroll function.
+  ///
+  /// Defaults to 0.5.
+  final double scrollAlignment;
 
   const Showcase({
     required this.key,
@@ -305,6 +309,7 @@ class Showcase extends StatefulWidget {
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
     this.toolTipMargin = 14,
+    this.scrollAlignment = 0.5,
   })  : height = null,
         width = null,
         container = null,
@@ -346,6 +351,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.scrollAlignment = 0.5,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -440,7 +446,7 @@ class _ShowcaseState extends State<Showcase> {
       await Scrollable.ensureVisible(
         widget.key.currentContext!,
         duration: showCaseWidgetState.widget.scrollDuration,
-        alignment: 0.5,
+        alignment: widget.scrollAlignment,
       );
       setState(() => _isScrollRunning = false);
     });

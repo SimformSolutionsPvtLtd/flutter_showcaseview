@@ -8,6 +8,8 @@
 - Feature ✨: Added `enableAutoScroll` to `showcase`.
 - Fix [#489](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/489) - Fixed
   mounter issue inside the `_scrollIntoView` function
+- Feature [#395](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/395) -
+  Added `floatingActionWidget` to give a static fixed widget at any place on the screen.
 
 ## [3.0.0]
 - [BREAKING] Fixed [#434](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/434) removed deprecated text style after Flutter 3.22 follow [migration guide](https://docs.flutter.dev/release/breaking-changes/3-19-deprecations#texttheme)

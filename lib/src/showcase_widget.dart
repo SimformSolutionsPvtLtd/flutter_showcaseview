@@ -83,10 +83,14 @@ class ShowCaseWidget extends StatefulWidget {
   /// Enable/disable showcase globally. Enabled by default.
   final bool enableShowcase;
 
+  /// Custom static floating action widget to show a static widget anywhere
+  /// on the screen for all the showcase widget
+  final FloatingActionWidget? globalFloatingActionWidget;
+
   /// Global action to apply on every tooltip widget
   final List<TooltipActionButton>? globalTooltipActions;
 
-  /// Global Config for tooltip action to auto apply for all the toolTip
+  /// Global Config for tooltip action to auto apply for all the toolTip.
   final TooltipActionConfig? globalTooltipActionConfig;
 
   /// A widget that manages multiple Showcase widgets.
@@ -115,6 +119,7 @@ class ShowCaseWidget extends StatefulWidget {
   /// - `enableShowcase`: Enables or disables the showcase functionality globally (defaults to `true`).
   /// - `globalTooltipActions`: A list of custom actions to be added to all tooltips.
   /// - `globalTooltipActionConfig`: Configuration options for the global tooltip actions.
+  /// - `floatingActionWidget`: Custom static floating action widget to show a static widget anywhere for all the showcase widgets
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -132,6 +137,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.enableShowcase = true,
     this.globalTooltipActionConfig,
     this.globalTooltipActions,
+    this.globalFloatingActionWidget,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {

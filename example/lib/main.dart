@@ -256,6 +256,24 @@ class _MailPageState extends State<MailPage> {
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
+                      floatingActionWidget: FloatingActionWidget(
+                        left: 16,
+                        bottom: 16,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            child: const Text(
+                              'Skip Showcase',
+                              style: TextStyle(
+                                color: Colors.pink,
+                                fontSize: 15,
+                              ),
+                            ),
+                            onPressed: () =>
+                                ShowCaseWidget.of(context).dismiss(),
+                          ),
+                        ),
+                      ),
                       targetShapeBorder: const CircleBorder(),
                       tooltipActionConfig: const TooltipActionConfig(
                         alignment: MainAxisAlignment.spaceBetween,
@@ -564,32 +582,37 @@ class MailTile extends StatelessWidget {
                     targetBorderRadius: const BorderRadius.all(
                       Radius.circular(150),
                     ),
-                    staticContainer: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Theme.of(context).primaryColor),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                    width: 2.0,
-                                  ),
+                    floatingActionWidget: FloatingActionWidget.directional(
+                      textDirection: Directionality.of(context),
+                      start: 0,
+                      bottom: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Theme.of(context).primaryColor),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2.0,
                                 ),
                               ),
                             ),
-                            child: const Text('Skip Showcase'),
-                            onPressed: () =>
-                                ShowCaseWidget.of(context).dismiss(),
                           ),
+                          child: const Text(
+                            'Skip Showcase',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                          ),
+                          onPressed: () => ShowCaseWidget.of(context).dismiss(),
                         ),
-                      ],
+                      ),
                     ),
                     container: Container(
                       padding: const EdgeInsets.all(10),

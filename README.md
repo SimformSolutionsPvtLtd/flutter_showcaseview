@@ -156,6 +156,8 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | globalTooltipActionConfig | TooltipActionConfig?       |                              | Global tooltip actionbar config                                                |
 | globalTooltipActions      | List<TooltipActionButton>? |                              | Global list of tooltip actions                                                 |
 | scrollAlignment           | double                     | 0.5                          | For Auto scroll widget alignment                                               |
+| globalTooltipActionConfig | FloatingActionWidget       |                              | Global Config for tooltip action to auto apply for all the toolTip             |
+
 
 ## Properties of `Showcase` and `Showcase.withWidget`:
 
@@ -210,6 +212,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | tooltipActions               | List<TooltipActionButton>? | []                                               | Provide a list of tooltip actions                                                                  | ✅          | ✅                |
 | tooltipActionConfig          | TooltipActionConfig?       |                                                  | Give configurations (alignment, position, etc...) to the tooltip actionbar                         | ✅          | ✅                |
 | enableAutoScroll             | bool?                      | ShowCaseWidget.enableAutoScroll                  | This is used to override the `ShowCaseWidget.enableAutoScroll` behaviour                           | ✅          | ✅                |
+| floatingActionWidget         | FloatingActionWidget       |                                                  | Provided a floating static action widget to show at any place on the screen                        | ✅          | ✅                |
 
 ## Properties of `TooltipActionButton` and `TooltipActionButton.custom`:
 

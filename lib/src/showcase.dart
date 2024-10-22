@@ -35,6 +35,7 @@ import 'shape_clipper.dart';
 import 'showcase_widget.dart';
 import 'tooltip_action_button_widget.dart';
 import 'tooltip_widget.dart';
+import 'widget/floating_action_widget.dart';
 
 class Showcase extends StatefulWidget {
   /// A key that is unique across the entire app.
@@ -96,8 +97,9 @@ class Showcase extends StatefulWidget {
   /// Custom tooltip widget when [Showcase.withWidget] is used.
   final Widget? container;
 
-  /// Custom static tooltip widget when [Showcase.withWidget] is used.
-  final Widget? staticContainer;
+  /// Custom static floating action widget to show a static widget anywhere
+  /// on the screen
+  final FloatingActionWidget? floatingActionWidget;
 
   /// Defines background color for tooltip widget.
   ///
@@ -418,10 +420,10 @@ class Showcase extends StatefulWidget {
     this.tooltipActionConfig,
     this.scrollAlignment = 0.5,
     this.enableAutoScroll,
+    this.floatingActionWidget,
   })  : height = null,
         width = null,
         container = null,
-        staticContainer = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(onTargetClick == null || disposeOnTap != null,
@@ -471,6 +473,7 @@ class Showcase extends StatefulWidget {
   /// - `toolTipSlideEndDistance`: The distance the tooltip slides in from the edge of the screen (defaults to 7dp).
   /// - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
   /// - `tooltipActionConfig`: Configuration options for custom tooltip actions.
+  /// - `floatingActionWidget`: Custom static floating action widget to show a static widget anywhere
   ///
   /// **Differences from default constructor:**
   ///
@@ -488,7 +491,7 @@ class Showcase extends StatefulWidget {
     required this.width,
     required this.container,
     required this.child,
-    this.staticContainer,
+    this.floatingActionWidget,
     this.targetShapeBorder = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8),
@@ -794,7 +797,8 @@ class _ShowcaseState extends State<Showcase> {
             titleTextStyle: widget.titleTextStyle,
             descTextStyle: widget.descTextStyle,
             container: widget.container,
-            staticContainer: widget.staticContainer,
+            floatingActionWidget: widget.floatingActionWidget ??
+                showCaseWidgetState.widget.globalFloatingActionWidget,
             tooltipBackgroundColor: widget.tooltipBackgroundColor,
             textColor: widget.textColor,
             showArrow: widget.showArrow,

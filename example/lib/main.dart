@@ -221,6 +221,38 @@ class _MailPageState extends State<MailPage> {
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
+                      floatingActionWidget: FloatingActionWidget(
+                        left: 0,
+                        bottom: 0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Theme.of(context).primaryColor),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            child: const Text(
+                              'Skip Showcase',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                              ),
+                            ),
+                            onPressed: () =>
+                                ShowCaseWidget.of(context).dismiss(),
+                          ),
+                        ),
+                      ),
                       targetShapeBorder: const CircleBorder(),
                       child: Container(
                         padding: const EdgeInsets.all(5),
@@ -415,6 +447,38 @@ class MailTile extends StatelessWidget {
                     targetShapeBorder: const CircleBorder(),
                     targetBorderRadius: const BorderRadius.all(
                       Radius.circular(150),
+                    ),
+                    floatingActionWidget: FloatingActionWidget.directional(
+                      textDirection: Directionality.of(context),
+                      start: 0,
+                      bottom: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Theme.of(context).primaryColor),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          child: const Text(
+                            'Skip Showcase',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                          ),
+                          onPressed: () => ShowCaseWidget.of(context).dismiss(),
+                        ),
+                      ),
                     ),
                     container: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

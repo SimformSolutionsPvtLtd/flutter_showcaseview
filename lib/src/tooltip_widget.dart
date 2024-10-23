@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'enum.dart';
 import 'get_position.dart';
 import 'measure_size.dart';
+import 'widget/floating_action_widget.dart';
 import 'widget/tooltip_slide_transition.dart';
 
 class ToolTipWidget extends StatefulWidget {
@@ -40,6 +41,7 @@ class ToolTipWidget extends StatefulWidget {
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final Widget? container;
+  final FloatingActionWidget? floatingActionWidget;
   final Color? tooltipBackgroundColor;
   final Color? textColor;
   final bool showArrow;
@@ -74,6 +76,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.titleTextStyle,
     required this.descTextStyle,
     required this.container,
+    required this.floatingActionWidget,
     required this.tooltipBackgroundColor,
     required this.textColor,
     required this.showArrow,
@@ -365,7 +368,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     }
 
     if (widget.container == null) {
-      return Positioned(
+      final defaultToolTipWidget = Positioned(
         top: contentY,
         left: _getLeft(),
         right: _getRight(),
@@ -491,8 +494,22 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
           ),
         ),
       );
+
+      if (widget.floatingActionWidget != null) {
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            defaultToolTipWidget,
+            widget.floatingActionWidget!,
+          ],
+        );
+      } else {
+        return defaultToolTipWidget;
+      }
     }
+
     return Stack(
+      fit: StackFit.expand,
       children: <Widget>[
         Positioned(
           left: _getSpace(),
@@ -529,6 +546,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             ),
           ),
         ),
+        if (widget.floatingActionWidget != null) widget.floatingActionWidget!,
       ],
     );
   }

@@ -9,7 +9,11 @@ class TooltipActionButtonWidget extends StatelessWidget {
     required this.showCaseState,
   });
 
+  /// This will provide the configuration for the action buttons
   final TooltipActionButton config;
+
+  /// This is used for [TooltipActionButton] to close, next and previous
+  /// showcase navigation
   final ShowCaseWidgetState showCaseState;
 
   @override
@@ -24,15 +28,10 @@ class TooltipActionButtonWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color: config.backgroundColor ?? theme.primaryColor,
               borderRadius: config.borderRadius,
-              border: Border.all(
-                color: config.borderColor ??
-                    config.backgroundColor ??
-                    theme.primaryColor,
-                width: config.borderWidth ?? 0,
-              ),
+              border: config.border,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (config.leadIcon != null)
                   Padding(
@@ -60,19 +59,7 @@ class TooltipActionButtonWidget extends StatelessWidget {
     if (config.onTap != null) {
       config.onTap?.call();
     } else {
-      switch (config.type) {
-        case TooltipDefaultActionType.next:
-          showCaseState.next();
-          break;
-        case TooltipDefaultActionType.previous:
-          showCaseState.previous();
-          break;
-        case TooltipDefaultActionType.skip:
-          showCaseState.dismiss();
-          break;
-        default:
-          throw ArgumentError('Invalid tooltip default action type');
-      }
+      config.type?.onTap(showCaseState);
     }
   }
 }

@@ -20,21 +20,17 @@
  * SOFTWARE.
  */
 
-import 'package:flutter/cupertino.dart';
+import 'showcase_widget.dart';
 
 enum TooltipPosition { top, bottom }
 
-enum TooltipActionPosition { outside, inside }
+enum TooltipActionPosition {
+  outside,
+  inside;
 
-enum TooltipActionAlignment {
-  left(MainAxisAlignment.start),
-  right(MainAxisAlignment.end),
-  spread(MainAxisAlignment.spaceBetween),
-  center(MainAxisAlignment.center);
+  bool get isInside => this == inside;
 
-  const TooltipActionAlignment(this.alignment);
-
-  final MainAxisAlignment alignment;
+  bool get isOutside => this == outside;
 }
 
 enum TooltipDefaultActionType {
@@ -47,4 +43,20 @@ enum TooltipDefaultActionType {
   });
 
   final String actionName;
+
+  void onTap(ShowCaseWidgetState showCaseState) {
+    switch (this) {
+      case TooltipDefaultActionType.next:
+        showCaseState.next();
+        break;
+      case TooltipDefaultActionType.previous:
+        showCaseState.previous();
+        break;
+      case TooltipDefaultActionType.skip:
+        showCaseState.dismiss();
+        break;
+      default:
+        throw ArgumentError('Invalid tooltip default action type');
+    }
+  }
 }

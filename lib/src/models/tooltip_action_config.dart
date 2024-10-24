@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import '../../showcaseview.dart';
 
 class TooltipActionConfig {
+  /// Configuration options for tooltip action buttons.
+
+  /// This class allows you to configure the overall appearance and layout of
+  /// action buttons within a tooltip widget.
   const TooltipActionConfig({
-    this.alignment = TooltipActionAlignment.left,
+    this.alignment = MainAxisAlignment.spaceBetween,
     this.actionGap = 5,
     this.padding = EdgeInsets.zero,
     this.position = TooltipActionPosition.inside,
     this.gapBetweenContentAndAction = 10,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
   });
 
   /// Defines tooltip action widget position.
@@ -19,8 +24,8 @@ class TooltipActionConfig {
 
   /// Defines the alignment of actions buttons of tooltip action widget
   ///
-  /// Default to [TooltipActionAlignment.left]
-  final TooltipActionAlignment alignment;
+  /// Default to [MainAxisAlignment.spaceBetween]
+  final MainAxisAlignment alignment;
 
   /// Defines the gap between the actions buttons of tooltip action widget
   ///
@@ -36,4 +41,9 @@ class TooltipActionConfig {
   ///
   /// Default to 10.0
   final double gapBetweenContentAndAction;
+
+  /// Defines running direction alignment for the Action widgets.
+  ///
+  /// Default to [crossAxisAlignment.start]
+  final CrossAxisAlignment crossAxisAlignment;
 }

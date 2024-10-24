@@ -1,3 +1,7 @@
+## [4.0.0]
+
+- Feature ✨: Added Action widget for tooltip
+
 ## [3.0.1]
 
 - Feature [#475](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/475) - Add

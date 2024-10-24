@@ -83,9 +83,38 @@ class ShowCaseWidget extends StatefulWidget {
   /// Enable/disable showcase globally. Enabled by default.
   final bool enableShowcase;
 
+  /// Global action to apply on every tooltip widget
   final List<TooltipActionButton>? globalTooltipActions;
+
+  /// Global Config for tooltip action to auto apply for all the toolTip
   final TooltipActionConfig? globalTooltipActionConfig;
 
+  /// A widget that manages multiple Showcase widgets.
+  ///
+  /// This widget provides a way to sequentially showcase multiple widgets
+  /// with customizable options like auto-play, animation, and user interaction.
+  ///
+  /// **Required arguments:**
+  ///
+  /// - `builder`: A builder function that returns a widget containing the `Showcase` widgets to be showcased.
+  ///
+  /// **Optional arguments:**
+  ///
+  /// - `onFinish`: A callback function triggered when all showcases are completed.
+  /// - `onStart`: A callback function triggered at the start of each showcase, providing the index and key of the target widget.
+  /// - `onComplete`: A callback function triggered at the completion of each showcase, providing the index and key of the target widget.
+  /// - `autoPlay`: Whether to automatically start showcasing the next widget after a delay (defaults to `false`).
+  /// - `autoPlayDelay`: The delay between each showcase during auto-play (defaults to 2 seconds).
+  /// - `enableAutoPlayLock`: Whether to block user interaction while auto-play is enabled (defaults to `false`).
+  /// - `blurValue`: The amount of background blur applied during the showcase (defaults to 0).
+  /// - `scrollDuration`: The duration of the scrolling animation when auto-scrolling to a target widget (defaults to 300 milliseconds).
+  /// - `disableMovingAnimation`: Disables the animation when moving the tooltip for all showcases (defaults to `false`).
+  /// - `disableScaleAnimation`: Disables the initial scale animation for all tooltips (defaults to `false`).
+  /// - `enableAutoScroll`: Enables automatic scrolling to bring the target widget into view (defaults to `false`).
+  /// - `disableBarrierInteraction`: Disables user interaction with the area outside the showcase overlay (defaults to `false`).
+  /// - `enableShowcase`: Enables or disables the showcase functionality globally (defaults to `true`).
+  /// - `globalTooltipActions`: A list of custom actions to be added to all tooltips.
+  /// - `globalTooltipActionConfig`: Configuration options for the global tooltip actions.
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -132,6 +161,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   Key? anchoredOverlayKey;
 
   late final TooltipActionConfig? globalTooltipActionConfig;
+
   late final List<TooltipActionButton>? globalTooltipActions;
 
   /// These properties are only here so that it can be accessed by

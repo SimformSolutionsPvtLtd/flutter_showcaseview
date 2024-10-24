@@ -83,6 +83,12 @@ class ShowCaseWidget extends StatefulWidget {
   /// Enable/disable showcase globally. Enabled by default.
   final bool enableShowcase;
 
+  /// Global action to apply on every tooltip widget
+  final List<TooltipActionButton>? globalTooltipActions;
+
+  /// Global Config for tooltip action to auto apply for all the toolTip
+  final TooltipActionConfig? globalTooltipActionConfig;
+
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -98,6 +104,8 @@ class ShowCaseWidget extends StatefulWidget {
     this.enableAutoScroll = false,
     this.disableBarrierInteraction = false,
     this.enableShowcase = true,
+    this.globalTooltipActionConfig,
+    this.globalTooltipActions,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -126,6 +134,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   Size? rootWidgetSize;
   Key? anchoredOverlayKey;
 
+  late final TooltipActionConfig? globalTooltipActionConfig;
+
+  late final List<TooltipActionButton>? globalTooltipActions;
+
   /// These properties are only here so that it can be accessed by
   /// [Showcase]
   bool get autoPlay => widget.autoPlay;
@@ -152,6 +164,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   void initState() {
     super.initState();
+    globalTooltipActions = widget.globalTooltipActions;
+    globalTooltipActionConfig = widget.globalTooltipActionConfig;
     initRootWidget();
   }
 

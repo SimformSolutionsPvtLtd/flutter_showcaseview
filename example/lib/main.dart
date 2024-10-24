@@ -232,6 +232,20 @@ class _MailPageState extends State<MailPage> {
                         ),
                         child: Image.asset('assets/simform.png'),
                       ),
+                      toolTipAction: DefaultToolTipAction(
+                        color: Colors.white,
+                        showCaseWidgetState: ShowCaseWidget.of(context),
+                        back: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                        forward: const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
+                        onBackPress: () => debugPrint('Back Pressed!'),
+                        onForwardPress: () => debugPrint('Forward Pressed!'),
+                      ),
                     ),
                     const SizedBox(
                       width: 12,
@@ -311,27 +325,28 @@ class _MailPageState extends State<MailPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Showcase(
-            key: key,
-            description: 'Tap to check mail',
-            tooltipPosition: TooltipPosition.top,
-            disposeOnTap: true,
-            onTargetClick: () {
-              Navigator.push<void>(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (_) => const Detail(),
-                ),
-              ).then((_) {
-                setState(() {
-                  ShowCaseWidget.of(context).startShowCase([_four, _five]);
-                });
+          key: key,
+          description: 'Tap to check mail',
+          tooltipPosition: TooltipPosition.top,
+          disposeOnTap: true,
+          onTargetClick: () {
+            Navigator.push<void>(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const Detail(),
+              ),
+            ).then((_) {
+              setState(() {
+                ShowCaseWidget.of(context).startShowCase([_four, _five]);
               });
-            },
-            child: MailTile(
-              mail: mail,
-              showCaseKey: _four,
-              showCaseDetail: showCaseDetail,
-            )),
+            });
+          },
+          child: MailTile(
+            mail: mail,
+            showCaseKey: _four,
+            showCaseDetail: showCaseDetail,
+          ),
+        ),
       ),
     );
   }
@@ -445,6 +460,12 @@ class MailTile extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         )
                       ],
+                    ),
+                    toolTipAction: DefaultToolTipAction(
+                      color: Colors.white,
+                      showCaseWidgetState: ShowCaseWidget.of(context),
+                      onBackPress: () => debugPrint('Back Pressed!'),
+                      onForwardPress: () => debugPrint('Forward Pressed!'),
                     ),
                     child: const SAvatarExampleChild(),
                   )

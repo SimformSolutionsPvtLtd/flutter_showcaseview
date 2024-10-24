@@ -231,6 +231,11 @@ class Showcase extends StatefulWidget {
   /// Provides padding around the description. Default padding is zero.
   final EdgeInsets? descriptionPadding;
 
+  /// Provides tooTip action widgets at bottom in tool tip.
+  ///
+  /// one can use [DefaultToolTipActionWidget] class to use default action
+  final Widget? toolTipAction;
+
   /// Provides text direction of tooltip title.
   final TextDirection? titleTextDirection;
 
@@ -299,6 +304,7 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.toolTipAction,
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
@@ -346,6 +352,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.toolTipAction,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -637,6 +644,7 @@ class _ShowcaseState extends State<Showcase> {
             tooltipPosition: widget.tooltipPosition,
             titlePadding: widget.titlePadding,
             descriptionPadding: widget.descriptionPadding,
+            toolTipAction: widget.toolTipAction,
             titleTextDirection: widget.titleTextDirection,
             descriptionTextDirection: widget.descriptionTextDirection,
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,

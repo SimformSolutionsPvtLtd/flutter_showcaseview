@@ -26,11 +26,10 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'enum.dart';
+import '../showcaseview.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
-import 'showcase_widget.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
@@ -258,6 +257,19 @@ class Showcase extends StatefulWidget {
   /// Defaults to 14.
   final double toolTipMargin;
 
+  /// Defines tooltip action widget position.
+  /// It can be inside the tooltip widget or outside.
+  /// Provides tooTip action widgets at bottom in tooltip.
+  ///
+  /// one can use [TooltipActionButton] class to use default action
+  final List<TooltipActionButton>? tooltipActions;
+
+  /// Provide a configuration for tooltip action widget like alignment,
+  /// position, gap, etc...
+  ///
+  /// Default to [const TooltipActionConfig()]
+  final TooltipActionConfig? tooltipActionConfig;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -299,12 +311,14 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
+    this.tooltipActions,
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
     this.toolTipMargin = 14,
+    this.tooltipActionConfig,
   })  : height = null,
         width = null,
         container = null,
@@ -346,6 +360,8 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.tooltipActions,
+    this.tooltipActionConfig,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -641,10 +657,59 @@ class _ShowcaseState extends State<Showcase> {
             descriptionTextDirection: widget.descriptionTextDirection,
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
             toolTipMargin: widget.toolTipMargin,
+            tooltipActionConfig: _getTooltipActionConfig(),
+            tooltipActions: _getTooltipActions(),
           ),
         ],
       ],
     );
+  }
+
+  List<Widget> _getTooltipActions() {
+    final showCaseState = ShowCaseWidget.of(context);
+    final actionData = (widget.tooltipActions?.isEmpty ?? true)
+        ? showCaseState.globalTooltipActions ?? []
+        : widget.tooltipActions ?? [];
+
+    final actionWidgets = <Widget>[];
+    for (var action = 0; action < actionData.length; action++) {
+      /// This checks that if it is first or last tooltip and
+      /// [shouldShowForLastTooltip] or [shouldShowForFirstTooltip] is true
+      /// then we will ignore that action
+      if (((showCaseState.activeWidgetId == 0 &&
+                  actionData[action].shouldShowForFirstTooltip) ||
+              (showCaseState.activeWidgetId ==
+                      (showCaseState.ids?.length ?? 0) - 1 &&
+                  !actionData[action].shouldShowForLastTooltip)) &&
+          (widget.tooltipActions?.isEmpty ?? true)) {
+        continue;
+      }
+      actionWidgets.add(
+        Padding(
+          padding: EdgeInsetsDirectional.only(
+            end: action < actionData.length - 1
+                ? _getTooltipActionConfig().actionGap
+                : 0,
+          ),
+          child: TooltipActionButtonWidget(
+            config: actionData[action],
+            showCaseState: ShowCaseWidget.of(context),
+          ),
+        ),
+      );
+    }
+    return actionWidgets;
+  }
+
+  TooltipActionConfig _getTooltipActionConfig() {
+    final showCaseState = ShowCaseWidget.of(context);
+    if (widget.tooltipActionConfig != null) {
+      return widget.tooltipActionConfig!;
+    } else if (showCaseState.globalTooltipActionConfig != null) {
+      return showCaseState.globalTooltipActionConfig!;
+    } else {
+      return const TooltipActionConfig();
+    }
   }
 }
 

@@ -25,11 +25,15 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:showcaseview/showcaseview.dart';
 
+import 'enum.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
+import 'models/tooltip_action_button.dart';
+import 'models/tooltip_action_config.dart';
 import 'shape_clipper.dart';
+import 'showcase_widget.dart';
+import 'tooltip_action_button_widget.dart';
 import 'tooltip_widget.dart';
 
 class Showcase extends StatefulWidget {
@@ -257,7 +261,7 @@ class Showcase extends StatefulWidget {
   /// Defaults to 14.
   final double toolTipMargin;
 
-  /// Provides tooTip action widgets at bottom in tooltip.
+  /// Provides toolTip action widgets at bottom in tooltip.
   ///
   /// one can use [TooltipActionButton] class to use default action
   final List<TooltipActionButton>? tooltipActions;
@@ -268,6 +272,71 @@ class Showcase extends StatefulWidget {
   /// Default to [const TooltipActionConfig()]
   final TooltipActionConfig? tooltipActionConfig;
 
+  /// Highlights a specific widget on the screen with an informative tooltip.
+  ///
+  /// This widget helps you showcase specific parts of your UI by drawing an
+  /// overlay around it and displaying a description. You can customize the
+  /// appearance and behavior of the showcase and tooltip for a seamless user
+  /// experience.
+  ///
+  /// **Required arguments:**
+  ///
+  /// - `key`: A unique key for this Showcase widget.
+  /// - `description`: A description of the widget being showcased.
+  /// - `child`: The widget you want to highlight.
+  ///
+  /// **Optional arguments:**
+  ///
+  /// **Tooltip:**
+  ///   - `title`: An optional title for the tooltip.
+  ///   - `titleAlignment`: Alignment of the title text within the tooltip (defaults to start).
+  ///   - `descriptionAlignment`: Alignment of the description text within the tooltip (defaults to start).
+  ///   - `titleTextStyle`: Style properties for the title text.
+  ///   - `descTextStyle`: Style properties for the description text.
+  ///   - `tooltipBackgroundColor`: Background color of the tooltip (defaults to white).
+  ///   - `textColor`: Color of the text in the tooltip (defaults to black).
+  ///   - `tooltipPadding`: Padding around the content inside the tooltip.
+  ///   - `onToolTipClick`: A callback function called when the user clicks the tooltip.
+  ///   - `tooltipBorderRadius`: The border radius of the tooltip (defaults to 8dp).
+  ///
+  /// **Highlight:**
+  ///   - `targetShapeBorder`: The border to draw around the showcased widget (defaults to a rounded rectangle).
+  ///   - `targetPadding`: Padding around the showcased widget (defaults to none).
+  ///   - `showArrow`: Whether to show an arrow pointing to the showcased widget (defaults to true).
+  ///
+  /// **Animations:**
+  ///   - `movingAnimationDuration`: Duration of the animation when moving the tooltip (defaults to 2 seconds).
+  ///   - `disableMovingAnimation`: Disables the animation when moving the tooltip.
+  ///   - `disableScaleAnimation`: Disables the animation when scaling the tooltip.
+  ///   - `scaleAnimationDuration`: Duration of the animation when scaling the tooltip (defaults to 300 milliseconds).
+  ///   - `scaleAnimationCurve`: The curve used for the scaling animation (defaults to ease-in).
+  ///   - `scaleAnimationAlignment`: The alignment point for the scaling animation.
+  ///
+  /// **Interactions:**
+  ///   - `onTargetClick`: A callback function called when the user clicks the showcased widget.
+  ///   - `disposeOnTap`: Whether to dispose of the showcase after a tap on the showcased widget (requires `onTargetClick`).
+  ///   - `onTargetLongPress`: A callback function called when the user long-presses the showcased widget.
+  ///   - `onTargetDoubleTap`: A callback function called when the user double-taps the showcased widget.
+  ///   - `disableDefaultTargetGestures`: Disables default gestures on the target widget (panning, zooming).
+  ///   - `onBarrierClick`: A callback function called when the user clicks outside the showcase overlay.
+  ///   - `disableBarrierInteraction`: Disables user interaction with the area outside the showcase overlay.
+  ///
+  /// **Advanced:**
+  ///   - `container`: A custom widget to use as the tooltip instead of the default one.
+  ///   - `overlayColor`: Color of the showcase overlay (defaults to black with 75% opacity).
+  ///   - `overlayOpacity`: Opacity of the showcase overlay (0.0 to 1.0).
+  ///   - `scrollLoadingWidget`: A widget to display while content is loading (for infinite scrolling scenarios).
+  ///   - `blurValue`: The amount of background blur applied during the showcase.
+  ///   - `tooltipPosition`: The position of the tooltip relative to the showcased widget.
+  ///   - `toolTipSlideEndDistance`: The distance the tooltip slides in from the edge of the screen (defaults to 7dp).
+  ///   - `toolTipMargin`: The margin around the tooltip (defaults to 14dp).
+  ///   - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
+  ///   - `tooltipActionConfig`: Configuration options for custom tooltip actions.
+  ///
+  /// **Assertions:**
+  ///
+  /// - `overlayOpacity` must be between 0.0 and 1.0.
+  /// - `onTargetClick` and `disposeOnTap` must be used together (one cannot exist without the other).
   const Showcase({
     required this.key,
     required this.description,
@@ -309,16 +378,16 @@ class Showcase extends StatefulWidget {
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
-    this.tooltipActions,
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
     this.toolTipMargin = 14,
+    this.tooltipActions,
     this.tooltipActionConfig,
-  })  : width = null,
-        height = null,
+  })  : height = null,
+        width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
@@ -329,6 +398,57 @@ class Showcase extends StatefulWidget {
         assert(onBarrierClick == null || disableBarrierInteraction == false,
             "can't use onBarrierClick & disableBarrierInteraction property at same time");
 
+  /// Creates a Showcase widget with a custom tooltip widget.
+  ///
+  /// This constructor allows you to provide a completely custom widget
+  /// for the tooltip instead of using the default one with title and
+  /// description.  This gives you more flexibility in designing the
+  /// appearance and behavior of the tooltip.
+  ///
+  /// **Required arguments:**
+  ///
+  /// - `key`: A unique key for this Showcase widget.
+  /// - `height`: The height of the custom tooltip widget.
+  /// - `width`: The width of the custom tooltip widget.
+  /// - `container`: The custom widget to use as the tooltip.
+  /// - `child`: The widget you want to highlight.
+  ///
+  /// **Optional arguments:**
+  ///
+  /// **Highlight:**
+  /// - `targetShapeBorder`: The border to draw around the showcased widget (defaults to a rounded rectangle).
+  /// - `targetBorderRadius`: The border radius of the showcased widget.
+  /// - `overlayColor`: Color of the showcase overlay (defaults to black with 75% opacity).
+  /// - `overlayOpacity`: Opacity of the showcase overlay (0.0 to 1.0).
+  /// - `scrollLoadingWidget`: A widget to display while content is loading (for infinite scrolling scenarios).
+  /// - `onTargetClick`: A callback function called when the user clicks the showcased widget.
+  /// - `disposeOnTap`: Whether to dispose of the showcase after a tap on the showcased widget (requires `onTargetClick`).
+  /// - `movingAnimationDuration`: Duration of the animation when moving the tooltip (defaults to 2 seconds).
+  /// - `disableMovingAnimation`: Disables the animation when moving the tooltip.
+  /// - `targetPadding`: Padding around the showcased widget (defaults to none).
+  /// - `blurValue`: The amount of background blur applied during the showcase.
+  /// - `onTargetLongPress`: A callback function called when the user long-presses the showcased widget.
+  /// - `onTargetDoubleTap`: A callback function called when the user double-taps the showcased widget.
+  /// - `disableDefaultTargetGestures`: Disables default gestures on the target widget (panning, zooming).
+  /// - `tooltipPosition`: The position of the tooltip relative to the showcased widget.
+  /// - `onBarrierClick`: A callback function called when the user clicks outside the showcase overlay.
+  /// - `disableBarrierInteraction`: Disables user interaction with the area outside the showcase overlay.
+  ///
+  /// **Advanced:**
+  /// - `toolTipSlideEndDistance`: The distance the tooltip slides in from the edge of the screen (defaults to 7dp).
+  /// - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
+  /// - `tooltipActionConfig`: Configuration options for custom tooltip actions.
+  ///
+  /// **Differences from default constructor:**
+  ///
+  /// - This constructor doesn't require `title` or `description` arguments.
+  /// - By default, the tooltip won't have an arrow pointing to the target widget (`showArrow` is set to `false`).
+  /// - Default click behavior is disabled (`onToolTipClick` is set to `null`).
+  /// - Default animation settings are slightly different (e.g., `scaleAnimationCurve` is `Curves.decelerate`).
+  ///
+  /// **Assertions:**
+  ///   - `overlayOpacity` must be between 0.0 and 1.0.
+  ///   - `onBarrierClick` cannot be used with `disableBarrierInteraction`.
   const Showcase.withWidget({
     required this.key,
     required this.height,
@@ -655,9 +775,6 @@ class _ShowcaseState extends State<Showcase> {
             descriptionTextDirection: widget.descriptionTextDirection,
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
             toolTipMargin: widget.toolTipMargin,
-            tooltipActionPosition: widget.tooltipActionPosition,
-            gapBetweenContentAndAction: widget.gapBetweenContentAndAction,
-            showCaseState: ShowCaseWidget.of(context),
             tooltipActionConfig: _getTooltipActionConfig(),
             tooltipActions: _getTooltipActions(),
           ),
@@ -666,20 +783,45 @@ class _ShowcaseState extends State<Showcase> {
     );
   }
 
-  List<TooltipActionButton> _getTooltipActions() =>
-      (widget.tooltipActions?.isEmpty ?? true)
-          ? ShowCaseWidget.of(context).globalTooltipActions ?? []
-          : widget.tooltipActions ?? [];
+  List<Widget> _getTooltipActions() {
+    final actionData = (widget.tooltipActions?.isNotEmpty ?? false)
+        ? widget.tooltipActions!
+        : showCaseWidgetState.globalTooltipActions ?? [];
+
+    final actionWidgets = <Widget>[];
+    for (final action in actionData) {
+      /// This checks that if current widget is being showcased and there is
+      /// no local action has been provided and global action are needed to hide
+      /// then it will hide that action for current widget
+      if (_showShowCase &&
+          action.hideActionWidgetForShowcase.contains(widget.key) &&
+          (widget.tooltipActions?.isEmpty ?? true)) {
+        continue;
+      }
+      actionWidgets.add(
+        Padding(
+          padding: EdgeInsetsDirectional.only(
+            end: action != actionData.last
+                ? _getTooltipActionConfig().actionGap
+                : 0,
+          ),
+          child: TooltipActionButtonWidget(
+            config: action,
+            // We have to pass showcaseState from here because
+            // [TooltipActionButtonWidget] is not direct child of showcaseWidget
+            // so it won't be able to get the state by using it's context
+            showCaseState: showCaseWidgetState,
+          ),
+        ),
+      );
+    }
+    return actionWidgets;
+  }
 
   TooltipActionConfig _getTooltipActionConfig() {
-    final showCaseState = ShowCaseWidget.of(context);
-    if (widget.tooltipActionConfig != null) {
-      return widget.tooltipActionConfig!;
-    } else if (showCaseState.globalTooltipActionConfig != null) {
-      return showCaseState.globalTooltipActionConfig!;
-    } else {
-      return const TooltipActionConfig();
-    }
+    return widget.tooltipActionConfig ??
+        showCaseWidgetState.globalTooltipActionConfig ??
+        const TooltipActionConfig();
   }
 }
 

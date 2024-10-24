@@ -7,6 +7,12 @@ import 'package:showcaseview/showcaseview.dart';
 
 void main() => runApp(const MyApp());
 
+/// Global key for the first showcase widget
+final GlobalKey _firstShowcaseWidget = GlobalKey();
+
+/// Global key for the last showcase widget
+final GlobalKey _lastShowcaseWidget = GlobalKey();
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -39,8 +45,29 @@ class MyApp extends StatelessWidget {
           builder: (context) => const MailPage(),
           globalTooltipActionConfig: const TooltipActionConfig(
             position: TooltipActionPosition.inside,
-            alignment: TooltipActionAlignment.spread,
+            alignment: MainAxisAlignment.spaceBetween,
+            actionGap: 20,
           ),
+          globalTooltipActions: [
+            // Here we don't need previous action for the first showcase widget
+            // so we hide this action for the first showcase widget
+            TooltipActionButton(
+              type: TooltipDefaultActionType.previous,
+              textStyle: const TextStyle(
+                color: Colors.white,
+              ),
+              hideActionWidgetForShowcase: [_firstShowcaseWidget],
+            ),
+            // Here we don't need next action for the last showcase widget so we
+            // hide this action for the last showcase widget
+            TooltipActionButton(
+              type: TooltipDefaultActionType.next,
+              textStyle: const TextStyle(
+                color: Colors.white,
+              ),
+              hideActionWidgetForShowcase: [_lastShowcaseWidget],
+            ),
+          ],
         ),
       ),
     );
@@ -55,11 +82,9 @@ class MailPage extends StatefulWidget {
 }
 
 class _MailPageState extends State<MailPage> {
-  final GlobalKey _one = GlobalKey();
   final GlobalKey _two = GlobalKey();
   final GlobalKey _three = GlobalKey();
   final GlobalKey _four = GlobalKey();
-  final GlobalKey _five = GlobalKey();
   List<Mail> mails = [];
 
   final scrollController = ScrollController();
@@ -69,8 +94,8 @@ class _MailPageState extends State<MailPage> {
     super.initState();
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ShowCaseWidget.of(context)
-          .startShowCase([_one, _two, _three, _four, _five]),
+      (_) => ShowCaseWidget.of(context).startShowCase(
+          [_firstShowcaseWidget, _two, _three, _four, _lastShowcaseWidget]),
     );
     mails = [
       Mail(
@@ -180,21 +205,16 @@ class _MailPageState extends State<MailPage> {
                                 child: Row(
                                   children: <Widget>[
                                     Showcase(
-                                      key: _one,
+                                      key: _firstShowcaseWidget,
                                       description: 'Tap to see menu options',
                                       onBarrierClick: () =>
                                           debugPrint('Barrier clicked'),
                                       tooltipActionConfig:
                                           const TooltipActionConfig(
-                                        alignment: TooltipActionAlignment.right,
+                                        alignment: MainAxisAlignment.end,
                                         position: TooltipActionPosition.outside,
                                         gapBetweenContentAndAction: 10,
                                       ),
-                                      tooltipActions: [
-                                        TooltipActionButton.withDefault(
-                                          type: TooltipDefaultActionType.next,
-                                        ),
-                                      ],
                                       child: GestureDetector(
                                         onTap: () =>
                                             debugPrint('menu button clicked'),
@@ -237,19 +257,26 @@ class _MailPageState extends State<MailPage> {
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
                       targetShapeBorder: const CircleBorder(),
-                      tooltipActions: [
-                        TooltipActionButton.withDefault(
+                      tooltipActionConfig: const TooltipActionConfig(
+                        alignment: MainAxisAlignment.spaceBetween,
+                        gapBetweenContentAndAction: 10,
+                        position: TooltipActionPosition.outside,
+                      ),
+                      tooltipActions: const [
+                        TooltipActionButton(
                           backgroundColor: Colors.transparent,
                           type: TooltipDefaultActionType.previous,
-                          padding: EdgeInsets.zero,
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
-                        TooltipActionButton.withDefault(
+                        TooltipActionButton(
                           type: TooltipDefaultActionType.next,
                           backgroundColor: Colors.white,
-                          textStyle: const TextStyle(
+                          textStyle: TextStyle(
                             color: Colors.pinkAccent,
                           ),
-                        )
+                        ),
                       ],
                       child: Container(
                         padding: const EdgeInsets.all(5),
@@ -302,17 +329,13 @@ class _MailPageState extends State<MailPage> {
         ),
       ),
       floatingActionButton: Showcase(
-        key: _five,
+        key: _lastShowcaseWidget,
         title: 'Compose Mail',
         description: 'Click here to compose mail',
         targetShapeBorder: const CircleBorder(),
         showArrow: false,
-        tooltipActionConfig: const TooltipActionConfig(
-          alignment: TooltipActionAlignment.spread,
-          actionGap: 15,
-        ),
         tooltipActions: [
-          TooltipActionButton.withDefault(
+          TooltipActionButton(
               type: TooltipDefaultActionType.previous,
               name: 'Back',
               onTap: () {
@@ -323,20 +346,19 @@ class _MailPageState extends State<MailPage> {
               textStyle: const TextStyle(
                 color: Colors.pink,
               )),
-          TooltipActionButton.withDefault(
-            type: TooltipDefaultActionType.next,
+          const TooltipActionButton(
+            type: TooltipDefaultActionType.skip,
             name: 'Close',
-            tailIcon: const ActionButtonIcon.withIcon(
+            textStyle: TextStyle(
+              color: Colors.white,
+            ),
+            tailIcon: ActionButtonIcon(
               icon: Icon(
                 Icons.close,
                 color: Colors.white,
                 size: 15,
               ),
             ),
-            onTap: () {
-              // Write your code on button tap
-              ShowCaseWidget.of(context).next();
-            },
           ),
         ],
         child: FloatingActionButton(
@@ -347,8 +369,13 @@ class _MailPageState extends State<MailPage> {
                * currently rendered so the showcased keys are available in the
                * render tree. */
               scrollController.jumpTo(0);
-              ShowCaseWidget.of(context)
-                  .startShowCase([_one, _two, _three, _four, _five]);
+              ShowCaseWidget.of(context).startShowCase([
+                _firstShowcaseWidget,
+                _two,
+                _three,
+                _four,
+                _lastShowcaseWidget
+              ]);
             });
           },
           child: const Icon(
@@ -375,7 +402,6 @@ class _MailPageState extends State<MailPage> {
         child: Showcase(
           key: key,
           description: 'Tap to check mail',
-          tooltipPosition: TooltipPosition.top,
           disposeOnTap: true,
           onTargetClick: () {
             Navigator.push<void>(
@@ -385,10 +411,45 @@ class _MailPageState extends State<MailPage> {
               ),
             ).then((_) {
               setState(() {
-                ShowCaseWidget.of(context).startShowCase([_four, _five]);
+                ShowCaseWidget.of(context)
+                    .startShowCase([_four, _lastShowcaseWidget]);
               });
             });
           },
+          tooltipActionConfig: const TooltipActionConfig(
+            alignment: MainAxisAlignment.spaceBetween,
+            actionGap: 16,
+            position: TooltipActionPosition.outside,
+            gapBetweenContentAndAction: 16,
+          ),
+          tooltipActions: [
+            TooltipActionButton(
+              type: TooltipDefaultActionType.previous,
+              name: 'Back',
+              onTap: () {
+                // Write your code on button tap
+                ShowCaseWidget.of(context).previous();
+              },
+              backgroundColor: Colors.pink.shade50,
+              textStyle: const TextStyle(
+                color: Colors.pink,
+              ),
+            ),
+            const TooltipActionButton(
+              type: TooltipDefaultActionType.skip,
+              name: 'Close',
+              textStyle: TextStyle(
+                color: Colors.white,
+              ),
+              tailIcon: ActionButtonIcon(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 15,
+                ),
+              ),
+            ),
+          ],
           child: MailTile(
             mail: mail,
             showCaseKey: _four,
@@ -475,6 +536,43 @@ class MailTile extends StatelessWidget {
                     key: showCaseKey!,
                     height: 50,
                     width: 140,
+                    tooltipActionConfig: const TooltipActionConfig(
+                      alignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      actionGap: 16,
+                    ),
+                    tooltipActions: [
+                      const TooltipActionButton(
+                        backgroundColor: Colors.transparent,
+                        type: TooltipDefaultActionType.previous,
+                        padding: EdgeInsets.zero,
+                        textStyle: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      TooltipActionButton.custom(
+                        button: InkWell(
+                          onTap: () => ShowCaseWidget.of(context).next(),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.pink,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2,
+                              ),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: const Text(
+                              'Next',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                     targetShapeBorder: const CircleBorder(),
                     targetBorderRadius: const BorderRadius.all(
                       Radius.circular(150),

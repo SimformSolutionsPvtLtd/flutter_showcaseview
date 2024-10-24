@@ -25,8 +25,8 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:showcaseview/showcaseview.dart';
 
+import '../showcaseview.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
 import 'shape_clipper.dart';
@@ -317,8 +317,8 @@ class Showcase extends StatefulWidget {
     this.toolTipSlideEndDistance = 7,
     this.toolTipMargin = 14,
     this.tooltipActionConfig,
-  })  : width = null,
-        height = null,
+  })  : height = null,
+        width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
@@ -655,9 +655,6 @@ class _ShowcaseState extends State<Showcase> {
             descriptionTextDirection: widget.descriptionTextDirection,
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
             toolTipMargin: widget.toolTipMargin,
-            tooltipActionPosition: widget.tooltipActionPosition,
-            gapBetweenContentAndAction: widget.gapBetweenContentAndAction,
-            showCaseState: ShowCaseWidget.of(context),
             tooltipActionConfig: _getTooltipActionConfig(),
             tooltipActions: _getTooltipActions(),
           ),
@@ -666,10 +663,41 @@ class _ShowcaseState extends State<Showcase> {
     );
   }
 
-  List<TooltipActionButton> _getTooltipActions() =>
-      (widget.tooltipActions?.isEmpty ?? true)
-          ? ShowCaseWidget.of(context).globalTooltipActions ?? []
-          : widget.tooltipActions ?? [];
+  List<Widget> _getTooltipActions() {
+    final showCaseState = ShowCaseWidget.of(context);
+    final actionData = (widget.tooltipActions?.isEmpty ?? true)
+        ? showCaseState.globalTooltipActions ?? []
+        : widget.tooltipActions ?? [];
+
+    final actionWidgets = <Widget>[];
+    for (var action = 0; action < actionData.length; action++) {
+      /// This checks that if it is first or last tooltip and
+      /// [shouldShowForLastTooltip] or [shouldShowForFirstTooltip] is true
+      /// then we will ignore that action
+      if (((showCaseState.activeWidgetId == 0 &&
+                  actionData[action].shouldShowForFirstTooltip) ||
+              (showCaseState.activeWidgetId ==
+                      (showCaseState.ids?.length ?? 0) - 1 &&
+                  !actionData[action].shouldShowForLastTooltip)) &&
+          (widget.tooltipActions?.isEmpty ?? true)) {
+        continue;
+      }
+      actionWidgets.add(
+        Padding(
+          padding: EdgeInsetsDirectional.only(
+            end: action < actionData.length - 1
+                ? _getTooltipActionConfig().actionGap
+                : 0,
+          ),
+          child: TooltipActionButtonWidget(
+            config: actionData[action],
+            showCaseState: ShowCaseWidget.of(context),
+          ),
+        ),
+      );
+    }
+    return actionWidgets;
+  }
 
   TooltipActionConfig _getTooltipActionConfig() {
     final showCaseState = ShowCaseWidget.of(context);

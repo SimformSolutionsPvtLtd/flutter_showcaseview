@@ -1,3 +1,7 @@
+## [4.0.0]
+
+- Feature ✨: Added Action widget for tooltip
+
 ## [3.0.1]
 
 - Feature [#475](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/475) - Add
@@ -9,7 +13,6 @@
 - Fixed [#449](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/449) - Null check operator used on a null value
 - [BREAKING] Improvement [#400](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/400) - remove Builder widget
 - Fixed [#435](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/435) - Extra padding when add targetShapeBorder
-- Feature [#466](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/466) - Provide tooltip action buttons
 
 ## [2.1.1]
 - Fixed [#425](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/425) - Unhandled breaking change in v2.1.0

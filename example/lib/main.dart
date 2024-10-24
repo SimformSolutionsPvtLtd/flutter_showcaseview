@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           builder: (context) => const MailPage(),
           globalTooltipActionConfig: const TooltipActionConfig(
             position: TooltipActionPosition.inside,
-            alignment: TooltipActionAlignment.spread,
+            alignment: MainAxisAlignment.spaceBetween,
           ),
         ),
       ),
@@ -186,7 +186,7 @@ class _MailPageState extends State<MailPage> {
                                           debugPrint('Barrier clicked'),
                                       tooltipActionConfig:
                                           const TooltipActionConfig(
-                                        alignment: TooltipActionAlignment.right,
+                                        alignment: MainAxisAlignment.end,
                                         position: TooltipActionPosition.outside,
                                         gapBetweenContentAndAction: 10,
                                       ),
@@ -236,7 +236,20 @@ class _MailPageState extends State<MailPage> {
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
+                      onTargetClick: () {
+                        print('target cliecked');
+                      },
+                      disposeOnTap: false,
+                      onToolTipClick: () {
+                        print('clicked tool tip');
+                      },
+                      disableDefaultTargetGestures: true,
                       targetShapeBorder: const CircleBorder(),
+                      tooltipActionConfig: const TooltipActionConfig(
+                        alignment: MainAxisAlignment.spaceBetween,
+                        gapBetweenContentAndAction: 10,
+                        position: TooltipActionPosition.outside,
+                      ),
                       tooltipActions: [
                         TooltipActionButton.withDefault(
                           backgroundColor: Colors.transparent,
@@ -249,7 +262,7 @@ class _MailPageState extends State<MailPage> {
                           textStyle: const TextStyle(
                             color: Colors.pinkAccent,
                           ),
-                        )
+                        ),
                       ],
                       child: Container(
                         padding: const EdgeInsets.all(5),
@@ -308,8 +321,8 @@ class _MailPageState extends State<MailPage> {
         targetShapeBorder: const CircleBorder(),
         showArrow: false,
         tooltipActionConfig: const TooltipActionConfig(
-          alignment: TooltipActionAlignment.spread,
-          actionGap: 15,
+          alignment: MainAxisAlignment.spaceBetween,
+          actionGap: 12,
         ),
         tooltipActions: [
           TooltipActionButton.withDefault(
@@ -324,7 +337,7 @@ class _MailPageState extends State<MailPage> {
                 color: Colors.pink,
               )),
           TooltipActionButton.withDefault(
-            type: TooltipDefaultActionType.next,
+            type: TooltipDefaultActionType.skip,
             name: 'Close',
             tailIcon: const ActionButtonIcon.withIcon(
               icon: Icon(
@@ -333,10 +346,6 @@ class _MailPageState extends State<MailPage> {
                 size: 15,
               ),
             ),
-            onTap: () {
-              // Write your code on button tap
-              ShowCaseWidget.of(context).next();
-            },
           ),
         ],
         child: FloatingActionButton(
@@ -375,8 +384,37 @@ class _MailPageState extends State<MailPage> {
         child: Showcase(
           key: key,
           description: 'Tap to check mail',
-          tooltipPosition: TooltipPosition.top,
           disposeOnTap: true,
+          tooltipActionConfig: const TooltipActionConfig(
+            alignment: MainAxisAlignment.spaceBetween,
+            actionGap: 15,
+            position: TooltipActionPosition.outside,
+            gapBetweenContentAndAction: 16,
+          ),
+          tooltipActions: [
+            TooltipActionButton.withDefault(
+                type: TooltipDefaultActionType.previous,
+                name: 'Back',
+                onTap: () {
+                  // Write your code on button tap
+                  ShowCaseWidget.of(context).previous();
+                },
+                backgroundColor: Colors.pink.shade50,
+                textStyle: const TextStyle(
+                  color: Colors.pink,
+                )),
+            TooltipActionButton.withDefault(
+              type: TooltipDefaultActionType.skip,
+              name: 'Close',
+              tailIcon: const ActionButtonIcon.withIcon(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 15,
+                ),
+              ),
+            ),
+          ],
           onTargetClick: () {
             Navigator.push<void>(
               context,
@@ -475,6 +513,24 @@ class MailTile extends StatelessWidget {
                     key: showCaseKey!,
                     height: 50,
                     width: 140,
+                    tooltipActionConfig: const TooltipActionConfig(
+                      alignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                    ),
+                    tooltipActions: [
+                      TooltipActionButton.withDefault(
+                        backgroundColor: Colors.transparent,
+                        type: TooltipDefaultActionType.previous,
+                        padding: EdgeInsets.zero,
+                      ),
+                      TooltipActionButton.withDefault(
+                        type: TooltipDefaultActionType.next,
+                        backgroundColor: Colors.white,
+                        textStyle: const TextStyle(
+                          color: Colors.pinkAccent,
+                        ),
+                      ),
+                    ],
                     targetShapeBorder: const CircleBorder(),
                     targetBorderRadius: const BorderRadius.all(
                       Radius.circular(150),

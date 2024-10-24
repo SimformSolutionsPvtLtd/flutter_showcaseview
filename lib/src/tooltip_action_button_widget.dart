@@ -32,7 +32,7 @@ class TooltipActionButtonWidget extends StatelessWidget {
               ),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (config.leadIcon != null)
                   Padding(
@@ -60,19 +60,7 @@ class TooltipActionButtonWidget extends StatelessWidget {
     if (config.onTap != null) {
       config.onTap?.call();
     } else {
-      switch (config.type) {
-        case TooltipDefaultActionType.next:
-          showCaseState.next();
-          break;
-        case TooltipDefaultActionType.previous:
-          showCaseState.previous();
-          break;
-        case TooltipDefaultActionType.skip:
-          showCaseState.dismiss();
-          break;
-        default:
-          throw ArgumentError('Invalid tooltip default action type');
-      }
+      config.type?.onTap(showCaseState);
     }
   }
 }

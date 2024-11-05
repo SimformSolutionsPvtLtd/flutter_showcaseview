@@ -51,12 +51,6 @@ class Showcase extends StatefulWidget {
   /// Represents subject line of target widget
   final String? title;
 
-  /// Title text alignment with in tooltip widget
-  ///
-  /// Defaults to [TextAlign.start]
-  /// To understand how text is aligned, check [TextAlign]
-  final TextAlign titleTextAlign;
-
   /// Represents summary description of target widget
   final String? description;
 
@@ -178,12 +172,6 @@ class Showcase extends StatefulWidget {
   /// Default to [BorderRadius.circular(8)]
   final BorderRadius? tooltipBorderRadius;
 
-  /// Description text alignment with in tooltip widget
-  ///
-  /// Defaults to [TextAlign.start]
-  /// To understand how text is aligned, check [TextAlign]
-  final TextAlign descriptionTextAlign;
-
   /// if `disableDefaultTargetGestures` parameter is true
   /// onTargetClick, onTargetDoubleTap, onTargetLongPress and
   /// disposeOnTap parameter will not work
@@ -257,15 +245,27 @@ class Showcase extends StatefulWidget {
   /// Defaults to 7.
   final double toolTipSlideEndDistance;
 
-  /// Title alignment within tooltip widget
+  /// Title widget alignment within tooltip widget
   ///
   /// Defaults to [Alignment.center]
   final AlignmentGeometry titleAlignment;
 
-  /// Description alignment within tooltip widget
+  /// Title text alignment with in tooltip widget
+  ///
+  /// Defaults to [TextAlign.start]
+  /// To understand how text is aligned, check [TextAlign]
+  final TextAlign titleTextAlign;
+
+  /// Description widget alignment within tooltip widget
   ///
   /// Defaults to [Alignment.center]
   final AlignmentGeometry descriptionAlignment;
+
+  /// Description text alignment with in tooltip widget
+  ///
+  /// Defaults to [TextAlign.start]
+  /// To understand how text is aligned, check [TextAlign]
+  final TextAlign descriptionTextAlign;
 
   /// Defines the margin for the tooltip.
   /// Which is from 0 to [toolTipSlideEndDistance].

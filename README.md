@@ -12,7 +12,26 @@ A Flutter package allows you to Showcase/Highlight your widgets step by step.
 ![The example app running in Android](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
 
 ## Migration guide for release 4.0.0
-Renamed parameters `titleAlignment` to `titleTextAlign` and `descriptionAlignment` to `descriptionTextAlign` to correspond it more with the TextAlign property
+
+Renamed parameters `titleAlignment` to `titleTextAlign` and `descriptionAlignment`
+to `descriptionTextAlign` to correspond it more with the TextAlign property.`titleAlignment`
+and `descriptionAlignment` will be used for widget alignment.
+
+Before:
+```dart
+Showcase(
+  titleAlignment: TextAlign.center,
+  descriptionAlignment: TextAlign.center,
+),
+```
+
+After:
+```dart
+Showcase(
+  titleTextAlign: TextAlign.center,
+  descriptionTextAlign: TextAlign.center,
+),
+```
 
 ## Migration guide for release 3.0.0
 Removed builder widget from `ShowCaseWidget` and replaced it with builder function

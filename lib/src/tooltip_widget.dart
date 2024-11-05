@@ -75,7 +75,6 @@ class ToolTipWidget extends StatefulWidget {
     required this.offset,
     required this.screenSize,
     required this.title,
-    required this.titleTextAlign,
     required this.description,
     required this.titleTextStyle,
     required this.descTextStyle,
@@ -87,6 +86,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.contentWidth,
     required this.onTooltipTap,
     required this.movingAnimationDuration,
+    required this.titleTextAlign,
     required this.descriptionTextAlign,
     required this.titleAlignment,
     required this.descriptionAlignment,
@@ -553,69 +553,76 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                                   ),
                                   color: widget.tooltipBackgroundColor,
                                   child: Column(
-                                    crossAxisAlignment: widget.title != null
-                                        ? CrossAxisAlignment.start
-                                        : CrossAxisAlignment.center,
                                     children: <Widget>[
                                       if (widget.title != null)
-                                        Padding(
-                                          padding: (widget.titlePadding ??
-                                                  zeroPadding)
-                                              .add(
-                                            EdgeInsets.only(
-                                              left:
-                                                  widget.tooltipPadding?.left ??
-                                                      0,
-                                              right: widget
-                                                      .tooltipPadding?.right ??
-                                                  0,
+                                        Align(
+                                          alignment: widget.titleAlignment,
+                                          child: Padding(
+                                            padding: (widget.titlePadding ??
+                                                    zeroPadding)
+                                                .add(
+                                              EdgeInsets.only(
+                                                left: widget
+                                                        .tooltipPadding?.left ??
+                                                    0,
+                                                right: widget.tooltipPadding
+                                                        ?.right ??
+                                                    0,
+                                              ),
                                             ),
-                                          ),
-                                          child: Text(
-                                            widget.title!,
-                                            textAlign: widget.titleAlignment,
-                                            textDirection:
-                                                widget.titleTextDirection,
-                                            style: widget.titleTextStyle ??
-                                                Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge!
-                                                    .merge(
-                                                      TextStyle(
-                                                        color: widget.textColor,
+                                            child: Text(
+                                              widget.title!,
+                                              textAlign: widget.titleTextAlign,
+                                              textDirection:
+                                                  widget.titleTextDirection,
+                                              style: widget.titleTextStyle ??
+                                                  Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge!
+                                                      .merge(
+                                                        TextStyle(
+                                                          color:
+                                                              widget.textColor,
+                                                        ),
                                                       ),
-                                                    ),
+                                            ),
                                           ),
                                         ),
                                       if (widget.description != null)
-                                        Padding(
-                                          padding: (widget.descriptionPadding ??
-                                                  zeroPadding)
-                                              .add(
-                                            EdgeInsets.only(
-                                              left:
-                                                  widget.tooltipPadding?.left ??
-                                                      0,
-                                              right: widget
-                                                      .tooltipPadding?.right ??
-                                                  0,
+                                        Align(
+                                          alignment:
+                                              widget.descriptionAlignment,
+                                          child: Padding(
+                                            padding:
+                                                (widget.descriptionPadding ??
+                                                        zeroPadding)
+                                                    .add(
+                                              EdgeInsets.only(
+                                                left: widget
+                                                        .tooltipPadding?.left ??
+                                                    0,
+                                                right: widget.tooltipPadding
+                                                        ?.right ??
+                                                    0,
+                                              ),
                                             ),
-                                          ),
-                                          child: Text(
-                                            widget.description!,
-                                            textAlign:
-                                                widget.descriptionAlignment,
-                                            textDirection:
-                                                widget.descriptionTextDirection,
-                                            style: widget.descTextStyle ??
-                                                Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall!
-                                                    .merge(
-                                                      TextStyle(
-                                                        color: widget.textColor,
+                                            child: Text(
+                                              widget.description!,
+                                              textAlign:
+                                                  widget.descriptionTextAlign,
+                                              textDirection: widget
+                                                  .descriptionTextDirection,
+                                              style: widget.descTextStyle ??
+                                                  Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall!
+                                                      .merge(
+                                                        TextStyle(
+                                                          color:
+                                                              widget.textColor,
+                                                        ),
                                                       ),
-                                                    ),
+                                            ),
                                           ),
                                         ),
                                       if (widget.tooltipActions.isNotEmpty &&

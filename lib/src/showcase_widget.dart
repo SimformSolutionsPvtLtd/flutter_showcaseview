@@ -152,6 +152,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   void initState() {
     super.initState();
+    anchoredOverlayKey = UniqueKey();
     initRootWidget();
   }
 
@@ -163,7 +164,6 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
       rootWidgetSize = rootWidget == null
           ? MediaQuery.of(context).size
           : rootRenderObject?.size;
-      anchoredOverlayKey = UniqueKey();
     });
   }
 

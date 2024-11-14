@@ -252,6 +252,12 @@ class Showcase extends StatefulWidget {
   /// Defaults to 7.
   final double toolTipSlideEndDistance;
 
+  /// Defines the margin for the tooltip.
+  /// Which is from 0 to [toolTipSlideEndDistance].
+  ///
+  /// Defaults to 14.
+  final double toolTipMargin;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -298,6 +304,7 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.toolTipMargin = 14,
   })  : height = null,
         width = null,
         container = null,
@@ -359,6 +366,7 @@ class Showcase extends StatefulWidget {
         descriptionPadding = null,
         titleTextDirection = null,
         descriptionTextDirection = null,
+        toolTipMargin = 14,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(onBarrierClick == null || disableBarrierInteraction == false,
@@ -632,6 +640,7 @@ class _ShowcaseState extends State<Showcase> {
             titleTextDirection: widget.titleTextDirection,
             descriptionTextDirection: widget.descriptionTextDirection,
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
+            toolTipMargin: widget.toolTipMargin,
           ),
         ],
       ],

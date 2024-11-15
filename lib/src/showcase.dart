@@ -258,6 +258,10 @@ class Showcase extends StatefulWidget {
   /// Defaults to 14.
   final double toolTipMargin;
 
+  /// RenderObject/Size of the root widget - needed if showcase is in a modal dialog/sheet
+  final RenderObject? rootRenderObject;
+  final Size? rootRenderSize;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -305,6 +309,8 @@ class Showcase extends StatefulWidget {
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
     this.toolTipMargin = 14,
+    this.rootRenderObject,
+    this.rootRenderSize,
   })  : height = null,
         width = null,
         container = null,
@@ -346,6 +352,8 @@ class Showcase extends StatefulWidget {
     this.onBarrierClick,
     this.disableBarrierInteraction = false,
     this.toolTipSlideEndDistance = 7,
+    this.rootRenderObject,
+    this.rootRenderSize,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -451,11 +459,11 @@ class _ShowcaseState extends State<Showcase> {
     if (_enableShowcase) {
       return AnchoredOverlay(
         key: showCaseWidgetState.anchoredOverlayKey,
-        rootRenderObject: rootRenderObject,
+        rootRenderObject: widget.rootRenderObject ?? rootRenderObject,
         overlayBuilder: (context, rectBound, offset) {
-          final size = rootWidgetSize ?? MediaQuery.of(context).size;
+          final size = widget.rootRenderSize ?? rootWidgetSize ?? MediaQuery.of(context).size;
           position = GetPosition(
-            rootRenderObject: rootRenderObject,
+            rootRenderObject: widget.rootRenderObject ?? rootRenderObject,
             key: widget.key,
             padding: widget.targetPadding,
             screenWidth: size.width,

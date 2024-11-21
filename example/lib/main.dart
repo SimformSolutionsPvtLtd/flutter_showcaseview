@@ -1,8 +1,9 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:example/detailscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 void main() => runApp(const MyApp());
@@ -27,10 +28,10 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: ShowCaseWidget(
           onStart: (index, key) {
-            log('onStart: $index, $key');
+            print('onStart: $index, $key');
           },
           onComplete: (index, key) {
-            log('onComplete: $index, $key');
+            print('onComplete: $index, $key');
             if (index == 4) {
               SystemChrome.setSystemUIOverlayStyle(
                 SystemUiOverlayStyle.light.copyWith(
@@ -40,9 +41,14 @@ class MyApp extends StatelessWidget {
               );
             }
           },
-          blurValue: 1,
-          autoPlayDelay: const Duration(seconds: 3),
+          onFinish: () {
+            print('finished');
+          },
+          // autoPlay: true,
+          blurValue: 5,
+          autoPlayDelay: const Duration(seconds: 2),
           builder: (context) => const MailPage(),
+          enableAutoScroll: true,
           globalTooltipActionConfig: const TooltipActionConfig(
             position: TooltipActionPosition.inside,
             alignment: MainAxisAlignment.spaceBetween,
@@ -89,6 +95,161 @@ class _MailPageState extends State<MailPage> {
 
   final scrollController = ScrollController();
 
+  Widget RandomShowCaseBuilder() {
+    final totalCount = 100;
+    final keysList = List.generate(totalCount, (index) => GlobalKey());
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => ShowCaseWidget.of(context).startShowCase(keysList),
+    );
+
+    final randomShowCase = List.generate(
+      totalCount,
+      (index) {
+        final width = Random()
+            .nextInt((MediaQuery.of(context).size.width / 10).toInt())
+            .toDouble();
+        final height = Random()
+            .nextInt((MediaQuery.of(context).size.height / 10).toInt())
+            .toDouble();
+        return (index % Random().nextInt(100).clamp(1, 100)).isEven
+            ? Showcase(
+                key: keysList[index],
+                description: getRandomString(Random().nextInt(1000)),
+                tooltipActions: _generateListOfRandomAction(),
+                tooltipActionConfig: getActionConfig(index, totalCount),
+                onToolTipClick: () {
+                  ShowCaseWidget.of(context).previous();
+                },
+                tooltipPosition:
+                    (index % Random().nextInt(100).clamp(1, 100)).isEven
+                        ? null
+                        : TooltipPosition.values[index % 2],
+                child: Container(
+                  color: generateRandomLightColor(),
+                  width: Random()
+                      .nextInt(MediaQuery.of(context).size.width.toInt() - 30)
+                      .toDouble(),
+                  height: Random()
+                      .nextInt(MediaQuery.of(context).size.width.toInt() - 30)
+                      .toDouble(),
+                  child: SizedBox(),
+                ),
+              )
+            : Showcase.withWidget(
+                width: width,
+                height: height,
+                key: keysList[index],
+                tooltipActions: _generateListOfRandomAction(),
+                tooltipActionConfig: getActionConfig(index, totalCount),
+                tooltipPosition:
+                    (index % Random().nextInt(100).clamp(1, 100)).isEven
+                        ? null
+                        : TooltipPosition.values[index % 2],
+                container: Container(
+                  color: Colors.grey,
+                  width: width,
+                  height: height,
+                  child: SizedBox(),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    ShowCaseWidget.of(context).previous();
+                  },
+                  child: Container(
+                    color: Color((Random().nextDouble() * 0xFFFFFF).toInt())
+                        .withOpacity(1.0),
+                    width: Random()
+                        .nextInt(MediaQuery.of(context).size.width.toInt() - 30)
+                        .toDouble(),
+                    height: Random()
+                        .nextInt(MediaQuery.of(context).size.width.toInt() - 30)
+                        .toDouble(),
+                    child: SizedBox(),
+                  ),
+                ),
+              );
+      },
+    );
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: GridView.custom(
+        gridDelegate: SliverStairedGridDelegate(
+            crossAxisSpacing: 48,
+            mainAxisSpacing: 24,
+            pattern: List.generate(
+                totalCount,
+                (index) => StairedGridTile(
+                      Random().nextDouble(),
+                      Random().nextInt(10).toDouble().clamp(1, 10),
+                    ))
+            // [
+            //   StairedGridTile(0.5, 1),
+            //   StairedGridTile(0.5, 3 / 4),
+            //   StairedGridTile(1.0, 10 / 4),
+            // ],
+            ),
+        childrenDelegate: SliverChildBuilderDelegate(
+          childCount: totalCount,
+          (context, index) {
+            print(index);
+            return randomShowCase[index];
+          },
+        ),
+      ),
+    );
+  }
+
+  List<TooltipActionButton> _generateListOfRandomAction() {
+    return List.generate(
+      Random().nextInt(5),
+      (index) => (index % Random().nextInt(100).clamp(1, 100)).isEven
+          ? TooltipActionButton(
+              type: TooltipDefaultActionType.values[index % 3],
+              name: getRandomString(50),
+            )
+          : TooltipActionButton.custom(
+              button: Container(
+                color: generateRandomLightColor(),
+                child: Text(
+                  getRandomString(50),
+                ),
+                width: Random().nextInt(100).toDouble(),
+                height: Random().nextInt(100).toDouble(),
+              ),
+            ),
+    );
+  }
+
+  TooltipActionConfig? getActionConfig(int index, int totalCount) {
+    final data = index % Random().nextInt(totalCount).clamp(1, totalCount) == 0
+        ? null
+        : TooltipActionConfig(
+            position: TooltipActionPosition.values[Random().nextInt(1)],
+            actionGap: Random().nextInt(50).toDouble(),
+            gapBetweenContentAndAction: Random().nextInt(50).toDouble(),
+            crossAxisAlignment: CrossAxisAlignment.values[Random().nextInt(2)],
+            alignment: MainAxisAlignment.values[Random().nextInt(5)],
+          );
+    return data;
+  }
+
+  Color generateRandomLightColor() {
+    final random = Random();
+    final red = random.nextInt(150) + 100;
+    final green = random.nextInt(150) + 100;
+    final blue = random.nextInt(150) + 100;
+
+    return Color.fromARGB(255, red, green, blue);
+  }
+
+  final _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  Random _rnd = Random();
+
+  String getRandomString(int maxLength) =>
+      String.fromCharCodes(Iterable.generate(Random().nextInt(maxLength),
+          (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
   @override
   void initState() {
     super.initState();
@@ -170,219 +331,15 @@ class _MailPageState extends State<MailPage> {
     super.dispose();
   }
 
+  late final widgets = RandomShowCaseBuilder();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         bottom: false,
-        child: Column(
-          children: <Widget>[
-            const SizedBox(
-              height: 20,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10, right: 8),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xffF9F9F9),
-                            border: Border.all(
-                              color: const Color(0xffF3F3F3),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Row(
-                                  children: <Widget>[
-                                    Showcase(
-                                      key: _firstShowcaseWidget,
-                                      description: 'Tap to see menu options',
-                                      onBarrierClick: () =>
-                                          debugPrint('Barrier clicked'),
-                                      tooltipActionConfig:
-                                          const TooltipActionConfig(
-                                        alignment: MainAxisAlignment.end,
-                                        position: TooltipActionPosition.outside,
-                                        gapBetweenContentAndAction: 10,
-                                      ),
-                                      child: GestureDetector(
-                                        onTap: () =>
-                                            debugPrint('menu button clicked'),
-                                        child: Icon(
-                                          Icons.menu,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    const Text(
-                                      'Search email',
-                                      style: TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 16,
-                                        letterSpacing: 0.4,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    const Icon(
-                                      Icons.search,
-                                      color: Color(0xffADADAD),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Showcase(
-                      targetPadding: const EdgeInsets.all(5),
-                      key: _two,
-                      title: 'Profile',
-                      description:
-                          "Tap to see profile which contains user's name, profile picture, mobile number and country",
-                      tooltipBackgroundColor: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
-                      targetShapeBorder: const CircleBorder(),
-                      tooltipActionConfig: const TooltipActionConfig(
-                        alignment: MainAxisAlignment.spaceBetween,
-                        gapBetweenContentAndAction: 10,
-                        position: TooltipActionPosition.outside,
-                      ),
-                      tooltipActions: const [
-                        TooltipActionButton(
-                          backgroundColor: Colors.transparent,
-                          type: TooltipDefaultActionType.previous,
-                          padding: EdgeInsets.zero,
-                          textStyle: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        TooltipActionButton(
-                          type: TooltipDefaultActionType.next,
-                          backgroundColor: Colors.white,
-                          textStyle: TextStyle(
-                            color: Colors.pinkAccent,
-                          ),
-                        ),
-                      ],
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 45,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        child: Image.asset('assets/simform.png'),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 16, top: 4),
-                  child: const Text(
-                    'PRIMARY',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const Padding(padding: EdgeInsets.only(top: 8)),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return showcaseMailTile(_three, true, context, mails.first);
-                  }
-                  return MailTile(
-                    mail: mails[index % mails.length],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Showcase(
-        key: _lastShowcaseWidget,
-        title: 'Compose Mail',
-        description: 'Click here to compose mail',
-        targetShapeBorder: const CircleBorder(),
-        showArrow: false,
-        tooltipActions: [
-          TooltipActionButton(
-              type: TooltipDefaultActionType.previous,
-              name: 'Back',
-              onTap: () {
-                // Write your code on button tap
-                ShowCaseWidget.of(context).previous();
-              },
-              backgroundColor: Colors.pink.shade50,
-              textStyle: const TextStyle(
-                color: Colors.pink,
-              )),
-          const TooltipActionButton(
-            type: TooltipDefaultActionType.skip,
-            name: 'Close',
-            textStyle: TextStyle(
-              color: Colors.white,
-            ),
-            tailIcon: ActionButtonIcon(
-              icon: Icon(
-                Icons.close,
-                color: Colors.white,
-                size: 15,
-              ),
-            ),
-          ),
-        ],
-        child: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () {
-            setState(() {
-              /* reset ListView to ensure that the showcased widgets are
-               * currently rendered so the showcased keys are available in the
-               * render tree. */
-              scrollController.jumpTo(0);
-              ShowCaseWidget.of(context).startShowCase([
-                _firstShowcaseWidget,
-                _two,
-                _three,
-                _four,
-                _lastShowcaseWidget
-              ]);
-            });
-          },
-          child: const Icon(
-            Icons.add,
-          ),
-        ),
+        child: widgets,
       ),
     );
   }

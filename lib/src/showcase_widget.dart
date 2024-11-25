@@ -158,7 +158,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   int? activeWidgetId;
   RenderBox? rootRenderObject;
   Size? rootWidgetSize;
-  final Key anchoredOverlayKey = UniqueKey();
+  final anchoredOverlayKey = UniqueKey();
 
   late final TooltipActionConfig? globalTooltipActionConfig;
 

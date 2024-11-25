@@ -124,7 +124,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   int? activeWidgetId;
   RenderBox? rootRenderObject;
   Size? rootWidgetSize;
-  Key? anchoredOverlayKey;
+  Key anchoredOverlayKey = UniqueKey();
 
   /// These properties are only here so that it can be accessed by
   /// [Showcase]
@@ -152,7 +152,6 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   void initState() {
     super.initState();
-    anchoredOverlayKey = UniqueKey();
     initRootWidget();
   }
 

@@ -11,7 +11,7 @@ A Flutter package allows you to Showcase/Highlight your widgets step by step.
 
 ![The example app running in Android](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
 
-## Migration guide for release 4.0.0
+## Migration guide for release 4.0.0 (unreleased)
 
 Renamed parameters `titleAlignment` to `titleTextAlign` and `descriptionAlignment`
 to `descriptionTextAlign` to correspond it more with the TextAlign property.`titleAlignment`
@@ -235,14 +235,6 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | actionGap                  | double?                | 5                              | Horizontal gap between the tooltip action buttons |
 | position                   | TooltipActionPosition? | TooltipActionPosition.inside   | Position of tooltip actionbar (inside, outside)   |
 | gapBetweenContentAndAction | double?                | 10                             | Gap between tooltip content and actionbar         |
-
-## Properties of `ActionButtonIcon` and `ActionButtonIcon.withImageIcon`:
-
-| Name    | Type        | Default Behaviour | Description                        | `ActionButtonIcon` | `ActionButtonIcon.withImageIcon` |
-|---------|-------------|-------------------|------------------------------------|--------------------|----------------------------------|
-| icon    | Icon        |                   | Provide a icon to the button       | ✅                  |                                  |
-| icon    | ImageIcon   |                   | Provide a image icon to the button |                    | ✅                                |
-| padding | EdgeInsets? |                   | Give padding to the icon           | ✅                  | ✅                                |
 
 ## How to use
 

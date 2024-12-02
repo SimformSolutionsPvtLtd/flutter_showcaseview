@@ -266,6 +266,9 @@ class _MailPageState extends State<MailPage> {
                         TooltipActionButton(
                           backgroundColor: Colors.transparent,
                           type: TooltipDefaultActionType.previous,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 4,
+                          ),
                           textStyle: TextStyle(
                             color: Colors.white,
                           ),
@@ -332,7 +335,7 @@ class _MailPageState extends State<MailPage> {
         key: _lastShowcaseWidget,
         title: 'Compose Mail',
         description: 'Click here to compose mail',
-        targetShapeBorder: const CircleBorder(),
+        targetBorderRadius: const BorderRadius.all(Radius.circular(16)),
         showArrow: false,
         tooltipActions: [
           TooltipActionButton(
@@ -535,41 +538,25 @@ class MailTile extends StatelessWidget {
                   Showcase.withWidget(
                     key: showCaseKey!,
                     height: 50,
-                    width: 140,
+                    width: 150,
                     tooltipActionConfig: const TooltipActionConfig(
-                      alignment: MainAxisAlignment.center,
+                      alignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       actionGap: 16,
                     ),
-                    tooltipActions: [
-                      const TooltipActionButton(
-                        backgroundColor: Colors.transparent,
+                    tooltipActions: const [
+                      TooltipActionButton(
                         type: TooltipDefaultActionType.previous,
-                        padding: EdgeInsets.zero,
+                        name: 'Back',
                         textStyle: TextStyle(
                           color: Colors.white,
                         ),
                       ),
-                      TooltipActionButton.custom(
-                        button: InkWell(
-                          onTap: () => ShowCaseWidget.of(context).next(),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.pink,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2,
-                              ),
-                            ),
-                            padding: const EdgeInsets.all(8),
-                            child: const Text(
-                              'Next',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                      TooltipActionButton(
+                        type: TooltipDefaultActionType.skip,
+                        name: 'Close',
+                        textStyle: TextStyle(
+                          color: Colors.white,
                         ),
                       ),
                     ],
@@ -585,7 +572,7 @@ class MailTile extends StatelessWidget {
                           Radius.circular(15),
                         ),
                       ),
-                      width: 140,
+                      width: 150,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[

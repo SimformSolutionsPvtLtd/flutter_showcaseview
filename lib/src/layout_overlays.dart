@@ -65,22 +65,26 @@ class AnchoredOverlay extends StatelessWidget {
           overlayBuilder: (overlayContext) {
             // To calculate the "anchor" point we grab the render box of
             // our parent Container and then we find the center of that box.
-            final box = context.findRenderObject() as RenderBox;
+            final box = context.findRenderObject() as RenderBox?;
 
-            final topLeft = box.size.topLeft(
-              box.localToGlobal(
-                const Offset(0.0, 0.0),
-                ancestor: rootRenderObject,
-              ),
-            );
-            final bottomRight = box.size.bottomRight(
-              box.localToGlobal(
-                const Offset(0.0, 0.0),
-                ancestor: rootRenderObject,
-              ),
-            );
-            Rect anchorBounds;
-            anchorBounds = (topLeft.dx.isNaN ||
+            /// Handle null RenderBox safely.
+            final topLeft = box?.size.topLeft(
+                  box.localToGlobal(
+                    Offset.zero,
+                    ancestor: rootRenderObject,
+                  ),
+                ) ??
+                Offset.zero;
+            final bottomRight = box?.size.bottomRight(
+                  box.localToGlobal(
+                    Offset.zero,
+                    ancestor: rootRenderObject,
+                  ),
+                ) ??
+                Offset.zero;
+
+            /// Provide a default anchorBounds if box is null.
+            final anchorBounds = (topLeft.dx.isNaN ||
                     topLeft.dy.isNaN ||
                     bottomRight.dx.isNaN ||
                     bottomRight.dy.isNaN)
@@ -91,7 +95,11 @@ class AnchoredOverlay extends StatelessWidget {
                     bottomRight.dx,
                     bottomRight.dy,
                   );
-            final anchorCenter = box.size.center(topLeft);
+
+            /// Calculate the anchor center or default to Offset.zero.
+            final anchorCenter = box?.size.center(topLeft) ?? Offset.zero;
+
+            /// Pass the anchor details to the overlay builder.
             return overlayBuilder!(overlayContext, anchorBounds, anchorCenter);
           },
           child: child,

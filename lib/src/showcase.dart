@@ -289,7 +289,11 @@ class Showcase extends StatefulWidget {
   /// Defaults to 0.5.
   final double scrollAlignment;
 
-  final bool disableAutoScroll;
+  /// While target widget is out viewport then
+  /// whether enabling auto scroll so as to make the target widget visible.
+  /// This is used to override the [ShowCaseWidget.enableAutoScroll] behaviour
+  /// for this showcase.
+  final bool? enableAutoScroll;
 
   /// Highlights a specific widget on the screen with an informative tooltip.
   ///
@@ -352,6 +356,7 @@ class Showcase extends StatefulWidget {
   ///   - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
   ///   - `tooltipActionConfig`: Configuration options for custom tooltip actions.
   ///   - `scrollAlignment`: Defines the alignment for the auto scroll function.
+  ///   - `enableAutoScroll`:This is used to override the [ShowCaseWidget.enableAutoScroll] behaviour for this showcase
   ///
   /// **Assertions:**
   ///
@@ -409,7 +414,7 @@ class Showcase extends StatefulWidget {
     this.tooltipActions,
     this.tooltipActionConfig,
     this.scrollAlignment = 0.5,
-    this.disableAutoScroll = false
+    this.enableAutoScroll,
   })  : height = null,
         width = null,
         container = null,
@@ -505,7 +510,7 @@ class Showcase extends StatefulWidget {
     this.tooltipActions,
     this.tooltipActionConfig,
     this.scrollAlignment = 0.5,
-    this.disableAutoScroll = false
+    this.enableAutoScroll,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -584,7 +589,7 @@ class _ShowcaseState extends State<Showcase> {
     });
 
     if (activeStep == widget.key) {
-      if (showCaseWidgetState.enableAutoScroll && !this.widget.disableAutoScroll) {
+      if (widget.enableAutoScroll ?? showCaseWidgetState.enableAutoScroll) {
         _scrollIntoView();
       }
 

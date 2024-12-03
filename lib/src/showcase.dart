@@ -562,6 +562,7 @@ class _ShowcaseState extends State<Showcase> {
   RenderBox? rootRenderObject;
 
   late final showCaseWidgetState = ShowCaseWidget.of(context);
+  FloatingActionWidget? _globalFloatingActionWidget;
 
   @override
   void initState() {
@@ -577,6 +578,8 @@ class _ShowcaseState extends State<Showcase> {
     recalculateRootWidgetSize();
 
     if (_enableShowcase) {
+      _globalFloatingActionWidget =
+          showCaseWidgetState.globalFloatingActionWidget?.call(context);
       final size = MediaQuery.of(context).size;
       position ??= GetPosition(
         rootRenderObject: rootRenderObject,
@@ -797,8 +800,8 @@ class _ShowcaseState extends State<Showcase> {
             titleTextStyle: widget.titleTextStyle,
             descTextStyle: widget.descTextStyle,
             container: widget.container,
-            floatingActionWidget: widget.floatingActionWidget ??
-                showCaseWidgetState.widget.globalFloatingActionWidget,
+            floatingActionWidget:
+                widget.floatingActionWidget ?? _globalFloatingActionWidget,
             tooltipBackgroundColor: widget.tooltipBackgroundColor,
             textColor: widget.textColor,
             showArrow: widget.showArrow,

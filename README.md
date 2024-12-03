@@ -155,6 +155,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | toolTipMargin             | double                     | 14                           | For tooltip margin                                                             |
 | globalTooltipActionConfig | TooltipActionConfig?       |                              | Global tooltip actionbar config                                                |
 | globalTooltipActions      | List<TooltipActionButton>? |                              | Global list of tooltip actions                                                 |
+| scrollAlignment           | double                     | 0.5                          | For Auto scroll widget alignment                                               |
 
 ## Properties of `Showcase` and `Showcase.withWidget`:
 

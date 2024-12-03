@@ -158,7 +158,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   int? activeWidgetId;
   RenderBox? rootRenderObject;
   Size? rootWidgetSize;
-  Key? anchoredOverlayKey;
+  final Key anchoredOverlayKey = UniqueKey();
 
   late final TooltipActionConfig? globalTooltipActionConfig;
 
@@ -203,7 +203,6 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
       rootWidgetSize = rootWidget == null
           ? MediaQuery.of(context).size
           : rootRenderObject?.size;
-      anchoredOverlayKey = UniqueKey();
     });
   }
 

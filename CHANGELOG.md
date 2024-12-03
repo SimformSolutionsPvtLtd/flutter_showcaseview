@@ -5,6 +5,7 @@
   feasibility to change margin of tooltip with `toolTipMargin`.
 - Feature [#478](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/478) - Added
   feasibility to change auto scroll widget alignment `scrollAlignment`.
+- Feature ✨: Added `enableAutoScroll` to `showcase`.
 
 ## [3.0.0]
 - [BREAKING] Fixed [#434](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/434) removed deprecated text style after Flutter 3.22 follow [migration guide](https://docs.flutter.dev/release/breaking-changes/3-19-deprecations#texttheme)

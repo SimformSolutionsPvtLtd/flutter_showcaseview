@@ -209,6 +209,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | toolTipSlideEndDistance      | double                     | 7                                                | Defines motion range for tooltip slide animation                                                   | ✅          | ✅                |
 | tooltipActions               | List<TooltipActionButton>? | []                                               | Provide a list of tooltip actions                                                                  | ✅          | ✅                |
 | tooltipActionConfig          | TooltipActionConfig?       |                                                  | Give configurations (alignment, position, etc...) to the tooltip actionbar                         | ✅          | ✅                |
+| enableAutoScroll             | bool?                      | ShowCaseWidget.enableAutoScroll                  | This is used to override the `ShowCaseWidget.enableAutoScroll` behaviour                           | ✅          | ✅                |
 
 ## Properties of `TooltipActionButton` and `TooltipActionButton.custom`:
 

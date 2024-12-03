@@ -356,7 +356,7 @@ class Showcase extends StatefulWidget {
   ///   - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
   ///   - `tooltipActionConfig`: Configuration options for custom tooltip actions.
   ///   - `scrollAlignment`: Defines the alignment for the auto scroll function.
-  ///   - `enableAutoScroll`:This is used to override the [ShowCaseWidget.enableAutoScroll] behaviour for this showcase
+  ///   - `enableAutoScroll`:This is used to override the [ShowCaseWidget.enableAutoScroll] behaviour for this showcase.
   ///
   /// **Assertions:**
   ///

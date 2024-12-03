@@ -20,4 +20,43 @@
  * SOFTWARE.
  */
 
+import 'showcase_widget.dart';
+
 enum TooltipPosition { top, bottom }
+
+enum TooltipActionPosition {
+  outside,
+  inside;
+
+  bool get isInside => this == inside;
+
+  bool get isOutside => this == outside;
+}
+
+enum TooltipDefaultActionType {
+  next(actionName: 'Next'),
+  skip(actionName: 'Skip'),
+  previous(actionName: 'Previous');
+
+  const TooltipDefaultActionType({
+    required this.actionName,
+  });
+
+  final String actionName;
+
+  void onTap(ShowCaseWidgetState showCaseState) {
+    switch (this) {
+      case TooltipDefaultActionType.next:
+        showCaseState.next();
+        break;
+      case TooltipDefaultActionType.previous:
+        showCaseState.previous();
+        break;
+      case TooltipDefaultActionType.skip:
+        showCaseState.dismiss();
+        break;
+      default:
+        throw ArgumentError('Invalid tooltip default action type');
+    }
+  }
+}

@@ -655,7 +655,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         ),
       );
 
-      if (widget.floatingActionWidget != null) {
+      if (widget.floatingActionWidget == null) {
+        return defaultToolTipWidget;
+      } else {
         return Stack(
           fit: StackFit.expand,
           children: [
@@ -663,8 +665,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             widget.floatingActionWidget!,
           ],
         );
-      } else {
-        return defaultToolTipWidget;
       }
     }
 

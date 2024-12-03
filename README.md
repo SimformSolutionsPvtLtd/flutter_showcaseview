@@ -136,27 +136,28 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 
 ## Properties of `ShowCaseWidget`:
 
-| Name                      | Type                       | Default Behaviour            | Description                                                                    |
-|---------------------------|----------------------------|------------------------------|--------------------------------------------------------------------------------|
-| builder                   | Builder                    |                              |                                                                                |
-| blurValue                 | double                     | 0                            | Provides blur effect on overlay                                                |
-| autoPlay                  | bool                       | false                        | Automatically display Next showcase                                            |
-| autoPlayDelay             | Duration                   | Duration(milliseconds: 2000) | Visibility time of showcase when `autoplay` is enabled                         |
-| enableAutoPlayLock        | bool                       | false                        | Block the user interaction on overlay when autoPlay is enabled.                |
-| enableAutoScroll          | bool                       | false                        | Allows to auto scroll to next showcase so as to make the given target visible. |
-| scrollDuration            | Duration                   | Duration(milliseconds: 300)  | Time duration for auto scrolling                                               |
-| disableBarrierInteraction | bool                       | false                        | Disable barrier interaction                                                    |
-| disableScaleAnimation     | bool                       | false                        | Disable scale transition for all showcases                                     |
-| disableMovingAnimation    | bool                       | false                        | Disable bouncing/moving transition for all showcases                           |
-| onStart                   | Function(int?, GlobalKey)? |                              | Triggered on start of each showcase.                                           |
-| onComplete                | Function(int?, GlobalKey)? |                              | Triggered on completion of each showcase.                                      |
-| onFinish                  | VoidCallback?              |                              | Triggered when all the showcases are completed                                 |
-| enableShowcase            | bool                       | true                         | Enable or disable showcase globally.                                           |
-| toolTipMargin             | double                     | 14                           | For tooltip margin                                                             |
-| globalTooltipActionConfig | TooltipActionConfig?       |                              | Global tooltip actionbar config                                                |
-| globalTooltipActions      | List<TooltipActionButton>? |                              | Global list of tooltip actions                                                 |
-| scrollAlignment           | double                     | 0.5                          | For Auto scroll widget alignment                                               |
-| globalTooltipActionConfig | FloatingActionWidget       |                              | Global Config for tooltip action to auto apply for all the toolTip             |
+| Name                                | Type                                         | Default Behaviour            | Description                                                                    |
+|-------------------------------------|----------------------------------------------|------------------------------|--------------------------------------------------------------------------------|
+| builder                             | Builder                                      |                              |                                                                                |
+| blurValue                           | double                                       | 0                            | Provides blur effect on overlay.                                               |
+| autoPlay                            | bool                                         | false                        | Automatically display Next showcase.                                           |
+| autoPlayDelay                       | Duration                                     | Duration(milliseconds: 2000) | Visibility time of showcase when `autoplay` is enabled.                        |
+| enableAutoPlayLock                  | bool                                         | false                        | Block the user interaction on overlay when autoPlay is enabled.                |
+| enableAutoScroll                    | bool                                         | false                        | Allows to auto scroll to next showcase so as to make the given target visible. |
+| scrollDuration                      | Duration                                     | Duration(milliseconds: 300)  | Time duration for auto scrolling.                                              |
+| disableBarrierInteraction           | bool                                         | false                        | Disable barrier interaction.                                                   |
+| disableScaleAnimation               | bool                                         | false                        | Disable scale transition for all showcases.                                    |
+| disableMovingAnimation              | bool                                         | false                        | Disable bouncing/moving transition for all showcases.                          |
+| onStart                             | Function(int?, GlobalKey)?                   |                              | Triggered on start of each showcase.                                           |
+| onComplete                          | Function(int?, GlobalKey)?                   |                              | Triggered on completion of each showcase.                                      |
+| onFinish                            | VoidCallback?                                |                              | Triggered when all the showcases are completed.                                |
+| enableShowcase                      | bool                                         | true                         | Enable or disable showcase globally.                                           |
+| toolTipMargin                       | double                                       | 14                           | For tooltip margin.                                                            |
+| globalTooltipActionConfig           | TooltipActionConfig?                         |                              | Global tooltip actionbar config.                                               |
+| globalTooltipActions                | List<TooltipActionButton>?                   |                              | Global list of tooltip actions .                                               |
+| scrollAlignment                     | double                                       | 0.5                          | For Auto scroll widget alignment.                                              |
+| globalFloatingActionWidget          | FloatingActionWidget Function(BuildContext)? |                              | Global Config for tooltip action to auto apply for all the toolTip .           |
+| hideFloatingActionWidgetForShowcase | List<GlobalKey>                              | []                           | Hides globalFloatingActionWidget for the provided showcase widget keys.        |
 
 
 ## Properties of `Showcase` and `Showcase.withWidget`:

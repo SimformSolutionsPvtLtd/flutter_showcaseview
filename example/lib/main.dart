@@ -26,6 +26,27 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: ShowCaseWidget(
+          hideFloatingActionWidgetForShowcase: [_lastShowcaseWidget],
+          globalFloatingActionWidget: (showcaseContext) => FloatingActionWidget(
+            left: 16,
+            bottom: 16,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: ShowCaseWidget.of(showcaseContext).dismiss,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffEE5366),
+                ),
+                child: const Text(
+                  'Skip',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            ),
+          ),
           onStart: (index, key) {
             log('onStart: $index, $key');
           },
@@ -207,8 +228,18 @@ class _MailPageState extends State<MailPage> {
                                     Showcase(
                                       key: _firstShowcaseWidget,
                                       description: 'Tap to see menu options',
-                                      onBarrierClick: () =>
-                                          debugPrint('Barrier clicked'),
+                                      onBarrierClick: () {
+                                        debugPrint('Barrier clicked');
+                                        debugPrint(
+                                          'Floating Action widget for first '
+                                          'showcase is now hidden',
+                                        );
+                                        ShowCaseWidget.of(context)
+                                            .hideFloatingActionWidgetForKeys([
+                                          _firstShowcaseWidget,
+                                          _lastShowcaseWidget
+                                        ]);
+                                      },
                                       tooltipActionConfig:
                                           const TooltipActionConfig(
                                         alignment: MainAxisAlignment.end,
@@ -262,15 +293,17 @@ class _MailPageState extends State<MailPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xffEE5366),
+                            ),
+                            onPressed: ShowCaseWidget.of(context).dismiss,
                             child: const Text(
-                              'Skip Showcase',
+                              'Close Showcase',
                               style: TextStyle(
-                                color: Colors.pink,
+                                color: Colors.white,
                                 fontSize: 15,
                               ),
                             ),
-                            onPressed: () =>
-                                ShowCaseWidget.of(context).dismiss(),
                           ),
                         ),
                       ),
@@ -581,38 +614,6 @@ class MailTile extends StatelessWidget {
                     targetShapeBorder: const CircleBorder(),
                     targetBorderRadius: const BorderRadius.all(
                       Radius.circular(150),
-                    ),
-                    floatingActionWidget: FloatingActionWidget.directional(
-                      textDirection: Directionality.of(context),
-                      start: 0,
-                      bottom: 0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Theme.of(context).primaryColor),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 2.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                          child: const Text(
-                            'Skip Showcase',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                            ),
-                          ),
-                          onPressed: () => ShowCaseWidget.of(context).dismiss(),
-                        ),
-                      ),
                     ),
                     container: Container(
                       padding: const EdgeInsets.all(10),

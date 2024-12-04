@@ -26,6 +26,27 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: ShowCaseWidget(
+          hideFloatingActionWidgetForShowcase: [_lastShowcaseWidget],
+          globalFloatingActionWidget: (showcaseContext) => FloatingActionWidget(
+            left: 16,
+            bottom: 16,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: ShowCaseWidget.of(showcaseContext).dismiss,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffEE5366),
+                ),
+                child: const Text(
+                  'Skip',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            ),
+          ),
           onStart: (index, key) {
             log('onStart: $index, $key');
           },
@@ -207,8 +228,18 @@ class _MailPageState extends State<MailPage> {
                                     Showcase(
                                       key: _firstShowcaseWidget,
                                       description: 'Tap to see menu options',
-                                      onBarrierClick: () =>
-                                          debugPrint('Barrier clicked'),
+                                      onBarrierClick: () {
+                                        debugPrint('Barrier clicked');
+                                        debugPrint(
+                                          'Floating Action widget for first '
+                                          'showcase is now hidden',
+                                        );
+                                        ShowCaseWidget.of(context)
+                                            .hideFloatingActionWidgetForKeys([
+                                          _firstShowcaseWidget,
+                                          _lastShowcaseWidget
+                                        ]);
+                                      },
                                       tooltipActionConfig:
                                           const TooltipActionConfig(
                                         alignment: MainAxisAlignment.end,
@@ -256,6 +287,26 @@ class _MailPageState extends State<MailPage> {
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
+                      floatingActionWidget: FloatingActionWidget(
+                        left: 16,
+                        bottom: 16,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xffEE5366),
+                            ),
+                            onPressed: ShowCaseWidget.of(context).dismiss,
+                            child: const Text(
+                              'Close Showcase',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       targetShapeBorder: const CircleBorder(),
                       tooltipActionConfig: const TooltipActionConfig(
                         alignment: MainAxisAlignment.spaceBetween,

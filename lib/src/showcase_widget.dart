@@ -20,9 +20,13 @@
  * SOFTWARE.
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../showcaseview.dart';
+
+typedef FloatingActionBuilderCallback = FloatingActionWidget Function(
+    BuildContext);
 
 class ShowCaseWidget extends StatefulWidget {
   final WidgetBuilder builder;
@@ -83,11 +87,22 @@ class ShowCaseWidget extends StatefulWidget {
   /// Enable/disable showcase globally. Enabled by default.
   final bool enableShowcase;
 
+  /// Custom static floating action widget to show a static widget anywhere
+  /// on the screen for all the showcase widget
+  /// Use this context to access showcaseWidget operation otherwise it will
+  /// throw error.
+  final FloatingActionBuilderCallback? globalFloatingActionWidget;
+
   /// Global action to apply on every tooltip widget
   final List<TooltipActionButton>? globalTooltipActions;
 
-  /// Global Config for tooltip action to auto apply for all the toolTip
+  /// Global Config for tooltip action to auto apply for all the toolTip.
   final TooltipActionConfig? globalTooltipActionConfig;
+
+  /// Hides [globalFloatingActionWidget] for the provided showcase widgets. Add key of
+  /// showcase in which [globalFloatingActionWidget] should be hidden this list.
+  /// Defaults to [].
+  final List<GlobalKey> hideFloatingActionWidgetForShowcase;
 
   /// A widget that manages multiple Showcase widgets.
   ///
@@ -115,6 +130,8 @@ class ShowCaseWidget extends StatefulWidget {
   /// - `enableShowcase`: Enables or disables the showcase functionality globally (defaults to `true`).
   /// - `globalTooltipActions`: A list of custom actions to be added to all tooltips.
   /// - `globalTooltipActionConfig`: Configuration options for the global tooltip actions.
+  /// - `globalFloatingActionWidget`: Custom static floating action widget to show a static widget anywhere for all the showcase widgets.
+  /// - `hideFloatingActionWidgetForShowcase`: Hides a [globalFloatingActionWidget] for the provided showcase keys.
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -132,6 +149,8 @@ class ShowCaseWidget extends StatefulWidget {
     this.enableShowcase = true,
     this.globalTooltipActionConfig,
     this.globalTooltipActions,
+    this.globalFloatingActionWidget,
+    this.hideFloatingActionWidgetForShowcase = const [],
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -184,8 +203,35 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   bool get isShowCaseCompleted => ids == null && activeWidgetId == null;
 
+  List<GlobalKey> get hiddenFloatingActionKeys =>
+      _hideFloatingWidgetKeys.keys.toList();
+
+  /// This Stores keys of showcase for which we will hide the
+  /// [globalFloatingActionWidget].
+  late final _hideFloatingWidgetKeys = {
+    for (final item in widget.hideFloatingActionWidgetForShowcase) item: true
+  };
+
   /// Returns value of [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
+
+  /// Returns current active showcase key
+  GlobalKey? get getCurrentActiveShowcaseKey {
+    if (ids == null || activeWidgetId == null) return null;
+
+    if (activeWidgetId! < ids!.length && activeWidgetId! >= 0) {
+      return ids![activeWidgetId!];
+    } else {
+      return null;
+    }
+  }
+
+  /// Return a [widget.globalFloatingActionWidget] if not need to hide this for
+  /// current showcase.
+  FloatingActionBuilderCallback? get globalFloatingActionWidget =>
+      _hideFloatingWidgetKeys[getCurrentActiveShowcaseKey] ?? false
+          ? null
+          : widget.globalFloatingActionWidget;
 
   @override
   void initState() {
@@ -292,6 +338,15 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   void _cleanupAfterSteps() {
     ids = null;
     activeWidgetId = null;
+  }
+
+  /// Disables the [globalFloatingActionWidget] for the provided keys.
+  void hideFloatingActionWidgetForKeys(
+    List<GlobalKey> updatedList,
+  ) {
+    _hideFloatingWidgetKeys
+      ..clear()
+      ..addAll({for (final item in updatedList) item: true});
   }
 
   @override

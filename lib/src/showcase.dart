@@ -603,12 +603,14 @@ class _ShowcaseState extends State<Showcase> {
 
   void _scrollIntoView() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (!mounted) return;
       setState(() => _isScrollRunning = true);
       await Scrollable.ensureVisible(
         widget.key.currentContext!,
         duration: showCaseWidgetState.widget.scrollDuration,
         alignment: widget.scrollAlignment,
       );
+      if (!mounted) return;
       setState(() => _isScrollRunning = false);
     });
   }

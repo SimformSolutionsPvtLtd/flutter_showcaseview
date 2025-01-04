@@ -299,6 +299,16 @@ class Showcase extends StatefulWidget {
   /// This is used to override the [ShowCaseWidget.enableAutoScroll] behaviour
   /// for this showcase.
   final bool? enableAutoScroll;
+  
+  /// Shows skip showcase button.
+  final bool enableSkipButton;
+
+  /// Skip showcase button label.
+  final String SkipButtonLabel;
+
+  /// Skip showcase button label style.
+  final TextStyle skipLabelStyle;
+
 
   /// Highlights a specific widget on the screen with an informative tooltip.
   ///
@@ -421,6 +431,9 @@ class Showcase extends StatefulWidget {
     this.scrollAlignment = 0.5,
     this.enableAutoScroll,
     this.floatingActionWidget,
+    this.enableSkipButton = false,
+    this.SkipButtonLabel = 'SKIP',
+    this.skipLabelStyle = const TextStyle(color: Colors.white),
   })  : height = null,
         width = null,
         container = null,
@@ -519,6 +532,9 @@ class Showcase extends StatefulWidget {
     this.tooltipActionConfig,
     this.scrollAlignment = 0.5,
     this.enableAutoScroll,
+    this.enableSkipButton = false,
+    this.SkipButtonLabel = 'SKIP',
+    this.skipLabelStyle = const TextStyle(color: Colors.white),
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -830,6 +846,25 @@ class _ShowcaseState extends State<Showcase> {
             tooltipActions: _getTooltipActions(),
           ),
         ],
+        if (widget.enableSkipButton)
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: () {
+                ShowCaseWidget.of(context).dismiss();
+              },
+              child: Padding(
+                padding: EdgeInsets.all(50),
+                child: Text(
+                  widget.SkipButtonLabel,
+                  style: Theme.of(context).textTheme.titleLarge!.merge(
+                        widget.skipLabelStyle,
+                      ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

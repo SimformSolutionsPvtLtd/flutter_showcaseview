@@ -11,7 +11,7 @@ A Flutter package allows you to Showcase/Highlight your widgets step by step.
 
 ![The example app running in Android](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
 
-## Migration guide for release 4.0.0 (unreleased)
+## Migration guide for release 4.0.0
 
 Renamed parameters `titleAlignment` to `titleTextAlign` and `descriptionAlignment`
 to `descriptionTextAlign` to correspond it more with the TextAlign property.`titleAlignment`
@@ -71,9 +71,7 @@ import 'package:showcaseview/showcaseview.dart';
 3. Adding a `ShowCaseWidget` widget.
 ```dart
 ShowCaseWidget(
-  builder: Builder(
-    builder : (context)=> Somewidget()
-  ),
+  builder:  (context)=> Somewidget(),
 ),
 ```
 

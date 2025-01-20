@@ -1,3 +1,6 @@
+## [4.0.1] - (UnRelease)
+- Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - Fixed showCase.withWidget not showing issue 
+
 ## [4.0.0]
 - [BREAKING] Fixed [#457](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/457) - titleAlignment property does not work
 - Feature [#466](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/466) - Added Action widget for tooltip

@@ -615,7 +615,7 @@ class _ShowcaseState extends State<Showcase> {
   void _scrollIntoView() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final keyContext = widget.key.currentContext;
-      if (!mounted || (keyContext?.mounted ?? true)) return;
+      if (!mounted) return;
       setState(() => _isScrollRunning = true);
       await Scrollable.ensureVisible(
         keyContext!,

@@ -709,7 +709,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                           // when there is big action widget which make
                           // the tool tip to change it's position
                           Offstage(
-                            offstage: _tooltipActionSize == null,
+                            offstage: isSizeRecalculating,
                             child: SizedBox(
                               width: tooltipWidth,
                               child: Column(

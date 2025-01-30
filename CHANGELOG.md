@@ -1,3 +1,6 @@
+## [4.0.2]
+- Support for tests: introduced a key for overlay root widget (which is Stack). It simplifies checks when we want to make sure that Showcase tooltip is shown (or is not shown)
+
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 
 

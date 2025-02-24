@@ -25,7 +25,12 @@ import 'package:flutter/material.dart';
 import '../showcaseview.dart';
 
 typedef FloatingActionBuilderCallback = FloatingActionWidget Function(
-  BuildContext,
+  BuildContext context,
+);
+
+typedef OnDismissCallback = void Function(
+  /// this is the key on which showcase is dismissed
+  GlobalKey? dismissedAt,
 );
 
 class ShowCaseWidget extends StatefulWidget {
@@ -33,6 +38,9 @@ class ShowCaseWidget extends StatefulWidget {
 
   /// Triggered when all the showcases are completed.
   final VoidCallback? onFinish;
+
+  /// Triggered when onDismiss is called
+  final OnDismissCallback? onDismiss;
 
   /// Triggered every time on start of each showcase.
   final Function(int?, GlobalKey)? onStart;
@@ -118,6 +126,7 @@ class ShowCaseWidget extends StatefulWidget {
   /// - `onFinish`: A callback function triggered when all showcases are completed.
   /// - `onStart`: A callback function triggered at the start of each showcase, providing the index and key of the target widget.
   /// - `onComplete`: A callback function triggered at the completion of each showcase, providing the index and key of the target widget.
+  /// - `onDismiss`: A callback function triggered when showcase view is dismissed.
   /// - `autoPlay`: Whether to automatically start showcasing the next widget after a delay (defaults to `false`).
   /// - `autoPlayDelay`: The delay between each showcase during auto-play (defaults to 2 seconds).
   /// - `enableAutoPlayLock`: Whether to block user interaction while auto-play is enabled (defaults to `false`).
@@ -137,6 +146,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.onFinish,
     this.onStart,
     this.onComplete,
+    this.onDismiss,
     this.autoPlay = false,
     this.autoPlayDelay = const Duration(milliseconds: 2000),
     this.enableAutoPlayLock = false,
@@ -322,6 +332,14 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Dismiss entire showcase view
   void dismiss() {
+    // This will check if valid active widget id exist or not and based on that
+    // we will return the widget key with `onDismiss` callback or will return
+    // null value.
+    final idNotExist =
+        activeWidgetId == null || ids == null || ids!.length < activeWidgetId!;
+
+    widget.onDismiss?.call(idNotExist ? null : ids?[activeWidgetId!]);
+
     if (mounted) setState(_cleanupAfterSteps);
   }
 

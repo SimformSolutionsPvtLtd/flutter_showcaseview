@@ -89,6 +89,9 @@ class MyApp extends StatelessWidget {
               hideActionWidgetForShowcase: [_lastShowcaseWidget],
             ),
           ],
+          onDismiss: (key) {
+            debugPrint('Dismissed at $key');
+          },
         ),
       ),
     );

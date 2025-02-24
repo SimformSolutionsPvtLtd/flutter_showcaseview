@@ -151,6 +151,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | onStart                             | Function(int?, GlobalKey)?                   |                              | Triggered on start of each showcase.                                           |
 | onComplete                          | Function(int?, GlobalKey)?                   |                              | Triggered on completion of each showcase.                                      |
 | onFinish                            | VoidCallback?                                |                              | Triggered when all the showcases are completed.                                |
+| onDismiss                           | OnDismissCallback?                           |                              | Triggered when onDismiss is called                                             |
 | enableShowcase                      | bool                                         | true                         | Enable or disable showcase globally.                                           |
 | toolTipMargin                       | double                                       | 14                           | For tooltip margin.                                                            |
 | globalTooltipActionConfig           | TooltipActionConfig?                         |                              | Global tooltip actionbar config.                                               |

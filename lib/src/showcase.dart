@@ -807,7 +807,10 @@ class _ShowcaseState extends State<Showcase> {
             showArrow: widget.showArrow,
             contentHeight: widget.height,
             contentWidth: widget.width,
-            onTooltipTap: _getOnTooltipTap,
+            onTooltipTap:
+                widget.disposeOnTap == true || widget.onToolTipClick != null
+                    ? _getOnTooltipTap
+                    : null,
             tooltipPadding: widget.tooltipPadding,
             disableMovingAnimation: widget.disableMovingAnimation ??
                 showCaseWidgetState.disableMovingAnimation,
@@ -908,7 +911,10 @@ class _TargetWidget extends StatelessWidget {
           ? IgnorePointer(
               child: targetWidgetContent(),
             )
-          : targetWidgetContent(),
+          : MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: targetWidgetContent(),
+            ),
     );
   }
 

@@ -2,6 +2,8 @@
 - Feature [#500](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/500) -
   Added `onDismiss` callback in `ShowCaseWidget` which will trigger whenever `onDismiss` method is
   called
+- Fixed [#503](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/503) - Cursor
+  not changing to click mode when it is hovering over the default action widgets.
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 
@@ -161,4 +163,4 @@ Added onTargetTap callback feature [#10](https://github.com/simformsolutions/flu
 
 ## [0.1.0] - Initial release on 22nd Augest, 2019.
 
-* First release.
+* First release.~~

@@ -21,35 +21,38 @@ class TooltipActionButtonWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     return config.button ??
-        GestureDetector(
-          onTap: handleOnTap,
-          child: Container(
-            padding: config.padding,
-            decoration: BoxDecoration(
-              color: config.backgroundColor ?? theme.primaryColor,
-              borderRadius: config.borderRadius,
-              border: config.border,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (config.leadIcon != null)
-                  Padding(
-                    padding: config.leadIcon?.padding ??
-                        const EdgeInsets.only(right: 5),
-                    child: config.leadIcon?.icon,
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: handleOnTap,
+            child: Container(
+              padding: config.padding,
+              decoration: BoxDecoration(
+                color: config.backgroundColor ?? theme.primaryColor,
+                borderRadius: config.borderRadius,
+                border: config.border,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (config.leadIcon != null)
+                    Padding(
+                      padding: config.leadIcon?.padding ??
+                          const EdgeInsets.only(right: 5),
+                      child: config.leadIcon?.icon,
+                    ),
+                  Text(
+                    config.name ?? config.type?.actionName ?? '',
+                    style: config.textStyle,
                   ),
-                Text(
-                  config.name ?? config.type?.actionName ?? '',
-                  style: config.textStyle,
-                ),
-                if (config.tailIcon != null)
-                  Padding(
-                    padding: config.tailIcon?.padding ??
-                        const EdgeInsets.only(left: 5),
-                    child: config.tailIcon?.icon,
-                  ),
-              ],
+                  if (config.tailIcon != null)
+                    Padding(
+                      padding: config.tailIcon?.padding ??
+                          const EdgeInsets.only(left: 5),
+                      child: config.tailIcon?.icon,
+                    ),
+                ],
+              ),
             ),
           ),
         );

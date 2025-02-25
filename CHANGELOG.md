@@ -2,6 +2,7 @@
 - Feature [#500](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/500) -
   Added `onDismiss` callback in `ShowCaseWidget` which will trigger whenever `onDismiss` method is
   called
+- Fixed example app to run in flutter version `v3.29.0`
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

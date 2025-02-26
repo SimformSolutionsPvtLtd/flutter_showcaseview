@@ -7,6 +7,7 @@
   package.
 - Fixed [#506](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/506) - Timer
   was not canceling when tapped on `TooltipActionButton` which may cause issue when `autoPlay` is ON.
+- Fixed example app to run in flutter version `v3.29.0`.
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

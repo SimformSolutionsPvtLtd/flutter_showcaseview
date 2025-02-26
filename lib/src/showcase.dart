@@ -609,6 +609,9 @@ class _ShowcaseState extends State<Showcase> {
             Duration(seconds: showCaseWidgetState.autoPlayDelay.inSeconds),
             _nextIfAny);
       }
+    } else if (timer?.isActive ?? false) {
+      timer?.cancel();
+      timer = null;
     }
   }
 
@@ -649,6 +652,13 @@ class _ShowcaseState extends State<Showcase> {
       );
     }
     return widget.child;
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    timer = null;
+    super.dispose();
   }
 
   void initRootWidget() {

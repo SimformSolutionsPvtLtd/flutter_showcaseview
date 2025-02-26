@@ -5,6 +5,8 @@
 - Fixed [#503](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/503) - Cursor
   not changing to click mode when it is hovering over the clickable widgets provided by this
   package.
+- Fixed [#506](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/506) - Timer
+  was not canceling when tapped on `TooltipActionButton` which may cause issue when `autoPlay` is ON.
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

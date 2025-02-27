@@ -27,8 +27,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'enum.dart';
+import 'extensions.dart';
 import 'get_position.dart';
 import 'layout_overlays.dart';
+import 'models/linked_showcase_data.dart';
 import 'models/tooltip_action_button.dart';
 import 'models/tooltip_action_config.dart';
 import 'shape_clipper.dart';
@@ -300,6 +302,13 @@ class Showcase extends StatefulWidget {
   /// for this showcase.
   final bool? enableAutoScroll;
 
+  /// This keys will be used to show multiple showcase widget.
+  /// Note: When child showcase are visible their [onBarrierClick] click will
+  /// not work as there will be only parent barrier.
+  ///
+  /// Defaults to <GlobalKey>[].
+  final List<GlobalKey> linkedShowcaseKeys;
+
   /// Highlights a specific widget on the screen with an informative tooltip.
   ///
   /// This widget helps you showcase specific parts of your UI by drawing an
@@ -362,6 +371,7 @@ class Showcase extends StatefulWidget {
   ///   - `tooltipActionConfig`: Configuration options for custom tooltip actions.
   ///   - `scrollAlignment`: Defines the alignment for the auto scroll function.
   ///   - `enableAutoScroll`:This is used to override the [ShowCaseWidget.enableAutoScroll] behaviour for this showcase.
+  ///   - `linkedShowcaseKeys`: This is used to show multiple showcase at the same time provide linked showcase keys in this list
   ///
   /// **Assertions:**
   ///
@@ -421,6 +431,7 @@ class Showcase extends StatefulWidget {
     this.scrollAlignment = 0.5,
     this.enableAutoScroll,
     this.floatingActionWidget,
+    this.linkedShowcaseKeys = const <GlobalKey>[],
   })  : height = null,
         width = null,
         container = null,
@@ -474,6 +485,7 @@ class Showcase extends StatefulWidget {
   /// - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
   /// - `tooltipActionConfig`: Configuration options for custom tooltip actions.
   /// - `floatingActionWidget`: Custom static floating action widget to show a static widget anywhere
+  /// - `linkedShowcaseKeys`: This is used to show multiple showcase at the same time provide linked showcase keys in this list
   ///
   /// **Differences from default constructor:**
   ///
@@ -519,6 +531,7 @@ class Showcase extends StatefulWidget {
     this.tooltipActionConfig,
     this.scrollAlignment = 0.5,
     this.enableAutoScroll,
+    this.linkedShowcaseKeys = const <GlobalKey>[],
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -564,6 +577,16 @@ class _ShowcaseState extends State<Showcase> {
   late final showCaseWidgetState = ShowCaseWidget.of(context);
   FloatingActionWidget? _globalFloatingActionWidget;
 
+  /// This variable will be true if some other showcase is linked with
+  /// this showcase and starts this widget showcase
+  bool _isLinkedShowCaseStarted = false;
+
+  bool get _isCircle => widget.targetShapeBorder is CircleBorder;
+
+  BorderRadius? get _targetBorderRadius => widget.targetBorderRadius;
+
+  EdgeInsets get _targetPadding => widget.targetPadding;
+
   @override
   void initState() {
     super.initState();
@@ -577,9 +600,15 @@ class _ShowcaseState extends State<Showcase> {
 
     recalculateRootWidgetSize();
 
+    // this will store linked showcases in showCaseWidget for faster access and
+    // reduce complexity
+    showCaseWidgetState.linkedShowcaseMap[widget.key] =
+        widget.linkedShowcaseKeys;
+
     if (_enableShowcase) {
-      _globalFloatingActionWidget =
-          showCaseWidgetState.globalFloatingActionWidget?.call(context);
+      _globalFloatingActionWidget = showCaseWidgetState
+          .globalFloatingActionWidget(widget.key)
+          ?.call(context);
       final size = MediaQuery.of(context).size;
       position ??= GetPosition(
         rootRenderObject: rootRenderObject,
@@ -595,16 +624,25 @@ class _ShowcaseState extends State<Showcase> {
   /// show overlay if there is any target widget
   void showOverlay() {
     final activeStep = ShowCaseWidget.activeTargetWidget(context);
+    final linkedShowcases = showCaseWidgetState.linkedShowcaseMap[activeStep];
+    // if this showcase is linked to current active showcase then we will make
+    // _isLinkedShowCaseStarted true
+    if (linkedShowcases?.contains(widget.key) ?? false) {
+      _isLinkedShowCaseStarted = true;
+    } else {
+      _isLinkedShowCaseStarted = false;
+    }
     setState(() {
-      _showShowCase = activeStep == widget.key;
+      _showShowCase = activeStep == widget.key || _isLinkedShowCaseStarted;
     });
 
-    if (activeStep == widget.key) {
+    if (_showShowCase) {
       if (widget.enableAutoScroll ?? showCaseWidgetState.enableAutoScroll) {
         _scrollIntoView();
       }
 
-      if (showCaseWidgetState.autoPlay) {
+      // if this is linked showcase then parent showcase will maintain timer
+      if (showCaseWidgetState.autoPlay && !_isLinkedShowCaseStarted) {
         timer = Timer(
             Duration(seconds: showCaseWidgetState.autoPlayDelay.inSeconds),
             _nextIfAny);
@@ -645,7 +683,33 @@ class _ShowcaseState extends State<Showcase> {
             screenWidth: size.width,
             screenHeight: size.height,
           );
-          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
+
+          final linkedKeys =
+              showCaseWidgetState.linkedShowcaseMap[widget.key] ?? [];
+          final linkedObjectData = <LinkedShowcaseDataModel>[];
+          if (linkedKeys.isNotEmpty && !_isLinkedShowCaseStarted) {
+            for (final keys in linkedKeys) {
+              final rect = keys.globalPaintBounds;
+              final renderObjectState = keys.currentState;
+              if (renderObjectState is _ShowcaseState && rect != null) {
+                linkedObjectData.add(
+                  LinkedShowcaseDataModel(
+                    overlayPadding: renderObjectState._targetPadding,
+                    radius: renderObjectState._targetBorderRadius,
+                    rect: rect,
+                    isCircle: renderObjectState._isCircle,
+                  ),
+                );
+              }
+            }
+          }
+          return buildOverlayOnTarget(
+            offset,
+            rectBound.size,
+            rectBound,
+            size,
+            linkedObjectData,
+          );
         },
         showOverlay: true,
         child: widget.child,
@@ -692,14 +756,22 @@ class _ShowcaseState extends State<Showcase> {
     } else if (timer != null && !timer!.isActive) {
       timer = null;
     }
-    await _reverseAnimateTooltip();
-    if (showCaseWidgetState.isShowCaseCompleted) return;
+    await _connectedReverseAnimatedToolTip();
+    if ((showCaseWidgetState.isShowCaseCompleted || _isLinkedShowCaseStarted) &&
+        mounted) {
+      final activeWidgetState =
+          ShowCaseWidget.activeTargetWidget(context)?.currentState;
+      if (activeWidgetState is _ShowcaseState) {
+        activeWidgetState._nextIfAny();
+      }
+      return;
+    }
     showCaseWidgetState.completed(widget.key);
   }
 
   Future<void> _getOnTargetTap() async {
     if (widget.disposeOnTap == true) {
-      await _reverseAnimateTooltip();
+      await _connectedReverseAnimatedToolTip();
       showCaseWidgetState.dismiss();
       widget.onTargetClick!();
     } else {
@@ -709,7 +781,7 @@ class _ShowcaseState extends State<Showcase> {
 
   Future<void> _getOnTooltipTap() async {
     if (widget.disposeOnTap == true) {
-      await _reverseAnimateTooltip();
+      await _connectedReverseAnimatedToolTip();
       showCaseWidgetState.dismiss();
     }
     widget.onToolTipClick?.call();
@@ -724,11 +796,34 @@ class _ShowcaseState extends State<Showcase> {
     _isTooltipDismissed = false;
   }
 
+  /// This function is used to maintain all showcase reverse animation. When
+  /// [_isLinkedShowCaseStarted] is true it will call parent's reverse animation
+  /// function which will handle all child animation.
+  Future<void> _connectedReverseAnimatedToolTip() async {
+    if (_isLinkedShowCaseStarted) {
+      final activeWidgetState =
+          ShowCaseWidget.activeTargetWidget(context)?.currentState;
+      if (activeWidgetState is _ShowcaseState) {
+        await activeWidgetState._connectedReverseAnimatedToolTip();
+      }
+    } else {
+      var futureList = <Future>[_reverseAnimateTooltip()];
+      for (final keys in widget.linkedShowcaseKeys) {
+        final state = keys.currentState;
+        if (state is _ShowcaseState) {
+          futureList.add(state._reverseAnimateTooltip());
+        }
+      }
+      await Future.wait(futureList);
+    }
+  }
+
   Widget buildOverlayOnTarget(
     Offset offset,
     Size size,
     Rect rectBound,
     Size screenSize,
+    List<LinkedShowcaseDataModel> linkedWidgetData,
   ) {
     final mediaQuerySize = MediaQuery.of(context).size;
     var blur = 0.0;
@@ -744,28 +839,40 @@ class _ShowcaseState extends State<Showcase> {
 
     return Stack(
       children: [
-        GestureDetector(
-          onTap: () {
-            if (!showCaseWidgetState.disableBarrierInteraction &&
-                !widget.disableBarrierInteraction) {
-              _nextIfAny();
-            }
-            widget.onBarrierClick?.call();
-          },
-          child: ClipPath(
-            clipper: RRectClipper(
-              area: _isScrollRunning ? Rect.zero : rectBound,
-              isCircle: widget.targetShapeBorder is CircleBorder,
-              radius: _isScrollRunning
-                  ? BorderRadius.zero
-                  : widget.targetBorderRadius,
-              overlayPadding:
-                  _isScrollRunning ? EdgeInsets.zero : widget.targetPadding,
-            ),
-            child: blur != 0
-                ? BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                    child: Container(
+        // Linked showcase will not show it's barrier
+        if (!_isLinkedShowCaseStarted)
+          GestureDetector(
+            onTap: () {
+              if (!showCaseWidgetState.disableBarrierInteraction &&
+                  !widget.disableBarrierInteraction) {
+                _nextIfAny();
+              }
+              widget.onBarrierClick?.call();
+            },
+            child: ClipPath(
+              clipper: RRectClipper(
+                area: _isScrollRunning ? Rect.zero : rectBound,
+                isCircle: widget.targetShapeBorder is CircleBorder,
+                radius: _isScrollRunning
+                    ? BorderRadius.zero
+                    : widget.targetBorderRadius,
+                overlayPadding:
+                    _isScrollRunning ? EdgeInsets.zero : widget.targetPadding,
+                linkedObjectData: linkedWidgetData,
+              ),
+              child: blur != 0
+                  ? BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                      child: Container(
+                        width: mediaQuerySize.width,
+                        height: mediaQuerySize.height,
+                        decoration: BoxDecoration(
+                          color: widget.overlayColor
+                              .withOpacity(widget.overlayOpacity),
+                        ),
+                      ),
+                    )
+                  : Container(
                       width: mediaQuerySize.width,
                       height: mediaQuerySize.height,
                       decoration: BoxDecoration(
@@ -773,17 +880,8 @@ class _ShowcaseState extends State<Showcase> {
                             .withOpacity(widget.overlayOpacity),
                       ),
                     ),
-                  )
-                : Container(
-                    width: mediaQuerySize.width,
-                    height: mediaQuerySize.height,
-                    decoration: BoxDecoration(
-                      color: widget.overlayColor
-                          .withOpacity(widget.overlayOpacity),
-                    ),
-                  ),
+            ),
           ),
-        ),
         if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
         if (!_isScrollRunning) ...[
           _TargetWidget(

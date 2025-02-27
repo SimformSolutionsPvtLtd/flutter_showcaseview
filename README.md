@@ -215,6 +215,8 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 | tooltipActionConfig          | TooltipActionConfig?       |                                                  | Give configurations (alignment, position, etc...) to the tooltip actionbar                         | ✅          | ✅                |
 | enableAutoScroll             | bool?                      | ShowCaseWidget.enableAutoScroll                  | This is used to override the `ShowCaseWidget.enableAutoScroll` behaviour                           | ✅          | ✅                |
 | floatingActionWidget         | FloatingActionWidget       |                                                  | Provided a floating static action widget to show at any place on the screen                        | ✅          | ✅                |
+| linkedShowcaseKeys           | List<GlobalKey>            | []                                               | This is used to show multiple showcase at the same time with help of other `Showcase` keys         | ✅          | ✅                |
+
 
 ## Properties of `TooltipActionButton` and `TooltipActionButton.custom`:
 

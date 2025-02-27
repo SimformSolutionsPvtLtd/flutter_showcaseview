@@ -24,17 +24,21 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import 'models/linked_showcase_data.dart';
+
 class RRectClipper extends CustomClipper<ui.Path> {
   final bool isCircle;
   final BorderRadius? radius;
   final EdgeInsets overlayPadding;
   final Rect area;
+  final List<LinkedShowcaseDataModel> linkedObjectData;
 
   RRectClipper({
     this.isCircle = false,
     this.radius,
     this.overlayPadding = EdgeInsets.zero,
     this.area = Rect.zero,
+    this.linkedObjectData = const <LinkedShowcaseDataModel>[],
   });
 
   @override
@@ -49,7 +53,7 @@ class RRectClipper extends CustomClipper<ui.Path> {
       area.bottom + overlayPadding.bottom,
     );
 
-    return Path()
+    var mainObjectPath = Path()
       ..fillType = ui.PathFillType.evenOdd
       ..addRect(Offset.zero & size)
       ..addRRect(
@@ -61,6 +65,38 @@ class RRectClipper extends CustomClipper<ui.Path> {
           bottomRight: (radius?.bottomRight ?? customRadius),
         ),
       );
+
+    for (final widgetRect in linkedObjectData) {
+      final customRadius = widgetRect.isCircle
+          ? Radius.circular(widgetRect.rect.height)
+          : const Radius.circular(3.0);
+
+      final rect = Rect.fromLTRB(
+        widgetRect.rect.left - widgetRect.overlayPadding.left,
+        widgetRect.rect.top - widgetRect.overlayPadding.top,
+        widgetRect.rect.right + widgetRect.overlayPadding.right,
+        widgetRect.rect.bottom + widgetRect.overlayPadding.bottom,
+      );
+
+      /// We have use this approach so that overlapping cutout will merge with
+      /// each other
+      mainObjectPath = Path.combine(
+        PathOperation.difference,
+        mainObjectPath,
+        Path()
+          ..addRRect(
+            RRect.fromRectAndCorners(
+              rect,
+              topLeft: (widgetRect.radius?.topLeft ?? customRadius),
+              topRight: (widgetRect.radius?.topRight ?? customRadius),
+              bottomLeft: (widgetRect.radius?.bottomLeft ?? customRadius),
+              bottomRight: (widgetRect.radius?.bottomRight ?? customRadius),
+            ),
+          ),
+      );
+    }
+
+    return mainObjectPath;
   }
 
   @override
@@ -68,5 +104,6 @@ class RRectClipper extends CustomClipper<ui.Path> {
       isCircle != oldClipper.isCircle ||
       radius != oldClipper.radius ||
       overlayPadding != oldClipper.overlayPadding ||
-      area != oldClipper.area;
+      area != oldClipper.area ||
+      linkedObjectData != oldClipper.linkedObjectData;
 }

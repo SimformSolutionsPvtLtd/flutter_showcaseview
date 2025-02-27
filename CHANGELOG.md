@@ -7,6 +7,9 @@
   package.
 - Fixed [#506](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/506) - Timer
   was not canceling when tapped on `TooltipActionButton` which may cause issue when `autoPlay` is ON.
+- Feature [#113](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/113) -
+  Multiple showcase at the same time. Added a parameter `linkedShowcaseKeys` in showcase which will
+  take list of keys to start those showcase at the same time
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

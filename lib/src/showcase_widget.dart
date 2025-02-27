@@ -193,6 +193,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   late final List<TooltipActionButton>? globalTooltipActions;
 
+  Map<GlobalKey, List<GlobalKey>> linkedShowcaseMap = {};
+
   /// These properties are only here so that it can be accessed by
   /// [Showcase]
   bool get autoPlay => widget.autoPlay;
@@ -238,8 +240,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Return a [widget.globalFloatingActionWidget] if not need to hide this for
   /// current showcase.
-  FloatingActionBuilderCallback? get globalFloatingActionWidget =>
-      _hideFloatingWidgetKeys[getCurrentActiveShowcaseKey] ?? false
+  FloatingActionBuilderCallback? globalFloatingActionWidget(
+    GlobalKey showcaseKey,
+  ) =>
+      _hideFloatingWidgetKeys[showcaseKey] ?? false
           ? null
           : widget.globalFloatingActionWidget;
 

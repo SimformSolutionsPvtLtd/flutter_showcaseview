@@ -424,6 +424,15 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     if (!widget.isTooltipDismissed && oldWidget.hashCode != hashCode) {
       _getTooltipSize();
     }
+
+    // If tooltip is not dismissed and animation is dismissed or in reverse mode
+    // the we will start the animation this fixes the issue if 2 consecutive
+    // showcase of same showcase not working issue
+    if (!widget.isTooltipDismissed &&
+        (_scaleAnimationController.status.isDismissed ||
+            _scaleAnimationController.status == AnimationStatus.reverse)) {
+      _scaleAnimationController.forward();
+    }
   }
 
   @override

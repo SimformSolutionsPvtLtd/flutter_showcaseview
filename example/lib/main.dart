@@ -285,6 +285,9 @@ class _MailPageState extends State<MailPage> {
                     Showcase(
                       targetPadding: const EdgeInsets.all(5),
                       key: _two,
+                      linkedShowcaseKeys: [
+                        _lastShowcaseWidget,
+                      ],
                       title: 'Profile',
                       description:
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",

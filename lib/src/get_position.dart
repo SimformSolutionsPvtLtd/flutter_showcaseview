@@ -26,7 +26,7 @@ import 'package:flutter/material.dart';
 
 class GetPosition {
   GetPosition({
-    required this.key,
+    required this.context,
     required this.screenWidth,
     required this.screenHeight,
     this.padding = EdgeInsets.zero,
@@ -35,7 +35,7 @@ class GetPosition {
     getRenderBox();
   }
 
-  final GlobalKey key;
+  final BuildContext context;
   final EdgeInsets padding;
   final double screenWidth;
   final double screenHeight;
@@ -43,11 +43,15 @@ class GetPosition {
 
   late final RenderBox? _box;
   late final Offset? _boxOffset;
+  late final Offset? overlayOffset;
 
   RenderBox? get box => _box;
 
   void getRenderBox() {
-    var renderBox = key.currentContext?.findRenderObject() as RenderBox?;
+    var renderBox = context.findRenderObject() as RenderBox?;
+
+    overlayOffset =
+        (rootRenderObject?.parent as RenderBox?)?.localToGlobal(Offset.zero);
 
     if (renderBox == null) return;
 
@@ -72,7 +76,10 @@ class GetPosition {
     final topLeft = _box!.size.topLeft(_boxOffset!);
     final bottomRight = _box!.size.bottomRight(_boxOffset!);
     final leftDx = topLeft.dx - padding.left;
-    final leftDy = topLeft.dy - padding.top;
+    var leftDy = topLeft.dy - padding.top;
+    if (leftDy < 0) {
+      leftDy = 0;
+    }
     final rect = Rect.fromLTRB(
       leftDx.clamp(0, leftDx),
       leftDy.clamp(0, leftDy),
@@ -123,4 +130,15 @@ class GetPosition {
   double getWidth() => getRight() - getLeft();
 
   double getCenter() => (getLeft() + getRight()) * 0.5;
+
+  Offset topLeft() =>
+      _box?.size.topLeft(
+        _box!.localToGlobal(
+          Offset.zero,
+          ancestor: rootRenderObject,
+        ),
+      ) ??
+      Offset.zero;
+
+  Offset getOffSet() => _box?.size.center(topLeft()) ?? Offset.zero;
 }

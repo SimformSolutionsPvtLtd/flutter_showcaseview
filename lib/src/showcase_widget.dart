@@ -20,9 +20,15 @@
  * SOFTWARE.
  */
 
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../showcaseview.dart';
+import 'layout_overlays.dart';
+import 'shape_clipper.dart';
+import 'showcase/showcase_controller.dart';
 
 typedef FloatingActionBuilderCallback = FloatingActionWidget Function(
   BuildContext context,
@@ -163,12 +169,6 @@ class ShowCaseWidget extends StatefulWidget {
     this.hideFloatingActionWidgetForShowcase = const [],
   });
 
-  static GlobalKey? activeTargetWidget(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()
-        ?.activeWidgetIds;
-  }
-
   static ShowCaseWidgetState of(BuildContext context) {
     final state = context.findAncestorStateOfType<ShowCaseWidgetState>();
     if (state != null) {
@@ -187,11 +187,12 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   int? activeWidgetId;
   RenderBox? rootRenderObject;
   Size? rootWidgetSize;
-  final anchoredOverlayKey = UniqueKey();
 
   late final TooltipActionConfig? globalTooltipActionConfig;
 
   late final List<TooltipActionButton>? globalTooltipActions;
+
+  Map<GlobalKey, List<ShowcaseController>> showcaseController = {};
 
   /// These properties are only here so that it can be accessed by
   /// [Showcase]
@@ -216,6 +217,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey> get hiddenFloatingActionKeys =>
       _hideFloatingWidgetKeys.keys.toList();
 
+  Timer? _timer;
+
+  VoidCallback? updateOverlay;
+
   /// This Stores keys of showcase for which we will hide the
   /// [globalFloatingActionWidget].
   late final _hideFloatingWidgetKeys = {
@@ -238,8 +243,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Return a [widget.globalFloatingActionWidget] if not need to hide this for
   /// current showcase.
-  FloatingActionBuilderCallback? get globalFloatingActionWidget =>
-      _hideFloatingWidgetKeys[getCurrentActiveShowcaseKey] ?? false
+  FloatingActionBuilderCallback? globalFloatingActionWidget(
+    GlobalKey showcaseKey,
+  ) =>
+      _hideFloatingWidgetKeys[showcaseKey] ?? false
           ? null
           : widget.globalFloatingActionWidget;
 
@@ -251,10 +258,112 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     initRootWidget();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!mounted) return;
+    final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
+    rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
+    rootWidgetSize = rootWidget == null
+        ? MediaQuery.of(context).size
+        : rootRenderObject?.size;
+  }
+
+  @override
+  void didUpdateWidget(covariant ShowCaseWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!mounted) return;
+    final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
+    rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
+    rootWidgetSize = rootWidget == null
+        ? MediaQuery.of(context).size
+        : rootRenderObject?.size;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayBuilder(
+      showOverlay: getCurrentActiveShowcaseKey != null,
+      updateOverlay: (updateOverlays) {
+        updateOverlay = updateOverlays;
+      },
+      overlayBuilder: (_) {
+        final controller = showcaseController[getCurrentActiveShowcaseKey] ??
+            <ShowcaseController>[];
+        if (getCurrentActiveShowcaseKey != null && controller.isNotEmpty) {
+          final firstController = controller.first;
+          final firstShowcaseConfig = firstController.showcaseConfig;
+          return Stack(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  firstShowcaseConfig.onBarrierClick?.call();
+                  if (!disableBarrierInteraction &&
+                      !firstShowcaseConfig.disableBarrierInteraction) {
+                    next();
+                  }
+                },
+                child: ClipPath(
+                  clipper: RRectClipper(
+                    area: Rect.zero,
+                    isCircle: false,
+                    radius: BorderRadius.zero,
+                    overlayPadding: EdgeInsets.zero,
+                    linkedObjectData: controller
+                        .map(
+                          (e) => e.linkedShowcaseDataModel,
+                        )
+                        .toList(),
+                  ),
+                  child: controller.first.blur != 0
+                      ? BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: firstController.blur,
+                            sigmaY: firstController.blur,
+                          ),
+                          child: getBackgroundOverlayContainer(
+                            overlayColor: firstShowcaseConfig.overlayColor,
+                            overlayOpacity: firstShowcaseConfig.overlayOpacity,
+                          ),
+                        )
+                      : getBackgroundOverlayContainer(
+                          overlayColor: firstShowcaseConfig.overlayColor,
+                          overlayOpacity: firstShowcaseConfig.overlayOpacity,
+                        ),
+                ),
+              ),
+              for (final data in controller) ...data.getToolTipWidget.toList(),
+            ],
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+      child: Builder(builder: widget.builder),
+    );
+  }
+
+  Widget getBackgroundOverlayContainer(
+      {required Color overlayColor, required double overlayOpacity}) {
+    return Container(
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: overlayColor
+
+            //TODO: Update when we remove support for older version
+            //ignore: deprecated_member_use
+            .withOpacity(
+          overlayOpacity,
+        ),
+      ),
+    );
+  }
+
   void initRootWidget() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final rootWidget = context.findAncestorStateOfType<State<WidgetsApp>>();
+      final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
       rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
       rootWidgetSize = rootWidget == null
           ? MediaQuery.of(context).size
@@ -276,16 +385,22 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     setState(() {
       ids = widgetIds;
       activeWidgetId = 0;
+      updateOverlay?.call();
       _onStart();
     });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        updateOverlay?.call();
+      },
+    );
   }
 
   /// Completes showcase of given key and starts next one
   /// otherwise will finish the entire showcase view
-  void completed(GlobalKey? key) {
+  void completed(GlobalKey? key) async {
     if (ids != null && ids![activeWidgetId!] == key && mounted) {
-      setState(() {
-        _onComplete();
+      await _onComplete();
+      if (mounted) {
         activeWidgetId = activeWidgetId! + 1;
         _onStart();
 
@@ -293,40 +408,46 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
           _cleanupAfterSteps();
           widget.onFinish?.call();
         }
-      });
+        updateOverlay?.call();
+      }
     }
   }
 
   /// Completes current active showcase and starts next one
   /// otherwise will finish the entire showcase view
-  void next() {
+  void next([bool fromAutoPlayOrAction = false]) async {
+    // If this call is from autoPlay timer or action widget we will override the
+    // enableAutoPlayLock so user can move forward in showcase
+    if (!fromAutoPlayOrAction && widget.enableAutoPlayLock) return;
+
     if (ids != null && mounted) {
-      setState(() {
-        _onComplete();
+      await _onComplete();
+      if (mounted) {
         activeWidgetId = activeWidgetId! + 1;
         _onStart();
-
         if (activeWidgetId! >= ids!.length) {
           _cleanupAfterSteps();
           widget.onFinish?.call();
         }
-      });
+        updateOverlay?.call();
+      }
     }
   }
 
   /// Completes current active showcase and starts previous one
   /// otherwise will finish the entire showcase view
-  void previous() {
+  void previous() async {
     if (ids != null && ((activeWidgetId ?? 0) - 1) >= 0 && mounted) {
-      setState(() {
-        _onComplete();
+      await _onComplete();
+      if (mounted) {
         activeWidgetId = activeWidgetId! - 1;
         _onStart();
         if (activeWidgetId! >= ids!.length) {
           _cleanupAfterSteps();
           widget.onFinish?.call();
         }
-      });
+        updateOverlay?.call();
+      }
     }
   }
 
@@ -339,23 +460,63 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
         activeWidgetId == null || ids == null || ids!.length < activeWidgetId!;
 
     widget.onDismiss?.call(idNotExist ? null : ids?[activeWidgetId!]);
-
-    if (mounted) setState(_cleanupAfterSteps);
+    if (mounted) _cleanupAfterSteps.call();
+    updateOverlay?.call();
   }
 
-  void _onStart() {
+  Future<void> _onStart() async {
     if (activeWidgetId! < ids!.length) {
       widget.onStart?.call(activeWidgetId, ids![activeWidgetId!]);
+      final controllers = showcaseController[getCurrentActiveShowcaseKey] ??
+          <ShowcaseController>[];
+      if ((controllers).length == 1 &&
+          (controllers.first.showcaseConfig.enableAutoScroll ??
+              widget.enableAutoScroll)) {
+        await controllers.first.scrollIntoView?.call();
+      } else {
+        for (final controller in controllers) {
+          controller.startShowcase();
+        }
+      }
+    }
+    if (widget.autoPlay) {
+      if (_timer?.isActive ?? false) {
+        _timer?.cancel();
+        _timer = null;
+      }
+      _timer = Timer(
+        Duration(seconds: widget.autoPlayDelay.inSeconds),
+        () => next(true),
+      );
     }
   }
 
-  void _onComplete() {
+  Future<void> _onComplete() async {
+    var futures = <Future>[];
+    for (final controller in showcaseController[getCurrentActiveShowcaseKey] ??
+        <ShowcaseController>[]) {
+      if ((controller.showcaseConfig.disableScaleAnimation ??
+              widget.disableScaleAnimation) ||
+          controller.reverseAnimation == null) {
+        continue;
+      }
+      futures.add(controller.reverseAnimation!.call());
+    }
+    await Future.wait(futures);
     widget.onComplete?.call(activeWidgetId, ids![activeWidgetId!]);
+    if (widget.autoPlay) {
+      if (_timer?.isActive ?? false) {
+        _timer?.cancel();
+        _timer = null;
+      }
+    }
   }
 
   void _cleanupAfterSteps() {
     ids = null;
     activeWidgetId = null;
+    _timer?.cancel();
+    _timer = null;
   }
 
   /// Disables the [globalFloatingActionWidget] for the provided keys.
@@ -366,27 +527,4 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
       ..clear()
       ..addAll({for (final item in updatedList) item: true});
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return _InheritedShowCaseView(
-      activeWidgetIds: ids?.elementAt(activeWidgetId!),
-      child: Builder(
-        builder: widget.builder,
-      ),
-    );
-  }
-}
-
-class _InheritedShowCaseView extends InheritedWidget {
-  final GlobalKey? activeWidgetIds;
-
-  const _InheritedShowCaseView({
-    required this.activeWidgetIds,
-    required super.child,
-  });
-
-  @override
-  bool updateShouldNotify(_InheritedShowCaseView oldWidget) =>
-      oldWidget.activeWidgetIds != activeWidgetIds;
 }

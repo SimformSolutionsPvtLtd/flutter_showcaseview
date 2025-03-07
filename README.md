@@ -125,6 +125,11 @@ WidgetsBinding.instance.addPostFrameCallback((_) =>
 );
 ```
 
+## MultiShowcaseView
+To show multiple showcase at the same time provide same key to showcase.
+Note: auto scroll to showcase will not work in case of the multi-showcase and we will use property
+of first initialized showcase for common things like barrier tap and colors.
+
 ## Functions of `ShowCaseWidget.of(context)`:
 
 | Function Name                            | Description              |

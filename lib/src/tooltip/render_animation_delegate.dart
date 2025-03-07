@@ -29,6 +29,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
     required super.toolTipSlideEndDistance,
     required super.screenEdgePadding,
     required super.targetPadding,
+    required super.showcaseOffset,
   })  : _scaleController = scaleController,
         _moveController = moveController,
         _scaleAnimation = scaleAnimation,

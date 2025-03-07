@@ -23,7 +23,6 @@ class ToolTipWidget extends StatefulWidget {
   final Duration scaleAnimationDuration;
   final Curve scaleAnimationCurve;
   final Alignment? scaleAnimationAlignment;
-  final bool isTooltipDismissed;
   final TooltipPosition? tooltipPosition;
   final EdgeInsets? titlePadding;
   final EdgeInsets? descriptionPadding;
@@ -34,6 +33,7 @@ class ToolTipWidget extends StatefulWidget {
   final TooltipActionConfig tooltipActionConfig;
   final List<Widget> tooltipActions;
   final EdgeInsets targetPadding;
+  final ShowcaseController showcaseController;
 
   const ToolTipWidget({
     super.key,
@@ -61,8 +61,8 @@ class ToolTipWidget extends StatefulWidget {
     required this.scaleAnimationDuration,
     required this.scaleAnimationCurve,
     required this.toolTipMargin,
+    required this.showcaseController,
     this.scaleAnimationAlignment,
-    this.isTooltipDismissed = false,
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
@@ -118,18 +118,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     if (!widget.disableMovingAnimation) {
       _movingAnimationController.forward();
     }
-  }
-
-  @override
-  void didUpdateWidget(covariant ToolTipWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (!widget.disableScaleAnimation && widget.isTooltipDismissed) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (timeStamp) {
-          _scaleAnimationController.reverse();
-        },
-      );
-    }
+    widget.showcaseController.reverseAnimation =
+        widget.disableScaleAnimation ? null : _scaleAnimationController.reverse;
   }
 
   @override
@@ -242,7 +232,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         targetPosition: targetPosition,
         targetSize: targetSize,
         position: widget.tooltipPosition,
-        screenSize: MediaQuery.of(context).size,
+        screenSize: widget.showcaseController.rootWidgetSize ??
+            MediaQuery.of(context).size,
         hasArrow: widget.showArrow,
         targetPadding: widget.targetPadding,
         scaleAlignment: widget.scaleAnimationAlignment,
@@ -253,6 +244,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         gapBetweenContentAndAction:
             widget.tooltipActionConfig.gapBetweenContentAndAction,
         screenEdgePadding: widget.toolTipMargin,
+        showcaseOffset: widget.showcaseController.rootRenderObject
+                ?.localToGlobal(Offset.zero) ??
+            Offset.zero,
         children: [
           _TooltipLayoutId(
             id: TooltipLayoutSlot.tooltipBox,

@@ -24,19 +24,12 @@ class ActionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final getWidgetPadding = EdgeInsets.only(
-      top: isArrowUp ? tooltipActionConfig.gapBetweenContentAndAction : 0.0,
-      bottom: !isArrowUp ? tooltipActionConfig.gapBetweenContentAndAction : 0.0,
-    ).add(outSidePadding);
-
     return SizedBox(
-      width: width,
       child: Padding(
-        padding: getWidgetPadding,
+        padding: outSidePadding,
         child: Row(
-          mainAxisSize: width == null ? MainAxisSize.min : MainAxisSize.max,
-          mainAxisAlignment:
-              width == null ? MainAxisAlignment.start : alignment,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: alignment,
           crossAxisAlignment: crossAxisAlignment,
           textBaseline: tooltipActionConfig.textBaseline,
           children: children,

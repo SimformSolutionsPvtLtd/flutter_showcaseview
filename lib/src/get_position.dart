@@ -44,6 +44,8 @@ class GetPosition {
   late final RenderBox? _box;
   late final Offset? _boxOffset;
 
+  RenderBox? get box => _box;
+
   void getRenderBox() {
     var renderBox = key.currentContext?.findRenderObject() as RenderBox?;
 

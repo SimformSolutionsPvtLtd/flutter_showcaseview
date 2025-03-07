@@ -20,9 +20,39 @@
  * SOFTWARE.
  */
 
+import 'dart:math';
+
 import 'showcase_widget.dart';
 
-enum TooltipPosition { top, bottom }
+enum TooltipPosition {
+  top,
+  bottom,
+  left,
+  right;
+
+  double get rotationAngle {
+    switch (this) {
+      case TooltipPosition.top:
+        return pi;
+
+      case TooltipPosition.bottom:
+        return 0;
+      case TooltipPosition.left:
+        return pi / 2;
+
+      case TooltipPosition.right:
+        return 3 * pi / 2;
+    }
+  }
+
+  bool get isRight => this == TooltipPosition.right;
+  bool get isLeft => this == TooltipPosition.left;
+  bool get isTop => this == TooltipPosition.top;
+  bool get isBottom => this == TooltipPosition.bottom;
+
+  bool get isHorizontal => isRight || isLeft;
+  bool get isVertical => isTop || isBottom;
+}
 
 enum TooltipActionPosition {
   outside,

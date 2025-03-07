@@ -33,8 +33,8 @@ import 'models/tooltip_action_button.dart';
 import 'models/tooltip_action_config.dart';
 import 'shape_clipper.dart';
 import 'showcase_widget.dart';
+import 'tooltip/tooltip.dart';
 import 'tooltip_action_button_widget.dart';
-import 'tooltip_widget.dart';
 import 'widget/floating_action_widget.dart';
 
 class Showcase extends StatefulWidget {
@@ -524,7 +524,7 @@ class Showcase extends StatefulWidget {
         scaleAnimationDuration = const Duration(milliseconds: 300),
         scaleAnimationCurve = Curves.decelerate,
         scaleAnimationAlignment = null,
-        disableScaleAnimation = null,
+        disableScaleAnimation = true,
         title = null,
         description = null,
         titleTextAlign = TextAlign.start,
@@ -797,7 +797,7 @@ class _ShowcaseState extends State<Showcase> {
             disableDefaultChildGestures: widget.disableDefaultTargetGestures,
             targetPadding: widget.targetPadding,
           ),
-          ToolTipWidget(
+          ToolTipWidgetV2(
             position: position,
             offset: offset,
             screenSize: screenSize,

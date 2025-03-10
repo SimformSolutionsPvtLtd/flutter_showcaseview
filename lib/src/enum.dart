@@ -37,6 +37,7 @@ enum TooltipPosition {
 
       case TooltipPosition.bottom:
         return 0;
+
       case TooltipPosition.left:
         return pi / 2;
 

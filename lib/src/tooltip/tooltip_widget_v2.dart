@@ -20,7 +20,7 @@ class ToolTipWidgetV2 extends StatefulWidget {
   final TextStyle? descTextStyle;
   final Widget? container;
   final FloatingActionWidget?
-      floatingActionWidget; // This is not needed as we have shifted them to showcase
+      floatingActionWidget; // This is not needed as we have shifted this to showcase
   final Color? tooltipBackgroundColor;
   final Color? textColor;
   final bool showArrow;

@@ -272,8 +272,8 @@ class Showcase extends StatefulWidget {
   /// To understand how text is aligned, check [TextAlign]
   final TextAlign descriptionTextAlign;
 
-  /// Defines the margin for the tooltip.
-  /// Which is from 0 to [toolTipSlideEndDistance].
+  /// Defines the margin from the screen edge for the tooltip.
+  /// ToolTip will try to not cross this border around the screen
   ///
   /// Defaults to 14.
   final double toolTipMargin;
@@ -357,7 +357,7 @@ class Showcase extends StatefulWidget {
   ///   - `blurValue`: The amount of background blur applied during the showcase.
   ///   - `tooltipPosition`: The position of the tooltip relative to the showcased widget.
   ///   - `toolTipSlideEndDistance`: The distance the tooltip slides in from the edge of the screen (defaults to 7dp).
-  ///   - `toolTipMargin`: The margin around the tooltip (defaults to 14dp).
+  ///   - `toolTipMargin`: The margin around the screen which tooltip try not to cross (defaults to 14dp).
   ///   - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
   ///   - `tooltipActionConfig`: Configuration options for custom tooltip actions.
   ///   - `scrollAlignment`: Defines the alignment for the auto scroll function.
@@ -842,6 +842,9 @@ class _ShowcaseState extends State<Showcase> {
             tooltipActionConfig: _getTooltipActionConfig(),
             tooltipActions: _getTooltipActions(),
           ),
+          widget.floatingActionWidget ??
+              _globalFloatingActionWidget ??
+              const SizedBox.shrink(),
         ],
       ],
     );

@@ -1,5 +1,6 @@
 part of 'tooltip.dart';
 
+/// A delegate for handling tooltip animations including scaling and movement.
 class RenderAnimationDelegate extends RenderPositionDelegate {
   AnimationController _scaleController;
   AnimationController _moveController;
@@ -26,24 +27,26 @@ class RenderAnimationDelegate extends RenderPositionDelegate {
         _moveController = moveController,
         _scaleAnimation = scaleAnimation,
         _moveAnimation = moveAnimation {
-    // Add listeners to animations
+    // Add listeners to trigger repaint when animations change.
     _scaleAnimation.addListener(markNeedsPaint);
     _moveAnimation.addListener(markNeedsPaint);
   }
 
-  // Setters for animation controllers and animations
+  /// Updates the scale animation controller.
   set scaleController(AnimationController value) {
     if (_scaleController != value) {
       _scaleController = value;
     }
   }
 
+  /// Updates the move animation controller.
   set moveController(AnimationController value) {
     if (_moveController != value) {
       _moveController = value;
     }
   }
 
+  /// Updates the scale animation and refreshes listeners.
   set scaleAnimation(Animation<double> value) {
     if (_scaleAnimation != value) {
       _scaleAnimation.removeListener(markNeedsPaint);
@@ -53,6 +56,7 @@ class RenderAnimationDelegate extends RenderPositionDelegate {
     }
   }
 
+  /// Updates the move animation and refreshes listeners.
   set moveAnimation(Animation<double> value) {
     if (_moveAnimation != value) {
       _moveAnimation.removeListener(markNeedsPaint);
@@ -62,7 +66,7 @@ class RenderAnimationDelegate extends RenderPositionDelegate {
     }
   }
 
-  // Method to update alignment
+  /// Sets the scale alignment and marks the widget for repaint.
   void setScaleAlignment(Alignment alignment) {
     scaleAlignment = alignment;
     markNeedsPaint();
@@ -74,108 +78,104 @@ class RenderAnimationDelegate extends RenderPositionDelegate {
 
     while (child != null) {
       final childParentData = child.parentData! as MultiChildLayoutParentData;
-
       context.canvas.save();
 
-      // Calculate scale origin based on target widget and alignment
-      // This uses the target widget's bounds and the alignment parameter
-      final Rect targetRect = Rect.fromLTWH(targetPosition.dx,
-          targetPosition.dy, targetSize.width, targetSize.height);
+      // Calculate target widget bounds.
+      final Rect targetRect = Rect.fromLTWH(
+        targetPosition.dx,
+        targetPosition.dy,
+        targetSize.width,
+        targetSize.height,
+      );
 
-      // Convert alignment to actual pixel position within the target rect
+      // Determine scale alignment if not set.
+      scaleAlignment ??= _defaultScaleAlignment();
 
-      if (scaleAlignment == null) {
-        switch (tooltipPosition) {
-          case TooltipPosition.top:
-            scaleAlignment = Alignment.topCenter;
-            break;
-          case TooltipPosition.bottom:
-            scaleAlignment = Alignment.bottomCenter;
-            break;
-          case TooltipPosition.left:
-            scaleAlignment = Alignment.centerLeft;
-            break;
-          case TooltipPosition.right:
-            scaleAlignment = Alignment.centerRight;
-            break;
-        }
-      }
+      // Compute scale origin from alignment within the target rectangle.
       final Offset scaleOrigin = Offset(
-          targetRect.left +
-              (targetRect.width / 2) +
-              (scaleAlignment!.x * targetRect.width / 2),
-          targetRect.top +
-              (targetRect.height / 2) +
-              (scaleAlignment!.y * targetRect.height / 2));
+        targetRect.left +
+            (targetRect.width / 2) +
+            (scaleAlignment!.x * targetRect.width / 2),
+        targetRect.top +
+            (targetRect.height / 2) +
+            (scaleAlignment!.y * targetRect.height / 2),
+      );
 
-      // Apply move animation
-      late Offset moveOffset;
-
-      switch (tooltipPosition) {
-        case TooltipPosition.top:
-          moveOffset = Offset(
-            0,
-            (1 - _moveAnimation.value) * -toolTipSlideEndDistance,
-          );
-          break;
-        case TooltipPosition.bottom:
-          moveOffset = Offset(
-            0,
-            (1 - _moveAnimation.value) * toolTipSlideEndDistance,
-          );
-          break;
-        case TooltipPosition.left:
-          moveOffset = Offset(
-            (1 - _moveAnimation.value) * -toolTipSlideEndDistance,
-            0,
-          );
-          break;
-        case TooltipPosition.right:
-          moveOffset = Offset(
-            (1 - _moveAnimation.value) * toolTipSlideEndDistance,
-            0,
-          );
-          break;
-      }
+      // Compute movement offset based on animation progress.
+      final Offset moveOffset = _calculateMoveOffset();
 
       context.canvas.translate(scaleOrigin.dx, scaleOrigin.dy);
-
-      // Apply scale around this origin
       context.canvas.scale(_scaleAnimation.value);
 
-      // Translate back and paint each child
+      // Adjust for arrow rendering or normal child rendering.
       if (childParentData.id == TooltipLayoutSlot.arrow) {
-        // Special handling for arrow
-        context.canvas.translate(
-            -scaleOrigin.dx + childParentData.offset.dx + child.size.width / 2,
-            -scaleOrigin.dy +
-                childParentData.offset.dy +
-                child.size.height / 2);
-
-        // Add move offset
-        context.canvas.translate(moveOffset.dx, moveOffset.dy);
-
-        // Rotate arrow if needed
-        context.canvas.rotate(tooltipPosition.rotationAngle);
-
-        // Paint the arrow
-        context.paintChild(
-            child, Offset(-child.size.width / 2, -child.size.height / 2));
+        _paintArrow(context, child, childParentData, scaleOrigin, moveOffset);
       } else {
-        // Normal children
-        context.canvas.translate(-scaleOrigin.dx + childParentData.offset.dx,
-            -scaleOrigin.dy + childParentData.offset.dy);
-
-        // Add move offset
-        context.canvas.translate(moveOffset.dx, moveOffset.dy);
-
-        // Paint the child
-        context.paintChild(child, Offset.zero);
+        _paintChild(context, child, childParentData, scaleOrigin, moveOffset);
       }
 
       context.canvas.restore();
-
       child = childParentData.nextSibling;
     }
+  }
+
+  /// Determines the default scale alignment based on tooltip position.
+  Alignment _defaultScaleAlignment() {
+    switch (tooltipPosition) {
+      case TooltipPosition.top:
+        return Alignment.topCenter;
+      case TooltipPosition.bottom:
+        return Alignment.bottomCenter;
+      case TooltipPosition.left:
+        return Alignment.centerLeft;
+      case TooltipPosition.right:
+        return Alignment.centerRight;
+    }
+  }
+
+  /// Computes the offset movement animation based on tooltip position.
+  Offset _calculateMoveOffset() {
+    switch (tooltipPosition) {
+      case TooltipPosition.top:
+        return Offset(0, (1 - _moveAnimation.value) * -toolTipSlideEndDistance);
+      case TooltipPosition.bottom:
+        return Offset(0, (1 - _moveAnimation.value) * toolTipSlideEndDistance);
+      case TooltipPosition.left:
+        return Offset((1 - _moveAnimation.value) * -toolTipSlideEndDistance, 0);
+      case TooltipPosition.right:
+        return Offset((1 - _moveAnimation.value) * toolTipSlideEndDistance, 0);
+    }
+  }
+
+  /// Paints the tooltip arrow with proper alignment and rotation.
+  void _paintArrow(
+      PaintingContext context,
+      RenderBox child,
+      MultiChildLayoutParentData childParentData,
+      Offset scaleOrigin,
+      Offset moveOffset) {
+    context.canvas.translate(
+      -scaleOrigin.dx + childParentData.offset.dx + child.size.width / 2,
+      -scaleOrigin.dy + childParentData.offset.dy + child.size.height / 2,
+    );
+    context.canvas.translate(moveOffset.dx, moveOffset.dy);
+    context.canvas.rotate(tooltipPosition.rotationAngle);
+    context.paintChild(
+        child, Offset(-child.size.width / 2, -child.size.height / 2));
+  }
+
+  /// Paints normal children with translation and animation effects.
+  void _paintChild(
+      PaintingContext context,
+      RenderBox child,
+      MultiChildLayoutParentData childParentData,
+      Offset scaleOrigin,
+      Offset moveOffset) {
+    context.canvas.translate(
+      -scaleOrigin.dx + childParentData.offset.dx,
+      -scaleOrigin.dy + childParentData.offset.dy,
+    );
+    context.canvas.translate(moveOffset.dx, moveOffset.dy);
+    context.paintChild(child, Offset.zero);
   }
 }

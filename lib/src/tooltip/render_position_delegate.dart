@@ -183,11 +183,15 @@ class _RenderPositionDelegate extends RenderBox
 
     // Helper function to calculate initial position based on selected direction
     void positionToolTip() {
+      final centerDxForTooltip =
+          (targetSize.width - toolTipBoxSize.width) * 0.5;
+      final centerDyForTooltip =
+          (targetSize.height - toolTipBoxSize.height) * 0.5;
+
       switch (tooltipPosition) {
         case TooltipPosition.bottom:
           // Center horizontally below target
-          xOffset = targetPosition.dx +
-              (targetSize.width - toolTipBoxSize.width) * 0.5;
+          xOffset = targetPosition.dx + centerDxForTooltip;
           // Position below target with appropriate offset
           yOffset =
               targetPosition.dy + targetSize.height + Constants.tooltipOffset;
@@ -201,8 +205,7 @@ class _RenderPositionDelegate extends RenderBox
 
         case TooltipPosition.top:
           // Center horizontally above target
-          xOffset = targetPosition.dx +
-              (targetSize.width - toolTipBoxSize.width) * 0.5;
+          xOffset = targetPosition.dx + centerDxForTooltip;
           // Position above target with appropriate offset
           yOffset = targetPosition.dy -
               toolTipBoxSize.height -
@@ -227,8 +230,7 @@ class _RenderPositionDelegate extends RenderBox
             xOffset -= Constants.withOutArrowToolTipPadding;
           }
           // Center vertically beside target
-          yOffset = targetPosition.dy +
-              (targetSize.height - toolTipBoxSize.height) * 0.5;
+          yOffset = targetPosition.dy + centerDyForTooltip;
           break;
 
         case TooltipPosition.right:
@@ -242,8 +244,7 @@ class _RenderPositionDelegate extends RenderBox
             xOffset += Constants.withOutArrowToolTipPadding;
           }
           // Center vertically beside target
-          yOffset = targetPosition.dy +
-              (targetSize.height - toolTipBoxSize.height) * 0.5;
+          yOffset = targetPosition.dy + centerDyForTooltip;
           break;
       }
     }
@@ -567,6 +568,11 @@ class _RenderPositionDelegate extends RenderBox
       }
     }
 
+    const halfArrowWidth = Constants.arrowWidth * 0.5;
+    const halfArrowHeight = Constants.arrowWidth * 0.5;
+    final halfTargetHeight = targetSize.height * 0.5;
+    final halfTargetWidth = targetSize.width * 0.5;
+
     // Position the arrow element (if exists)
     if (hasArrow && arrowBox != null) {
       final arrowBoxParentData =
@@ -577,20 +583,15 @@ class _RenderPositionDelegate extends RenderBox
         case TooltipPosition.top:
           // Arrow points down from bottom of tooltip
           arrowBoxParentData.offset = Offset(
-            targetPosition.dx +
-                (targetSize.width * 0.5) -
-                (Constants.arrowWidth * 0.5),
-            yOffset + toolTipBoxSize.height + (Constants.arrowHeight * 0.5) - 2,
+            targetPosition.dx + halfTargetWidth - halfArrowWidth,
+            yOffset + toolTipBoxSize.height - 2,
           );
           break;
 
         case TooltipPosition.bottom:
           // Arrow points up from top of tooltip
           arrowBoxParentData.offset = Offset(
-            targetPosition.dx +
-                (targetSize.width * 0.5) -
-                (Constants.arrowWidth * 0.5) -
-                2,
+            targetPosition.dx + halfTargetWidth - halfArrowWidth - 2,
             yOffset - Constants.arrowHeight + 2,
           );
           break;
@@ -598,21 +599,16 @@ class _RenderPositionDelegate extends RenderBox
         case TooltipPosition.left:
           // Arrow points right from right side of tooltip
           arrowBoxParentData.offset = Offset(
-            xOffset + toolTipBoxSize.width - 2,
-            targetPosition.dy +
-                (targetSize.height * 0.5) -
-                (Constants.arrowWidth * 0.5) +
-                2,
+            xOffset + toolTipBoxSize.width - halfArrowHeight - 2,
+            targetPosition.dy + halfTargetHeight - halfArrowWidth + 2,
           );
           break;
 
         case TooltipPosition.right:
           // Arrow points left from left side of tooltip
           arrowBoxParentData.offset = Offset(
-            xOffset - Constants.arrowWidth + 2,
-            targetPosition.dy +
-                (targetSize.height * 0.5) -
-                (Constants.arrowHeight * 0.5),
+            xOffset - Constants.arrowHeight - 3,
+            targetPosition.dy + halfTargetHeight - halfArrowHeight,
           );
           break;
       }

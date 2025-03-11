@@ -98,7 +98,7 @@ enum TooltipDefaultActionType {
   }
 }
 
-/// This are the ToolTip layout widget ids and will be used to identify
+/// These are the ToolTip layout widget ids and will be used to identify
 /// the widget during layout and painting phase
 enum TooltipLayoutSlot {
   tooltipBox,

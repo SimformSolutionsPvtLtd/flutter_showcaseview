@@ -114,13 +114,16 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       scaleAlignment ??= _defaultScaleAlignment(tooltipPosition);
 
       // Compute scale origin from alignment within the target rectangle.
+      final halfTargetWidth = targetRect.width * 0.5;
+      final halfTargetHeight = targetRect.height * 0.5;
+
       final Offset scaleOrigin = Offset(
         targetRect.left +
-            (targetRect.width * 0.5) +
-            (scaleAlignment!.x * targetRect.width * 0.5),
+            halfTargetWidth +
+            (scaleAlignment!.x * halfTargetWidth),
         targetRect.top +
-            (targetRect.height * 0.5) +
-            (scaleAlignment!.y * targetRect.height * 0.5),
+            halfTargetHeight +
+            (scaleAlignment!.y * halfTargetHeight),
       );
 
       // Compute movement offset based on animation progress.
@@ -183,13 +186,15 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
     Offset scaleOrigin,
     Offset moveOffset,
   ) {
+    final halfChildWidth = child.size.width * 0.5;
+    final halfChildHeight = child.size.height * 0.5;
     // Step 1: Translate the canvas to the center of the arrow
     // This moves the origin point to the center of the child widget
     // by accounting for scale origin, child offset, and child dimensions
     canvas
       ..translate(
-        -scaleOrigin.dx + childParentData.offset.dx + child.size.width * 0.5,
-        -scaleOrigin.dy + childParentData.offset.dy + child.size.height * 0.5,
+        -scaleOrigin.dx + childParentData.offset.dx + halfChildWidth,
+        -scaleOrigin.dy + childParentData.offset.dy + halfChildHeight,
       )
 
       // Step 2: Apply additional movement offset
@@ -204,7 +209,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
     // The negative offsets ensure the child is centered at the origin point
     paintChild(
       child,
-      Offset(-child.size.width * 0.5, -child.size.height * 0.5),
+      Offset(-halfChildWidth, -halfChildHeight),
     );
   }
 

@@ -30,19 +30,25 @@ enum TooltipPosition {
   left,
   right;
 
+  /// Initial position of the arrow is pointing top so we need to rotate as per the position of the tooltip
+  /// This will provide necessary rotation to properly point arrow
   double get rotationAngle {
     switch (this) {
       case TooltipPosition.top:
+        // we will rotate by π
         return pi;
 
       case TooltipPosition.bottom:
+        // we will not rotate as this is ideal position
         return 0;
 
       case TooltipPosition.left:
-        return pi / 2;
+        // we will rotate by π/2
+        return pi * 0.5;
 
       case TooltipPosition.right:
-        return 3 * pi / 2;
+        // we will rotate by 3π/2
+        return 3 * pi * 0.5;
     }
   }
 
@@ -90,4 +96,12 @@ enum TooltipDefaultActionType {
         throw ArgumentError('Invalid tooltip default action type');
     }
   }
+}
+
+/// This are the ToolTip layout widget ids and will be used to identify
+/// the widget during layout and painting phase
+enum TooltipLayoutSlot {
+  tooltipBox,
+  actionBox,
+  arrow;
 }

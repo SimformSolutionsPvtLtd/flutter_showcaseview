@@ -524,7 +524,7 @@ class Showcase extends StatefulWidget {
         scaleAnimationDuration = const Duration(milliseconds: 300),
         scaleAnimationCurve = Curves.decelerate,
         scaleAnimationAlignment = null,
-        disableScaleAnimation = true,
+        disableScaleAnimation = null,
         title = null,
         description = null,
         titleTextAlign = TextAlign.start,
@@ -770,6 +770,9 @@ class _ShowcaseState extends State<Showcase> {
                       height: mediaQuerySize.height,
                       decoration: BoxDecoration(
                         color: widget.overlayColor
+
+                            //TODO: Update when we remove support for older version
+                            //ignore: deprecated_member_use
                             .withOpacity(widget.overlayOpacity),
                       ),
                     ),
@@ -779,6 +782,8 @@ class _ShowcaseState extends State<Showcase> {
                     height: mediaQuerySize.height,
                     decoration: BoxDecoration(
                       color: widget.overlayColor
+                          //TODO: Update when we remove support for older version
+                          //ignore: deprecated_member_use
                           .withOpacity(widget.overlayOpacity),
                     ),
                   ),
@@ -797,7 +802,7 @@ class _ShowcaseState extends State<Showcase> {
             disableDefaultChildGestures: widget.disableDefaultTargetGestures,
             targetPadding: widget.targetPadding,
           ),
-          ToolTipWidgetV2(
+          ToolTipWidget(
             position: position,
             offset: offset,
             screenSize: screenSize,
@@ -824,8 +829,9 @@ class _ShowcaseState extends State<Showcase> {
             tooltipPadding: widget.tooltipPadding,
             disableMovingAnimation: widget.disableMovingAnimation ??
                 showCaseWidgetState.disableMovingAnimation,
-            disableScaleAnimation: widget.disableScaleAnimation ??
-                showCaseWidgetState.disableScaleAnimation,
+            disableScaleAnimation: (widget.disableScaleAnimation ??
+                    showCaseWidgetState.disableScaleAnimation) &&
+                widget.container == null,
             movingAnimationDuration: widget.movingAnimationDuration,
             tooltipBorderRadius: widget.tooltipBorderRadius,
             scaleAnimationDuration: widget.scaleAnimationDuration,
@@ -842,13 +848,14 @@ class _ShowcaseState extends State<Showcase> {
             tooltipActionConfig: _getTooltipActionConfig(),
             tooltipActions: _getTooltipActions(),
           ),
-          widget.floatingActionWidget ??
-              _globalFloatingActionWidget ??
-              const SizedBox.shrink(),
+          if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
         ],
       ],
     );
   }
+
+  Widget? get _getFloatingActionWidget =>
+      widget.floatingActionWidget ?? _globalFloatingActionWidget;
 
   List<Widget> _getTooltipActions() {
     final actionData = (widget.tooltipActions?.isNotEmpty ?? false)

@@ -1,12 +1,6 @@
 part of "tooltip.dart";
 
-class TooltipLayoutSlot {
-  static const String tooltipBox = 'toolTipBox';
-  static const String actionBox = 'actionBox';
-  static const String arrow = 'arrow';
-}
-
-class ToolTipWidgetV2 extends StatefulWidget {
+class ToolTipWidget extends StatefulWidget {
   final GetPosition? position;
   final Offset? offset; // This is not needed
   final Size screenSize; // This is also not needed
@@ -46,7 +40,7 @@ class ToolTipWidgetV2 extends StatefulWidget {
   final TooltipActionConfig tooltipActionConfig;
   final List<Widget> tooltipActions;
 
-  const ToolTipWidgetV2({
+  const ToolTipWidget({
     super.key,
     required this.position,
     required this.offset,
@@ -88,38 +82,36 @@ class ToolTipWidgetV2 extends StatefulWidget {
   });
 
   @override
-  State<ToolTipWidgetV2> createState() => _ToolTipWidgetV2State();
+  State<ToolTipWidget> createState() => _ToolTipWidgetState();
 }
 
-class _ToolTipWidgetV2State extends State<ToolTipWidgetV2>
+class _ToolTipWidgetState extends State<ToolTipWidget>
     with TickerProviderStateMixin {
-  late final AnimationController _movingAnimationController;
-  late final Animation<double> _movingAnimation;
-  late final AnimationController _scaleAnimationController;
-  late final Animation<double> _scaleAnimation;
+  late final AnimationController _movingAnimationController =
+      AnimationController(
+    duration: widget.movingAnimationDuration,
+    vsync: this,
+  );
 
-  Offset parentCenter = Offset.zero;
+  late final Animation<double> _movingAnimation = CurvedAnimation(
+    parent: _movingAnimationController,
+    curve: Curves.easeInOut,
+  );
+
+  late final AnimationController _scaleAnimationController =
+      AnimationController(
+    duration: widget.scaleAnimationDuration,
+    vsync: this,
+    lowerBound: widget.disableScaleAnimation ? 1 : 0,
+  );
+  late final Animation<double> _scaleAnimation = CurvedAnimation(
+    parent: _scaleAnimationController,
+    curve: widget.scaleAnimationCurve,
+  );
 
   @override
   void initState() {
     super.initState();
-    _movingAnimationController = AnimationController(
-      duration: widget.movingAnimationDuration,
-      vsync: this,
-    );
-    _movingAnimation = CurvedAnimation(
-      parent: _movingAnimationController,
-      curve: Curves.easeInOut,
-    );
-    _scaleAnimationController = AnimationController(
-      duration: widget.scaleAnimationDuration,
-      vsync: this,
-      lowerBound: widget.disableScaleAnimation ? 1 : 0,
-    );
-    _scaleAnimation = CurvedAnimation(
-      parent: _scaleAnimationController,
-      curve: widget.scaleAnimationCurve,
-    );
     if (widget.disableScaleAnimation) {
       movingAnimationListener();
     } else {
@@ -137,19 +129,7 @@ class _ToolTipWidgetV2State extends State<ToolTipWidgetV2>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!widget.disableScaleAnimation && widget.isTooltipDismissed) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (timeStamp) {
-          _scaleAnimationController.reverse();
-        },
-      );
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant ToolTipWidgetV2 oldWidget) {
+  void didUpdateWidget(covariant ToolTipWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!widget.disableScaleAnimation && widget.isTooltipDismissed) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -160,19 +140,6 @@ class _ToolTipWidgetV2State extends State<ToolTipWidgetV2>
     }
   }
 
-  void movingAnimationListener() {
-    _movingAnimationController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _movingAnimationController.reverse();
-      }
-      if (_movingAnimationController.isDismissed) {
-        if (!widget.disableMovingAnimation) {
-          _movingAnimationController.forward();
-        }
-      }
-    });
-  }
-
   @override
   void dispose() {
     _movingAnimationController.dispose();
@@ -180,12 +147,24 @@ class _ToolTipWidgetV2State extends State<ToolTipWidgetV2>
     super.dispose();
   }
 
-  final zeroPadding = EdgeInsets.zero;
-
   @override
   Widget build(BuildContext context) {
-    final defaultToolTipWidget = widget.container == null
-        ? ClipRRect(
+    final defaultToolTipWidget = widget.container != null
+        ? MouseRegion(
+            cursor: widget.onTooltipTap == null
+                ? MouseCursor.defer
+                : SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: widget.onTooltipTap,
+              child: ColoredBox(
+                color: Colors.transparent,
+                child: Center(
+                  child: widget.container ?? const SizedBox.shrink(),
+                ),
+              ),
+            ),
+          )
+        : ClipRRect(
             borderRadius:
                 widget.tooltipBorderRadius ?? BorderRadius.circular(8.0),
             child: MouseRegion(
@@ -204,72 +183,52 @@ class _ToolTipWidgetV2State extends State<ToolTipWidgetV2>
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       if (widget.title != null)
-                        Align(
-                          alignment: widget.titleAlignment,
-                          child: Padding(
-                            padding: (widget.titlePadding ?? zeroPadding).add(
-                              EdgeInsets.only(
-                                left: widget.tooltipPadding?.left ?? 0,
-                                right: widget.tooltipPadding?.right ?? 0,
-                              ),
-                            ),
-                            child: Text(
-                              widget.title!,
-                              textAlign: widget.titleTextAlign,
-                              textDirection: widget.titleTextDirection,
-                              style: widget.titleTextStyle ??
-                                  Theme.of(context).textTheme.titleLarge!.merge(
-                                        TextStyle(
-                                          color: widget.textColor,
-                                        ),
-                                      ),
+                        DefaultTooltipTextWidget(
+                          padding: (widget.titlePadding ?? EdgeInsets.zero).add(
+                            EdgeInsets.only(
+                              left: widget.tooltipPadding?.left ?? 0,
+                              right: widget.tooltipPadding?.right ?? 0,
                             ),
                           ),
+                          text: widget.title!,
+                          textAlign: widget.titleTextAlign,
+                          alignment: widget.titleAlignment,
+                          textColor: widget.textColor,
+                          textDirection: widget.titleTextDirection,
+                          textStyle: widget.titleTextStyle ??
+                              Theme.of(context).textTheme.titleLarge!.merge(
+                                    TextStyle(
+                                      color: widget.textColor,
+                                    ),
+                                  ),
                         ),
                       if (widget.description != null)
-                        Align(
-                          alignment: widget.descriptionAlignment,
-                          child: Padding(
-                            padding:
-                                (widget.descriptionPadding ?? zeroPadding).add(
-                              EdgeInsets.only(
-                                left: widget.tooltipPadding?.left ?? 0,
-                                right: widget.tooltipPadding?.right ?? 0,
-                              ),
-                            ),
-                            child: Text(
-                              widget.description!,
-                              textAlign: widget.descriptionTextAlign,
-                              textDirection: widget.descriptionTextDirection,
-                              style: widget.descTextStyle ??
-                                  Theme.of(context).textTheme.titleSmall!.merge(
-                                        TextStyle(
-                                          color: widget.textColor,
-                                        ),
-                                      ),
+                        DefaultTooltipTextWidget(
+                          padding:
+                              (widget.descriptionPadding ?? EdgeInsets.zero)
+                                  .add(
+                            EdgeInsets.only(
+                              left: widget.tooltipPadding?.left ?? 0,
+                              right: widget.tooltipPadding?.right ?? 0,
                             ),
                           ),
+                          text: widget.description!,
+                          textAlign: widget.descriptionTextAlign,
+                          alignment: widget.descriptionAlignment,
+                          textColor: widget.textColor,
+                          textDirection: widget.descriptionTextDirection,
+                          textStyle: widget.descTextStyle ??
+                              Theme.of(context).textTheme.titleSmall!.merge(
+                                    TextStyle(
+                                      color: widget.textColor,
+                                    ),
+                                  ),
                         ),
                       if (widget.tooltipActions.isNotEmpty &&
                           widget.tooltipActionConfig.position.isInside)
                         _getActionWidget(insideWidget: true),
                     ],
                   ),
-                ),
-              ),
-            ),
-          )
-        : MouseRegion(
-            cursor: widget.onTooltipTap == null
-                ? MouseCursor.defer
-                : SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: widget.onTooltipTap,
-              child: Container(
-                padding: zeroPadding,
-                color: Colors.transparent,
-                child: Center(
-                  child: widget.container ?? const SizedBox.shrink(),
                 ),
               ),
             ),
@@ -281,7 +240,7 @@ class _ToolTipWidgetV2State extends State<ToolTipWidgetV2>
 
     return Material(
       type: MaterialType.transparency,
-      child: AnimatedTooltipMultiLayout(
+      child: _AnimatedTooltipMultiLayout(
         scaleController: _scaleAnimationController,
         moveController: _movingAnimationController,
         scaleAnimation: _scaleAnimation,
@@ -300,19 +259,19 @@ class _ToolTipWidgetV2State extends State<ToolTipWidgetV2>
             widget.tooltipActionConfig.gapBetweenContentAndAction,
         screenEdgePadding: widget.toolTipMargin,
         children: [
-          TooltipLayoutId(
+          _TooltipLayoutId(
             id: TooltipLayoutSlot.tooltipBox,
             child: defaultToolTipWidget,
           ),
           if (widget.tooltipActions.isNotEmpty &&
               (widget.tooltipActionConfig.position.isOutside ||
                   widget.container != null))
-            TooltipLayoutId(
+            _TooltipLayoutId(
               id: TooltipLayoutSlot.actionBox,
               child: _getActionWidget(),
             ),
           if (widget.showArrow)
-            TooltipLayoutId(
+            _TooltipLayoutId(
               id: TooltipLayoutSlot.arrow,
               child: CustomPaint(
                 painter: _Arrow(
@@ -340,13 +299,28 @@ class _ToolTipWidgetV2State extends State<ToolTipWidgetV2>
                 left: widget.tooltipPadding?.left ?? 0,
                 right: widget.tooltipPadding?.right ?? 0,
               )
-            : zeroPadding,
+            : EdgeInsets.zero,
         alignment: widget.tooltipActionConfig.alignment,
         crossAxisAlignment: widget.tooltipActionConfig.crossAxisAlignment,
-        width: 1004,
         isArrowUp: insideWidget,
         children: widget.tooltipActions,
       ),
     );
+  }
+
+  void movingAnimationListener() {
+    // We have added check at the call of the this function but still this
+    // will be our last defence
+    if (widget.disableMovingAnimation) return;
+
+    _movingAnimationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _movingAnimationController.reverse();
+      }
+      if (_movingAnimationController.isDismissed &&
+          !widget.disableMovingAnimation) {
+        _movingAnimationController.forward();
+      }
+    });
   }
 }

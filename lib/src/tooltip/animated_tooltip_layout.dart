@@ -1,22 +1,8 @@
 part of 'tooltip.dart';
 
-class AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
-  final AnimationController scaleController;
-  final AnimationController moveController;
-  final Animation<double> scaleAnimation;
-  final Animation<double> moveAnimation;
-  final Offset targetPosition;
-  final Size targetSize;
-  final TooltipPosition? position;
-  final Size screenSize;
-  final bool hasSecondBox;
-  final bool hasArrow;
-  final double gapBetweenContentAndAction;
-  final double toolTipSlideEndDistance;
-  final Alignment? scaleAlignment;
-  final double screenEdgePadding;
-
-  const AnimatedTooltipMultiLayout({
+class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
+  const _AnimatedTooltipMultiLayout({
+    // ignore: unused_element_parameter
     super.key,
     required this.scaleController,
     required this.moveController,
@@ -35,9 +21,24 @@ class AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
     required this.screenEdgePadding,
   });
 
+  final AnimationController scaleController;
+  final AnimationController moveController;
+  final Animation<double> scaleAnimation;
+  final Animation<double> moveAnimation;
+  final Offset targetPosition;
+  final Size targetSize;
+  final TooltipPosition? position;
+  final Size screenSize;
+  final bool hasSecondBox;
+  final bool hasArrow;
+  final double gapBetweenContentAndAction;
+  final double toolTipSlideEndDistance;
+  final Alignment? scaleAlignment;
+  final double screenEdgePadding;
+
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderAnimationDelegate(
+    return _RenderAnimationDelegate(
       scaleController: scaleController,
       moveController: moveController,
       scaleAnimation: scaleAnimation,
@@ -57,7 +58,9 @@ class AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, RenderAnimationDelegate renderObject) {
+    BuildContext context,
+    _RenderAnimationDelegate renderObject,
+  ) {
     renderObject
       ..scaleController = scaleController
       ..moveController = moveController

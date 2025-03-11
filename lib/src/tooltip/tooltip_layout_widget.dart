@@ -1,27 +1,27 @@
 part of 'tooltip.dart';
 
-class TooltipLayoutId extends ParentDataWidget<MultiChildLayoutParentData> {
-  final Object id;
-
-  const TooltipLayoutId({
-    super.key,
+class _TooltipLayoutId extends ParentDataWidget<MultiChildLayoutParentData> {
+  const _TooltipLayoutId({
     required this.id,
     required super.child,
   });
+
+  final Object id;
 
   @override
   void applyParentData(RenderObject renderObject) {
     assert(renderObject.parentData is MultiChildLayoutParentData);
     final parentData = renderObject.parentData! as MultiChildLayoutParentData;
-    if (parentData.id != id) {
-      parentData.id = id;
-      final targetObject = renderObject.parent;
-      if (targetObject is RenderObject) {
-        targetObject.markNeedsLayout();
-      }
+
+    if (parentData.id == id) return;
+
+    parentData.id = id;
+    final targetObject = renderObject.parent;
+    if (targetObject is RenderObject) {
+      targetObject.markNeedsLayout();
     }
   }
 
   @override
-  Type get debugTypicalAncestorWidgetClass => AnimatedTooltipMultiLayout;
+  Type get debugTypicalAncestorWidgetClass => _AnimatedTooltipMultiLayout;
 }

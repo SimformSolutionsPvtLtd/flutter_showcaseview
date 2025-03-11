@@ -1,8 +1,5 @@
 part of 'tooltip.dart';
 
-const arrowWidth = 18.0;
-const arrowHeight = 9.0;
-
 class _Arrow extends CustomPainter {
   final Color strokeColor;
   final PaintingStyle paintingStyle;
@@ -20,17 +17,7 @@ class _Arrow extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawPath(getTrianglePath(), _paint);
-  }
-
-  Path getTrianglePath() {
-    // Fixed width & height
-
-    return Path()
-      ..moveTo(0, arrowHeight)
-      ..lineTo(arrowWidth / 2, 0)
-      ..lineTo(arrowWidth, arrowHeight)
-      ..lineTo(0, arrowHeight);
+    canvas.drawPath(_getTrianglePath(), _paint);
   }
 
   @override
@@ -38,5 +25,13 @@ class _Arrow extends CustomPainter {
     return oldDelegate.strokeColor != strokeColor ||
         oldDelegate.paintingStyle != paintingStyle ||
         oldDelegate.strokeWidth != strokeWidth;
+  }
+
+  Path _getTrianglePath() {
+    return Path()
+      ..moveTo(0, Constants.arrowHeight)
+      ..lineTo(Constants.arrowWidth * 0.5, 0)
+      ..lineTo(Constants.arrowWidth, Constants.arrowHeight)
+      ..lineTo(0, Constants.arrowHeight);
   }
 }

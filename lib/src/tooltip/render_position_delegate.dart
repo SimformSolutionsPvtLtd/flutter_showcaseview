@@ -18,6 +18,7 @@ class _RenderPositionDelegate extends RenderBox
   /// [toolTipSlideEndDistance] - Distance for slide animations
   /// [gapBetweenContentAndAction] - Spacing between tooltip content and action buttons
   /// [screenEdgePadding] - Minimum padding from screen edges
+  /// [targetPadding] - Padding around the target
   _RenderPositionDelegate({
     required this.targetPosition,
     required this.targetSize,
@@ -28,6 +29,7 @@ class _RenderPositionDelegate extends RenderBox
     required this.toolTipSlideEndDistance,
     required this.gapBetweenContentAndAction,
     required this.screenEdgePadding,
+    required this.targetPadding,
   });
 
   // Core positioning parameters
@@ -40,6 +42,7 @@ class _RenderPositionDelegate extends RenderBox
   double toolTipSlideEndDistance;
   double gapBetweenContentAndAction;
   double screenEdgePadding;
+  EdgeInsets targetPadding;
 
   /// Calculated tooltip position after layout
   late TooltipPosition tooltipPosition;
@@ -541,6 +544,21 @@ class _RenderPositionDelegate extends RenderBox
     // Ensure tooltip stays within vertical screen bounds
     yOffset = yOffset.clamp(screenEdgePadding,
         screenSize.height - tooltipHeight - screenEdgePadding);
+
+    switch (tooltipPosition) {
+      case TooltipPosition.top:
+        yOffset -= (targetPadding.top);
+        break;
+      case TooltipPosition.bottom:
+        yOffset += (targetPadding.bottom);
+        break;
+      case TooltipPosition.left:
+        xOffset -= (targetPadding.left);
+        break;
+      case TooltipPosition.right:
+        xOffset += targetPadding.right;
+        break;
+    }
 
     // STEP 9: Position all child elements
 

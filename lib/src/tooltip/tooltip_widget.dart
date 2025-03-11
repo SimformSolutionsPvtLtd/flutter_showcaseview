@@ -39,6 +39,7 @@ class ToolTipWidget extends StatefulWidget {
   final double toolTipMargin;
   final TooltipActionConfig tooltipActionConfig;
   final List<Widget> tooltipActions;
+  final EdgeInsets targetPadding;
 
   const ToolTipWidget({
     super.key,
@@ -79,6 +80,7 @@ class ToolTipWidget extends StatefulWidget {
     this.toolTipSlideEndDistance = 7,
     required this.tooltipActionConfig,
     required this.tooltipActions,
+    required this.targetPadding,
   });
 
   @override
@@ -250,6 +252,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         position: widget.tooltipPosition,
         screenSize: MediaQuery.of(context).size,
         hasArrow: widget.showArrow,
+        targetPadding: widget.targetPadding,
         scaleAlignment: widget.scaleAnimationAlignment,
         hasSecondBox: widget.tooltipActions.isNotEmpty &&
             (widget.tooltipActionConfig.position.isOutside ||

@@ -19,6 +19,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
     required this.position,
     required this.scaleAlignment,
     required this.screenEdgePadding,
+    required this.targetPadding,
   });
 
   final AnimationController scaleController;
@@ -35,6 +36,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
   final double toolTipSlideEndDistance;
   final Alignment? scaleAlignment;
   final double screenEdgePadding;
+  final EdgeInsets targetPadding;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -53,6 +55,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
       gapBetweenContentAndAction: gapBetweenContentAndAction,
       toolTipSlideEndDistance: toolTipSlideEndDistance,
       screenEdgePadding: screenEdgePadding,
+      targetPadding: targetPadding,
     );
   }
 
@@ -74,6 +77,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
       ..hasArrow = hasArrow
       ..screenEdgePadding = screenEdgePadding
       ..toolTipSlideEndDistance = toolTipSlideEndDistance
-      ..gapBetweenContentAndAction = gapBetweenContentAndAction;
+      ..gapBetweenContentAndAction = gapBetweenContentAndAction
+      ..targetPadding = targetPadding;
   }
 }

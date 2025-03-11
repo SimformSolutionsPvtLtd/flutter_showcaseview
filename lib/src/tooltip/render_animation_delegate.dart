@@ -28,6 +28,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
     required super.gapBetweenContentAndAction,
     required super.toolTipSlideEndDistance,
     required super.screenEdgePadding,
+    required super.targetPadding,
   })  : _scaleController = scaleController,
         _moveController = moveController,
         _scaleAnimation = scaleAnimation,
@@ -117,7 +118,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       final halfTargetWidth = targetRect.width * 0.5;
       final halfTargetHeight = targetRect.height * 0.5;
 
-      final Offset scaleOrigin = Offset(
+      Offset scaleOrigin = Offset(
         targetRect.left +
             halfTargetWidth +
             (scaleAlignment!.x * halfTargetWidth),
@@ -125,6 +126,20 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
             halfTargetHeight +
             (scaleAlignment!.y * halfTargetHeight),
       );
+      switch (tooltipPosition) {
+        case TooltipPosition.top:
+          scaleOrigin -= Offset(0, targetPadding.top + 5);
+          break;
+        case TooltipPosition.bottom:
+          scaleOrigin += Offset(0, targetPadding.bottom + 5);
+          break;
+        case TooltipPosition.left:
+          scaleOrigin -= Offset(targetPadding.left + 5, 0);
+          break;
+        case TooltipPosition.right:
+          scaleOrigin += Offset(targetPadding.right + 5, 0);
+          break;
+      }
 
       // Compute movement offset based on animation progress.
       final Offset moveOffset = _calculateMoveOffset(tooltipPosition);

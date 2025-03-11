@@ -830,8 +830,8 @@ class _ShowcaseState extends State<Showcase> {
             disableMovingAnimation: widget.disableMovingAnimation ??
                 showCaseWidgetState.disableMovingAnimation,
             disableScaleAnimation: (widget.disableScaleAnimation ??
-                    showCaseWidgetState.disableScaleAnimation) &&
-                widget.container == null,
+                    showCaseWidgetState.disableScaleAnimation) ||
+                widget.container != null,
             movingAnimationDuration: widget.movingAnimationDuration,
             tooltipBorderRadius: widget.tooltipBorderRadius,
             scaleAnimationDuration: widget.scaleAnimationDuration,
@@ -847,6 +847,7 @@ class _ShowcaseState extends State<Showcase> {
             toolTipMargin: widget.toolTipMargin,
             tooltipActionConfig: _getTooltipActionConfig(),
             tooltipActions: _getTooltipActions(),
+            targetPadding: widget.targetPadding,
           ),
           if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
         ],

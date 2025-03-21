@@ -8,8 +8,8 @@ class _Arrow extends CustomPainter {
 
   _Arrow({
     this.strokeColor = Colors.black,
-    this.strokeWidth = 3,
-    this.paintingStyle = PaintingStyle.stroke,
+    this.strokeWidth = Constants.arrowStrokeWidth,
+    this.paintingStyle = PaintingStyle.fill,
   }) : _paint = Paint()
           ..color = strokeColor
           ..strokeWidth = strokeWidth

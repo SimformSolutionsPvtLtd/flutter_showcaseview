@@ -425,13 +425,13 @@ class Showcase extends StatefulWidget {
         width = null,
         container = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1."),
+            "overlay opacity must be between 0 and 1.",),
         assert(onTargetClick == null || disposeOnTap != null,
-            "disposeOnTap is required if you're using onTargetClick"),
+            "disposeOnTap is required if you're using onTargetClick",),
         assert(disposeOnTap == null || onTargetClick != null,
-            "onTargetClick is required if you're using disposeOnTap"),
+            "onTargetClick is required if you're using disposeOnTap",),
         assert(onBarrierClick == null || disableBarrierInteraction == false,
-            "can't use onBarrierClick & disableBarrierInteraction property at same time");
+            "can't use onBarrierClick & disableBarrierInteraction property at same time",);
 
   /// Creates a Showcase widget with a custom tooltip widget.
   ///
@@ -501,7 +501,7 @@ class Showcase extends StatefulWidget {
     this.targetBorderRadius,
     this.overlayOpacity = 0.75,
     this.scrollLoadingWidget = const CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation(Colors.white)),
+        valueColor: AlwaysStoppedAnimation(Colors.white),),
     this.onTargetClick,
     this.disposeOnTap,
     this.movingAnimationDuration = const Duration(milliseconds: 2000),
@@ -543,9 +543,9 @@ class Showcase extends StatefulWidget {
         descriptionTextDirection = null,
         toolTipMargin = 14,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1."),
+            "overlay opacity must be between 0 and 1.",),
         assert(onBarrierClick == null || disableBarrierInteraction == false,
-            "can't use onBarrierClick & disableBarrierInteraction property at same time");
+            "can't use onBarrierClick & disableBarrierInteraction property at same time",);
 
   @override
   State<Showcase> createState() => _ShowcaseState();
@@ -607,7 +607,7 @@ class _ShowcaseState extends State<Showcase> {
       if (showCaseWidgetState.autoPlay) {
         timer = Timer(
             Duration(seconds: showCaseWidgetState.autoPlayDelay.inSeconds),
-            _nextIfAny);
+            _nextIfAny,);
       }
     } else if (timer?.isActive ?? false) {
       timer?.cancel();
@@ -804,8 +804,6 @@ class _ShowcaseState extends State<Showcase> {
           ),
           ToolTipWidget(
             position: position,
-            offset: offset,
-            screenSize: screenSize,
             title: widget.title,
             titleTextAlign: widget.titleTextAlign,
             description: widget.description,
@@ -815,13 +813,9 @@ class _ShowcaseState extends State<Showcase> {
             titleTextStyle: widget.titleTextStyle,
             descTextStyle: widget.descTextStyle,
             container: widget.container,
-            floatingActionWidget:
-                widget.floatingActionWidget ?? _globalFloatingActionWidget,
             tooltipBackgroundColor: widget.tooltipBackgroundColor,
             textColor: widget.textColor,
             showArrow: widget.showArrow,
-            contentHeight: widget.height,
-            contentWidth: widget.width,
             onTooltipTap:
                 widget.disposeOnTap == true || widget.onToolTipClick != null
                     ? _getOnTooltipTap

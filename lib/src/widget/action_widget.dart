@@ -9,8 +9,7 @@ class ActionWidget extends StatelessWidget {
     required this.tooltipActionConfig,
     required this.alignment,
     required this.crossAxisAlignment,
-    required this.isArrowUp,
-    this.outSidePadding = EdgeInsets.zero,
+    this.outsidePadding = EdgeInsets.zero,
     this.width,
   });
 
@@ -19,14 +18,14 @@ class ActionWidget extends StatelessWidget {
   final double? width;
   final MainAxisAlignment alignment;
   final CrossAxisAlignment crossAxisAlignment;
-  final EdgeInsets outSidePadding;
-  final bool isArrowUp;
+  final EdgeInsets outsidePadding;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Material(
+      type: MaterialType.transparency,
       child: Padding(
-        padding: outSidePadding,
+        padding: outsidePadding,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: alignment,

@@ -25,7 +25,10 @@ import 'package:flutter/material.dart';
 import 'showcase_widget.dart';
 
 typedef OverlayBuilderCallback = Widget Function(
-    BuildContext, Rect anchorBounds, Offset anchor);
+  BuildContext,
+  Rect anchorBounds,
+  Offset anchor,
+);
 
 /// Displays an overlay Widget anchored directly above the center of this
 /// [AnchoredOverlay].

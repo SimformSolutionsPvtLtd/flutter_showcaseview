@@ -2,8 +2,6 @@ part of "tooltip.dart";
 
 class ToolTipWidget extends StatefulWidget {
   final GetPosition? position;
-  final Offset? offset; // This is not needed
-  final Size screenSize; // This is also not needed
   final String? title;
   final TextAlign? titleTextAlign;
   final String? description;
@@ -13,13 +11,9 @@ class ToolTipWidget extends StatefulWidget {
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final Widget? container;
-  final FloatingActionWidget?
-      floatingActionWidget; // This is not needed as we have shifted this to showcase
   final Color? tooltipBackgroundColor;
   final Color? textColor;
   final bool showArrow;
-  final double? contentHeight; // Not needed
-  final double? contentWidth; // Not needed
   final VoidCallback? onTooltipTap;
   final EdgeInsets? tooltipPadding;
   final Duration movingAnimationDuration;
@@ -44,26 +38,23 @@ class ToolTipWidget extends StatefulWidget {
   const ToolTipWidget({
     super.key,
     required this.position,
-    required this.offset,
-    required this.screenSize,
     required this.title,
     required this.description,
     required this.titleTextStyle,
     required this.descTextStyle,
     required this.container,
-    required this.floatingActionWidget,
     required this.tooltipBackgroundColor,
     required this.textColor,
     required this.showArrow,
-    required this.contentHeight,
-    required this.contentWidth,
     required this.onTooltipTap,
     required this.movingAnimationDuration,
     required this.titleTextAlign,
     required this.descriptionTextAlign,
     required this.titleAlignment,
     required this.descriptionAlignment,
-    this.tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
+    required this.tooltipActionConfig,
+    required this.tooltipActions,
+    required this.targetPadding,
     required this.disableMovingAnimation,
     required this.disableScaleAnimation,
     required this.tooltipBorderRadius,
@@ -78,9 +69,7 @@ class ToolTipWidget extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.toolTipSlideEndDistance = 7,
-    required this.tooltipActionConfig,
-    required this.tooltipActions,
-    required this.targetPadding,
+    this.tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
   });
 
   @override
@@ -119,9 +108,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     } else {
       _scaleAnimationController
         ..addStatusListener((scaleAnimationStatus) {
-          if (scaleAnimationStatus == AnimationStatus.completed) {
-            movingAnimationListener();
+          if (scaleAnimationStatus != AnimationStatus.completed) {
+            return;
           }
+          movingAnimationListener();
         })
         ..forward();
     }
@@ -143,13 +133,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   }
 
   @override
-  void dispose() {
-    _movingAnimationController.dispose();
-    _scaleAnimationController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final defaultToolTipWidget = widget.container != null
         ? MouseRegion(
@@ -158,17 +141,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                 : SystemMouseCursors.click,
             child: GestureDetector(
               onTap: widget.onTooltipTap,
-              child: ColoredBox(
-                color: Colors.transparent,
-                child: Center(
-                  child: widget.container ?? const SizedBox.shrink(),
-                ),
+              child: Center(
+                child: widget.container ?? const SizedBox.shrink(),
               ),
             ),
           )
         : ClipRRect(
-            borderRadius:
-                widget.tooltipBorderRadius ?? BorderRadius.circular(8.0),
+            borderRadius: widget.tooltipBorderRadius ??
+                const BorderRadius.all(
+                  Radius.circular(8.0),
+                ),
             child: MouseRegion(
               cursor: widget.onTooltipTap == null
                   ? MouseCursor.defer
@@ -228,7 +210,17 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                         ),
                       if (widget.tooltipActions.isNotEmpty &&
                           widget.tooltipActionConfig.position.isInside)
-                        _getActionWidget(insideWidget: true),
+                        ActionWidget(
+                          tooltipActionConfig: widget.tooltipActionConfig,
+                          outsidePadding: EdgeInsets.only(
+                            left: widget.tooltipPadding?.left ?? 0,
+                            right: widget.tooltipPadding?.right ?? 0,
+                          ),
+                          alignment: widget.tooltipActionConfig.alignment,
+                          crossAxisAlignment:
+                              widget.tooltipActionConfig.crossAxisAlignment,
+                          children: widget.tooltipActions,
+                        ),
                     ],
                   ),
                 ),
@@ -271,7 +263,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                   widget.container != null))
             _TooltipLayoutId(
               id: TooltipLayoutSlot.actionBox,
-              child: _getActionWidget(),
+              child: ActionWidget(
+                tooltipActionConfig: widget.tooltipActionConfig,
+                outsidePadding: EdgeInsets.zero,
+                alignment: widget.tooltipActionConfig.alignment,
+                crossAxisAlignment:
+                    widget.tooltipActionConfig.crossAxisAlignment,
+                children: widget.tooltipActions,
+              ),
             ),
           if (widget.showArrow)
             _TooltipLayoutId(
@@ -279,10 +278,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
               child: CustomPaint(
                 painter: _Arrow(
                   strokeColor: widget.tooltipBackgroundColor!,
-                  strokeWidth: 10,
-                  paintingStyle: PaintingStyle.fill,
                 ),
-                size: const Size(10, 10),
+                size: const Size(
+                  Constants.arrowWidth,
+                  Constants.arrowHeight,
+                ),
               ),
             ),
         ],
@@ -290,25 +290,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     );
   }
 
-  Widget _getActionWidget({
-    bool insideWidget = false,
-  }) {
-    return Material(
-      type: MaterialType.transparency,
-      child: ActionWidget(
-        tooltipActionConfig: widget.tooltipActionConfig,
-        outSidePadding: (insideWidget)
-            ? EdgeInsets.only(
-                left: widget.tooltipPadding?.left ?? 0,
-                right: widget.tooltipPadding?.right ?? 0,
-              )
-            : EdgeInsets.zero,
-        alignment: widget.tooltipActionConfig.alignment,
-        crossAxisAlignment: widget.tooltipActionConfig.crossAxisAlignment,
-        isArrowUp: insideWidget,
-        children: widget.tooltipActions,
-      ),
-    );
+  @override
+  void dispose() {
+    _movingAnimationController.dispose();
+    _scaleAnimationController.dispose();
+    super.dispose();
   }
 
   void movingAnimationListener() {

@@ -11,7 +11,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
   Alignment? scaleAlignment;
 
   /// This will stop extra repaint when paint function is already in progress
-  bool _isPaintRunning = false;
+  bool _isPreviousRepaintInProgress = false;
 
   _RenderAnimationDelegate({
     required AnimationController scaleController,
@@ -40,16 +40,18 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
 
   /// Updates the scale animation controller.
   set scaleController(AnimationController value) {
-    if (_scaleController != value) {
-      _scaleController = value;
+    if (_scaleController == value) {
+      return;
     }
+    _scaleController = value;
   }
 
   /// Updates the move animation controller.
   set moveController(AnimationController value) {
-    if (_moveController != value) {
-      _moveController = value;
+    if (_moveController == value) {
+      return;
     }
+    _moveController = value;
   }
 
   /// Updates the scale animation and refreshes listeners.
@@ -75,10 +77,10 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
   }
 
   void _effectivelyMarkNeedsPaint() {
-    if (_isPaintRunning) return;
-    _isPaintRunning = true;
+    if (_isPreviousRepaintInProgress) return;
+    _isPreviousRepaintInProgress = true;
     markNeedsPaint();
-    _isPaintRunning = false;
+    _isPreviousRepaintInProgress = false;
   }
 
   /// Sets the scale alignment and marks the widget for repaint.
@@ -128,21 +130,36 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       );
       switch (tooltipPosition) {
         case TooltipPosition.top:
-          scaleOrigin -= Offset(0, targetPadding.top + 5);
+          scaleOrigin -= Offset(
+            0,
+            targetPadding.top + Constants.extraAlignmentOffset,
+          );
           break;
         case TooltipPosition.bottom:
-          scaleOrigin += Offset(0, targetPadding.bottom + 5);
+          scaleOrigin += Offset(
+            0,
+            targetPadding.bottom + Constants.extraAlignmentOffset,
+          );
           break;
         case TooltipPosition.left:
-          scaleOrigin -= Offset(targetPadding.left + 5, 0);
+          scaleOrigin -= Offset(
+            targetPadding.left + Constants.extraAlignmentOffset,
+            0,
+          );
           break;
         case TooltipPosition.right:
-          scaleOrigin += Offset(targetPadding.right + 5, 0);
+          scaleOrigin += Offset(
+            targetPadding.right + Constants.extraAlignmentOffset,
+            0,
+          );
           break;
       }
 
       // Compute movement offset based on animation progress.
-      final Offset moveOffset = _calculateMoveOffset(tooltipPosition);
+      final Offset moveOffset = tooltipPosition.calculateMoveOffset(
+        _moveAnimation.value,
+        toolTipSlideEndDistance,
+      );
 
       context.canvas
         ..translate(scaleOrigin.dx, scaleOrigin.dy)
@@ -161,7 +178,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       context.canvas.restore();
       child = childParentData.nextSibling;
     }
-    _isPaintRunning = false;
+    _isPreviousRepaintInProgress = false;
   }
 
   /// Determines the default scale alignment based on tooltip position.
@@ -175,20 +192,6 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
         return Alignment.centerLeft;
       case TooltipPosition.right:
         return Alignment.centerRight;
-    }
-  }
-
-  /// Computes the offset movement animation based on tooltip position.
-  Offset _calculateMoveOffset(TooltipPosition tooltipPosition) {
-    switch (tooltipPosition) {
-      case TooltipPosition.top:
-        return Offset(0, (1 - _moveAnimation.value) * -toolTipSlideEndDistance);
-      case TooltipPosition.bottom:
-        return Offset(0, (1 - _moveAnimation.value) * toolTipSlideEndDistance);
-      case TooltipPosition.left:
-        return Offset((1 - _moveAnimation.value) * -toolTipSlideEndDistance, 0);
-      case TooltipPosition.right:
-        return Offset((1 - _moveAnimation.value) * toolTipSlideEndDistance, 0);
     }
   }
 
@@ -230,20 +233,16 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
 
   /// Paints normal children with translation and animation effects.
   void _paintChild(
-    Canvas canvas,
     PaintChildCallBack paintChild,
     RenderBox child,
     MultiChildLayoutParentData childParentData,
     Offset scaleOrigin,
     Offset moveOffset,
   ) {
-    canvas
-      ..translate(
-        -scaleOrigin.dx + childParentData.offset.dx,
-        -scaleOrigin.dy + childParentData.offset.dy,
-      )
-      ..translate(moveOffset.dx, moveOffset.dy);
-    paintChild(child, Offset.zero);
+    paintChild(
+      child,
+      moveOffset + childParentData.offset - scaleOrigin,
+    );
   }
 
   void _paintChildren(
@@ -266,7 +265,6 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       );
     } else {
       _paintChild(
-        canvas,
         paintChild,
         child,
         childParentData,

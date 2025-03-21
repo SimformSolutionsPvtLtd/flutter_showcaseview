@@ -21,34 +21,37 @@
  */
 
 import 'dart:math';
+import 'dart:ui';
 
 import 'showcase_widget.dart';
+import 'tooltip/render_object_manager.dart';
 
 enum TooltipPosition {
-  top,
-  bottom,
-  left,
-  right;
+  top(rotationAngle: pi),
+  bottom(rotationAngle: 0),
+  left(rotationAngle: pi * 0.5),
+  right(rotationAngle: 3 * pi * 0.5);
+
+  const TooltipPosition({required this.rotationAngle});
 
   /// Initial position of the arrow is pointing top so we need to rotate as per the position of the tooltip
   /// This will provide necessary rotation to properly point arrow
-  double get rotationAngle {
+  final double rotationAngle;
+
+  /// Computes the offset movement animation based on tooltip position.
+  Offset calculateMoveOffset(
+    double animationValue,
+    double toolTipSlideEndDistance,
+  ) {
     switch (this) {
       case TooltipPosition.top:
-        // we will rotate by π
-        return pi;
-
+        return Offset(0, (1 - animationValue) * -toolTipSlideEndDistance);
       case TooltipPosition.bottom:
-        // we will not rotate as this is ideal position
-        return 0;
-
+        return Offset(0, (1 - animationValue) * toolTipSlideEndDistance);
       case TooltipPosition.left:
-        // we will rotate by π/2
-        return pi * 0.5;
-
+        return Offset((1 - animationValue) * -toolTipSlideEndDistance, 0);
       case TooltipPosition.right:
-        // we will rotate by 3π/2
-        return 3 * pi * 0.5;
+        return Offset((1 - animationValue) * toolTipSlideEndDistance, 0);
     }
   }
 
@@ -104,4 +107,7 @@ enum TooltipLayoutSlot {
   tooltipBox,
   actionBox,
   arrow;
+
+  RenderObjectManager? get getRenderObjectManager =>
+      RenderObjectManager.renderObjects[this];
 }

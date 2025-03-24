@@ -114,7 +114,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       );
 
       // Determine scale alignment if not set.
-      scaleAlignment ??= _defaultScaleAlignment(tooltipPosition);
+      scaleAlignment ??= tooltipPosition.scaleAlignment;
 
       // Compute scale origin from alignment within the target rectangle.
       final halfTargetWidth = targetRect.width * 0.5;
@@ -179,20 +179,6 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       child = childParentData.nextSibling;
     }
     _isPreviousRepaintInProgress = false;
-  }
-
-  /// Determines the default scale alignment based on tooltip position.
-  Alignment _defaultScaleAlignment(TooltipPosition tooltipPosition) {
-    switch (tooltipPosition) {
-      case TooltipPosition.top:
-        return Alignment.topCenter;
-      case TooltipPosition.bottom:
-        return Alignment.bottomCenter;
-      case TooltipPosition.left:
-        return Alignment.centerLeft;
-      case TooltipPosition.right:
-        return Alignment.centerRight;
-    }
   }
 
   /// Paints the tooltip arrow with proper alignment and rotation.

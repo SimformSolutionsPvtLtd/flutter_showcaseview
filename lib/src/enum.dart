@@ -21,22 +21,29 @@
  */
 
 import 'dart:math';
-import 'dart:ui';
+
+import 'package:flutter/widgets.dart';
 
 import 'showcase_widget.dart';
 import 'tooltip/render_object_manager.dart';
 
 enum TooltipPosition {
-  top(rotationAngle: pi),
-  bottom(rotationAngle: 0),
-  left(rotationAngle: pi * 0.5),
-  right(rotationAngle: 3 * pi * 0.5);
+  top(rotationAngle: pi, scaleAlignment: Alignment.topCenter),
+  bottom(rotationAngle: 0, scaleAlignment: Alignment.bottomCenter),
+  left(rotationAngle: pi * 0.5, scaleAlignment: Alignment.centerLeft),
+  right(rotationAngle: 3 * pi * 0.5, scaleAlignment: Alignment.centerRight);
 
-  const TooltipPosition({required this.rotationAngle});
+  const TooltipPosition({
+    required this.rotationAngle,
+    required this.scaleAlignment,
+  });
 
   /// Initial position of the arrow is pointing top so we need to rotate as per the position of the tooltip
   /// This will provide necessary rotation to properly point arrow
   final double rotationAngle;
+
+  /// Determines the default scale alignment based on tooltip position.
+  final Alignment scaleAlignment;
 
   /// Computes the offset movement animation based on tooltip position.
   Offset calculateMoveOffset(
@@ -108,6 +115,6 @@ enum TooltipLayoutSlot {
   actionBox,
   arrow;
 
-  RenderObjectManager? get getRenderObjectManager =>
+  RenderObjectManager? get getObjectManager =>
       RenderObjectManager.renderObjects[this];
 }

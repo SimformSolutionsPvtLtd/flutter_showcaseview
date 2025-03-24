@@ -25,7 +25,7 @@ import 'package:flutter/material.dart';
 import 'showcase_widget.dart';
 
 typedef OverlayBuilderCallback = Widget Function(
-  BuildContext,
+  BuildContext context,
   Rect anchorBounds,
   Offset anchor,
 );

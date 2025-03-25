@@ -41,14 +41,12 @@ class OverlayBuilder extends StatefulWidget {
     super.key,
     required this.child,
     required this.updateOverlay,
-    this.showOverlay = false,
     this.overlayBuilder,
   });
 
-  final bool showOverlay;
   final WidgetBuilder? overlayBuilder;
   final Widget child;
-  final ValueSetter<VoidCallback> updateOverlay;
+  final ValueSetter<ValueSetter<bool>> updateOverlay;
 
   @override
   State<OverlayBuilder> createState() => _OverlayBuilderState();
@@ -57,17 +55,20 @@ class OverlayBuilder extends StatefulWidget {
 class _OverlayBuilderState extends State<OverlayBuilder> {
   OverlayEntry? _overlayEntry;
 
+  bool _showOverlay = false;
+
   @override
   void initState() {
     super.initState();
 
-    if (widget.showOverlay) {
+    if (_showOverlay) {
       WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
     }
     widget.updateOverlay.call(_updateOverlay);
   }
 
-  void _updateOverlay() {
+  void _updateOverlay(bool showOverlay) {
+    _showOverlay = showOverlay;
     buildOverlay();
     WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
   }
@@ -75,9 +76,7 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   @override
   void didUpdateWidget(OverlayBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.showOverlay != widget.showOverlay && widget.showOverlay) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
   }
 
   @override
@@ -129,9 +128,9 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   }
 
   void syncWidgetAndOverlay() {
-    if (isShowingOverlay() && !widget.showOverlay) {
+    if (isShowingOverlay() && !_showOverlay) {
       hideOverlay();
-    } else if (!isShowingOverlay() && widget.showOverlay) {
+    } else if (!isShowingOverlay() && _showOverlay) {
       showOverlay();
     }
   }

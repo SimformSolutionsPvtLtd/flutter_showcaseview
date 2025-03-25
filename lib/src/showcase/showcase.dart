@@ -21,6 +21,7 @@
  */
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -389,9 +390,7 @@ class Showcase extends StatefulWidget {
     this.descTextStyle,
     this.tooltipBackgroundColor = Colors.white,
     this.textColor = Colors.black,
-    this.scrollLoadingWidget = const CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation(Colors.white),
-    ),
+    this.scrollLoadingWidget = Constants.defaultProgressIndicator,
     this.showArrow = true,
     this.onTargetClick,
     this.disposeOnTap,
@@ -583,22 +582,30 @@ class _ShowcaseState extends State<Showcase> {
   void initState() {
     super.initState();
     initRootWidget();
-    final connectedShowcase =
-        showCaseWidgetState.showcaseControllers[widget.showcaseKey];
     showcaseController = ShowcaseController(
-      showcaseId: connectedShowcase?.length ?? 0,
+      showcaseId: widget.hashCode,
       showcaseKey: widget.showcaseKey,
       showcaseConfig: widget,
       scrollIntoView: _scrollIntoView,
     )..startShowcase = startShowcase;
 
-    if (connectedShowcase != null) {
-      showCaseWidgetState.showcaseControllers[widget.showcaseKey]
-          ?.add(showcaseController);
-    } else {
-      showCaseWidgetState.showcaseControllers[widget.showcaseKey] = [
-        showcaseController,
-      ];
+    showCaseWidgetState.registerShowcaseController(
+      controller: showcaseController,
+      key: widget.showcaseKey,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    showcaseController.showcaseConfig = widget;
+  }
+
+  @override
+  void didUpdateWidget(covariant Showcase oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget != widget) {
+      showcaseController.showcaseConfig = widget;
     }
   }
 
@@ -610,17 +617,20 @@ class _ShowcaseState extends State<Showcase> {
 
   @override
   void dispose() {
-    showCaseWidgetState.showcaseControllers[widget.showcaseKey]
-        ?.remove(showcaseController);
+    showCaseWidgetState.removeShowcaseController(
+      key: widget.showcaseKey,
+      controller: showcaseController,
+    );
+
     super.dispose();
   }
 
   void initRootWidget() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      showcaseController.rootWidgetSize = showCaseWidgetState.rootWidgetSize;
-      showcaseController.rootRenderObject =
-          showCaseWidgetState.rootRenderObject;
+      showcaseController
+        ..rootWidgetSize = showCaseWidgetState.rootWidgetSize
+        ..rootRenderObject = showCaseWidgetState.rootRenderObject;
     });
   }
 
@@ -636,7 +646,7 @@ class _ShowcaseState extends State<Showcase> {
       final size = MediaQuery.of(context).size;
       position ??= GetPosition(
         rootRenderObject: showcaseController.rootRenderObject,
-        context: context,
+        renderBox: context.findRenderObject() as RenderBox?,
         padding: widget.targetPadding,
         screenWidth: showcaseController.rootWidgetSize?.width ?? size.width,
         screenHeight: showcaseController.rootWidgetSize?.height ?? size.height,
@@ -649,7 +659,9 @@ class _ShowcaseState extends State<Showcase> {
     showcaseController.isScrollRunning = true;
     _updateControllerData(context);
     startShowcase();
-    showCaseWidgetState.updateOverlay?.call();
+    showCaseWidgetState.updateOverlay?.call(
+      showCaseWidgetState.isShowcaseRunning,
+    );
     await Scrollable.ensureVisible(
       context,
       duration: showCaseWidgetState.widget.scrollDuration,
@@ -659,21 +671,26 @@ class _ShowcaseState extends State<Showcase> {
     showcaseController.isScrollRunning = false;
     _updateControllerData(context);
     startShowcase();
-    showCaseWidgetState.updateOverlay?.call();
+    showCaseWidgetState.updateOverlay?.call(
+      showCaseWidgetState.isShowcaseRunning,
+    );
   }
 
   void recalculateRootWidgetSize() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
-      showcaseController.rootRenderObject =
-          rootWidget?.context.findRenderObject() as RenderBox?;
-      showcaseController.rootWidgetSize = rootWidget == null
-          ? MediaQuery.of(context).size
-          : showcaseController.rootRenderObject?.size;
+      showcaseController
+        ..rootRenderObject =
+            rootWidget?.context.findRenderObject() as RenderBox?
+        ..rootWidgetSize = rootWidget == null
+            ? MediaQuery.of(context).size
+            : showcaseController.rootRenderObject?.size;
       if (!enableShowcase) return;
       _updateControllerData(context);
-      showCaseWidgetState.updateOverlay?.call();
+      showCaseWidgetState.updateOverlay?.call(
+        showCaseWidgetState.isShowcaseRunning,
+      );
     });
   }
 
@@ -704,76 +721,74 @@ class _ShowcaseState extends State<Showcase> {
     Rect rectBound,
     Size screenSize,
   ) {
-    var blur = 0.0;
-
-    blur = widget.blurValue ?? showCaseWidgetState.blurValue;
-
-    blur = kIsWeb && blur < 0 ? 0 : blur;
+    var blur = kIsWeb
+        ? 0.0
+        : max(0.0, widget.blurValue ?? showCaseWidgetState.blurValue);
 
     showcaseController
       ..position = position!
       ..blur = blur
-      ..getToolTipWidget = [
-        if (showcaseController.isScrollRunning)
-          Center(child: widget.scrollLoadingWidget),
-        if (!showcaseController.isScrollRunning) ...[
-          _TargetWidget(
-            offset: rectBound.topLeft,
-            size: size,
-            onTap: _getOnTargetTap,
-            radius: widget.targetBorderRadius,
-            onDoubleTap: widget.onTargetDoubleTap,
-            onLongPress: widget.onTargetLongPress,
-            shapeBorder: widget.targetShapeBorder,
-            disableDefaultChildGestures: widget.disableDefaultTargetGestures,
-            targetPadding: widget.targetPadding,
-          ),
-          ToolTipWidget(
-            key: ValueKey(showcaseController.hashCode),
-            position: position,
-            title: widget.title,
-            titleTextAlign: widget.titleTextAlign,
-            description: widget.description,
-            descriptionTextAlign: widget.descriptionTextAlign,
-            titleAlignment: widget.titleAlignment,
-            descriptionAlignment: widget.descriptionAlignment,
-            titleTextStyle: widget.titleTextStyle,
-            descTextStyle: widget.descTextStyle,
-            container: widget.container,
-            tooltipBackgroundColor: widget.tooltipBackgroundColor,
-            textColor: widget.textColor,
-            showArrow: widget.showArrow,
-            onTooltipTap:
-                widget.disposeOnTap == true || widget.onToolTipClick != null
-                    ? _getOnTooltipTap
-                    : null,
-            tooltipPadding: widget.tooltipPadding,
-            disableMovingAnimation: widget.disableMovingAnimation ??
-                showCaseWidgetState.disableMovingAnimation,
-            disableScaleAnimation: widget.container != null
-                ? true
-                : widget.disableScaleAnimation ??
-                    showCaseWidgetState.disableScaleAnimation,
-            movingAnimationDuration: widget.movingAnimationDuration,
-            tooltipBorderRadius: widget.tooltipBorderRadius,
-            scaleAnimationDuration: widget.scaleAnimationDuration,
-            scaleAnimationCurve: widget.scaleAnimationCurve,
-            scaleAnimationAlignment: widget.scaleAnimationAlignment,
-            tooltipPosition: widget.tooltipPosition,
-            titlePadding: widget.titlePadding,
-            descriptionPadding: widget.descriptionPadding,
-            titleTextDirection: widget.titleTextDirection,
-            descriptionTextDirection: widget.descriptionTextDirection,
-            toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
-            toolTipMargin: widget.toolTipMargin,
-            tooltipActionConfig: _getTooltipActionConfig(),
-            tooltipActions: _getTooltipActions(),
-            targetPadding: widget.targetPadding,
-            showcaseController: showcaseController,
-          ),
-          if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
-        ],
-      ];
+      ..getToolTipWidget = showcaseController.isScrollRunning
+          ? [
+              Center(child: widget.scrollLoadingWidget),
+            ]
+          : [
+              _TargetWidget(
+                offset: rectBound.topLeft,
+                size: size,
+                onTap: _getOnTargetTap,
+                radius: widget.targetBorderRadius,
+                onDoubleTap: widget.onTargetDoubleTap,
+                onLongPress: widget.onTargetLongPress,
+                shapeBorder: widget.targetShapeBorder,
+                disableDefaultChildGestures:
+                    widget.disableDefaultTargetGestures,
+                targetPadding: widget.targetPadding,
+              ),
+              ToolTipWidget(
+                key: ValueKey(showcaseController.showcaseId),
+                position: position,
+                title: widget.title,
+                titleTextAlign: widget.titleTextAlign,
+                description: widget.description,
+                descriptionTextAlign: widget.descriptionTextAlign,
+                titleAlignment: widget.titleAlignment,
+                descriptionAlignment: widget.descriptionAlignment,
+                titleTextStyle: widget.titleTextStyle,
+                descTextStyle: widget.descTextStyle,
+                container: widget.container,
+                tooltipBackgroundColor: widget.tooltipBackgroundColor,
+                textColor: widget.textColor,
+                showArrow: widget.showArrow,
+                onTooltipTap:
+                    widget.disposeOnTap == true || widget.onToolTipClick != null
+                        ? _getOnTooltipTap
+                        : null,
+                tooltipPadding: widget.tooltipPadding,
+                disableMovingAnimation: widget.disableMovingAnimation ??
+                    showCaseWidgetState.disableMovingAnimation,
+                disableScaleAnimation: (widget.disableScaleAnimation ??
+                        showCaseWidgetState.disableScaleAnimation) ||
+                    widget.container != null,
+                movingAnimationDuration: widget.movingAnimationDuration,
+                tooltipBorderRadius: widget.tooltipBorderRadius,
+                scaleAnimationDuration: widget.scaleAnimationDuration,
+                scaleAnimationCurve: widget.scaleAnimationCurve,
+                scaleAnimationAlignment: widget.scaleAnimationAlignment,
+                tooltipPosition: widget.tooltipPosition,
+                titlePadding: widget.titlePadding,
+                descriptionPadding: widget.descriptionPadding,
+                titleTextDirection: widget.titleTextDirection,
+                descriptionTextDirection: widget.descriptionTextDirection,
+                toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
+                toolTipMargin: widget.toolTipMargin,
+                tooltipActionConfig: _getTooltipActionConfig(),
+                tooltipActions: _getTooltipActions(),
+                targetPadding: widget.targetPadding,
+                showcaseController: showcaseController,
+              ),
+              if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
+            ];
   }
 
   Widget? get _getFloatingActionWidget =>
@@ -827,23 +842,26 @@ class _ShowcaseState extends State<Showcase> {
         showcaseController.rootWidgetSize ?? MediaQuery.of(context).size;
     position = GetPosition(
       rootRenderObject: showcaseController.rootRenderObject,
-      context: context,
+      renderBox: context.findRenderObject() as RenderBox?,
       padding: widget.targetPadding,
       screenWidth: size.width,
       screenHeight: size.height,
     );
-    showcaseController.position = position!;
-    showcaseController.linkedShowcaseDataModel = LinkedShowcaseDataModel(
-      rect:
-          showcaseController.isScrollRunning ? Rect.zero : position!.getRect(),
-      radius: _targetBorderRadius,
-      overlayPadding:
-          showcaseController.isScrollRunning ? EdgeInsets.zero : _targetPadding,
-      isCircle: _isCircle,
-    );
+    showcaseController
+      ..position = position!
+      ..linkedShowcaseDataModel = LinkedShowcaseDataModel(
+        rect: showcaseController.isScrollRunning
+            ? Rect.zero
+            : position!.getRect(),
+        radius: _targetBorderRadius,
+        overlayPadding: showcaseController.isScrollRunning
+            ? EdgeInsets.zero
+            : _targetPadding,
+        isCircle: _isCircle,
+      );
 
     buildOverlayOnTarget(
-      position!.getOffSet(),
+      position!.getOffset(),
       position!.getRect().size,
       position!.getRect(),
       size,

@@ -34,8 +34,9 @@ class Constants {
     borderRadius: BorderRadius.all(Radius.circular(8)),
   );
 
-  static const Widget defaultProgressIndicator = CircularProgressIndicator(
-    valueColor: AlwaysStoppedAnimation(Colors.white),
+  static const Widget defaultProgressIndicator =
+      CircularProgressIndicator.adaptive(
+    backgroundColor: Colors.white,
   );
 
   static const Duration defaultAnimationDuration = Duration(milliseconds: 2000);

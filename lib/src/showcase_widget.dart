@@ -193,7 +193,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   late final List<TooltipActionButton>? globalTooltipActions;
 
-  Map<GlobalKey, List<ShowcaseController>> showcaseControllers = {};
+  final Map<GlobalKey, List<ShowcaseController>> _showcaseControllers = {};
 
   /// These properties are only here so that it can be accessed by
   /// [Showcase]
@@ -215,12 +215,14 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   bool get isShowCaseCompleted => ids == null && activeWidgetId == null;
 
+  Duration get scrollDuration => widget.scrollDuration;
+
   List<GlobalKey> get hiddenFloatingActionKeys =>
       _hideFloatingWidgetKeys.keys.toList();
 
   Timer? _timer;
 
-  VoidCallback? updateOverlay;
+  ValueSetter<bool>? updateOverlay;
 
   /// This Stores keys of showcase for which we will hide the
   /// [globalFloatingActionWidget].
@@ -241,6 +243,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
       return null;
     }
   }
+
+  bool get isShowcaseRunning => getCurrentActiveShowcaseKey != null;
 
   /// Return a [widget.globalFloatingActionWidget] if not need to hide this for
   /// current showcase.
@@ -275,10 +279,9 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   Widget build(BuildContext context) {
     return OverlayBuilder(
-      showOverlay: getCurrentActiveShowcaseKey != null,
       updateOverlay: (updateOverlays) => updateOverlay = updateOverlays,
       overlayBuilder: (_) {
-        final controller = showcaseControllers[getCurrentActiveShowcaseKey] ??
+        final controller = _showcaseControllers[getCurrentActiveShowcaseKey] ??
             <ShowcaseController>[];
 
         if (getCurrentActiveShowcaseKey == null || controller.isEmpty) {
@@ -286,23 +289,19 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
         }
 
         final firstController = controller.first;
-        final firstShowcaseConfig = firstController.showcaseConfig!;
-        final listOfLinkedModel = <LinkedShowcaseDataModel>[];
-        final controllerLength = controller.length;
-        for (var i = 0; i < controllerLength; i++) {
-          final model = controller[i].linkedShowcaseDataModel;
-          if (model == null) continue;
-          listOfLinkedModel.add(model);
-        }
-        final backgroundContainer = getBackgroundOverlayContainer(
-          overlayColor: firstShowcaseConfig.overlayColor,
-          overlayOpacity: firstShowcaseConfig.overlayOpacity,
+        final firstShowcaseConfig = firstController.showcaseConfig;
+
+        final backgroundContainer = ColoredBox(
+          color: firstShowcaseConfig.overlayColor
+
+              //TODO: Update when we remove support for older version
+              //ignore: deprecated_member_use
+              .withOpacity(firstShowcaseConfig.overlayOpacity),
+          child: const Align(
+            alignment: Alignment.center,
+          ),
         );
 
-        final tooltipWidgets = <Widget>[];
-        for (var i = 0; i < controllerLength; i++) {
-          tooltipWidgets.addAll(controller[i].getToolTipWidget);
-        }
         return Stack(
           children: [
             GestureDetector(
@@ -313,25 +312,40 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
                   isCircle: false,
                   radius: BorderRadius.zero,
                   overlayPadding: EdgeInsets.zero,
-                  linkedObjectData: listOfLinkedModel,
+                  linkedObjectData: _getLinkedShowcaseData(controller),
                 ),
-                child: firstController.blur != 0
-                    ? BackdropFilter(
+                child: firstController.blur == 0
+                    ? backgroundContainer
+                    : BackdropFilter(
                         filter: ImageFilter.blur(
                           sigmaX: firstController.blur,
                           sigmaY: firstController.blur,
                         ),
                         child: backgroundContainer,
-                      )
-                    : backgroundContainer,
+                      ),
               ),
             ),
-            ...tooltipWidgets,
+            ...controller.expand((object) => object.getToolTipWidget).toList(),
           ],
         );
       },
       child: Builder(builder: widget.builder),
     );
+  }
+
+  List<LinkedShowcaseDataModel> _getLinkedShowcaseData(
+    List<ShowcaseController> controller,
+  ) {
+    final listOfLinkedModel = <LinkedShowcaseDataModel>[];
+
+    final controllerLength = controller.length;
+
+    for (var i = 0; i < controllerLength; i++) {
+      final model = controller[i].linkedShowcaseDataModel;
+      if (model == null) continue;
+      listOfLinkedModel.add(model);
+    }
+    return listOfLinkedModel;
   }
 
   void _updateRootWidget() {
@@ -349,22 +363,6 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
         !firstShowcaseConfig.disableBarrierInteraction) {
       next();
     }
-  }
-
-  Widget getBackgroundOverlayContainer({
-    required Color overlayColor,
-    required double overlayOpacity,
-  }) {
-    return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: overlayColor
-
-            //TODO: Update when we remove support for older version
-            //ignore: deprecated_member_use
-            .withOpacity(overlayOpacity),
-      ),
-    );
   }
 
   void initRootWidget() {
@@ -389,17 +387,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
       );
     }
     if (!mounted) return;
-    setState(() {
-      ids = widgetIds;
-      activeWidgetId = 0;
-      updateOverlay?.call();
-      _onStart();
-    });
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        updateOverlay?.call();
-      },
-    );
+    ids = widgetIds;
+    activeWidgetId = 0;
+    _onStart();
+    updateOverlay?.call(isShowcaseRunning);
   }
 
   /// Completes showcase of given key and starts next one
@@ -415,17 +406,21 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
           _cleanupAfterSteps();
           widget.onFinish?.call();
         }
-        updateOverlay?.call();
+        updateOverlay?.call(isShowcaseRunning);
       }
     }
   }
 
   /// Completes current active showcase and starts next one
   /// otherwise will finish the entire showcase view
-  void next({bool fromAutoPlayOrAction = false}) async {
+  ///
+  /// if [forceNext] is true then it will ignore the [enableAutoPlayLock] and
+  /// move to next showcase. This is default behaviour for
+  /// [TooltipDefaultActionType.next]
+  void next({bool forceNext = false}) async {
     // If this call is from autoPlay timer or action widget we will override the
     // enableAutoPlayLock so user can move forward in showcase
-    if (!fromAutoPlayOrAction && widget.enableAutoPlayLock) return;
+    if (!forceNext && widget.enableAutoPlayLock) return;
 
     if (ids != null && mounted) {
       await _onComplete();
@@ -436,7 +431,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
           _cleanupAfterSteps();
           widget.onFinish?.call();
         }
-        updateOverlay?.call();
+        updateOverlay?.call(isShowcaseRunning);
       }
     }
   }
@@ -453,7 +448,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
           _cleanupAfterSteps();
           widget.onFinish?.call();
         }
-        updateOverlay?.call();
+        updateOverlay?.call(isShowcaseRunning);
       }
     }
   }
@@ -469,17 +464,17 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     widget.onDismiss?.call(idNotExist ? null : ids?[activeWidgetId!]);
     if (mounted) {
       _cleanupAfterSteps.call();
-      updateOverlay?.call();
+      updateOverlay?.call(isShowcaseRunning);
     }
   }
 
   Future<void> _onStart() async {
     if (activeWidgetId! < ids!.length) {
       widget.onStart?.call(activeWidgetId, ids![activeWidgetId!]);
-      final controllers = showcaseControllers[getCurrentActiveShowcaseKey] ??
+      final controllers = _showcaseControllers[getCurrentActiveShowcaseKey] ??
           <ShowcaseController>[];
       if (controllers.length == 1 &&
-          (controllers.first.showcaseConfig?.enableAutoScroll ??
+          (controllers.first.showcaseConfig.enableAutoScroll ??
               widget.enableAutoScroll)) {
         await controllers.first.scrollIntoView?.call();
       } else {
@@ -490,10 +485,10 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
       }
     }
     if (widget.autoPlay) {
-      _stopTimer();
+      _cancelTimer();
       _timer = Timer(
         Duration(seconds: widget.autoPlayDelay.inSeconds),
-        () => next(fromAutoPlayOrAction: true),
+        () => next(forceNext: true),
       );
     }
   }
@@ -501,13 +496,13 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   Future<void> _onComplete() async {
     final futures = <Future>[];
     final currentControllers =
-        (showcaseControllers[getCurrentActiveShowcaseKey] ??
+        (_showcaseControllers[getCurrentActiveShowcaseKey] ??
             <ShowcaseController>[]);
     final controllerLength = currentControllers.length;
 
     for (var i = 0; i < controllerLength; i++) {
       final controller = currentControllers[i];
-      if ((controller.showcaseConfig?.disableScaleAnimation ??
+      if ((controller.showcaseConfig.disableScaleAnimation ??
               widget.disableScaleAnimation) ||
           controller.reverseAnimation == null) {
         continue;
@@ -517,11 +512,11 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     await Future.wait(futures);
     widget.onComplete?.call(activeWidgetId, ids![activeWidgetId!]);
     if (widget.autoPlay) {
-      _stopTimer();
+      _cancelTimer();
     }
   }
 
-  void _stopTimer() {
+  void _cancelTimer() {
     if (!(_timer?.isActive ?? false)) return;
     _timer?.cancel();
     _timer = null;
@@ -530,7 +525,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   void _cleanupAfterSteps() {
     ids = null;
     activeWidgetId = null;
-    _stopTimer();
+    _cancelTimer();
   }
 
   /// Disables the [globalFloatingActionWidget] for the provided keys.
@@ -540,5 +535,27 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     _hideFloatingWidgetKeys
       ..clear()
       ..addAll({for (final item in updatedList) item: true});
+  }
+
+  List<ShowcaseController>? getShowcaseController(GlobalKey key) {
+    return _showcaseControllers[key];
+  }
+
+  void registerShowcaseController({
+    required GlobalKey key,
+    required ShowcaseController controller,
+  }) {
+    if (_showcaseControllers.containsKey(key)) {
+      _showcaseControllers[key]!.add(controller);
+    } else {
+      _showcaseControllers[key] = [controller];
+    }
+  }
+
+  void removeShowcaseController({
+    required GlobalKey key,
+    required ShowcaseController controller,
+  }) {
+    _showcaseControllers[key]?.remove(controller);
   }
 }

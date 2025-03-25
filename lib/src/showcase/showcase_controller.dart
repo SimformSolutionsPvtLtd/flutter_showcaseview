@@ -21,7 +21,7 @@ class ShowcaseController {
   final GlobalKey showcaseKey;
 
   /// Configuration for the showcase
-  Showcase? showcaseConfig;
+  Showcase showcaseConfig;
 
   /// Position getter for the showcase
   GetPosition? position;

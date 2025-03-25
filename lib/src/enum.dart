@@ -94,7 +94,7 @@ enum TooltipDefaultActionType {
   void onTap(ShowCaseWidgetState showCaseState) {
     switch (this) {
       case TooltipDefaultActionType.next:
-        showCaseState.next(fromAutoPlayOrAction: true);
+        showCaseState.next(forceNext: true);
         break;
       case TooltipDefaultActionType.previous:
         showCaseState.previous();

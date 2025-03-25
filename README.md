@@ -130,6 +130,31 @@ To show multiple showcase at the same time provide same key to showcase.
 Note: auto scroll to showcase will not work in case of the multi-showcase and we will use property
 of first initialized showcase for common things like barrier tap and colors.
 
+```dart
+GlobalKey _one = GlobalKey();
+...
+
+Showcase(
+  key: _one,
+  title: 'Showcase one',
+  description: 'Click here to see menu options',
+  child: Icon(
+  Icons.menu,
+  color: Colors.black45,
+  ),
+),
+
+Showcase(
+  key: _one,
+  title: 'Showcase two',
+  description: 'Click here to see menu options',
+  child: Icon(
+  Icons.menu,
+  color: Colors.black45,
+  ),
+),
+```
+
 ## Functions of `ShowCaseWidget.of(context)`:
 
 | Function Name                            | Description              |

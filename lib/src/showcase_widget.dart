@@ -219,7 +219,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// This Stores keys of showcase for which we will hide the
   /// [globalFloatingActionWidget].
   late final _hideFloatingWidgetKeys = {
-    for (final item in widget.hideFloatingActionWidgetForShowcase) item: true
+    for (final item in widget.hideFloatingActionWidgetForShowcase) item: true,
   };
 
   /// Returns value of [ShowCaseWidget.blurValue]

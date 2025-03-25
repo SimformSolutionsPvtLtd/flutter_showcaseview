@@ -22,3 +22,4 @@ linter:
     avoid_positional_boolean_parameters: false
     use_super_parameters: true
     prefer_relative_imports: true
+    require_trailing_commas: true

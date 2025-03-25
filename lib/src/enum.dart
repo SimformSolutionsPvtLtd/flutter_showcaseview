@@ -20,9 +20,56 @@
  * SOFTWARE.
  */
 
-import 'showcase_widget.dart';
+import 'dart:math';
 
-enum TooltipPosition { top, bottom }
+import 'package:flutter/widgets.dart';
+
+import 'showcase_widget.dart';
+import 'tooltip/render_object_manager.dart';
+
+enum TooltipPosition {
+  top(rotationAngle: pi, scaleAlignment: Alignment.topCenter),
+  bottom(rotationAngle: 0, scaleAlignment: Alignment.bottomCenter),
+  left(rotationAngle: pi * 0.5, scaleAlignment: Alignment.centerLeft),
+  right(rotationAngle: 3 * pi * 0.5, scaleAlignment: Alignment.centerRight);
+
+  const TooltipPosition({
+    required this.rotationAngle,
+    required this.scaleAlignment,
+  });
+
+  /// Initial position of the arrow is pointing top so we need to rotate as per the position of the tooltip
+  /// This will provide necessary rotation to properly point arrow
+  final double rotationAngle;
+
+  /// Determines the default scale alignment based on tooltip position.
+  final Alignment scaleAlignment;
+
+  /// Computes the offset movement animation based on tooltip position.
+  Offset calculateMoveOffset(
+    double animationValue,
+    double toolTipSlideEndDistance,
+  ) {
+    switch (this) {
+      case TooltipPosition.top:
+        return Offset(0, (1 - animationValue) * -toolTipSlideEndDistance);
+      case TooltipPosition.bottom:
+        return Offset(0, (1 - animationValue) * toolTipSlideEndDistance);
+      case TooltipPosition.left:
+        return Offset((1 - animationValue) * -toolTipSlideEndDistance, 0);
+      case TooltipPosition.right:
+        return Offset((1 - animationValue) * toolTipSlideEndDistance, 0);
+    }
+  }
+
+  bool get isRight => this == TooltipPosition.right;
+  bool get isLeft => this == TooltipPosition.left;
+  bool get isTop => this == TooltipPosition.top;
+  bool get isBottom => this == TooltipPosition.bottom;
+
+  bool get isHorizontal => isRight || isLeft;
+  bool get isVertical => isTop || isBottom;
+}
 
 enum TooltipActionPosition {
   outside,
@@ -59,4 +106,15 @@ enum TooltipDefaultActionType {
         throw ArgumentError('Invalid tooltip default action type');
     }
   }
+}
+
+/// These are the ToolTip layout widget ids and will be used to identify
+/// the widget during layout and painting phase
+enum TooltipLayoutSlot {
+  tooltipBox,
+  actionBox,
+  arrow;
+
+  RenderObjectManager? get getObjectManager =>
+      RenderObjectManager.renderObjects[this];
 }

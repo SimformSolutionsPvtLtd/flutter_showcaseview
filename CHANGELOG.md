@@ -7,6 +7,10 @@
   package.
 - Fixed [#506](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/506) - Timer
   was not canceling when tapped on `TooltipActionButton` which may cause issue when `autoPlay` is ON.
+- Improvement [#511](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/511) -
+  Improved Tooltip widget
+- Feature [#54](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/54) - Added
+  Feasibility to position tooltip left and right to the target widget.
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

@@ -33,8 +33,8 @@ import 'models/tooltip_action_button.dart';
 import 'models/tooltip_action_config.dart';
 import 'shape_clipper.dart';
 import 'showcase_widget.dart';
+import 'tooltip/tooltip.dart';
 import 'tooltip_action_button_widget.dart';
-import 'tooltip_widget.dart';
 import 'widget/floating_action_widget.dart';
 
 class Showcase extends StatefulWidget {
@@ -272,8 +272,8 @@ class Showcase extends StatefulWidget {
   /// To understand how text is aligned, check [TextAlign]
   final TextAlign descriptionTextAlign;
 
-  /// Defines the margin for the tooltip.
-  /// Which is from 0 to [toolTipSlideEndDistance].
+  /// Defines the margin from the screen edge for the tooltip.
+  /// ToolTip will try to not cross this border around the screen
   ///
   /// Defaults to 14.
   final double toolTipMargin;
@@ -357,7 +357,7 @@ class Showcase extends StatefulWidget {
   ///   - `blurValue`: The amount of background blur applied during the showcase.
   ///   - `tooltipPosition`: The position of the tooltip relative to the showcased widget.
   ///   - `toolTipSlideEndDistance`: The distance the tooltip slides in from the edge of the screen (defaults to 7dp).
-  ///   - `toolTipMargin`: The margin around the tooltip (defaults to 14dp).
+  ///   - `toolTipMargin`: The margin around the screen which tooltip try not to cross (defaults to 14dp).
   ///   - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
   ///   - `tooltipActionConfig`: Configuration options for custom tooltip actions.
   ///   - `scrollAlignment`: Defines the alignment for the auto scroll function.
@@ -424,14 +424,22 @@ class Showcase extends StatefulWidget {
   })  : height = null,
         width = null,
         container = null,
-        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1."),
-        assert(onTargetClick == null || disposeOnTap != null,
-            "disposeOnTap is required if you're using onTargetClick"),
-        assert(disposeOnTap == null || onTargetClick != null,
-            "onTargetClick is required if you're using disposeOnTap"),
-        assert(onBarrierClick == null || disableBarrierInteraction == false,
-            "can't use onBarrierClick & disableBarrierInteraction property at same time");
+        assert(
+          overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
+          "overlay opacity must be between 0 and 1.",
+        ),
+        assert(
+          onTargetClick == null || disposeOnTap != null,
+          "disposeOnTap is required if you're using onTargetClick",
+        ),
+        assert(
+          disposeOnTap == null || onTargetClick != null,
+          "onTargetClick is required if you're using disposeOnTap",
+        ),
+        assert(
+          onBarrierClick == null || disableBarrierInteraction == false,
+          "can't use onBarrierClick & disableBarrierInteraction property at same time",
+        );
 
   /// Creates a Showcase widget with a custom tooltip widget.
   ///
@@ -501,7 +509,8 @@ class Showcase extends StatefulWidget {
     this.targetBorderRadius,
     this.overlayOpacity = 0.75,
     this.scrollLoadingWidget = const CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation(Colors.white)),
+      valueColor: AlwaysStoppedAnimation(Colors.white),
+    ),
     this.onTargetClick,
     this.disposeOnTap,
     this.movingAnimationDuration = const Duration(milliseconds: 2000),
@@ -542,10 +551,14 @@ class Showcase extends StatefulWidget {
         titleTextDirection = null,
         descriptionTextDirection = null,
         toolTipMargin = 14,
-        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-            "overlay opacity must be between 0 and 1."),
-        assert(onBarrierClick == null || disableBarrierInteraction == false,
-            "can't use onBarrierClick & disableBarrierInteraction property at same time");
+        assert(
+          overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
+          "overlay opacity must be between 0 and 1.",
+        ),
+        assert(
+          onBarrierClick == null || disableBarrierInteraction == false,
+          "can't use onBarrierClick & disableBarrierInteraction property at same time",
+        );
 
   @override
   State<Showcase> createState() => _ShowcaseState();
@@ -606,8 +619,9 @@ class _ShowcaseState extends State<Showcase> {
 
       if (showCaseWidgetState.autoPlay) {
         timer = Timer(
-            Duration(seconds: showCaseWidgetState.autoPlayDelay.inSeconds),
-            _nextIfAny);
+          Duration(seconds: showCaseWidgetState.autoPlayDelay.inSeconds),
+          _nextIfAny,
+        );
       }
     } else if (timer?.isActive ?? false) {
       timer?.cancel();
@@ -770,6 +784,9 @@ class _ShowcaseState extends State<Showcase> {
                       height: mediaQuerySize.height,
                       decoration: BoxDecoration(
                         color: widget.overlayColor
+
+                            //TODO: Update when we remove support for older version
+                            //ignore: deprecated_member_use
                             .withOpacity(widget.overlayOpacity),
                       ),
                     ),
@@ -779,6 +796,8 @@ class _ShowcaseState extends State<Showcase> {
                     height: mediaQuerySize.height,
                     decoration: BoxDecoration(
                       color: widget.overlayColor
+                          //TODO: Update when we remove support for older version
+                          //ignore: deprecated_member_use
                           .withOpacity(widget.overlayOpacity),
                     ),
                   ),
@@ -799,8 +818,6 @@ class _ShowcaseState extends State<Showcase> {
           ),
           ToolTipWidget(
             position: position,
-            offset: offset,
-            screenSize: screenSize,
             title: widget.title,
             titleTextAlign: widget.titleTextAlign,
             description: widget.description,
@@ -810,13 +827,9 @@ class _ShowcaseState extends State<Showcase> {
             titleTextStyle: widget.titleTextStyle,
             descTextStyle: widget.descTextStyle,
             container: widget.container,
-            floatingActionWidget:
-                widget.floatingActionWidget ?? _globalFloatingActionWidget,
             tooltipBackgroundColor: widget.tooltipBackgroundColor,
             textColor: widget.textColor,
             showArrow: widget.showArrow,
-            contentHeight: widget.height,
-            contentWidth: widget.width,
             onTooltipTap:
                 widget.disposeOnTap == true || widget.onToolTipClick != null
                     ? _getOnTooltipTap
@@ -824,8 +837,9 @@ class _ShowcaseState extends State<Showcase> {
             tooltipPadding: widget.tooltipPadding,
             disableMovingAnimation: widget.disableMovingAnimation ??
                 showCaseWidgetState.disableMovingAnimation,
-            disableScaleAnimation: widget.disableScaleAnimation ??
-                showCaseWidgetState.disableScaleAnimation,
+            disableScaleAnimation: (widget.disableScaleAnimation ??
+                    showCaseWidgetState.disableScaleAnimation) ||
+                widget.container != null,
             movingAnimationDuration: widget.movingAnimationDuration,
             tooltipBorderRadius: widget.tooltipBorderRadius,
             scaleAnimationDuration: widget.scaleAnimationDuration,
@@ -841,11 +855,16 @@ class _ShowcaseState extends State<Showcase> {
             toolTipMargin: widget.toolTipMargin,
             tooltipActionConfig: _getTooltipActionConfig(),
             tooltipActions: _getTooltipActions(),
+            targetPadding: widget.targetPadding,
           ),
+          if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
         ],
       ],
     );
   }
+
+  Widget? get _getFloatingActionWidget =>
+      widget.floatingActionWidget ?? _globalFloatingActionWidget;
 
   List<Widget> _getTooltipActions() {
     final actionData = (widget.tooltipActions?.isNotEmpty ?? false)

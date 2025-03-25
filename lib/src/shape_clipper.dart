@@ -24,27 +24,28 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import 'constants.dart';
 import 'models/linked_showcase_data.dart';
 
 class RRectClipper extends CustomClipper<ui.Path> {
+  const RRectClipper({
+    this.isCircle = false,
+    this.overlayPadding = EdgeInsets.zero,
+    this.area = Rect.zero,
+    this.linkedObjectData = const <LinkedShowcaseDataModel>[],
+    this.radius,
+  });
+
   final bool isCircle;
   final BorderRadius? radius;
   final EdgeInsets overlayPadding;
   final Rect area;
   final List<LinkedShowcaseDataModel> linkedObjectData;
 
-  RRectClipper({
-    this.isCircle = false,
-    this.radius,
-    this.overlayPadding = EdgeInsets.zero,
-    this.area = Rect.zero,
-    this.linkedObjectData = const <LinkedShowcaseDataModel>[],
-  });
-
   @override
   ui.Path getClip(ui.Size size) {
     final customRadius =
-        isCircle ? Radius.circular(area.height) : const Radius.circular(3.0);
+        isCircle ? Radius.circular(area.height) : Constants.defaultTargetRadius;
 
     final rect = Rect.fromLTRB(
       area.left - overlayPadding.left,
@@ -66,16 +67,18 @@ class RRectClipper extends CustomClipper<ui.Path> {
         ),
       );
 
-    for (final widgetRect in linkedObjectData) {
-      final customRadius = widgetRect.isCircle
-          ? Radius.circular(widgetRect.rect.height)
-          : const Radius.circular(3.0);
+    final linkedObjectLength = linkedObjectData.length;
+    for (var i = 0; i < linkedObjectLength; i++) {
+      final widgetInfo = linkedObjectData[i];
+      final customRadius = widgetInfo.isCircle
+          ? Radius.circular(widgetInfo.rect.height)
+          : Constants.defaultTargetRadius;
 
       final rect = Rect.fromLTRB(
-        widgetRect.rect.left - widgetRect.overlayPadding.left,
-        widgetRect.rect.top - widgetRect.overlayPadding.top,
-        widgetRect.rect.right + widgetRect.overlayPadding.right,
-        widgetRect.rect.bottom + widgetRect.overlayPadding.bottom,
+        widgetInfo.rect.left - widgetInfo.overlayPadding.left,
+        widgetInfo.rect.top - widgetInfo.overlayPadding.top,
+        widgetInfo.rect.right + widgetInfo.overlayPadding.right,
+        widgetInfo.rect.bottom + widgetInfo.overlayPadding.bottom,
       );
 
       /// We have use this approach so that overlapping cutout will merge with
@@ -87,10 +90,10 @@ class RRectClipper extends CustomClipper<ui.Path> {
           ..addRRect(
             RRect.fromRectAndCorners(
               rect,
-              topLeft: (widgetRect.radius?.topLeft ?? customRadius),
-              topRight: (widgetRect.radius?.topRight ?? customRadius),
-              bottomLeft: (widgetRect.radius?.bottomLeft ?? customRadius),
-              bottomRight: (widgetRect.radius?.bottomRight ?? customRadius),
+              topLeft: (widgetInfo.radius?.topLeft ?? customRadius),
+              topRight: (widgetInfo.radius?.topRight ?? customRadius),
+              bottomLeft: (widgetInfo.radius?.bottomLeft ?? customRadius),
+              bottomRight: (widgetInfo.radius?.bottomRight ?? customRadius),
             ),
           ),
       );

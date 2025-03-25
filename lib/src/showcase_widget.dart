@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 
 import '../showcaseview.dart';
 import 'layout_overlays.dart';
+import 'models/linked_showcase_data.dart';
 import 'shape_clipper.dart';
 import 'showcase/showcase_controller.dart';
 
@@ -192,7 +193,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   late final List<TooltipActionButton>? globalTooltipActions;
 
-  Map<GlobalKey, List<ShowcaseController>> showcaseController = {};
+  Map<GlobalKey, List<ShowcaseController>> showcaseControllers = {};
 
   /// These properties are only here so that it can be accessed by
   /// [Showcase]
@@ -262,90 +263,98 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (!mounted) return;
-    final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
-    rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
-    rootWidgetSize = rootWidget == null
-        ? MediaQuery.of(context).size
-        : rootRenderObject?.size;
+    _updateRootWidget();
   }
 
   @override
   void didUpdateWidget(covariant ShowCaseWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!mounted) return;
-    final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
-    rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
-    rootWidgetSize = rootWidget == null
-        ? MediaQuery.of(context).size
-        : rootRenderObject?.size;
+    _updateRootWidget();
   }
 
   @override
   Widget build(BuildContext context) {
     return OverlayBuilder(
       showOverlay: getCurrentActiveShowcaseKey != null,
-      updateOverlay: (updateOverlays) {
-        updateOverlay = updateOverlays;
-      },
+      updateOverlay: (updateOverlays) => updateOverlay = updateOverlays,
       overlayBuilder: (_) {
-        final controller = showcaseController[getCurrentActiveShowcaseKey] ??
+        final controller = showcaseControllers[getCurrentActiveShowcaseKey] ??
             <ShowcaseController>[];
-        if (getCurrentActiveShowcaseKey != null && controller.isNotEmpty) {
-          final firstController = controller.first;
-          final firstShowcaseConfig = firstController.showcaseConfig;
-          return Stack(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  firstShowcaseConfig.onBarrierClick?.call();
-                  if (!disableBarrierInteraction &&
-                      !firstShowcaseConfig.disableBarrierInteraction) {
-                    next();
-                  }
-                },
-                child: ClipPath(
-                  clipper: RRectClipper(
-                    area: Rect.zero,
-                    isCircle: false,
-                    radius: BorderRadius.zero,
-                    overlayPadding: EdgeInsets.zero,
-                    linkedObjectData: controller
-                        .map(
-                          (e) => e.linkedShowcaseDataModel,
-                        )
-                        .toList(),
-                  ),
-                  child: controller.first.blur != 0
-                      ? BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: firstController.blur,
-                            sigmaY: firstController.blur,
-                          ),
-                          child: getBackgroundOverlayContainer(
-                            overlayColor: firstShowcaseConfig.overlayColor,
-                            overlayOpacity: firstShowcaseConfig.overlayOpacity,
-                          ),
-                        )
-                      : getBackgroundOverlayContainer(
-                          overlayColor: firstShowcaseConfig.overlayColor,
-                          overlayOpacity: firstShowcaseConfig.overlayOpacity,
-                        ),
-                ),
-              ),
-              for (final data in controller) ...data.getToolTipWidget.toList(),
-            ],
-          );
-        } else {
+
+        if (getCurrentActiveShowcaseKey == null || controller.isEmpty) {
           return const SizedBox.shrink();
         }
+
+        final firstController = controller.first;
+        final firstShowcaseConfig = firstController.showcaseConfig!;
+        final listOfLinkedModel = <LinkedShowcaseDataModel>[];
+        final controllerLength = controller.length;
+        for (var i = 0; i < controllerLength; i++) {
+          final model = controller[i].linkedShowcaseDataModel;
+          if (model == null) continue;
+          listOfLinkedModel.add(model);
+        }
+        final backgroundContainer = getBackgroundOverlayContainer(
+          overlayColor: firstShowcaseConfig.overlayColor,
+          overlayOpacity: firstShowcaseConfig.overlayOpacity,
+        );
+
+        final tooltipWidgets = <Widget>[];
+        for (var i = 0; i < controllerLength; i++) {
+          tooltipWidgets.addAll(controller[i].getToolTipWidget);
+        }
+        return Stack(
+          children: [
+            GestureDetector(
+              onTap: () => _barrierOnTap(firstShowcaseConfig),
+              child: ClipPath(
+                clipper: RRectClipper(
+                  area: Rect.zero,
+                  isCircle: false,
+                  radius: BorderRadius.zero,
+                  overlayPadding: EdgeInsets.zero,
+                  linkedObjectData: listOfLinkedModel,
+                ),
+                child: firstController.blur != 0
+                    ? BackdropFilter(
+                        filter: ImageFilter.blur(
+                          sigmaX: firstController.blur,
+                          sigmaY: firstController.blur,
+                        ),
+                        child: backgroundContainer,
+                      )
+                    : backgroundContainer,
+              ),
+            ),
+            ...tooltipWidgets,
+          ],
+        );
       },
       child: Builder(builder: widget.builder),
     );
   }
 
-  Widget getBackgroundOverlayContainer(
-      {required Color overlayColor, required double overlayOpacity}) {
+  void _updateRootWidget() {
+    if (!mounted) return;
+    final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
+    rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
+    rootWidgetSize = rootWidget == null
+        ? MediaQuery.sizeOf(context)
+        : rootRenderObject?.size;
+  }
+
+  void _barrierOnTap(Showcase firstShowcaseConfig) {
+    firstShowcaseConfig.onBarrierClick?.call();
+    if (!disableBarrierInteraction &&
+        !firstShowcaseConfig.disableBarrierInteraction) {
+      next();
+    }
+  }
+
+  Widget getBackgroundOverlayContainer({
+    required Color overlayColor,
+    required double overlayOpacity,
+  }) {
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -353,9 +362,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
             //TODO: Update when we remove support for older version
             //ignore: deprecated_member_use
-            .withOpacity(
-          overlayOpacity,
-        ),
+            .withOpacity(overlayOpacity),
       ),
     );
   }
@@ -389,7 +396,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
       _onStart();
     });
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
+      (_) {
         updateOverlay?.call();
       },
     );
@@ -397,7 +404,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Completes showcase of given key and starts next one
   /// otherwise will finish the entire showcase view
-  void completed(GlobalKey? key) async {
+  Future<void> completed(GlobalKey? key) async {
     if (ids != null && ids![activeWidgetId!] == key && mounted) {
       await _onComplete();
       if (mounted) {
@@ -415,7 +422,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Completes current active showcase and starts next one
   /// otherwise will finish the entire showcase view
-  void next([bool fromAutoPlayOrAction = false]) async {
+  void next({bool fromAutoPlayOrAction = false}) async {
     // If this call is from autoPlay timer or action widget we will override the
     // enableAutoPlayLock so user can move forward in showcase
     if (!fromAutoPlayOrAction && widget.enableAutoPlayLock) return;
@@ -460,42 +467,47 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
         activeWidgetId == null || ids == null || ids!.length < activeWidgetId!;
 
     widget.onDismiss?.call(idNotExist ? null : ids?[activeWidgetId!]);
-    if (mounted) _cleanupAfterSteps.call();
-    updateOverlay?.call();
+    if (mounted) {
+      _cleanupAfterSteps.call();
+      updateOverlay?.call();
+    }
   }
 
   Future<void> _onStart() async {
     if (activeWidgetId! < ids!.length) {
       widget.onStart?.call(activeWidgetId, ids![activeWidgetId!]);
-      final controllers = showcaseController[getCurrentActiveShowcaseKey] ??
+      final controllers = showcaseControllers[getCurrentActiveShowcaseKey] ??
           <ShowcaseController>[];
-      if ((controllers).length == 1 &&
-          (controllers.first.showcaseConfig.enableAutoScroll ??
+      if (controllers.length == 1 &&
+          (controllers.first.showcaseConfig?.enableAutoScroll ??
               widget.enableAutoScroll)) {
         await controllers.first.scrollIntoView?.call();
       } else {
-        for (final controller in controllers) {
-          controller.startShowcase();
+        final controllerLength = controllers.length;
+        for (var i = 0; i < controllerLength; i++) {
+          controllers[i].startShowcase?.call();
         }
       }
     }
     if (widget.autoPlay) {
-      if (_timer?.isActive ?? false) {
-        _timer?.cancel();
-        _timer = null;
-      }
+      _stopTimer();
       _timer = Timer(
         Duration(seconds: widget.autoPlayDelay.inSeconds),
-        () => next(true),
+        () => next(fromAutoPlayOrAction: true),
       );
     }
   }
 
   Future<void> _onComplete() async {
-    var futures = <Future>[];
-    for (final controller in showcaseController[getCurrentActiveShowcaseKey] ??
-        <ShowcaseController>[]) {
-      if ((controller.showcaseConfig.disableScaleAnimation ??
+    final futures = <Future>[];
+    final currentControllers =
+        (showcaseControllers[getCurrentActiveShowcaseKey] ??
+            <ShowcaseController>[]);
+    final controllerLength = currentControllers.length;
+
+    for (var i = 0; i < controllerLength; i++) {
+      final controller = currentControllers[i];
+      if ((controller.showcaseConfig?.disableScaleAnimation ??
               widget.disableScaleAnimation) ||
           controller.reverseAnimation == null) {
         continue;
@@ -505,18 +517,20 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     await Future.wait(futures);
     widget.onComplete?.call(activeWidgetId, ids![activeWidgetId!]);
     if (widget.autoPlay) {
-      if (_timer?.isActive ?? false) {
-        _timer?.cancel();
-        _timer = null;
-      }
+      _stopTimer();
     }
+  }
+
+  void _stopTimer() {
+    if (!(_timer?.isActive ?? false)) return;
+    _timer?.cancel();
+    _timer = null;
   }
 
   void _cleanupAfterSteps() {
     ids = null;
     activeWidgetId = null;
-    _timer?.cancel();
-    _timer = null;
+    _stopTimer();
   }
 
   /// Disables the [globalFloatingActionWidget] for the provided keys.

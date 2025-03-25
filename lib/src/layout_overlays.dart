@@ -24,8 +24,6 @@ import 'package:flutter/material.dart';
 
 import 'showcase_widget.dart';
 
-typedef OverlayUpdateCallback = void Function(VoidCallback updateOverlay);
-
 /// Displays an overlay Widget as constructed by the given [overlayBuilder].
 ///
 /// The overlay built by the [overlayBuilder] can be conditionally shown and
@@ -39,18 +37,18 @@ typedef OverlayUpdateCallback = void Function(VoidCallback updateOverlay);
 /// exist in [OverlayEntry]s which are inaccessible to outside Widgets. But if
 /// a better approach is found then feel free to use it.
 class OverlayBuilder extends StatefulWidget {
-  final bool showOverlay;
-  final WidgetBuilder? overlayBuilder;
-  final Widget? child;
-  final OverlayUpdateCallback updateOverlay;
-
   const OverlayBuilder({
     super.key,
+    required this.child,
     required this.updateOverlay,
     this.showOverlay = false,
     this.overlayBuilder,
-    this.child,
   });
+
+  final bool showOverlay;
+  final WidgetBuilder? overlayBuilder;
+  final Widget child;
+  final ValueSetter<VoidCallback> updateOverlay;
 
   @override
   State<OverlayBuilder> createState() => _OverlayBuilderState();
@@ -66,10 +64,10 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
     if (widget.showOverlay) {
       WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
     }
-    widget.updateOverlay.call(updateOverlay);
+    widget.updateOverlay.call(_updateOverlay);
   }
 
-  void updateOverlay() {
+  void _updateOverlay() {
     buildOverlay();
     WidgetsBinding.instance.addPostFrameCallback((_) => syncWidgetAndOverlay());
   }
@@ -145,6 +143,6 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.child!;
+    return widget.child;
   }
 }

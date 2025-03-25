@@ -25,6 +25,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
 import '../enum.dart';
 import '../get_position.dart';
 import '../models/linked_showcase_data.dart';
@@ -66,6 +67,11 @@ class Showcase extends StatefulWidget {
   final ShapeBorder targetShapeBorder;
 
   /// Radius of rectangle box while target widget is being showcased.
+  ///
+  /// Default value is:
+  /// ```dart
+  /// const Radius.circular(3.0),
+  /// ```
   final BorderRadius? targetBorderRadius;
 
   /// TextStyle for default tooltip title
@@ -425,7 +431,7 @@ class Showcase extends StatefulWidget {
         showcaseKey = key,
         assert(
           overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-          "overlay opacity must be between 0 and 1.",
+          'overlay opacity must be between 0 and 1.',
         ),
         assert(
           onTargetClick == null || disposeOnTap != null,
@@ -499,20 +505,14 @@ class Showcase extends StatefulWidget {
     required this.container,
     required this.child,
     this.floatingActionWidget,
-    this.targetShapeBorder = const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(8),
-      ),
-    ),
+    this.targetShapeBorder = Constants.defaultTargetShapeBorder,
     this.overlayColor = Colors.black45,
     this.targetBorderRadius,
     this.overlayOpacity = 0.75,
-    this.scrollLoadingWidget = const CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation(Colors.white),
-    ),
+    this.scrollLoadingWidget = Constants.defaultProgressIndicator,
     this.onTargetClick,
     this.disposeOnTap,
-    this.movingAnimationDuration = const Duration(milliseconds: 2000),
+    this.movingAnimationDuration = Constants.defaultAnimationDuration,
     this.disableMovingAnimation,
     this.targetPadding = EdgeInsets.zero,
     this.blurValue,
@@ -532,7 +532,7 @@ class Showcase extends StatefulWidget {
         scaleAnimationDuration = const Duration(milliseconds: 300),
         scaleAnimationCurve = Curves.decelerate,
         scaleAnimationAlignment = null,
-        disableScaleAnimation = true,
+        disableScaleAnimation = null,
         title = null,
         description = null,
         titleTextAlign = TextAlign.start,
@@ -553,7 +553,7 @@ class Showcase extends StatefulWidget {
         showcaseKey = key,
         assert(
           overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
-          "overlay opacity must be between 0 and 1.",
+          'overlay opacity must be between 0 and 1.',
         ),
         assert(
           onBarrierClick == null || disableBarrierInteraction == false,
@@ -573,10 +573,6 @@ class _ShowcaseState extends State<Showcase> {
   late final showCaseWidgetState = ShowCaseWidget.of(context);
   FloatingActionWidget? _globalFloatingActionWidget;
 
-  /// This variable will be true if some other showcase is linked with
-  /// this showcase and starts this widget showcase
-  // bool _isLinkedShowCaseStarted = false;
-
   bool get _isCircle => widget.targetShapeBorder is CircleBorder;
 
   BorderRadius? get _targetBorderRadius => widget.targetBorderRadius;
@@ -588,7 +584,7 @@ class _ShowcaseState extends State<Showcase> {
     super.initState();
     initRootWidget();
     final connectedShowcase =
-        showCaseWidgetState.showcaseController[widget.showcaseKey];
+        showCaseWidgetState.showcaseControllers[widget.showcaseKey];
     showcaseController = ShowcaseController(
       showcaseId: connectedShowcase?.length ?? 0,
       showcaseKey: widget.showcaseKey,
@@ -597,10 +593,10 @@ class _ShowcaseState extends State<Showcase> {
     )..startShowcase = startShowcase;
 
     if (connectedShowcase != null) {
-      showCaseWidgetState.showcaseController[widget.showcaseKey]
+      showCaseWidgetState.showcaseControllers[widget.showcaseKey]
           ?.add(showcaseController);
     } else {
-      showCaseWidgetState.showcaseController[widget.showcaseKey] = [
+      showCaseWidgetState.showcaseControllers[widget.showcaseKey] = [
         showcaseController,
       ];
     }
@@ -614,7 +610,7 @@ class _ShowcaseState extends State<Showcase> {
 
   @override
   void dispose() {
-    showCaseWidgetState.showcaseController[widget.showcaseKey]
+    showCaseWidgetState.showcaseControllers[widget.showcaseKey]
         ?.remove(showcaseController);
     super.dispose();
   }
@@ -789,7 +785,10 @@ class _ShowcaseState extends State<Showcase> {
         : showCaseWidgetState.globalTooltipActions ?? [];
 
     final actionWidgets = <Widget>[];
-    for (final action in actionData) {
+    final actionDataLength = actionData.length;
+    for (var i = 0; i < actionDataLength; i++) {
+      final action = actionData[i];
+
       /// This checks that if current widget is being showcased and there is
       /// no local action has been provided and global action are needed to hide
       /// then it will hide that action for current widget

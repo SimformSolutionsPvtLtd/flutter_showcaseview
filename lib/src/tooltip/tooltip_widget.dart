@@ -1,6 +1,43 @@
 part of "tooltip.dart";
 
 class ToolTipWidget extends StatefulWidget {
+  const ToolTipWidget({
+    super.key,
+    required this.position,
+    required this.title,
+    required this.description,
+    required this.titleTextStyle,
+    required this.descTextStyle,
+    required this.container,
+    required this.tooltipBackgroundColor,
+    required this.textColor,
+    required this.showArrow,
+    required this.onTooltipTap,
+    required this.movingAnimationDuration,
+    required this.titleTextAlign,
+    required this.descriptionTextAlign,
+    required this.titleAlignment,
+    required this.descriptionAlignment,
+    required this.tooltipActionConfig,
+    required this.tooltipActions,
+    required this.targetPadding,
+    required this.disableMovingAnimation,
+    required this.disableScaleAnimation,
+    required this.tooltipBorderRadius,
+    required this.scaleAnimationDuration,
+    required this.scaleAnimationCurve,
+    required this.toolTipMargin,
+    required this.showcaseController,
+    required this.tooltipPadding,
+    required this.toolTipSlideEndDistance,
+    this.scaleAnimationAlignment,
+    this.tooltipPosition,
+    this.titlePadding,
+    this.descriptionPadding,
+    this.titleTextDirection,
+    this.descriptionTextDirection,
+  });
+
   final GetPosition? position;
   final String? title;
   final TextAlign? titleTextAlign;
@@ -34,43 +71,6 @@ class ToolTipWidget extends StatefulWidget {
   final List<Widget> tooltipActions;
   final EdgeInsets targetPadding;
   final ShowcaseController showcaseController;
-
-  const ToolTipWidget({
-    super.key,
-    required this.position,
-    required this.title,
-    required this.description,
-    required this.titleTextStyle,
-    required this.descTextStyle,
-    required this.container,
-    required this.tooltipBackgroundColor,
-    required this.textColor,
-    required this.showArrow,
-    required this.onTooltipTap,
-    required this.movingAnimationDuration,
-    required this.titleTextAlign,
-    required this.descriptionTextAlign,
-    required this.titleAlignment,
-    required this.descriptionAlignment,
-    required this.tooltipActionConfig,
-    required this.tooltipActions,
-    required this.targetPadding,
-    required this.disableMovingAnimation,
-    required this.disableScaleAnimation,
-    required this.tooltipBorderRadius,
-    required this.scaleAnimationDuration,
-    required this.scaleAnimationCurve,
-    required this.toolTipMargin,
-    required this.showcaseController,
-    this.scaleAnimationAlignment,
-    this.tooltipPosition,
-    this.titlePadding,
-    this.descriptionPadding,
-    this.titleTextDirection,
-    this.descriptionTextDirection,
-    this.toolTipSlideEndDistance = 7,
-    this.tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
-  });
 
   @override
   State<ToolTipWidget> createState() => _ToolTipWidgetState();
@@ -233,7 +233,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         targetSize: targetSize,
         position: widget.tooltipPosition,
         screenSize: widget.showcaseController.rootWidgetSize ??
-            MediaQuery.of(context).size,
+            MediaQuery.sizeOf(context),
         hasArrow: widget.showArrow,
         targetPadding: widget.targetPadding,
         scaleAlignment: widget.scaleAnimationAlignment,

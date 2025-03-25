@@ -214,11 +214,9 @@ class _RenderPositionDelegate extends RenderBox
             screenEdgePadding -
             Constants.tooltipOffset -
             targetPadding.left;
-        if (hasArrow) {
-          minWidth -= Constants.withArrowToolTipPadding;
-        } else {
-          minWidth -= Constants.withOutArrowToolTipPadding;
-        }
+        minWidth -= hasArrow
+            ? Constants.withArrowToolTipPadding
+            : Constants.withOutArrowToolTipPadding;
         if (minWidth > Constants.minimumToolTipWidth &&
             minWidth > minimumActionBoxSize.width) {
           // Option 1: Resize tooltip to fit
@@ -345,11 +343,9 @@ class _RenderPositionDelegate extends RenderBox
     var extraVerticalComponentHeight = 0.0;
     if (tooltipPosition.isVertical) {
       extraVerticalComponentHeight += Constants.tooltipOffset;
-      if (hasArrow) {
-        extraVerticalComponentHeight += Constants.withArrowToolTipPadding;
-      } else {
-        extraVerticalComponentHeight += Constants.withOutArrowToolTipPadding;
-      }
+      extraVerticalComponentHeight += hasArrow
+          ? Constants.withArrowToolTipPadding
+          : Constants.withOutArrowToolTipPadding;
     }
 
     // Vertical boundary handling
@@ -812,6 +808,10 @@ class _RenderPositionDelegate extends RenderBox
     Size tooltipSize,
     double totalHeight,
   ) {
+    final arrowPadding = hasArrow
+        ? Constants.withArrowToolTipPadding
+        : Constants.withOutArrowToolTipPadding;
+
     switch (pos) {
       case TooltipPosition.bottom:
         // Check if tooltip fits below target
@@ -819,9 +819,7 @@ class _RenderPositionDelegate extends RenderBox
                 targetSize.height +
                 totalHeight +
                 Constants.tooltipOffset +
-                (hasArrow
-                    ? Constants.withArrowToolTipPadding
-                    : Constants.withOutArrowToolTipPadding) -
+                arrowPadding -
                 showcaseOffset.dy <=
             screenSize.height - screenEdgePadding;
 
@@ -830,9 +828,7 @@ class _RenderPositionDelegate extends RenderBox
         return targetPosition.dy -
                 totalHeight -
                 Constants.tooltipOffset -
-                (hasArrow
-                    ? Constants.withArrowToolTipPadding
-                    : Constants.withOutArrowToolTipPadding) -
+                arrowPadding -
                 showcaseOffset.dy >=
             screenEdgePadding;
 
@@ -841,9 +837,7 @@ class _RenderPositionDelegate extends RenderBox
         return targetPosition.dx -
                 tooltipSize.width -
                 Constants.tooltipOffset -
-                (hasArrow
-                    ? Constants.withArrowToolTipPadding
-                    : Constants.withOutArrowToolTipPadding) -
+                arrowPadding -
                 showcaseOffset.dx >=
             screenEdgePadding;
 
@@ -853,9 +847,7 @@ class _RenderPositionDelegate extends RenderBox
                 targetSize.width +
                 tooltipSize.width +
                 Constants.tooltipOffset +
-                (hasArrow
-                    ? Constants.withArrowToolTipPadding
-                    : Constants.withOutArrowToolTipPadding) -
+                arrowPadding -
                 showcaseOffset.dx <=
             screenSize.width - screenEdgePadding;
     }

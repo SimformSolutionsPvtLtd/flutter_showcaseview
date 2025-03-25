@@ -32,7 +32,7 @@ class GetPosition {
     this.padding = EdgeInsets.zero,
     this.rootRenderObject,
   }) {
-    getRenderBox();
+    _getRenderBox();
   }
 
   final BuildContext context;
@@ -41,18 +41,13 @@ class GetPosition {
   final double screenHeight;
   final RenderObject? rootRenderObject;
 
-  late final RenderBox? _box;
-  late final Offset? _boxOffset;
-  late final Offset? overlayOffset;
+  RenderBox? _box;
+  Offset? _boxOffset;
 
   RenderBox? get box => _box;
 
-  void getRenderBox() {
-    var renderBox = context.findRenderObject() as RenderBox?;
-
-    overlayOffset =
-        (rootRenderObject?.parent as RenderBox?)?.localToGlobal(Offset.zero);
-
+  void _getRenderBox() {
+    final renderBox = context.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
 
     _box = renderBox;
@@ -77,9 +72,7 @@ class GetPosition {
     final bottomRight = _box!.size.bottomRight(_boxOffset!);
     final leftDx = topLeft.dx - padding.left;
     var leftDy = topLeft.dy - padding.top;
-    if (leftDy < 0) {
-      leftDy = 0;
-    }
+    if (leftDy < 0) leftDy = 0;
     final rect = Rect.fromLTRB(
       leftDx.clamp(0, leftDx),
       leftDy.clamp(0, leftDy),
@@ -131,14 +124,17 @@ class GetPosition {
 
   double getCenter() => (getLeft() + getRight()) * 0.5;
 
-  Offset topLeft() =>
-      _box?.size.topLeft(
-        _box!.localToGlobal(
-          Offset.zero,
-          ancestor: rootRenderObject,
-        ),
-      ) ??
-      Offset.zero;
+  Offset topLeft() {
+    final box = _box;
+    if (box == null) return Offset.zero;
+
+    return box.size.topLeft(
+      box.localToGlobal(
+        Offset.zero,
+        ancestor: rootRenderObject,
+      ),
+    );
+  }
 
   Offset getOffSet() => _box?.size.center(topLeft()) ?? Offset.zero;
 }

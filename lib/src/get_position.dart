@@ -41,23 +41,19 @@ class GetPosition {
   final double screenHeight;
   final RenderObject? rootRenderObject;
 
-  RenderBox? _box;
   Offset? _boxOffset;
-
-  RenderBox? get box => _box;
 
   void _getRenderBox() {
     if (renderBox == null) return;
 
-    _box = renderBox;
-    _boxOffset = _box?.localToGlobal(
+    _boxOffset = renderBox?.localToGlobal(
       Offset.zero,
       ancestor: rootRenderObject,
     );
   }
 
   bool _checkBoxOrOffsetIsNull({bool checkDy = false, bool checkDx = false}) {
-    return _box == null ||
+    return renderBox == null ||
         _boxOffset == null ||
         (checkDx && (_boxOffset?.dx.isNaN ?? true)) ||
         (checkDy && (_boxOffset?.dy.isNaN ?? true));
@@ -67,8 +63,8 @@ class GetPosition {
     if (_checkBoxOrOffsetIsNull(checkDy: true, checkDx: true)) {
       return Rect.zero;
     }
-    final topLeft = _box!.size.topLeft(_boxOffset!);
-    final bottomRight = _box!.size.bottomRight(_boxOffset!);
+    final topLeft = renderBox!.size.topLeft(_boxOffset!);
+    final bottomRight = renderBox!.size.bottomRight(_boxOffset!);
     final leftDx = topLeft.dx - padding.left;
     var leftDy = topLeft.dy - padding.top;
     if (leftDy < 0) leftDy = 0;
@@ -86,7 +82,7 @@ class GetPosition {
     if (_checkBoxOrOffsetIsNull(checkDy: true)) {
       return padding.bottom;
     }
-    final bottomRight = _box!.size.bottomRight(_boxOffset!);
+    final bottomRight = renderBox!.size.bottomRight(_boxOffset!);
     return bottomRight.dy + padding.bottom;
   }
 
@@ -95,7 +91,7 @@ class GetPosition {
     if (_checkBoxOrOffsetIsNull(checkDy: true)) {
       return -padding.top;
     }
-    final topLeft = _box!.size.topLeft(_boxOffset!);
+    final topLeft = renderBox!.size.topLeft(_boxOffset!);
     return topLeft.dy - padding.top;
   }
 
@@ -104,7 +100,7 @@ class GetPosition {
     if (_checkBoxOrOffsetIsNull(checkDx: true)) {
       return -padding.left;
     }
-    final topLeft = _box!.size.topLeft(_boxOffset!);
+    final topLeft = renderBox!.size.topLeft(_boxOffset!);
     return topLeft.dx - padding.left;
   }
 
@@ -113,7 +109,7 @@ class GetPosition {
     if (_checkBoxOrOffsetIsNull(checkDx: true)) {
       return padding.right;
     }
-    final bottomRight = _box!.size.bottomRight(_boxOffset!);
+    final bottomRight = renderBox!.size.bottomRight(_boxOffset!);
     return bottomRight.dx + padding.right;
   }
 
@@ -124,7 +120,7 @@ class GetPosition {
   double getCenter() => (getLeft() + getRight()) * 0.5;
 
   Offset topLeft() {
-    final box = _box;
+    final box = renderBox;
     if (box == null) return Offset.zero;
 
     return box.size.topLeft(
@@ -135,5 +131,5 @@ class GetPosition {
     );
   }
 
-  Offset getOffset() => _box?.size.center(topLeft()) ?? Offset.zero;
+  Offset getOffset() => renderBox?.size.center(topLeft()) ?? Offset.zero;
 }

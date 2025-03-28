@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 
 import '../constants.dart';
 import '../enum.dart';
-import '../get_position.dart';
 import '../models/tooltip_action_config.dart';
 import '../showcase/showcase_controller.dart';
 import '../widget/action_widget.dart';

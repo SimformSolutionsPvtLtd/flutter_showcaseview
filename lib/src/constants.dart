@@ -28,7 +28,7 @@ class Constants {
   /// in bottom
   static const double extraAlignmentOffset = 5;
 
-  static const defaultTargetRadius = Radius.circular(3.0);
+  static const Radius defaultTargetRadius = Radius.circular(3.0);
 
   static const ShapeBorder defaultTargetShapeBorder = RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(8)),

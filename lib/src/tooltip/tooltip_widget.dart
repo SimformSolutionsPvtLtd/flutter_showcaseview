@@ -3,7 +3,6 @@ part of "tooltip.dart";
 class ToolTipWidget extends StatefulWidget {
   const ToolTipWidget({
     super.key,
-    required this.position,
     required this.title,
     required this.description,
     required this.titleTextStyle,
@@ -38,7 +37,6 @@ class ToolTipWidget extends StatefulWidget {
     this.descriptionTextDirection,
   });
 
-  final GetPosition? position;
   final String? title;
   final TextAlign? titleTextAlign;
   final String? description;
@@ -219,8 +217,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
           );
 
     // Calculate the target position and size
-    final targetPosition = widget.position!.box!.localToGlobal(Offset.zero);
-    final targetSize = widget.position!.box!.size;
+    final box = widget.showcaseController.position!.renderBox!;
+    final targetPosition = box.localToGlobal(Offset.zero);
+    final targetSize = box.size;
 
     return Material(
       type: MaterialType.transparency,

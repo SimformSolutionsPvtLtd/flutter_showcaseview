@@ -564,10 +564,11 @@ class Showcase extends StatefulWidget {
 }
 
 class _ShowcaseState extends State<Showcase> {
-  bool enableShowcase = true;
-  GetPosition? position;
-
-  late ShowcaseController showcaseController;
+  ShowcaseController get _controller =>
+      showCaseWidgetState.getControllerForShowcase(
+        widget.showcaseKey,
+        _uniqueId,
+      );
 
   late final showCaseWidgetState = ShowCaseWidget.of(context);
   FloatingActionWidget? _globalFloatingActionWidget;
@@ -578,12 +579,14 @@ class _ShowcaseState extends State<Showcase> {
 
   EdgeInsets get _targetPadding => widget.targetPadding;
 
+  final int _uniqueId = UniqueKey().hashCode;
+
   @override
   void initState() {
     super.initState();
     initRootWidget();
-    showcaseController = ShowcaseController(
-      showcaseId: widget.hashCode,
+    final showcaseController = ShowcaseController(
+      showcaseId: _uniqueId,
       showcaseKey: widget.showcaseKey,
       showcaseConfig: widget,
       scrollIntoView: _scrollIntoView,
@@ -592,21 +595,20 @@ class _ShowcaseState extends State<Showcase> {
     showCaseWidgetState.registerShowcaseController(
       controller: showcaseController,
       key: widget.showcaseKey,
+      showcaseId: _uniqueId,
     );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    showcaseController.showcaseConfig = widget;
   }
 
   @override
   void didUpdateWidget(covariant Showcase oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget != widget) {
-      showcaseController.showcaseConfig = widget;
-    }
+    if (oldWidget == widget) return;
+    showCaseWidgetState
+        .getControllerForShowcase(
+          widget.showcaseKey,
+          _uniqueId,
+        )
+        .showcaseConfig = widget;
   }
 
   @override
@@ -619,7 +621,7 @@ class _ShowcaseState extends State<Showcase> {
   void dispose() {
     showCaseWidgetState.removeShowcaseController(
       key: widget.showcaseKey,
-      controller: showcaseController,
+      uniqueShowcaseKey: _uniqueId,
     );
 
     super.dispose();
@@ -628,36 +630,37 @@ class _ShowcaseState extends State<Showcase> {
   void initRootWidget() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      showcaseController
+      _controller
         ..rootWidgetSize = showCaseWidgetState.rootWidgetSize
         ..rootRenderObject = showCaseWidgetState.rootRenderObject;
     });
   }
 
   void startShowcase() {
-    enableShowcase = showCaseWidgetState.enableShowcase;
+    if (!showCaseWidgetState.enableShowcase) return;
 
     recalculateRootWidgetSize();
 
-    if (enableShowcase) {
-      _globalFloatingActionWidget = showCaseWidgetState
-          .globalFloatingActionWidget(widget.showcaseKey)
-          ?.call(context);
-      final size = MediaQuery.of(context).size;
-      position ??= GetPosition(
-        rootRenderObject: showcaseController.rootRenderObject,
-        renderBox: context.findRenderObject() as RenderBox?,
-        padding: widget.targetPadding,
-        screenWidth: showcaseController.rootWidgetSize?.width ?? size.width,
-        screenHeight: showcaseController.rootWidgetSize?.height ?? size.height,
-      );
-    }
+    _globalFloatingActionWidget = showCaseWidgetState
+        .globalFloatingActionWidget(widget.showcaseKey)
+        ?.call(context);
+    final size = _controller.rootWidgetSize ?? MediaQuery.sizeOf(context);
+    _controller.position ??= GetPosition(
+      rootRenderObject: _controller.rootRenderObject,
+      renderBox: context.findRenderObject() as RenderBox?,
+      padding: widget.targetPadding,
+      screenWidth: size.width,
+      screenHeight: size.height,
+    );
   }
 
   Future<void> _scrollIntoView() async {
     if (!mounted) return;
-    showcaseController.isScrollRunning = true;
-    _updateControllerData(context);
+    _controller.isScrollRunning = true;
+    _updateControllerData(
+      context.findRenderObject() as RenderBox?,
+      MediaQuery.sizeOf(context),
+    );
     startShowcase();
     showCaseWidgetState.updateOverlay?.call(
       showCaseWidgetState.isShowcaseRunning,
@@ -668,8 +671,11 @@ class _ShowcaseState extends State<Showcase> {
       alignment: widget.scrollAlignment,
     );
     if (!mounted) return;
-    showcaseController.isScrollRunning = false;
-    _updateControllerData(context);
+    _controller.isScrollRunning = false;
+    _updateControllerData(
+      context.findRenderObject() as RenderBox?,
+      MediaQuery.sizeOf(context),
+    );
     startShowcase();
     showCaseWidgetState.updateOverlay?.call(
       showCaseWidgetState.isShowcaseRunning,
@@ -680,14 +686,17 @@ class _ShowcaseState extends State<Showcase> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
-      showcaseController
+      _controller
         ..rootRenderObject =
             rootWidget?.context.findRenderObject() as RenderBox?
         ..rootWidgetSize = rootWidget == null
             ? MediaQuery.of(context).size
-            : showcaseController.rootRenderObject?.size;
-      if (!enableShowcase) return;
-      _updateControllerData(context);
+            : _controller.rootRenderObject?.size;
+      if (!showCaseWidgetState.enableShowcase) return;
+      _updateControllerData(
+        context.findRenderObject() as RenderBox?,
+        MediaQuery.sizeOf(context),
+      );
       showCaseWidgetState.updateOverlay?.call(
         showCaseWidgetState.isShowcaseRunning,
       );
@@ -725,10 +734,9 @@ class _ShowcaseState extends State<Showcase> {
         ? 0.0
         : max(0.0, widget.blurValue ?? showCaseWidgetState.blurValue);
 
-    showcaseController
-      ..position = position!
+    _controller
       ..blur = blur
-      ..getToolTipWidget = showcaseController.isScrollRunning
+      ..getToolTipWidget = _controller.isScrollRunning
           ? [
               Center(child: widget.scrollLoadingWidget),
             ]
@@ -746,8 +754,7 @@ class _ShowcaseState extends State<Showcase> {
                 targetPadding: widget.targetPadding,
               ),
               ToolTipWidget(
-                key: ValueKey(showcaseController.showcaseId),
-                position: position,
+                key: ValueKey(_controller.showcaseId),
                 title: widget.title,
                 titleTextAlign: widget.titleTextAlign,
                 description: widget.description,
@@ -785,7 +792,7 @@ class _ShowcaseState extends State<Showcase> {
                 tooltipActionConfig: _getTooltipActionConfig(),
                 tooltipActions: _getTooltipActions(),
                 targetPadding: widget.targetPadding,
-                showcaseController: showcaseController,
+                showcaseController: _controller,
               ),
               if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
             ];
@@ -837,33 +844,32 @@ class _ShowcaseState extends State<Showcase> {
         const TooltipActionConfig();
   }
 
-  void _updateControllerData(BuildContext context) {
-    final size =
-        showcaseController.rootWidgetSize ?? MediaQuery.of(context).size;
-    position = GetPosition(
-      rootRenderObject: showcaseController.rootRenderObject,
-      renderBox: context.findRenderObject() as RenderBox?,
+  void _updateControllerData(
+    RenderBox? renderBox,
+    Size screenSize,
+  ) {
+    final size = _controller.rootWidgetSize ?? screenSize;
+    final position = GetPosition(
+      rootRenderObject: _controller.rootRenderObject,
+      renderBox: renderBox,
       padding: widget.targetPadding,
       screenWidth: size.width,
       screenHeight: size.height,
     );
-    showcaseController
-      ..position = position!
+    _controller
+      ..position = position
       ..linkedShowcaseDataModel = LinkedShowcaseDataModel(
-        rect: showcaseController.isScrollRunning
-            ? Rect.zero
-            : position!.getRect(),
+        rect: _controller.isScrollRunning ? Rect.zero : position.getRect(),
         radius: _targetBorderRadius,
-        overlayPadding: showcaseController.isScrollRunning
-            ? EdgeInsets.zero
-            : _targetPadding,
+        overlayPadding:
+            _controller.isScrollRunning ? EdgeInsets.zero : _targetPadding,
         isCircle: _isCircle,
       );
 
     buildOverlayOnTarget(
-      position!.getOffset(),
-      position!.getRect().size,
-      position!.getRect(),
+      position.getOffset(),
+      position.getRect().size,
+      position.getRect(),
       size,
     );
   }

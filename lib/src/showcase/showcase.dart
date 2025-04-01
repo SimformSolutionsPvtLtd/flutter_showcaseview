@@ -20,21 +20,14 @@
  * SOFTWARE.
  */
 
-import 'dart:async';
-import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../enum.dart';
 import '../get_position.dart';
-import '../models/linked_showcase_data.dart';
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
 import '../showcase_widget.dart';
-import '../tooltip/tooltip.dart';
-import '../tooltip_action_button_widget.dart';
 import '../widget/floating_action_widget.dart';
 import 'showcase_controller.dart';
 
@@ -565,61 +558,46 @@ class Showcase extends StatefulWidget {
 
 class _ShowcaseState extends State<Showcase> {
   ShowcaseController get _controller =>
-      showCaseWidgetState.getControllerForShowcase(
+      _showCaseWidgetState.getControllerForShowcase(
         widget.showcaseKey,
         _uniqueId,
       );
 
-  late final showCaseWidgetState = ShowCaseWidget.of(context);
-  FloatingActionWidget? _globalFloatingActionWidget;
-
-  bool get _isCircle => widget.targetShapeBorder is CircleBorder;
-
-  BorderRadius? get _targetBorderRadius => widget.targetBorderRadius;
-
-  EdgeInsets get _targetPadding => widget.targetPadding;
+  late var _showCaseWidgetState = ShowCaseWidget.of(context);
 
   final int _uniqueId = UniqueKey().hashCode;
 
   @override
   void initState() {
     super.initState();
-    initRootWidget();
-    final showcaseController = ShowcaseController(
-      showcaseId: _uniqueId,
-      showcaseKey: widget.showcaseKey,
-      showcaseConfig: widget,
-      scrollIntoView: _scrollIntoView,
-    )..startShowcase = startShowcase;
-
-    showCaseWidgetState.registerShowcaseController(
-      controller: showcaseController,
+    ShowcaseController(
+      id: _uniqueId,
       key: widget.showcaseKey,
-      showcaseId: _uniqueId,
-    );
+      config: widget,
+      showCaseWidgetState: ShowCaseWidget.of(context),
+      scrollIntoViewCallback: scrollIntoView,
+    ).startShowcase = startShowcase;
   }
 
   @override
   void didUpdateWidget(covariant Showcase oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget == widget) return;
-    showCaseWidgetState
-        .getControllerForShowcase(
-          widget.showcaseKey,
-          _uniqueId,
-        )
-        .showcaseConfig = widget;
+    _showCaseWidgetState = ShowCaseWidget.of(context);
+    _controller
+      ..config = widget
+      ..showCaseWidgetState = _showCaseWidgetState;
   }
 
   @override
   Widget build(BuildContext context) {
-    recalculateRootWidgetSize();
+    _controller.recalculateRootWidgetSize(context);
     return widget.child;
   }
 
   @override
   void dispose() {
-    showCaseWidgetState.removeShowcaseController(
+    _showCaseWidgetState.removeShowcaseController(
       key: widget.showcaseKey,
       uniqueShowcaseKey: _uniqueId,
     );
@@ -627,24 +605,15 @@ class _ShowcaseState extends State<Showcase> {
     super.dispose();
   }
 
-  void initRootWidget() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _controller
-        ..rootWidgetSize = showCaseWidgetState.rootWidgetSize
-        ..rootRenderObject = showCaseWidgetState.rootRenderObject;
-    });
-  }
-
   void startShowcase() {
-    if (!showCaseWidgetState.enableShowcase) return;
+    if (!_showCaseWidgetState.enableShowcase) return;
 
-    recalculateRootWidgetSize();
-
-    _globalFloatingActionWidget = showCaseWidgetState
-        .globalFloatingActionWidget(widget.showcaseKey)
-        ?.call(context);
-    final size = _controller.rootWidgetSize ?? MediaQuery.sizeOf(context);
+    _controller
+      ..recalculateRootWidgetSize(context)
+      ..globalFloatingActionWidget = _showCaseWidgetState
+          .globalFloatingActionWidget(widget.showcaseKey)
+          ?.call(context);
+    final size = _controller.rootWidgetSize ?? MediaQuery.of(context).size;
     _controller.position ??= GetPosition(
       rootRenderObject: _controller.rootRenderObject,
       renderBox: context.findRenderObject() as RenderBox?,
@@ -654,282 +623,33 @@ class _ShowcaseState extends State<Showcase> {
     );
   }
 
-  Future<void> _scrollIntoView() async {
+  Future<void> scrollIntoView() async {
     if (!mounted) return;
-    _controller.isScrollRunning = true;
-    _updateControllerData(
-      context.findRenderObject() as RenderBox?,
-      MediaQuery.sizeOf(context),
-    );
+    _controller
+      ..isScrollRunning = true
+      ..updateControllerData(
+        context.findRenderObject() as RenderBox?,
+        MediaQuery.of(context).size,
+      );
     startShowcase();
-    showCaseWidgetState.updateOverlay?.call(
-      showCaseWidgetState.isShowcaseRunning,
+    _showCaseWidgetState.updateOverlay?.call(
+      _showCaseWidgetState.isShowcaseRunning,
     );
     await Scrollable.ensureVisible(
       context,
-      duration: showCaseWidgetState.widget.scrollDuration,
+      duration: _showCaseWidgetState.widget.scrollDuration,
       alignment: widget.scrollAlignment,
     );
     if (!mounted) return;
-    _controller.isScrollRunning = false;
-    _updateControllerData(
-      context.findRenderObject() as RenderBox?,
-      MediaQuery.sizeOf(context),
-    );
-    startShowcase();
-    showCaseWidgetState.updateOverlay?.call(
-      showCaseWidgetState.isShowcaseRunning,
-    );
-  }
-
-  void recalculateRootWidgetSize() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
-      _controller
-        ..rootRenderObject =
-            rootWidget?.context.findRenderObject() as RenderBox?
-        ..rootWidgetSize = rootWidget == null
-            ? MediaQuery.of(context).size
-            : _controller.rootRenderObject?.size;
-      if (!showCaseWidgetState.enableShowcase) return;
-      _updateControllerData(
+    _controller
+      ..isScrollRunning = false
+      ..updateControllerData(
         context.findRenderObject() as RenderBox?,
-        MediaQuery.sizeOf(context),
+        MediaQuery.of(context).size,
       );
-      showCaseWidgetState.updateOverlay?.call(
-        showCaseWidgetState.isShowcaseRunning,
-      );
-    });
-  }
-
-  Future<void> _nextIfAny() async {
-    if (showCaseWidgetState.isShowCaseCompleted) return;
-    showCaseWidgetState.completed(widget.showcaseKey);
-  }
-
-  Future<void> _getOnTargetTap() async {
-    if (widget.disposeOnTap == true) {
-      showCaseWidgetState.dismiss();
-      widget.onTargetClick!();
-    } else {
-      (widget.onTargetClick ?? _nextIfAny).call();
-    }
-  }
-
-  Future<void> _getOnTooltipTap() async {
-    if (widget.disposeOnTap == true) {
-      showCaseWidgetState.dismiss();
-    }
-    widget.onToolTipClick?.call();
-  }
-
-  void buildOverlayOnTarget(
-    Offset offset,
-    Size size,
-    Rect rectBound,
-    Size screenSize,
-  ) {
-    var blur = kIsWeb
-        ? 0.0
-        : max(0.0, widget.blurValue ?? showCaseWidgetState.blurValue);
-
-    _controller
-      ..blur = blur
-      ..getToolTipWidget = _controller.isScrollRunning
-          ? [
-              Center(child: widget.scrollLoadingWidget),
-            ]
-          : [
-              _TargetWidget(
-                offset: rectBound.topLeft,
-                size: size,
-                onTap: _getOnTargetTap,
-                radius: widget.targetBorderRadius,
-                onDoubleTap: widget.onTargetDoubleTap,
-                onLongPress: widget.onTargetLongPress,
-                shapeBorder: widget.targetShapeBorder,
-                disableDefaultChildGestures:
-                    widget.disableDefaultTargetGestures,
-                targetPadding: widget.targetPadding,
-              ),
-              ToolTipWidget(
-                key: ValueKey(_controller.showcaseId),
-                title: widget.title,
-                titleTextAlign: widget.titleTextAlign,
-                description: widget.description,
-                descriptionTextAlign: widget.descriptionTextAlign,
-                titleAlignment: widget.titleAlignment,
-                descriptionAlignment: widget.descriptionAlignment,
-                titleTextStyle: widget.titleTextStyle,
-                descTextStyle: widget.descTextStyle,
-                container: widget.container,
-                tooltipBackgroundColor: widget.tooltipBackgroundColor,
-                textColor: widget.textColor,
-                showArrow: widget.showArrow,
-                onTooltipTap:
-                    widget.disposeOnTap == true || widget.onToolTipClick != null
-                        ? _getOnTooltipTap
-                        : null,
-                tooltipPadding: widget.tooltipPadding,
-                disableMovingAnimation: widget.disableMovingAnimation ??
-                    showCaseWidgetState.disableMovingAnimation,
-                disableScaleAnimation: (widget.disableScaleAnimation ??
-                        showCaseWidgetState.disableScaleAnimation) ||
-                    widget.container != null,
-                movingAnimationDuration: widget.movingAnimationDuration,
-                tooltipBorderRadius: widget.tooltipBorderRadius,
-                scaleAnimationDuration: widget.scaleAnimationDuration,
-                scaleAnimationCurve: widget.scaleAnimationCurve,
-                scaleAnimationAlignment: widget.scaleAnimationAlignment,
-                tooltipPosition: widget.tooltipPosition,
-                titlePadding: widget.titlePadding,
-                descriptionPadding: widget.descriptionPadding,
-                titleTextDirection: widget.titleTextDirection,
-                descriptionTextDirection: widget.descriptionTextDirection,
-                toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
-                toolTipMargin: widget.toolTipMargin,
-                tooltipActionConfig: _getTooltipActionConfig(),
-                tooltipActions: _getTooltipActions(),
-                targetPadding: widget.targetPadding,
-                showcaseController: _controller,
-              ),
-              if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
-            ];
-  }
-
-  Widget? get _getFloatingActionWidget =>
-      widget.floatingActionWidget ?? _globalFloatingActionWidget;
-
-  List<Widget> _getTooltipActions() {
-    final actionData = (widget.tooltipActions?.isNotEmpty ?? false)
-        ? widget.tooltipActions!
-        : showCaseWidgetState.globalTooltipActions ?? [];
-
-    final actionWidgets = <Widget>[];
-    final actionDataLength = actionData.length;
-    for (var i = 0; i < actionDataLength; i++) {
-      final action = actionData[i];
-
-      /// This checks that if current widget is being showcased and there is
-      /// no local action has been provided and global action are needed to hide
-      /// then it will hide that action for current widget
-      if (action.hideActionWidgetForShowcase.contains(widget.showcaseKey) &&
-          (widget.tooltipActions?.isEmpty ?? true)) {
-        continue;
-      }
-      actionWidgets.add(
-        Padding(
-          padding: EdgeInsetsDirectional.only(
-            end: action != actionData.last
-                ? _getTooltipActionConfig().actionGap
-                : 0,
-          ),
-          child: TooltipActionButtonWidget(
-            config: action,
-            // We have to pass showcaseState from here because
-            // [TooltipActionButtonWidget] is not direct child of showcaseWidget
-            // so it won't be able to get the state by using it's context
-            showCaseState: showCaseWidgetState,
-          ),
-        ),
-      );
-    }
-    return actionWidgets;
-  }
-
-  TooltipActionConfig _getTooltipActionConfig() {
-    return widget.tooltipActionConfig ??
-        showCaseWidgetState.globalTooltipActionConfig ??
-        const TooltipActionConfig();
-  }
-
-  void _updateControllerData(
-    RenderBox? renderBox,
-    Size screenSize,
-  ) {
-    final size = _controller.rootWidgetSize ?? screenSize;
-    final position = GetPosition(
-      rootRenderObject: _controller.rootRenderObject,
-      renderBox: renderBox,
-      padding: widget.targetPadding,
-      screenWidth: size.width,
-      screenHeight: size.height,
-    );
-    _controller
-      ..position = position
-      ..linkedShowcaseDataModel = LinkedShowcaseDataModel(
-        rect: _controller.isScrollRunning ? Rect.zero : position.getRect(),
-        radius: _targetBorderRadius,
-        overlayPadding:
-            _controller.isScrollRunning ? EdgeInsets.zero : _targetPadding,
-        isCircle: _isCircle,
-      );
-
-    buildOverlayOnTarget(
-      position.getOffset(),
-      position.getRect().size,
-      position.getRect(),
-      size,
-    );
-  }
-}
-
-class _TargetWidget extends StatelessWidget {
-  final Offset offset;
-  final Size size;
-  final VoidCallback? onTap;
-  final VoidCallback? onDoubleTap;
-  final VoidCallback? onLongPress;
-  final ShapeBorder shapeBorder;
-  final BorderRadius? radius;
-  final bool disableDefaultChildGestures;
-  final EdgeInsets targetPadding;
-
-  const _TargetWidget({
-    required this.offset,
-    required this.size,
-    required this.shapeBorder,
-    required this.targetPadding,
-    this.onTap,
-    this.radius,
-    this.onDoubleTap,
-    this.onLongPress,
-    this.disableDefaultChildGestures = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: offset.dy - targetPadding.top,
-      left: offset.dx - targetPadding.left,
-      child: disableDefaultChildGestures
-          ? IgnorePointer(
-              child: targetWidgetContent(),
-            )
-          : MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: targetWidgetContent(),
-            ),
-    );
-  }
-
-  Widget targetWidgetContent() {
-    return GestureDetector(
-      onTap: onTap,
-      onLongPress: onLongPress,
-      onDoubleTap: onDoubleTap,
-      behavior: HitTestBehavior.translucent,
-      child: Container(
-        height: size.height.abs(),
-        width: size.width.abs(),
-        margin: targetPadding,
-        decoration: ShapeDecoration(
-          shape: radius != null
-              ? RoundedRectangleBorder(borderRadius: radius!)
-              : shapeBorder,
-        ),
-      ),
+    startShowcase();
+    _showCaseWidgetState.updateOverlay?.call(
+      _showCaseWidgetState.isShowcaseRunning,
     );
   }
 }

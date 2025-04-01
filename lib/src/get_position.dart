@@ -32,7 +32,7 @@ class GetPosition {
     this.padding = EdgeInsets.zero,
     this.rootRenderObject,
   }) {
-    _getRenderBox();
+    _getRenderBoxOffset();
   }
 
   final RenderBox? renderBox;
@@ -43,7 +43,7 @@ class GetPosition {
 
   Offset? _boxOffset;
 
-  void _getRenderBox() {
+  void _getRenderBoxOffset() {
     if (renderBox == null) return;
 
     _boxOffset = renderBox?.localToGlobal(

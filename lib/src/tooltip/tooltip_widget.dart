@@ -116,12 +116,22 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     if (!widget.disableMovingAnimation) {
       _movingAnimationController.forward();
     }
-    widget.showcaseController.reverseAnimation =
+    widget.showcaseController.reverseAnimationCallback =
         widget.disableScaleAnimation ? null : _scaleAnimationController.reverse;
   }
 
   @override
   Widget build(BuildContext context) {
+    // Calculate the target position and size
+    final box = widget.showcaseController.position?.renderBox;
+    // This is a workaround to avoid the error when the widget is not mounted
+    // but won't happen in general cases
+    if (box == null) {
+      return const SizedBox.shrink();
+    }
+    final targetPosition = box.localToGlobal(Offset.zero);
+    final targetSize = box.size;
+
     final defaultToolTipWidget = widget.container != null
         ? MouseRegion(
             cursor: widget.onTooltipTap == null
@@ -216,11 +226,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             ),
           );
 
-    // Calculate the target position and size
-    final box = widget.showcaseController.position!.renderBox!;
-    final targetPosition = box.localToGlobal(Offset.zero);
-    final targetSize = box.size;
-
     return Material(
       type: MaterialType.transparency,
       child: _AnimatedTooltipMultiLayout(
@@ -232,7 +237,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         targetSize: targetSize,
         position: widget.tooltipPosition,
         screenSize: widget.showcaseController.rootWidgetSize ??
-            MediaQuery.sizeOf(context),
+            MediaQuery.of(context).size,
         hasArrow: widget.showArrow,
         targetPadding: widget.targetPadding,
         scaleAlignment: widget.scaleAnimationAlignment,

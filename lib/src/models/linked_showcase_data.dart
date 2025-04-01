@@ -14,4 +14,22 @@ class LinkedShowcaseDataModel {
   final EdgeInsets overlayPadding;
   final BorderRadius? radius;
   final bool isCircle;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LinkedShowcaseDataModel &&
+          runtimeType == other.runtimeType &&
+          rect == other.rect &&
+          radius == other.radius &&
+          overlayPadding == other.overlayPadding &&
+          isCircle == other.isCircle;
+
+  @override
+  int get hashCode => Object.hash(
+        rect,
+        radius,
+        overlayPadding,
+        isCircle,
+      );
 }

@@ -22,6 +22,7 @@
 
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -108,5 +109,5 @@ class RRectClipper extends CustomClipper<ui.Path> {
       radius != oldClipper.radius ||
       overlayPadding != oldClipper.overlayPadding ||
       area != oldClipper.area ||
-      linkedObjectData != oldClipper.linkedObjectData;
+      !listEquals(linkedObjectData, oldClipper.linkedObjectData);
 }

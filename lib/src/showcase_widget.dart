@@ -193,6 +193,11 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   late final List<TooltipActionButton>? globalTooltipActions;
 
+  /// A mapping of showcase keys to their associated controllers.
+  /// - Key: GlobalKey of a showcase (provided by user)
+  /// - Value: Map of showcase IDs to their controllers,
+  /// allowing multiple controllers
+  /// to be associated with a single showcase key (e.g., for linked showcases)
   final Map<GlobalKey, Map<int, ShowcaseController>> _showcaseControllers = {};
 
   /// These properties are only here so that it can be accessed by
@@ -293,7 +298,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
         }
 
         final firstController = controller.first;
-        final firstShowcaseConfig = firstController.showcaseConfig;
+        final firstShowcaseConfig = firstController.config;
 
         final backgroundContainer = ColoredBox(
           color: firstShowcaseConfig.overlayColor
@@ -301,9 +306,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
               //TODO: Update when we remove support for older version
               //ignore: deprecated_member_use
               .withOpacity(firstShowcaseConfig.overlayOpacity),
-          child: const Align(
-            alignment: Alignment.center,
-          ),
+          child: const Align(),
         );
 
         return Stack(
@@ -353,7 +356,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
     rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
     rootWidgetSize = rootWidget == null
-        ? MediaQuery.sizeOf(context)
+        ? MediaQuery.of(context).size
         : rootRenderObject?.size;
   }
 
@@ -417,21 +420,27 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// if [force] is true then it will ignore the [enableAutoPlayLock] and
   /// move to next showcase. This is default behaviour for
   /// [TooltipDefaultActionType.next]
-  Future<void> next({bool force = false}) async {
+  void next({bool force = false}) {
     // If this call is from autoPlay timer or action widget we will override the
     // enableAutoPlayLock so user can move forward in showcase
     if (!force && widget.enableAutoPlayLock) return;
 
     if (ids != null && mounted) {
-      await _onComplete();
-      if (!mounted) return;
-      activeWidgetId = activeWidgetId! + 1;
-      _onStart();
-      if (activeWidgetId! >= ids!.length) {
-        _cleanupAfterSteps();
-        widget.onFinish?.call();
-      }
-      updateOverlay?.call(isShowcaseRunning);
+      /// We are using [.then] to maintain older functionality.
+      /// here [_onComplete] method waits for animation to complete so we need
+      /// to wait before moving to next showcase
+      _onComplete().then(
+        (_) {
+          if (!mounted) return;
+          activeWidgetId = activeWidgetId! + 1;
+          _onStart();
+          if (activeWidgetId! >= ids!.length) {
+            _cleanupAfterSteps();
+            widget.onFinish?.call();
+          }
+          updateOverlay?.call(isShowcaseRunning);
+        },
+      );
     }
   }
 
@@ -471,10 +480,11 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     if (activeWidgetId! < ids!.length) {
       widget.onStart?.call(activeWidgetId, ids![activeWidgetId!]);
       final controllers = _getCurrentActiveControllers;
+      //TODO: Update to firstOrNull when we remove support for older version
       if (controllers.length == 1 &&
-          (controllers.first.showcaseConfig.enableAutoScroll ??
+          (controllers.first.config.enableAutoScroll ??
               widget.enableAutoScroll)) {
-        await controllers.first.scrollIntoView?.call();
+        await controllers.first.scrollIntoViewCallback?.call();
       } else {
         final controllerLength = controllers.length;
         for (var i = 0; i < controllerLength; i++) {
@@ -498,12 +508,12 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
     for (var i = 0; i < controllerLength; i++) {
       final controller = currentControllers[i];
-      if ((controller.showcaseConfig.disableScaleAnimation ??
+      if ((controller.config.disableScaleAnimation ??
               widget.disableScaleAnimation) ||
-          controller.reverseAnimation == null) {
+          controller.reverseAnimationCallback == null) {
         continue;
       }
-      futures.add(controller.reverseAnimation!.call());
+      futures.add(controller.reverseAnimationCallback!.call());
     }
     await Future.wait(futures);
     widget.onComplete?.call(activeWidgetId, ids![activeWidgetId!]);
@@ -564,8 +574,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     int showcaseId,
   ) {
     assert(
-      _showcaseControllers.containsKey(key) &&
-          _showcaseControllers[key]!.containsKey(showcaseId),
+      _showcaseControllers[key]?[showcaseId] != null,
       'Please register showcase controller first',
     );
     return _showcaseControllers[key]![showcaseId]!;

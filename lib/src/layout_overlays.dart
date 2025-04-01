@@ -46,6 +46,13 @@ class OverlayBuilder extends StatefulWidget {
 
   final WidgetBuilder? overlayBuilder;
   final Widget child;
+
+  /// A callback that provides a way to control the overlay visibility from
+  /// showcase widget
+  /// Basically we pass a reference to [_updateOverlay] function to parent so we
+  /// can call this from parent class to update the overlay
+  /// This callback provides a function that can be called with a boolean
+  /// parameter to show (true) or hide (false) the overlay.
   final ValueSetter<ValueSetter<bool>> updateOverlay;
 
   @override
@@ -141,7 +148,5 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
+  Widget build(BuildContext context) => widget.child;
 }

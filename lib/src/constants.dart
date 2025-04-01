@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'widget/showcase_circular_progress_indecator.dart';
+
 class Constants {
   Constants._();
 
@@ -34,10 +36,9 @@ class Constants {
     borderRadius: BorderRadius.all(Radius.circular(8)),
   );
 
+  static const double cupertinoActivityIndicatorRadius = 12.0;
   static const Widget defaultProgressIndicator =
-      CircularProgressIndicator.adaptive(
-    backgroundColor: Colors.white,
-  );
+      ShowcaseCircularProgressIndicator();
 
   static const Duration defaultAnimationDuration = Duration(milliseconds: 2000);
 }

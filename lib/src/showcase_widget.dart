@@ -383,18 +383,32 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// Starts Showcase view from the beginning of specified list of widget ids.
   /// If this function is used when showcase has been disabled then it will
   /// throw an exception.
-  void startShowCase(List<GlobalKey> widgetIds) {
+  ///
+  /// [delay] is optional and it will be used to delay the start of showcase
+  /// which is useful when screen has push of pop transition which may take
+  /// some time to complete.
+  ///
+  /// Refer this issue https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/378
+  void startShowCase(
+    List<GlobalKey> widgetIds, {
+    Duration delay = Duration.zero,
+  }) {
     if (!enableShowcase) {
       throw Exception(
         "You are trying to start Showcase while it has been disabled with "
         "`enableShowcase` parameter to false from ShowCaseWidget",
       );
     }
-    if (!mounted) return;
-    ids = widgetIds;
-    activeWidgetId = 0;
-    _onStart();
-    updateOverlay?.call(isShowcaseRunning);
+    Future.delayed(
+      delay,
+      () {
+        if (!mounted) return;
+        ids = widgetIds;
+        activeWidgetId = 0;
+        _onStart();
+        updateOverlay?.call(isShowcaseRunning);
+      },
+    );
   }
 
   /// Completes showcase of given key and starts next one

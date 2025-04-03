@@ -399,18 +399,21 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Completes showcase of given key and starts next one
   /// otherwise will finish the entire showcase view
-  Future<void> completed(GlobalKey? key) async {
+  void completed(GlobalKey? key) {
     if (ids != null && ids![activeWidgetId!] == key && mounted) {
-      await _onComplete();
-      if (!mounted) return;
-      activeWidgetId = activeWidgetId! + 1;
-      _onStart();
+      _onComplete().then(
+        (_) {
+          if (!mounted) return;
+          activeWidgetId = activeWidgetId! + 1;
+          _onStart();
 
-      if (activeWidgetId! >= ids!.length) {
-        _cleanupAfterSteps();
-        widget.onFinish?.call();
-      }
-      updateOverlay?.call(isShowcaseRunning);
+          if (activeWidgetId! >= ids!.length) {
+            _cleanupAfterSteps();
+            widget.onFinish?.call();
+          }
+          updateOverlay?.call(isShowcaseRunning);
+        },
+      );
     }
   }
 
@@ -446,18 +449,21 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Completes current active showcase and starts previous one
   /// otherwise will finish the entire showcase view
-  Future<void> previous() async {
+  void previous() {
     if (ids != null && ((activeWidgetId ?? 0) - 1) >= 0 && mounted) {
-      await _onComplete();
-      if (!mounted) return;
+      _onComplete().then(
+        (_) {
+          if (!mounted) return;
 
-      activeWidgetId = activeWidgetId! - 1;
-      _onStart();
-      if (activeWidgetId! >= ids!.length) {
-        _cleanupAfterSteps();
-        widget.onFinish?.call();
-      }
-      updateOverlay?.call(isShowcaseRunning);
+          activeWidgetId = activeWidgetId! - 1;
+          _onStart();
+          if (activeWidgetId! >= ids!.length) {
+            _cleanupAfterSteps();
+            widget.onFinish?.call();
+          }
+          updateOverlay?.call(isShowcaseRunning);
+        },
+      );
     }
   }
 
@@ -502,24 +508,18 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   }
 
   Future<void> _onComplete() async {
-    final futures = <Future>[];
     final currentControllers = _getCurrentActiveControllers;
     final controllerLength = currentControllers.length;
 
-    for (var i = 0; i < controllerLength; i++) {
-      final controller = currentControllers[i];
-      if ((controller.config.disableScaleAnimation ??
-              widget.disableScaleAnimation) ||
-          controller.reverseAnimationCallback == null) {
-        continue;
-      }
-      futures.add(controller.reverseAnimationCallback!.call());
-    }
-    await Future.wait(futures);
+    await Future.wait([
+      for (var i = 0; i < controllerLength; i++)
+        if (!(currentControllers[i].config.disableScaleAnimation ??
+                widget.disableScaleAnimation) &&
+            currentControllers[i].reverseAnimationCallback != null)
+          currentControllers[i].reverseAnimationCallback!.call(),
+    ]);
     widget.onComplete?.call(activeWidgetId, ids![activeWidgetId!]);
-    if (widget.autoPlay) {
-      _cancelTimer();
-    }
+    if (widget.autoPlay) _cancelTimer();
   }
 
   void _cancelTimer() {
@@ -565,17 +565,17 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   void removeShowcaseController({
     required GlobalKey key,
     required int uniqueShowcaseKey,
-  }) {
-    _showcaseControllers[key]?.remove(uniqueShowcaseKey);
-  }
+  }) =>
+      _showcaseControllers[key]?.remove(uniqueShowcaseKey);
 
-  ShowcaseController getControllerForShowcase(
-    GlobalKey key,
-    int showcaseId,
-  ) {
+  ShowcaseController getControllerForShowcase({
+    required GlobalKey key,
+    required int showcaseId,
+  }) {
     assert(
       _showcaseControllers[key]?[showcaseId] != null,
-      'Please register showcase controller first',
+      'Please register showcase controller first by calling '
+      'registerShowcaseController',
     );
     return _showcaseControllers[key]![showcaseId]!;
   }

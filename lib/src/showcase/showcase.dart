@@ -559,8 +559,8 @@ class Showcase extends StatefulWidget {
 class _ShowcaseState extends State<Showcase> {
   ShowcaseController get _controller =>
       _showCaseWidgetState.getControllerForShowcase(
-        widget.showcaseKey,
-        _uniqueId,
+        key: widget.showcaseKey,
+        showcaseId: _uniqueId,
       );
 
   late var _showCaseWidgetState = ShowCaseWidget.of(context);

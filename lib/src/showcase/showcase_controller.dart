@@ -283,40 +283,33 @@ class ShowcaseController {
   ///
   /// @return List of tooltip action widgets
   List<Widget> _getTooltipActions() {
-    final actionData = (config.tooltipActions?.isNotEmpty ?? false)
+    final doesHaveLocalActions = config.tooltipActions?.isNotEmpty ?? false;
+    final actionData = doesHaveLocalActions
         ? config.tooltipActions!
         : showCaseWidgetState.globalTooltipActions ?? [];
-
-    final actionWidgets = <Widget>[];
     final actionDataLength = actionData.length;
-    for (var i = 0; i < actionDataLength; i++) {
-      final action = actionData[i];
 
-      // Skip actions that should be hidden for this specific showcase key
-      // when no local actions are defined (using global actions)
-      if (action.hideActionWidgetForShowcase.contains(config.showcaseKey) &&
-          (config.tooltipActions?.isEmpty ?? true)) {
-        continue;
-      }
-
-      actionWidgets.add(
-        Padding(
-          padding: EdgeInsetsDirectional.only(
-            end: action == actionData.last
-                ? 0
-                : _getTooltipActionConfig().actionGap,
+    return [
+      for (var i = 0; i < actionDataLength; i++)
+        if (doesHaveLocalActions ||
+            !actionData[i]
+                .hideActionWidgetForShowcase
+                .contains(config.showcaseKey))
+          Padding(
+            padding: EdgeInsetsDirectional.only(
+              end: actionData[i] == actionData.last
+                  ? 0
+                  : _getTooltipActionConfig().actionGap,
+            ),
+            child: TooltipActionButtonWidget(
+              config: actionData[i],
+              // We have to pass showcaseState from here because
+              // [TooltipActionButtonWidget] is not direct child of showcaseWidget
+              // so it won't be able to get the state by using it's context
+              showCaseState: showCaseWidgetState,
+            ),
           ),
-          child: TooltipActionButtonWidget(
-            config: action,
-            // We have to pass showcaseState from here because
-            // [TooltipActionButtonWidget] is not direct child of showcaseWidget
-            // so it won't be able to get the state by using it's context
-            showCaseState: showCaseWidgetState,
-          ),
-        ),
-      );
-    }
-    return actionWidgets;
+    ];
   }
 
   /// Gets the tooltip action configuration

@@ -170,6 +170,10 @@ class ShowCaseWidget extends StatefulWidget {
     this.hideFloatingActionWidgetForShowcase = const [],
   });
 
+  static GlobalKey? activeTargetWidget(BuildContext context) => context
+      .findAncestorStateOfType<ShowCaseWidgetState>()
+      ?.getCurrentActiveShowcaseKey;
+
   static ShowCaseWidgetState of(BuildContext context) {
     final state = context.findAncestorStateOfType<ShowCaseWidgetState>();
     if (state != null) {
@@ -260,17 +264,18 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// current showcase.
   FloatingActionBuilderCallback? globalFloatingActionWidget(
     GlobalKey showcaseKey,
-  ) =>
-      _hideFloatingWidgetKeys[showcaseKey] ?? false
-          ? null
-          : widget.globalFloatingActionWidget;
+  ) {
+    return _hideFloatingWidgetKeys[showcaseKey] ?? false
+        ? null
+        : widget.globalFloatingActionWidget;
+  }
 
   @override
   void initState() {
     super.initState();
     globalTooltipActions = widget.globalTooltipActions;
     globalTooltipActionConfig = widget.globalTooltipActionConfig;
-    initRootWidget();
+    _initRootWidget();
   }
 
   @override
@@ -340,6 +345,182 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     );
   }
 
+  /// Starts Showcase view from the beginning of specified list of widget ids.
+  /// If this function is used when showcase has been disabled then it will
+  /// throw an exception.
+  ///
+  /// [delay] is optional and it will be used to delay the start of showcase
+  /// which is useful when animation may take some time to complete.
+  ///
+  /// Refer this issue https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/378
+  void startShowCase(
+    List<GlobalKey> widgetIds, {
+    Duration delay = Duration.zero,
+  }) {
+    if (!enableShowcase) {
+      throw Exception(
+        "You are trying to start Showcase while it has been disabled with "
+        "`enableShowcase` parameter to false from ShowCaseWidget",
+      );
+    }
+    Future.delayed(
+      delay,
+      () {
+        if (!mounted) return;
+        ids = widgetIds;
+        activeWidgetId = 0;
+        _onStart();
+        updateOverlay?.call(isShowcaseRunning);
+      },
+    );
+  }
+
+  /// Completes showcase of given key and starts next one
+  /// otherwise will finish the entire showcase view
+  void completed(GlobalKey? key) {
+    if (activeWidgetId == null || ids?[activeWidgetId!] != key || !mounted) {
+      return;
+    }
+    _onComplete().then(
+      (_) {
+        if (!mounted) return;
+        activeWidgetId = activeWidgetId! + 1;
+        _onStart();
+
+        if (activeWidgetId! >= ids!.length) {
+          _cleanupAfterSteps();
+          widget.onFinish?.call();
+        }
+        updateOverlay?.call(isShowcaseRunning);
+      },
+    );
+  }
+
+  /// Completes current active showcase and starts next one
+  /// otherwise will finish the entire showcase view
+  ///
+  /// if [force] is true then it will ignore the [enableAutoPlayLock] and
+  /// move to next showcase. This is default behaviour for
+  /// [TooltipDefaultActionType.next]
+  void next({bool force = false}) {
+    // If this call is from autoPlay timer or action widget we will override the
+    // enableAutoPlayLock so user can move forward in showcase
+    if ((!force && widget.enableAutoPlayLock) || ids == null || !mounted) {
+      return;
+    }
+
+    /// We are using [.then] to maintain older functionality.
+    /// here [_onComplete] method waits for animation to complete so we need
+    /// to wait before moving to next showcase
+    _onComplete().then(
+      (_) {
+        if (!mounted) return;
+        activeWidgetId = activeWidgetId! + 1;
+        _onStart();
+        if (activeWidgetId! >= ids!.length) {
+          _cleanupAfterSteps();
+          widget.onFinish?.call();
+        }
+        updateOverlay?.call(isShowcaseRunning);
+      },
+    );
+  }
+
+  /// Completes current active showcase and starts previous one
+  /// otherwise will finish the entire showcase view
+  void previous() {
+    if (ids == null || ((activeWidgetId ?? 0) - 1) < 0 || !mounted) {
+      return;
+    }
+    _onComplete().then(
+      (_) {
+        if (!mounted) return;
+
+        activeWidgetId = activeWidgetId! - 1;
+        _onStart();
+        if (activeWidgetId! >= ids!.length) {
+          _cleanupAfterSteps();
+          widget.onFinish?.call();
+        }
+        updateOverlay?.call(isShowcaseRunning);
+      },
+    );
+  }
+
+  /// Dismiss entire showcase view
+  void dismiss() {
+    // This will check if valid active widget id exist or not and based on that
+    // we will return the widget key with `onDismiss` callback or will return
+    // null value.
+    final idNotExist =
+        activeWidgetId == null || ids == null || ids!.length < activeWidgetId!;
+
+    widget.onDismiss?.call(idNotExist ? null : ids?[activeWidgetId!]);
+    if (!mounted) return;
+
+    _cleanupAfterSteps.call();
+    updateOverlay?.call(isShowcaseRunning);
+  }
+
+  /// Disables the [globalFloatingActionWidget] for the provided keys.
+  void hideFloatingActionWidgetForKeys(
+    List<GlobalKey> updatedList,
+  ) {
+    _hideFloatingWidgetKeys
+      ..clear()
+      ..addAll({
+        for (final item in updatedList) item: true,
+      });
+  }
+
+  void registerShowcaseController({
+    required GlobalKey key,
+    required ShowcaseController controller,
+    required int showcaseId,
+  }) {
+    assert(
+      StackTrace.current.toString().contains('_ShowcaseState'),
+      'This method should only be called from Showcase class',
+    );
+    _showcaseControllers
+        .putIfAbsent(
+          key,
+          () => {},
+        )
+        .update(
+          showcaseId,
+          (value) => controller,
+          ifAbsent: () => controller,
+        );
+  }
+
+  void removeShowcaseController({
+    required GlobalKey key,
+    required int uniqueShowcaseKey,
+  }) {
+    assert(
+      StackTrace.current.toString().contains('_ShowcaseState'),
+      'This method should only be called from Showcase class',
+    );
+    _showcaseControllers[key]?.remove(uniqueShowcaseKey);
+  }
+
+  ShowcaseController getControllerForShowcase({
+    required GlobalKey key,
+    required int showcaseId,
+  }) {
+    assert(
+      StackTrace.current.toString().contains('_ShowcaseState'),
+      'This method should only be called from Showcase class',
+    );
+    assert(
+      _showcaseControllers[key]?[showcaseId] != null,
+      'Please register showcase controller first by calling '
+      'registerShowcaseController',
+    );
+    return _showcaseControllers[key]![showcaseId]!;
+  }
+
   List<LinkedShowcaseDataModel> _getLinkedShowcasesData(
     List<ShowcaseController> controllers,
   ) {
@@ -369,7 +550,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     next();
   }
 
-  void initRootWidget() {
+  void _initRootWidget() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
@@ -378,102 +559,6 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
           ? MediaQuery.of(context).size
           : rootRenderObject?.size;
     });
-  }
-
-  /// Starts Showcase view from the beginning of specified list of widget ids.
-  /// If this function is used when showcase has been disabled then it will
-  /// throw an exception.
-  void startShowCase(List<GlobalKey> widgetIds) {
-    if (!enableShowcase) {
-      throw Exception(
-        "You are trying to start Showcase while it has been disabled with "
-        "`enableShowcase` parameter to false from ShowCaseWidget",
-      );
-    }
-    if (!mounted) return;
-    ids = widgetIds;
-    activeWidgetId = 0;
-    _onStart();
-    updateOverlay?.call(isShowcaseRunning);
-  }
-
-  /// Completes showcase of given key and starts next one
-  /// otherwise will finish the entire showcase view
-  Future<void> completed(GlobalKey? key) async {
-    if (ids != null && ids![activeWidgetId!] == key && mounted) {
-      await _onComplete();
-      if (!mounted) return;
-      activeWidgetId = activeWidgetId! + 1;
-      _onStart();
-
-      if (activeWidgetId! >= ids!.length) {
-        _cleanupAfterSteps();
-        widget.onFinish?.call();
-      }
-      updateOverlay?.call(isShowcaseRunning);
-    }
-  }
-
-  /// Completes current active showcase and starts next one
-  /// otherwise will finish the entire showcase view
-  ///
-  /// if [force] is true then it will ignore the [enableAutoPlayLock] and
-  /// move to next showcase. This is default behaviour for
-  /// [TooltipDefaultActionType.next]
-  void next({bool force = false}) {
-    // If this call is from autoPlay timer or action widget we will override the
-    // enableAutoPlayLock so user can move forward in showcase
-    if (!force && widget.enableAutoPlayLock) return;
-
-    if (ids != null && mounted) {
-      /// We are using [.then] to maintain older functionality.
-      /// here [_onComplete] method waits for animation to complete so we need
-      /// to wait before moving to next showcase
-      _onComplete().then(
-        (_) {
-          if (!mounted) return;
-          activeWidgetId = activeWidgetId! + 1;
-          _onStart();
-          if (activeWidgetId! >= ids!.length) {
-            _cleanupAfterSteps();
-            widget.onFinish?.call();
-          }
-          updateOverlay?.call(isShowcaseRunning);
-        },
-      );
-    }
-  }
-
-  /// Completes current active showcase and starts previous one
-  /// otherwise will finish the entire showcase view
-  Future<void> previous() async {
-    if (ids != null && ((activeWidgetId ?? 0) - 1) >= 0 && mounted) {
-      await _onComplete();
-      if (!mounted) return;
-
-      activeWidgetId = activeWidgetId! - 1;
-      _onStart();
-      if (activeWidgetId! >= ids!.length) {
-        _cleanupAfterSteps();
-        widget.onFinish?.call();
-      }
-      updateOverlay?.call(isShowcaseRunning);
-    }
-  }
-
-  /// Dismiss entire showcase view
-  void dismiss() {
-    // This will check if valid active widget id exist or not and based on that
-    // we will return the widget key with `onDismiss` callback or will return
-    // null value.
-    final idNotExist =
-        activeWidgetId == null || ids == null || ids!.length < activeWidgetId!;
-
-    widget.onDismiss?.call(idNotExist ? null : ids?[activeWidgetId!]);
-    if (!mounted) return;
-
-    _cleanupAfterSteps.call();
-    updateOverlay?.call(isShowcaseRunning);
   }
 
   Future<void> _onStart() async {
@@ -502,24 +587,18 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   }
 
   Future<void> _onComplete() async {
-    final futures = <Future>[];
     final currentControllers = _getCurrentActiveControllers;
     final controllerLength = currentControllers.length;
 
-    for (var i = 0; i < controllerLength; i++) {
-      final controller = currentControllers[i];
-      if ((controller.config.disableScaleAnimation ??
-              widget.disableScaleAnimation) ||
-          controller.reverseAnimationCallback == null) {
-        continue;
-      }
-      futures.add(controller.reverseAnimationCallback!.call());
-    }
-    await Future.wait(futures);
+    await Future.wait([
+      for (var i = 0; i < controllerLength; i++)
+        if (!(currentControllers[i].config.disableScaleAnimation ??
+                widget.disableScaleAnimation) &&
+            currentControllers[i].reverseAnimationCallback != null)
+          currentControllers[i].reverseAnimationCallback!.call(),
+    ]);
     widget.onComplete?.call(activeWidgetId, ids![activeWidgetId!]);
-    if (widget.autoPlay) {
-      _cancelTimer();
-    }
+    if (widget.autoPlay) _cancelTimer();
   }
 
   void _cancelTimer() {
@@ -532,51 +611,5 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     ids = null;
     activeWidgetId = null;
     _cancelTimer();
-  }
-
-  /// Disables the [globalFloatingActionWidget] for the provided keys.
-  void hideFloatingActionWidgetForKeys(
-    List<GlobalKey> updatedList,
-  ) {
-    _hideFloatingWidgetKeys
-      ..clear()
-      ..addAll({
-        for (final item in updatedList) item: true,
-      });
-  }
-
-  void registerShowcaseController({
-    required GlobalKey key,
-    required ShowcaseController controller,
-    required int showcaseId,
-  }) {
-    _showcaseControllers
-        .putIfAbsent(
-          key,
-          () => {},
-        )
-        .update(
-          showcaseId,
-          (value) => controller,
-          ifAbsent: () => controller,
-        );
-  }
-
-  void removeShowcaseController({
-    required GlobalKey key,
-    required int uniqueShowcaseKey,
-  }) {
-    _showcaseControllers[key]?.remove(uniqueShowcaseKey);
-  }
-
-  ShowcaseController getControllerForShowcase(
-    GlobalKey key,
-    int showcaseId,
-  ) {
-    assert(
-      _showcaseControllers[key]?[showcaseId] != null,
-      'Please register showcase controller first',
-    );
-    return _showcaseControllers[key]![showcaseId]!;
   }
 }

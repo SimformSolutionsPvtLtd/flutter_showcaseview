@@ -2,6 +2,7 @@ part of 'tooltip.dart';
 
 class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
   const _AnimatedTooltipMultiLayout({
+    // If we remove this parameter it will cause error in v3.29.0 so ignore
     // ignore: unused_element_parameter
     super.key,
     required this.scaleController,
@@ -20,6 +21,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
     required this.scaleAlignment,
     required this.screenEdgePadding,
     required this.targetPadding,
+    required this.showcaseOffset,
   });
 
   final AnimationController scaleController;
@@ -37,6 +39,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
   final Alignment? scaleAlignment;
   final double screenEdgePadding;
   final EdgeInsets targetPadding;
+  final Offset showcaseOffset;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -56,6 +59,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
       toolTipSlideEndDistance: toolTipSlideEndDistance,
       screenEdgePadding: screenEdgePadding,
       targetPadding: targetPadding,
+      showcaseOffset: showcaseOffset,
     );
   }
 
@@ -78,6 +82,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
       ..screenEdgePadding = screenEdgePadding
       ..toolTipSlideEndDistance = toolTipSlideEndDistance
       ..gapBetweenContentAndAction = gapBetweenContentAndAction
-      ..targetPadding = targetPadding;
+      ..targetPadding = targetPadding
+      ..showcaseOffset = showcaseOffset;
   }
 }

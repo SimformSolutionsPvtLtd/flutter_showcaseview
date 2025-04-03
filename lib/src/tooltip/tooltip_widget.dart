@@ -1,43 +1,8 @@
 part of "tooltip.dart";
 
 class ToolTipWidget extends StatefulWidget {
-  final GetPosition? position;
-  final String? title;
-  final TextAlign? titleTextAlign;
-  final String? description;
-  final TextAlign? descriptionTextAlign;
-  final AlignmentGeometry titleAlignment;
-  final AlignmentGeometry descriptionAlignment;
-  final TextStyle? titleTextStyle;
-  final TextStyle? descTextStyle;
-  final Widget? container;
-  final Color? tooltipBackgroundColor;
-  final Color? textColor;
-  final bool showArrow;
-  final VoidCallback? onTooltipTap;
-  final EdgeInsets? tooltipPadding;
-  final Duration movingAnimationDuration;
-  final bool disableMovingAnimation;
-  final bool disableScaleAnimation;
-  final BorderRadius? tooltipBorderRadius;
-  final Duration scaleAnimationDuration;
-  final Curve scaleAnimationCurve;
-  final Alignment? scaleAnimationAlignment;
-  final bool isTooltipDismissed;
-  final TooltipPosition? tooltipPosition;
-  final EdgeInsets? titlePadding;
-  final EdgeInsets? descriptionPadding;
-  final TextDirection? titleTextDirection;
-  final TextDirection? descriptionTextDirection;
-  final double toolTipSlideEndDistance;
-  final double toolTipMargin;
-  final TooltipActionConfig tooltipActionConfig;
-  final List<Widget> tooltipActions;
-  final EdgeInsets targetPadding;
-
   const ToolTipWidget({
     super.key,
-    required this.position,
     required this.title,
     required this.description,
     required this.titleTextStyle,
@@ -61,16 +26,49 @@ class ToolTipWidget extends StatefulWidget {
     required this.scaleAnimationDuration,
     required this.scaleAnimationCurve,
     required this.toolTipMargin,
+    required this.showcaseController,
+    required this.tooltipPadding,
+    required this.toolTipSlideEndDistance,
     this.scaleAnimationAlignment,
-    this.isTooltipDismissed = false,
     this.tooltipPosition,
     this.titlePadding,
     this.descriptionPadding,
     this.titleTextDirection,
     this.descriptionTextDirection,
-    this.toolTipSlideEndDistance = 7,
-    this.tooltipPadding = const EdgeInsets.symmetric(vertical: 8),
   });
+
+  final String? title;
+  final TextAlign? titleTextAlign;
+  final String? description;
+  final TextAlign? descriptionTextAlign;
+  final AlignmentGeometry titleAlignment;
+  final AlignmentGeometry descriptionAlignment;
+  final TextStyle? titleTextStyle;
+  final TextStyle? descTextStyle;
+  final Widget? container;
+  final Color? tooltipBackgroundColor;
+  final Color? textColor;
+  final bool showArrow;
+  final VoidCallback? onTooltipTap;
+  final EdgeInsets? tooltipPadding;
+  final Duration movingAnimationDuration;
+  final bool disableMovingAnimation;
+  final bool disableScaleAnimation;
+  final BorderRadius? tooltipBorderRadius;
+  final Duration scaleAnimationDuration;
+  final Curve scaleAnimationCurve;
+  final Alignment? scaleAnimationAlignment;
+  final TooltipPosition? tooltipPosition;
+  final EdgeInsets? titlePadding;
+  final EdgeInsets? descriptionPadding;
+  final TextDirection? titleTextDirection;
+  final TextDirection? descriptionTextDirection;
+  final double toolTipSlideEndDistance;
+  final double toolTipMargin;
+  final TooltipActionConfig tooltipActionConfig;
+  final List<Widget> tooltipActions;
+  final EdgeInsets targetPadding;
+  final ShowcaseController showcaseController;
 
   @override
   State<ToolTipWidget> createState() => _ToolTipWidgetState();
@@ -118,22 +116,22 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     if (!widget.disableMovingAnimation) {
       _movingAnimationController.forward();
     }
-  }
-
-  @override
-  void didUpdateWidget(covariant ToolTipWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (!widget.disableScaleAnimation && widget.isTooltipDismissed) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (timeStamp) {
-          _scaleAnimationController.reverse();
-        },
-      );
-    }
+    widget.showcaseController.reverseAnimationCallback =
+        widget.disableScaleAnimation ? null : _scaleAnimationController.reverse;
   }
 
   @override
   Widget build(BuildContext context) {
+    // Calculate the target position and size
+    final box = widget.showcaseController.position?.renderBox;
+    // This is a workaround to avoid the error when the widget is not mounted
+    // but won't happen in general cases
+    if (box == null) {
+      return const SizedBox.shrink();
+    }
+    final targetPosition = box.localToGlobal(Offset.zero);
+    final targetSize = box.size;
+
     final defaultToolTipWidget = widget.container != null
         ? MouseRegion(
             cursor: widget.onTooltipTap == null
@@ -228,10 +226,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             ),
           );
 
-    // Calculate the target position and size
-    final targetPosition = widget.position!.box!.localToGlobal(Offset.zero);
-    final targetSize = widget.position!.box!.size;
-
     return Material(
       type: MaterialType.transparency,
       child: _AnimatedTooltipMultiLayout(
@@ -242,7 +236,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         targetPosition: targetPosition,
         targetSize: targetSize,
         position: widget.tooltipPosition,
-        screenSize: MediaQuery.of(context).size,
+        screenSize: widget.showcaseController.rootWidgetSize ??
+            MediaQuery.of(context).size,
         hasArrow: widget.showArrow,
         targetPadding: widget.targetPadding,
         scaleAlignment: widget.scaleAnimationAlignment,
@@ -253,6 +248,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         gapBetweenContentAndAction:
             widget.tooltipActionConfig.gapBetweenContentAndAction,
         screenEdgePadding: widget.toolTipMargin,
+        showcaseOffset: widget.showcaseController.rootRenderObject
+                ?.localToGlobal(Offset.zero) ??
+            Offset.zero,
         children: [
           _TooltipLayoutId(
             id: TooltipLayoutSlot.tooltipBox,

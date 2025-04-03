@@ -29,6 +29,7 @@ class RenderObjectManager {
   /// Performs actual layout on the RenderBox
   void performLayout(BoxConstraints constraints, {bool parentUsesSize = true}) {
     customRenderBox.layout(constraints, parentUsesSize: parentUsesSize);
+    dryLayoutSize = customRenderBox.size;
   }
 
   /// Gets the current size of the RenderBox

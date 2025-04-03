@@ -1,7 +1,9 @@
 part of 'tooltip.dart';
 
 class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
-  const _AnimatedTooltipMultiLayout({
+  // TODO: make this const when update to new flutter version
+  // ignore: prefer_const_constructors_in_immutables
+  _AnimatedTooltipMultiLayout({
     // If we remove this parameter it will cause error in v3.29.0 so ignore
     // ignore: unused_element_parameter
     super.key,

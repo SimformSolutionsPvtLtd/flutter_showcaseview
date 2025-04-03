@@ -16,6 +16,8 @@
 - Improvement [#514](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/514) -
   Improved showcase widget and showcase with widget, Removed inherited widget, keys and setStates,
   Added controller to manage showcase
+- CHORE [#514](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/514) -
+  Bumped dart minimum sdk to 2.19.6
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

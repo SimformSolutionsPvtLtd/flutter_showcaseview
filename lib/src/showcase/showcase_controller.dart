@@ -31,6 +31,7 @@ class ShowcaseController {
     required this.key,
     required this.config,
     required this.showCaseWidgetState,
+    required this.updateControllerValue,
     this.scrollIntoViewCallback,
   }) {
     showCaseWidgetState.registerShowcaseController(
@@ -67,6 +68,14 @@ class ShowcaseController {
 
   /// Optional function to reverse the animation
   ValueGetter<Future<void>>? reverseAnimationCallback;
+
+  /// Function to update the controller value
+  ///
+  /// Main use of this is to update the controller data just before overlay is
+  /// inserted so we can get the correct position. Which is need in
+  /// page transition case where page transition may take some time to reach
+  /// to it's original position
+  VoidCallback updateControllerValue;
 
   /// Size of the root widget
   Size? rootWidgetSize;

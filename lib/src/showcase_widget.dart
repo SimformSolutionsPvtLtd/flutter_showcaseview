@@ -26,8 +26,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../showcaseview.dart';
-import 'layout_overlays.dart';
 import 'models/linked_showcase_data.dart';
+import 'overlay_builder.dart';
 import 'shape_clipper.dart';
 import 'showcase/showcase_controller.dart';
 
@@ -300,6 +300,11 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
         if (getCurrentActiveShowcaseKey == null || controller.isEmpty) {
           return const SizedBox.shrink();
+        }
+
+        final controllerLength = controller.length;
+        for (var i = 0; i < controllerLength; i++) {
+          controller[i].updateControllerValue.call();
         }
 
         final firstController = controller.first;

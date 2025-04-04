@@ -575,8 +575,9 @@ class _ShowcaseState extends State<Showcase> {
       key: widget.showcaseKey,
       config: widget,
       showCaseWidgetState: ShowCaseWidget.of(context),
-      scrollIntoViewCallback: scrollIntoView,
-    ).startShowcase = startShowcase;
+      scrollIntoViewCallback: _scrollIntoView,
+      updateControllerValue: _updateOverlayData,
+    ).startShowcase = _startShowcase;
   }
 
   @override
@@ -605,7 +606,7 @@ class _ShowcaseState extends State<Showcase> {
     super.dispose();
   }
 
-  void startShowcase() {
+  void _startShowcase() {
     if (!_showCaseWidgetState.enableShowcase) return;
 
     _controller
@@ -623,7 +624,14 @@ class _ShowcaseState extends State<Showcase> {
     );
   }
 
-  Future<void> scrollIntoView() async {
+  void _updateOverlayData() {
+    _controller.updateControllerData(
+      context.findRenderObject() as RenderBox?,
+      MediaQuery.of(context).size,
+    );
+  }
+
+  Future<void> _scrollIntoView() async {
     if (!mounted) return;
     _controller
       ..isScrollRunning = true
@@ -631,7 +639,7 @@ class _ShowcaseState extends State<Showcase> {
         context.findRenderObject() as RenderBox?,
         MediaQuery.of(context).size,
       );
-    startShowcase();
+    _startShowcase();
     _showCaseWidgetState.updateOverlay?.call(
       _showCaseWidgetState.isShowcaseRunning,
     );
@@ -647,7 +655,7 @@ class _ShowcaseState extends State<Showcase> {
         context.findRenderObject() as RenderBox?,
         MediaQuery.of(context).size,
       );
-    startShowcase();
+    _startShowcase();
     _showCaseWidgetState.updateOverlay?.call(
       _showCaseWidgetState.isShowcaseRunning,
     );

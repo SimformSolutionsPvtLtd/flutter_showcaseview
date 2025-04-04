@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../enum.dart';
-import '../get_position.dart';
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
 import '../showcase_widget.dart';
@@ -573,25 +572,30 @@ class _ShowcaseState extends State<Showcase> {
     ShowcaseController(
       id: _uniqueId,
       key: widget.showcaseKey,
-      config: widget,
+      showcaseState: this,
       showCaseWidgetState: ShowCaseWidget.of(context),
-      scrollIntoViewCallback: _scrollIntoView,
-      updateControllerValue: _updateOverlayData,
-    ).startShowcase = _startShowcase;
+    );
   }
 
   @override
   void didUpdateWidget(covariant Showcase oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget == widget) return;
+    _updateControllerValues();
+  }
+
+  _updateControllerValues() {
     _showCaseWidgetState = ShowCaseWidget.of(context);
     _controller
-      ..config = widget
+      ..showcaseState = this
       ..showCaseWidgetState = _showCaseWidgetState;
   }
 
   @override
   Widget build(BuildContext context) {
+    // This is to support hot reload
+    _updateControllerValues();
+
     _controller.recalculateRootWidgetSize(context);
     return widget.child;
   }
@@ -602,62 +606,6 @@ class _ShowcaseState extends State<Showcase> {
       key: widget.showcaseKey,
       uniqueShowcaseKey: _uniqueId,
     );
-
     super.dispose();
-  }
-
-  void _startShowcase() {
-    if (!_showCaseWidgetState.enableShowcase) return;
-
-    _controller
-      ..recalculateRootWidgetSize(context)
-      ..globalFloatingActionWidget = _showCaseWidgetState
-          .globalFloatingActionWidget(widget.showcaseKey)
-          ?.call(context);
-    final size = _controller.rootWidgetSize ?? MediaQuery.of(context).size;
-    _controller.position ??= GetPosition(
-      rootRenderObject: _controller.rootRenderObject,
-      renderBox: context.findRenderObject() as RenderBox?,
-      padding: widget.targetPadding,
-      screenWidth: size.width,
-      screenHeight: size.height,
-    );
-  }
-
-  void _updateOverlayData() {
-    _controller.updateControllerData(
-      context.findRenderObject() as RenderBox?,
-      MediaQuery.of(context).size,
-    );
-  }
-
-  Future<void> _scrollIntoView() async {
-    if (!mounted) return;
-    _controller
-      ..isScrollRunning = true
-      ..updateControllerData(
-        context.findRenderObject() as RenderBox?,
-        MediaQuery.of(context).size,
-      );
-    _startShowcase();
-    _showCaseWidgetState.updateOverlay?.call(
-      _showCaseWidgetState.isShowcaseRunning,
-    );
-    await Scrollable.ensureVisible(
-      context,
-      duration: _showCaseWidgetState.widget.scrollDuration,
-      alignment: widget.scrollAlignment,
-    );
-    if (!mounted) return;
-    _controller
-      ..isScrollRunning = false
-      ..updateControllerData(
-        context.findRenderObject() as RenderBox?,
-        MediaQuery.of(context).size,
-      );
-    _startShowcase();
-    _showCaseWidgetState.updateOverlay?.call(
-      _showCaseWidgetState.isShowcaseRunning,
-    );
   }
 }

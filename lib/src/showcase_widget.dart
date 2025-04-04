@@ -197,13 +197,6 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   late final List<TooltipActionButton>? globalTooltipActions;
 
-  /// A mapping of showcase keys to their associated controllers.
-  /// - Key: GlobalKey of a showcase (provided by user)
-  /// - Value: Map of showcase IDs to their controllers,
-  /// allowing multiple controllers
-  /// to be associated with a single showcase key (e.g., for linked showcases)
-  final Map<GlobalKey, Map<int, ShowcaseController>> _showcaseControllers = {};
-
   /// These properties are only here so that it can be accessed by
   /// [Showcase]
   bool get autoPlay => widget.autoPlay;
@@ -229,15 +222,17 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey> get hiddenFloatingActionKeys =>
       _hideFloatingWidgetKeys.keys.toList();
 
-  Timer? _timer;
-
   ValueSetter<bool>? updateOverlay;
 
-  /// This Stores keys of showcase for which we will hide the
-  /// [globalFloatingActionWidget].
-  late final _hideFloatingWidgetKeys = {
-    for (final item in widget.hideFloatingActionWidgetForShowcase) item: true,
-  };
+  /// Return a [widget.globalFloatingActionWidget] if not need to hide this for
+  /// current showcase.
+  FloatingActionBuilderCallback? globalFloatingActionWidget(
+    GlobalKey showcaseKey,
+  ) {
+    return _hideFloatingWidgetKeys[showcaseKey] ?? false
+        ? null
+        : widget.globalFloatingActionWidget;
+  }
 
   /// Returns value of [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
@@ -253,21 +248,26 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     }
   }
 
+  bool get isShowcaseRunning => getCurrentActiveShowcaseKey != null;
+
+  Timer? _timer;
+
+  /// A mapping of showcase keys to their associated controllers.
+  /// - Key: GlobalKey of a showcase (provided by user)
+  /// - Value: Map of showcase IDs to their controllers,
+  /// allowing multiple controllers
+  /// to be associated with a single showcase key (e.g., for linked showcases)
+  final Map<GlobalKey, Map<int, ShowcaseController>> _showcaseControllers = {};
+
+  /// This Stores keys of showcase for which we will hide the
+  /// [globalFloatingActionWidget].
+  late final _hideFloatingWidgetKeys = {
+    for (final item in widget.hideFloatingActionWidgetForShowcase) item: true,
+  };
+
   List<ShowcaseController> get _getCurrentActiveControllers {
     return _showcaseControllers[getCurrentActiveShowcaseKey]?.values.toList() ??
         <ShowcaseController>[];
-  }
-
-  bool get isShowcaseRunning => getCurrentActiveShowcaseKey != null;
-
-  /// Return a [widget.globalFloatingActionWidget] if not need to hide this for
-  /// current showcase.
-  FloatingActionBuilderCallback? globalFloatingActionWidget(
-    GlobalKey showcaseKey,
-  ) {
-    return _hideFloatingWidgetKeys[showcaseKey] ?? false
-        ? null
-        : widget.globalFloatingActionWidget;
   }
 
   @override
@@ -304,7 +304,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
         final controllerLength = controller.length;
         for (var i = 0; i < controllerLength; i++) {
-          controller[i].updateControllerValue.call();
+          controller[i].updateControllerData();
         }
 
         final firstController = controller.first;
@@ -362,22 +362,25 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     List<GlobalKey> widgetIds, {
     Duration delay = Duration.zero,
   }) {
+    if (!mounted) return;
     if (!enableShowcase) {
       throw Exception(
         "You are trying to start Showcase while it has been disabled with "
         "`enableShowcase` parameter to false from ShowCaseWidget",
       );
     }
-    Future.delayed(
-      delay,
-      () {
-        if (!mounted) return;
-        ids = widgetIds;
-        activeWidgetId = 0;
-        _onStart();
-        updateOverlay?.call(isShowcaseRunning);
-      },
-    );
+
+    if (delay.inMilliseconds == 0) {
+      ids = widgetIds;
+      activeWidgetId = 0;
+      _onStart();
+      updateOverlay?.call(isShowcaseRunning);
+    } else {
+      Future.delayed(
+        delay,
+        () => startShowCase(widgetIds),
+      );
+    }
   }
 
   /// Completes showcase of given key and starts next one
@@ -434,7 +437,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// Completes current active showcase and starts previous one
   /// otherwise will finish the entire showcase view
   void previous() {
-    if (ids == null || ((activeWidgetId ?? 0) - 1) < 0 || !mounted) {
+    if (ids == null || ((activeWidgetId ?? 0) - 1).isNegative || !mounted) {
       return;
     }
     _onComplete().then(
@@ -485,7 +488,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   }) {
     assert(
       StackTrace.current.toString().contains('_ShowcaseState'),
-      'This method should only be called from Showcase class',
+      'This method should only be called from `Showcase` class',
     );
     _showcaseControllers
         .putIfAbsent(
@@ -505,7 +508,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   }) {
     assert(
       StackTrace.current.toString().contains('_ShowcaseState'),
-      'This method should only be called from Showcase class',
+      'This method should only be called from `Showcase` class',
     );
     _showcaseControllers[key]?.remove(uniqueShowcaseKey);
   }
@@ -516,7 +519,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   }) {
     assert(
       StackTrace.current.toString().contains('_ShowcaseState'),
-      'This method should only be called from Showcase class',
+      'This method should only be called from `Showcase` class',
     );
     assert(
       _showcaseControllers[key]?[showcaseId] != null,
@@ -570,18 +573,19 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     if (activeWidgetId! < ids!.length) {
       widget.onStart?.call(activeWidgetId, ids![activeWidgetId!]);
       final controllers = _getCurrentActiveControllers;
-      //TODO: Update to firstOrNull when we remove support for older version
-      if (controllers.length == 1 &&
-          (controllers.first.config.enableAutoScroll ??
-              widget.enableAutoScroll)) {
-        await controllers.first.scrollIntoViewCallback?.call();
-      } else {
-        final controllerLength = controllers.length;
-        for (var i = 0; i < controllerLength; i++) {
-          controllers[i].startShowcase?.call();
+      final controllerLength = controllers.length;
+      for (var i = 0; i < controllerLength; i++) {
+        final controller = controllers[i];
+        final isAutoScroll =
+            controller.config.enableAutoScroll ?? widget.enableAutoScroll;
+        if (controllerLength == 1 && isAutoScroll) {
+          await controller.scrollIntoView();
+        } else {
+          controller.startShowcase();
         }
       }
     }
+
     if (widget.autoPlay) {
       _cancelTimer();
       _timer = Timer(

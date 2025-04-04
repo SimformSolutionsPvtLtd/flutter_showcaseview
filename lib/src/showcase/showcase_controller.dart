@@ -23,16 +23,13 @@ class ShowcaseController {
   ///
   /// * [id] - Unique identifier for this showcase instance
   /// * [key] - Global key associated with the showcase widget
-  /// * [config] - Configuration settings for the showcase
+  /// * [showcaseState] - Reference to the showcase state
   /// * [showCaseWidgetState] - Reference to the parent showcase widget state
-  /// * [scrollIntoViewCallback] - Optional callback to scroll the target into view
   ShowcaseController({
     required this.id,
     required this.key,
-    required this.config,
+    required this.showcaseState,
     required this.showCaseWidgetState,
-    required this.updateControllerValue,
-    this.scrollIntoViewCallback,
   }) {
     showCaseWidgetState.registerShowcaseController(
       controller: this,
@@ -49,7 +46,7 @@ class ShowcaseController {
   final GlobalKey key;
 
   /// Configuration for the showcase
-  Showcase config;
+  State<Showcase> showcaseState;
 
   /// Reference to the parent showcase widget state
   ShowCaseWidgetState showCaseWidgetState;
@@ -60,22 +57,8 @@ class ShowcaseController {
   /// Data model for linked showcases
   LinkedShowcaseDataModel? linkedShowcaseDataModel;
 
-  /// Callback to start the showcase
-  VoidCallback? startShowcase;
-
-  /// Optional function to scroll the target into view
-  final ValueGetter<Future<void>>? scrollIntoViewCallback;
-
   /// Optional function to reverse the animation
   ValueGetter<Future<void>>? reverseAnimationCallback;
-
-  /// Function to update the controller value
-  ///
-  /// Main use of this is to update the controller data just before overlay is
-  /// inserted so we can get the correct position. Which is need in
-  /// page transition case where page transition may take some time to reach
-  /// to it's original position
-  VoidCallback updateControllerValue;
 
   /// Size of the root widget
   Size? rootWidgetSize;
@@ -94,6 +77,24 @@ class ShowcaseController {
 
   /// Global floating action widget to be displayed
   FloatingActionWidget? globalFloatingActionWidget;
+
+  /// Returns the Showcase widget configuration
+  ///
+  /// Provides access to all properties and settings of the current showcase widget.
+  /// This is used throughout the controller to access showcase configuration options.
+  Showcase get config => showcaseState.widget;
+
+  /// Returns the BuildContext for this showcase
+  ///
+  /// Used for positioning calculations and widget rendering.
+  /// This context represents the location of the showcase target in the widget tree.
+  BuildContext get _context => showcaseState.context;
+
+  /// Checks if the showcase context is still valid
+  ///
+  /// Returns true if the context is mounted (valid) and false otherwise.
+  /// Used to prevent operations on widgets that have been removed from the tree.
+  bool get _mounted => showcaseState.context.mounted;
 
   /// Initializes the root widget size and render object
   ///
@@ -121,10 +122,7 @@ class ShowcaseController {
           ? MediaQuery.of(context).size
           : rootRenderObject?.size;
       if (!showCaseWidgetState.enableShowcase) return;
-      updateControllerData(
-        context.findRenderObject() as RenderBox?,
-        MediaQuery.of(context).size,
-      );
+      updateControllerData();
       showCaseWidgetState.updateOverlay?.call(
         showCaseWidgetState.isShowcaseRunning,
       );
@@ -136,12 +134,13 @@ class ShowcaseController {
   /// Rebuilds the showcase overlay with updated positioning information.
   /// Creates positioning data and updates the visual representation.
   ///
-  /// * [renderBox] The RenderBox of the target widget
-  /// * [screenSize] The current screen size
-  void updateControllerData(
-    RenderBox? renderBox,
-    Size screenSize,
-  ) {
+  /// Another use of this is to update the controller data just before overlay is
+  /// inserted so we can get the correct position. Which is need in
+  /// page transition case where page transition may take some time to reach
+  /// to it's original position
+  void updateControllerData() {
+    final renderBox = _context.findRenderObject() as RenderBox?;
+    final screenSize = MediaQuery.of(_context).size;
     final size = rootWidgetSize ?? screenSize;
     final newPosition = GetPosition(
       rootRenderObject: rootRenderObject,
@@ -246,6 +245,79 @@ class ShowcaseController {
             ),
             if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
           ];
+  }
+
+  /// Callback to start the showcase
+  ///
+  /// Initializes the showcase by calculating positions and preparing visual elements.
+  /// This method is called when a showcase is about to be displayed to ensure all
+  /// positioning data is accurate and up-to-date.
+  ///
+  /// The method performs these key actions:
+  /// - Exits early if showcases are disabled in the parent widget
+  /// - Recalculates the root widget size to ensure accurate positioning
+  /// - Sets up any global floating action widgets
+  /// - Initializes position data if not already set
+  ///
+  /// This method is typically called internally by the showcase system but
+  /// can also be called manually to force a recalculation of showcase elements.
+  void startShowcase() {
+    if (!showCaseWidgetState.enableShowcase) return;
+
+    recalculateRootWidgetSize(_context);
+    globalFloatingActionWidget = showCaseWidgetState
+        .globalFloatingActionWidget(config.showcaseKey)
+        ?.call(_context);
+    final size = rootWidgetSize ?? MediaQuery.of(_context).size;
+    position ??= GetPosition(
+      rootRenderObject: rootRenderObject,
+      renderBox: _context.findRenderObject() as RenderBox?,
+      padding: config.targetPadding,
+      screenWidth: size.width,
+      screenHeight: size.height,
+    );
+  }
+
+  /// Used to scroll the target into view
+  ///
+  /// Ensures the showcased widget is visible on screen by scrolling to it.
+  /// This method handles the complete scrolling process including:
+  ///
+  /// - Setting visual indicators while scrolling is in progress
+  /// - Updating the overlay to show loading state
+  /// - Performing the actual scrolling operation
+  /// - Refreshing the showcase display after scrolling completes
+  ///
+  /// The method shows a loading indicator during scrolling and updates
+  /// the showcase position after scrolling completes. It manages the
+  /// `isScrollRunning` state to coordinate UI updates.
+  ///
+  /// Note: Multi Showcase will not be scrolled into view
+  ///
+  /// Returns a Future that completes when scrolling is finished. If the widget
+  /// is unmounted during scrolling, the operation will be canceled safely.
+  Future<void> scrollIntoView() async {
+    if (!_mounted) return;
+
+    isScrollRunning = true;
+    updateControllerData();
+    startShowcase();
+    showCaseWidgetState.updateOverlay?.call(
+      showCaseWidgetState.isShowcaseRunning,
+    );
+    await Scrollable.ensureVisible(
+      _context,
+      duration: showCaseWidgetState.widget.scrollDuration,
+      alignment: config.scrollAlignment,
+    );
+    if (!_mounted) return;
+
+    isScrollRunning = false;
+    updateControllerData();
+    startShowcase();
+    showCaseWidgetState.updateOverlay?.call(
+      showCaseWidgetState.isShowcaseRunning,
+    );
   }
 
   /// Moves to the next showcase if any are remaining

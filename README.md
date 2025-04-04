@@ -110,18 +110,27 @@ Showcase.withWidget(
 ),
 ```
 
-5. Starting the `ShowCase`
+5. Starting the `ShowCase`:
 ```dart
 someEvent(){
     ShowCaseWidget.of(context).startShowCase([_one, _two, _three]);
 }
 ```
 
-If you want to start the `ShowCaseView` as soon as your UI built up then use below code.
+If you want to start the `ShowCaseView` as soon as your UI built up then use below code:
 
 ```dart
 WidgetsBinding.instance.addPostFrameCallback((_) =>
   ShowCaseWidget.of(context).startShowCase([_one, _two, _three])
+);
+```
+
+If you have some animation or transition in your UI and you want to start the `ShowCaseView` after
+that then use below code:
+
+```dart
+WidgetsBinding.instance.addPostFrameCallback((_) =>
+  ShowCaseWidget.of(context).startShowCase([_one, _two, _three], delay: "Animation Duration")
 );
 ```
 
@@ -287,7 +296,7 @@ So, If you want to make a scroll view that contains less number of children widg
 
 If using SingleChildScrollView is not an option, then you can assign a ScrollController to that scrollview and manually scroll to the position where showcase widget gets rendered. You can add that code in onStart method of `ShowCaseWidget`.
 
-Example,
+Example:
 
 ```dart
 // This controller will be assigned to respected sctollview.

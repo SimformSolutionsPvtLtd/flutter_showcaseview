@@ -468,8 +468,12 @@ class _MailPageState extends State<MailPage> {
               ),
             ).then((_) {
               setState(() {
-                ShowCaseWidget.of(context)
-                    .startShowCase([_four, _lastShowcaseWidget]);
+                ShowCaseWidget.of(context).startShowCase(
+                  [_four, _lastShowcaseWidget],
+                  delay: const Duration(
+                    milliseconds: 200,
+                  ),
+                );
               });
             });
           },

@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+
+import 'widget/showcase_circular_progress_indicator.dart';
+
 class Constants {
   Constants._();
 
@@ -25,4 +29,16 @@ class Constants {
   /// i.e if it is bottom position then centerBottom + [extraAlignmentOffset]
   /// in bottom
   static const double extraAlignmentOffset = 5;
+
+  static const Radius defaultTargetRadius = Radius.circular(3.0);
+
+  static const ShapeBorder defaultTargetShapeBorder = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(8)),
+  );
+
+  static const double cupertinoActivityIndicatorRadius = 12.0;
+  static const Widget defaultProgressIndicator =
+      ShowcaseCircularProgressIndicator();
+
+  static const Duration defaultAnimationDuration = Duration(milliseconds: 2000);
 }

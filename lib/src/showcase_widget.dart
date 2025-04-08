@@ -486,10 +486,6 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     required ShowcaseController controller,
     required int showcaseId,
   }) {
-    assert(
-      StackTrace.current.toString().contains('_ShowcaseState'),
-      'This method should only be called from `Showcase` class',
-    );
     _showcaseControllers
         .putIfAbsent(
           key,
@@ -505,22 +501,13 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   void removeShowcaseController({
     required GlobalKey key,
     required int uniqueShowcaseKey,
-  }) {
-    assert(
-      StackTrace.current.toString().contains('_ShowcaseState'),
-      'This method should only be called from `Showcase` class',
-    );
-    _showcaseControllers[key]?.remove(uniqueShowcaseKey);
-  }
+  }) =>
+      _showcaseControllers[key]?.remove(uniqueShowcaseKey);
 
   ShowcaseController getControllerForShowcase({
     required GlobalKey key,
     required int showcaseId,
   }) {
-    assert(
-      StackTrace.current.toString().contains('_ShowcaseState'),
-      'This method should only be called from `Showcase` class',
-    );
     assert(
       _showcaseControllers[key]?[showcaseId] != null,
       'Please register showcase controller first by calling '

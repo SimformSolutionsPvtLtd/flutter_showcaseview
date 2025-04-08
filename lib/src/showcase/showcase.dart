@@ -426,15 +426,15 @@ class Showcase extends StatefulWidget {
         ),
         assert(
           onTargetClick == null || disposeOnTap != null,
-          "disposeOnTap is required if you're using onTargetClick",
+          "`disposeOnTap` is required if you're using `onTargetClick`",
         ),
         assert(
           disposeOnTap == null || onTargetClick != null,
-          "onTargetClick is required if you're using disposeOnTap",
+          "`onTargetClick` is required if you're using `disposeOnTap`",
         ),
         assert(
           onBarrierClick == null || disableBarrierInteraction == false,
-          "can't use onBarrierClick & disableBarrierInteraction property at same time",
+          "can't use `onBarrierClick` & `disableBarrierInteraction` property at same time",
         );
 
   /// Creates a Showcase widget with a custom tooltip widget.
@@ -547,8 +547,16 @@ class Showcase extends StatefulWidget {
           'overlay opacity must be between 0 and 1.',
         ),
         assert(
+          onTargetClick == null || disposeOnTap != null,
+          "`disposeOnTap` is required if you're using `onTargetClick`",
+        ),
+        assert(
+          disposeOnTap == null || onTargetClick != null,
+          "`onTargetClick` is required if you're using `disposeOnTap`",
+        ),
+        assert(
           onBarrierClick == null || disableBarrierInteraction == false,
-          "can't use onBarrierClick & disableBarrierInteraction property at same time",
+          "can't use `onBarrierClick` & `disableBarrierInteraction` property at same time",
         );
 
   @override

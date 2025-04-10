@@ -37,6 +37,9 @@ class RenderObjectManager {
 
   Offset get getOffset => Offset(xOffset ?? 0, yOffset ?? 0);
 
+  MultiChildLayoutParentData get layoutParentData =>
+      customRenderBox.parentData! as MultiChildLayoutParentData;
+
   /// Sets the position of the RenderBox
   void setOffset(double x, double y) {
     xOffset = x;

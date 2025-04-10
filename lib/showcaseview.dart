@@ -27,6 +27,7 @@ export 'src/models/action_button_icon.dart';
 export 'src/models/tooltip_action_button.dart';
 export 'src/models/tooltip_action_config.dart';
 export 'src/showcase/showcase.dart';
+export 'src/showcase_view.dart';
 export 'src/showcase_widget.dart';
 export 'src/tooltip_action_button_widget.dart';
 export 'src/widget/floating_action_widget.dart';

@@ -6,7 +6,9 @@ import 'package:flutter/widgets.dart';
 import '../get_position.dart';
 import '../models/linked_showcase_data.dart';
 import '../models/tooltip_action_config.dart';
-import '../showcase_widget.dart';
+import '../overlay_manager.dart';
+import '../showcase_service.dart';
+import '../showcase_view.dart';
 import '../tooltip/tooltip.dart';
 import '../tooltip_action_button_widget.dart';
 import '../widget/floating_action_widget.dart';
@@ -24,17 +26,18 @@ class ShowcaseController {
   /// * [id] - Unique identifier for this showcase instance
   /// * [key] - Global key associated with the showcase widget
   /// * [showcaseState] - Reference to the showcase state
-  /// * [showCaseWidgetState] - Reference to the parent showcase widget state
+  /// * [showCaseView] - Reference to the parent showcase view
   ShowcaseController({
     required this.id,
     required this.key,
     required this.showcaseState,
-    required this.showCaseWidgetState,
+    required this.showCaseView,
   }) {
-    showCaseWidgetState.registerShowcaseController(
+    ShowcaseService.instance.registerShowcaseController(
       controller: this,
       key: key,
       showcaseId: id,
+      scope: showCaseView.scope,
     );
     initRootWidget();
   }
@@ -49,7 +52,7 @@ class ShowcaseController {
   State<Showcase> showcaseState;
 
   /// Reference to the parent showcase widget state
-  ShowCaseWidgetState showCaseWidgetState;
+  ShowcaseView showCaseView;
 
   /// Position information for the showcase target
   GetPosition? position;
@@ -102,8 +105,11 @@ class ShowcaseController {
   /// Uses a post-frame callback to capture accurate widget dimensions.
   void initRootWidget() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      rootWidgetSize = showCaseWidgetState.rootWidgetSize;
-      rootRenderObject = showCaseWidgetState.rootRenderObject;
+      final rootWidget = _context.findRootAncestorStateOfType<State<Overlay>>();
+      rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
+      rootWidgetSize = rootWidget == null
+          ? MediaQuery.of(_context).size
+          : rootRenderObject?.size;
     });
   }
 
@@ -121,10 +127,12 @@ class ShowcaseController {
       rootWidgetSize = rootWidget == null
           ? MediaQuery.of(context).size
           : rootRenderObject?.size;
-      if (!showCaseWidgetState.enableShowcase) return;
+      if (!showCaseView.enableShowcase) return;
       updateControllerData();
-      showCaseWidgetState.updateOverlay?.call(
-        showCaseWidgetState.isShowcaseRunning,
+      if (!showCaseView.isShowcaseRunning) return;
+      OverlayManager.instance.updateOverlay(
+        showOverlay: showCaseView.isShowcaseRunning,
+        showcaseView: showCaseView,
       );
     });
   }
@@ -182,9 +190,7 @@ class ShowcaseController {
     required Rect rectBound,
     required Size screenSize,
   }) {
-    blur = kIsWeb
-        ? 0.0
-        : max(0.0, config.blurValue ?? showCaseWidgetState.blurValue);
+    blur = kIsWeb ? 0.0 : max(0.0, config.blurValue ?? showCaseView.blurValue);
 
     getToolTipWidget = isScrollRunning
         ? [
@@ -222,9 +228,9 @@ class ShowcaseController {
                       : null,
               tooltipPadding: config.tooltipPadding,
               disableMovingAnimation: config.disableMovingAnimation ??
-                  showCaseWidgetState.disableMovingAnimation,
+                  showCaseView.disableMovingAnimation,
               disableScaleAnimation: (config.disableScaleAnimation ??
-                      showCaseWidgetState.disableScaleAnimation) ||
+                      showCaseView.disableScaleAnimation) ||
                   config.container != null,
               movingAnimationDuration: config.movingAnimationDuration,
               tooltipBorderRadius: config.tooltipBorderRadius,
@@ -262,11 +268,11 @@ class ShowcaseController {
   /// This method is typically called internally by the showcase system but
   /// can also be called manually to force a recalculation of showcase elements.
   void startShowcase() {
-    if (!showCaseWidgetState.enableShowcase) return;
+    if (!showCaseView.enableShowcase) return;
 
     recalculateRootWidgetSize(_context);
-    globalFloatingActionWidget = showCaseWidgetState
-        .globalFloatingActionWidget(config.showcaseKey)
+    globalFloatingActionWidget = showCaseView
+        .getFloatingActionWidget(config.showcaseKey)
         ?.call(_context);
     final size = rootWidgetSize ?? MediaQuery.of(_context).size;
     position ??= GetPosition(
@@ -302,12 +308,13 @@ class ShowcaseController {
     isScrollRunning = true;
     updateControllerData();
     startShowcase();
-    showCaseWidgetState.updateOverlay?.call(
-      showCaseWidgetState.isShowcaseRunning,
+    OverlayManager.instance.updateOverlay(
+      showOverlay: showCaseView.isShowcaseRunning,
+      showcaseView: showCaseView,
     );
     await Scrollable.ensureVisible(
       _context,
-      duration: showCaseWidgetState.widget.scrollDuration,
+      duration: showCaseView.scrollDuration,
       alignment: config.scrollAlignment,
     );
     if (!_mounted) return;
@@ -315,8 +322,9 @@ class ShowcaseController {
     isScrollRunning = false;
     updateControllerData();
     startShowcase();
-    showCaseWidgetState.updateOverlay?.call(
-      showCaseWidgetState.isShowcaseRunning,
+    OverlayManager.instance.updateOverlay(
+      showOverlay: showCaseView.isShowcaseRunning,
+      showcaseView: showCaseView,
     );
   }
 
@@ -325,8 +333,8 @@ class ShowcaseController {
   /// Called when a showcase is completed.
   /// Notifies the showcase widget state to advance to the next showcase.
   void _nextIfAny() {
-    if (showCaseWidgetState.isShowCaseCompleted) return;
-    showCaseWidgetState.completed(config.showcaseKey);
+    if (showCaseView.isShowCaseCompleted) return;
+    showCaseView.completed(config.showcaseKey);
   }
 
   /// Handles target tap behavior based on configuration
@@ -335,7 +343,7 @@ class ShowcaseController {
   /// If [disposeOnTap] is true, dismisses the entire showcase, otherwise advances.
   void _getOnTargetTap() {
     if (config.disposeOnTap == true) {
-      showCaseWidgetState.dismiss();
+      showCaseView.dismiss();
       assert(
         config.onTargetClick != null,
         'onTargetClick callback should be provided when disposeOnTap is true',
@@ -352,7 +360,7 @@ class ShowcaseController {
   /// If [disposeOnTap] is true, dismisses the entire showcase before executing callback.
   void _getOnTooltipTap() {
     if (config.disposeOnTap == true) {
-      showCaseWidgetState.dismiss();
+      showCaseView.dismiss();
     }
     config.onToolTipClick?.call();
   }
@@ -367,7 +375,7 @@ class ShowcaseController {
     final doesHaveLocalActions = config.tooltipActions?.isNotEmpty ?? false;
     final actionData = doesHaveLocalActions
         ? config.tooltipActions!
-        : showCaseWidgetState.globalTooltipActions ?? [];
+        : showCaseView.globalTooltipActions ?? [];
     final actionDataLength = actionData.length;
 
     return [
@@ -387,7 +395,7 @@ class ShowcaseController {
               // We have to pass showcaseState from here because
               // [TooltipActionButtonWidget] is not direct child of showcaseWidget
               // so it won't be able to get the state by using it's context
-              showCaseState: showCaseWidgetState,
+              showCaseState: showCaseView,
             ),
           ),
     ];
@@ -401,7 +409,7 @@ class ShowcaseController {
   /// @return The tooltip action configuration to use
   TooltipActionConfig _getTooltipActionConfig() {
     return config.tooltipActionConfig ??
-        showCaseWidgetState.globalTooltipActionConfig ??
+        showCaseView.globalTooltipActionConfig ??
         const TooltipActionConfig();
   }
 

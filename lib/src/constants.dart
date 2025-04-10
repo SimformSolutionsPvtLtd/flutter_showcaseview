@@ -41,4 +41,11 @@ class Constants {
       ShowcaseCircularProgressIndicator();
 
   static const Duration defaultAnimationDuration = Duration(milliseconds: 2000);
+
+  /// Default scope name when none is specified
+  static const String defaultScope = '_showcaseDefaultScope';
+  static const String initialScope = '_showcaseInitialScope';
+
+  static const Duration defaultAutoPlayDelay = Duration(milliseconds: 2000);
+  static const Duration defaultScrollDuration = Duration(milliseconds: 300);
 }

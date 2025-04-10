@@ -24,8 +24,11 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../enum.dart';
+import '../models/showcase_scope.dart';
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
+import '../overlay_manager.dart';
+import '../showcase_service.dart';
 import '../showcase_widget.dart';
 import '../widget/floating_action_widget.dart';
 import 'showcase_controller.dart';
@@ -34,7 +37,7 @@ class Showcase extends StatefulWidget {
   /// A key that is unique across the entire app.
   ///
   /// This Key will be used to control state of individual showcase and also
-  /// used in [ShowCaseWidgetState.startShowCase] to define position of current
+  /// used in [ShowCaseView.startShowcase] to define position of current
   /// target widget while showcasing.
   final GlobalKey showcaseKey;
 
@@ -565,24 +568,29 @@ class Showcase extends StatefulWidget {
 
 class _ShowcaseState extends State<Showcase> {
   ShowcaseController get _controller =>
-      _showCaseWidgetState.getControllerForShowcase(
+      ShowcaseService.instance.getControllerForShowcase(
         key: widget.showcaseKey,
         showcaseId: _uniqueId,
+        scope: _showCaseWidgetManager.scope,
       );
 
-  late var _showCaseWidgetState = ShowCaseWidget.of(context);
+  late ShowcaseScope _showCaseWidgetManager;
 
   final int _uniqueId = UniqueKey().hashCode;
 
   @override
   void initState() {
     super.initState();
+    _showCaseWidgetManager = ShowcaseService.instance.getShowcaseManager();
     ShowcaseController(
       id: _uniqueId,
       key: widget.showcaseKey,
       showcaseState: this,
-      showCaseWidgetState: ShowCaseWidget.of(context),
+      showCaseView: _showCaseWidgetManager.showcaseView,
     );
+
+    OverlayManager.instance.overlayState =
+        context.findRootAncestorStateOfType<OverlayState>();
   }
 
   @override
@@ -593,10 +601,17 @@ class _ShowcaseState extends State<Showcase> {
   }
 
   _updateControllerValues() {
-    _showCaseWidgetState = ShowCaseWidget.of(context);
-    _controller
-      ..showcaseState = this
-      ..showCaseWidgetState = _showCaseWidgetState;
+    _showCaseWidgetManager = ShowcaseService.instance.getShowcaseManager(
+      scope: _showCaseWidgetManager.scope,
+    );
+    ShowcaseService.instance.registerShowcaseController(
+      controller: _controller
+        ..showcaseState = this
+        ..showCaseView = _showCaseWidgetManager.showcaseView,
+      key: widget.showcaseKey,
+      showcaseId: _uniqueId,
+      scope: _showCaseWidgetManager.scope,
+    );
   }
 
   @override
@@ -610,9 +625,10 @@ class _ShowcaseState extends State<Showcase> {
 
   @override
   void dispose() {
-    _showCaseWidgetState.removeShowcaseController(
+    ShowcaseService.instance.removeShowcaseController(
       key: widget.showcaseKey,
       uniqueShowcaseKey: _uniqueId,
+      scope: _showCaseWidgetManager.scope,
     );
     super.dispose();
   }

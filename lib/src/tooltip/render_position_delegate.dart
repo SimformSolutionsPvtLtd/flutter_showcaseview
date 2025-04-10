@@ -75,6 +75,7 @@ class _RenderPositionDelegate extends RenderBox
   var _maxHeight = 0.0;
   var _availableScreenWidth = 0.0;
   var _availableScreenHeight = 0.0;
+  var _minimumActionBoxSize = Size.zero;
 
   Size get _toolTipBoxSize =>
       TooltipLayoutSlot.tooltipBox.getObjectManager?.size ?? Size.zero;
@@ -82,24 +83,17 @@ class _RenderPositionDelegate extends RenderBox
   Size get _actionBoxSize =>
       TooltipLayoutSlot.actionBox.getObjectManager?.size ?? Size.zero;
 
-  Size _minimumActionBoxSize = Size.zero;
-
   double get _xOffset =>
       TooltipLayoutSlot.tooltipBox.getObjectManager?.xOffset ?? 0.0;
 
-  set _xOffset(double value) {
-    if (TooltipLayoutSlot.tooltipBox.getObjectManager == null) return;
-    TooltipLayoutSlot.tooltipBox.getObjectManager!.xOffset = value;
-  }
+  set _xOffset(double value) =>
+      TooltipLayoutSlot.tooltipBox.getObjectManager?.xOffset = value;
 
   double get _yOffset =>
       TooltipLayoutSlot.tooltipBox.getObjectManager?.yOffset ?? 0.0;
 
-  set _yOffset(double value) {
-    if (TooltipLayoutSlot.tooltipBox.getObjectManager != null) {
-      TooltipLayoutSlot.tooltipBox.getObjectManager!.yOffset = value;
-    }
-  }
+  set _yOffset(double value) =>
+      TooltipLayoutSlot.tooltipBox.getObjectManager?.yOffset = value;
 
   @override
   void performLayout() {
@@ -131,7 +125,7 @@ class _RenderPositionDelegate extends RenderBox
     _performFinalChildLayout();
 
     // Cleanup
-    RenderObjectManager.renderObjects.clear();
+    RenderObjectManager.clear();
   }
 
   /// Initialize layout variables and set size
@@ -139,7 +133,7 @@ class _RenderPositionDelegate extends RenderBox
     // Set size for this render object
     size = constraints.biggest;
 
-    final totalScreenEdgePadding = (2 * screenEdgePadding);
+    final totalScreenEdgePadding = 2 * screenEdgePadding;
 
     // Get available screen dimensions
     _availableScreenWidth = screenSize.width - totalScreenEdgePadding;
@@ -152,10 +146,9 @@ class _RenderPositionDelegate extends RenderBox
 
   /// Find and identify children by ID
   void _identifyChildren() {
-    RenderBox? child = firstChild;
+    var child = firstChild;
     while (child != null) {
-      final MultiChildLayoutParentData childParentData =
-          child.parentData! as MultiChildLayoutParentData;
+      final childParentData = child.parentData! as MultiChildLayoutParentData;
 
       if (childParentData.id is! TooltipLayoutSlot) {
         child = childParentData.nextSibling;
@@ -232,7 +225,7 @@ class _RenderPositionDelegate extends RenderBox
     var tooltipBoxManager = TooltipLayoutSlot.tooltipBox.getObjectManager;
     if (tooltipBoxManager == null) return 0.0;
 
-    double tooltipHeight = tooltipBoxManager.size.height;
+    var tooltipHeight = tooltipBoxManager.size.height;
     if (hasSecondBox) {
       var actionBoxManager = TooltipLayoutSlot.actionBox.getObjectManager;
       if (actionBoxManager != null) {
@@ -248,10 +241,10 @@ class _RenderPositionDelegate extends RenderBox
     // Use provided position or Try positions in priority order:
     // bottom, top, left, right
     tooltipPosition = position ??
-        _fitsInPosition(
+        _getSuitablePosition(
           _toolTipBoxSize,
           tooltipHeight,
-        ).getPosition();
+        ).get();
   }
 
   /// Calculate initial tooltip position
@@ -318,6 +311,8 @@ class _RenderPositionDelegate extends RenderBox
           _maxWidth = minWidth;
           _xOffset = screenEdgePadding + showcaseOffset.dx;
           _needToResize = true;
+          //TODO: remove breaks when we remove support for older version of the
+          // flutter : https://dart.dev/tools/linter-rules/unnecessary_breaks
           break;
         case TooltipPosition.right:
           // Flip to right side
@@ -447,30 +442,31 @@ class _RenderPositionDelegate extends RenderBox
         break;
     }
 
-    final fitsInPosition = _fitsInPosition(_toolTipBoxSize, tooltipHeight);
+    final suitablePosition =
+        _getSuitablePosition(_toolTipBoxSize, tooltipHeight);
 
-    if (fitsInPosition.checkFor(oppositePosition)) {
+    if (suitablePosition.checkFor(oppositePosition)) {
       return oppositePosition;
     }
 
     // Third preference: try bottom position
     if (currentPosition != TooltipPosition.bottom &&
-        fitsInPosition.checkFor(TooltipPosition.bottom)) {
+        suitablePosition.checkFor(TooltipPosition.bottom)) {
       return TooltipPosition.bottom;
     }
 
     // Fourth preference: try top position
     if (currentPosition != TooltipPosition.top &&
-        fitsInPosition.checkFor(TooltipPosition.top)) {
+        suitablePosition.checkFor(TooltipPosition.top)) {
       return TooltipPosition.top;
     }
 
     // Fifth preference: try horizontal positions if not already tried
     if (currentPosition.isVertical) {
-      if (fitsInPosition.checkFor(TooltipPosition.left)) {
+      if (suitablePosition.checkFor(TooltipPosition.left)) {
         return TooltipPosition.left;
       }
-      if (fitsInPosition.checkFor(TooltipPosition.right)) {
+      if (suitablePosition.checkFor(TooltipPosition.right)) {
         return TooltipPosition.right;
       }
     }
@@ -510,22 +506,22 @@ class _RenderPositionDelegate extends RenderBox
   /// Handle tooltip exceeding top screen edge
   void _handleTopEdgeBoundary(double tooltipHeight) {
     if (tooltipPosition.isTop) {
-      final fitsInPosition = _fitsInPosition(
+      final suitablePosition = _getSuitablePosition(
         _toolTipBoxSize,
         tooltipHeight,
       );
 
-      if (fitsInPosition.checkFor(TooltipPosition.bottom)) {
+      if (suitablePosition.checkFor(TooltipPosition.bottom)) {
         // Option 1: Flip to bottom side if it fits
         _needToFlip = true;
-      } else if (fitsInPosition.checkFor(TooltipPosition.left)) {
+      } else if (suitablePosition.checkFor(TooltipPosition.left)) {
         // Option 2: Switch to left position if it fits
         tooltipPosition = TooltipPosition.left;
         if (_maxHeight > _availableScreenHeight) {
           _maxHeight = _availableScreenHeight;
         }
         _needToResize = true;
-      } else if (fitsInPosition.checkFor(TooltipPosition.right)) {
+      } else if (suitablePosition.checkFor(TooltipPosition.right)) {
         // Option 3: Switch to right position if it fits
         tooltipPosition = TooltipPosition.right;
         if (_maxHeight > _availableScreenHeight) {
@@ -551,21 +547,21 @@ class _RenderPositionDelegate extends RenderBox
   /// Handle tooltip exceeding bottom screen edge
   void _handleBottomEdgeBoundary(double tooltipHeight) {
     if (tooltipPosition.isBottom) {
-      final fitsInPosition = _fitsInPosition(
+      final suitablePosition = _getSuitablePosition(
         _toolTipBoxSize,
         tooltipHeight,
       );
-      if (fitsInPosition.checkFor(TooltipPosition.top)) {
+      if (suitablePosition.checkFor(TooltipPosition.top)) {
         // Option 1: Flip to top side if it fits
         _needToFlip = true;
-      } else if (fitsInPosition.checkFor(TooltipPosition.left)) {
+      } else if (suitablePosition.checkFor(TooltipPosition.left)) {
         // Option 2: Switch to left position if it fits
         tooltipPosition = TooltipPosition.left;
         if (_maxHeight > _availableScreenHeight) {
           _maxHeight = _availableScreenHeight;
         }
         _needToResize = true;
-      } else if (fitsInPosition.checkFor(TooltipPosition.right)) {
+      } else if (suitablePosition.checkFor(TooltipPosition.right)) {
         // Option 3: Switch to right position if it fits
         tooltipPosition = TooltipPosition.right;
         if (_maxHeight > _availableScreenHeight) {
@@ -611,7 +607,7 @@ class _RenderPositionDelegate extends RenderBox
     }
 
     // Resize tooltip box
-    TooltipLayoutSlot.tooltipBox.getObjectManager!.performLayout(
+    TooltipLayoutSlot.tooltipBox.getObjectManager?.performLayout(
       BoxConstraints.tightFor(
         width: _maxWidth,
         height: tooltipBoxHeight,
@@ -620,33 +616,28 @@ class _RenderPositionDelegate extends RenderBox
     );
 
     // Resize action box if exists
-    if (hasSecondBox && TooltipLayoutSlot.actionBox.getObjectManager != null) {
-      TooltipLayoutSlot.actionBox.getObjectManager!.performLayout(
-        BoxConstraints.tightFor(
-          width: _maxWidth,
-          height: null,
-        ),
-        parentUsesSize: true,
-      );
-    }
+    TooltipLayoutSlot.actionBox.getObjectManager?.performLayout(
+      BoxConstraints.tightFor(
+        width: _maxWidth,
+        height: null,
+      ),
+      parentUsesSize: true,
+    );
 
     // Recalculate position if not flipping
-    if (!_needToFlip) {
-      final initialPosition = positionToolTip(
-        targetSize: targetSize,
-        toolTipBoxSize: _toolTipBoxSize,
-        tooltipPosition: tooltipPosition,
-      );
-      _xOffset = initialPosition.dx;
-      _yOffset = initialPosition.dy;
-    }
+    if (_needToFlip) return;
+    final initialPosition = positionToolTip(
+      targetSize: targetSize,
+      toolTipBoxSize: _toolTipBoxSize,
+      tooltipPosition: tooltipPosition,
+    );
+    _xOffset = initialPosition.dx;
+    _yOffset = initialPosition.dy;
   }
 
   /// Handle flipping to opposite side if needed
   void _handleFlipping() {
-    if (!_needToFlip) {
-      return;
-    }
+    if (!_needToFlip) return;
 
     switch (tooltipPosition) {
       case TooltipPosition.bottom:
@@ -717,13 +708,13 @@ class _RenderPositionDelegate extends RenderBox
   void _applyTargetPadding() {
     switch (tooltipPosition) {
       case TooltipPosition.top:
-        _yOffset -= (targetPadding.top);
+        _yOffset -= targetPadding.top;
         break;
       case TooltipPosition.bottom:
-        _yOffset += (targetPadding.bottom);
+        _yOffset += targetPadding.bottom;
         break;
       case TooltipPosition.left:
-        _xOffset -= (targetPadding.left);
+        _xOffset -= targetPadding.left;
         break;
       case TooltipPosition.right:
         _xOffset += targetPadding.right;
@@ -748,61 +739,55 @@ class _RenderPositionDelegate extends RenderBox
 
   /// Layout the arrow element
   void _layoutArrowElement() {
-    if (TooltipLayoutSlot.arrow.getObjectManager != null) {
-      TooltipLayoutSlot.arrow.getObjectManager!.performLayout(
-        const BoxConstraints.tightFor(
-          width: Constants.arrowWidth,
-          height: Constants.arrowHeight,
-        ),
-      );
-    }
+    TooltipLayoutSlot.arrow.getObjectManager?.performLayout(
+      const BoxConstraints.tightFor(
+        width: Constants.arrowWidth,
+        height: Constants.arrowHeight,
+      ),
+    );
   }
 
   /// Layout the tooltip content box
   void _layoutTooltipBox() {
-    if (TooltipLayoutSlot.tooltipBox.getObjectManager != null) {
-      TooltipLayoutSlot.tooltipBox.getObjectManager!.performLayout(
-        BoxConstraints.tightFor(
-          width: _toolTipBoxSize.width,
-          height: _toolTipBoxSize.height,
-        ),
-      );
+    TooltipLayoutSlot.tooltipBox.getObjectManager?.performLayout(
+      BoxConstraints.tightFor(
+        width: _toolTipBoxSize.width,
+        height: _toolTipBoxSize.height,
+      ),
+    );
 
-      // Position the tooltip content box
-      final firstBoxParentData =
-          TooltipLayoutSlot.tooltipBox.getObjectManager!.layoutParentData;
-      firstBoxParentData.offset = Offset(_xOffset, _yOffset);
-    }
+    // Position the tooltip content box
+    final firstBoxParentData =
+        TooltipLayoutSlot.tooltipBox.getObjectManager?.layoutParentData;
+    firstBoxParentData?.offset = Offset(_xOffset, _yOffset);
   }
 
   /// Layout the action box
   void _layoutActionBox() {
-    if (hasSecondBox && TooltipLayoutSlot.actionBox.getObjectManager != null) {
-      TooltipLayoutSlot.actionBox.getObjectManager!.performLayout(
-        BoxConstraints.tightFor(
-          width: _actionBoxSize.width,
-          height: _actionBoxSize.height,
-        ),
+    TooltipLayoutSlot.actionBox.getObjectManager?.performLayout(
+      BoxConstraints.tightFor(
+        width: _actionBoxSize.width,
+        height: _actionBoxSize.height,
+      ),
+    );
+
+    // Position the action box
+    final secondBoxParentData =
+        TooltipLayoutSlot.actionBox.getObjectManager?.layoutParentData;
+
+    // Position differently based on tooltip direction
+    if (tooltipPosition.isTop) {
+      // For top tooltips, action box goes above content
+      secondBoxParentData?.offset = Offset(
+        _xOffset,
+        _yOffset - _actionBoxSize.height - gapBetweenContentAndAction,
       );
-
-      // Position the action box
-      final secondBoxParentData =
-          TooltipLayoutSlot.actionBox.getObjectManager!.layoutParentData;
-
-      // Position differently based on tooltip direction
-      if (tooltipPosition.isTop) {
-        // For top tooltips, action box goes above content
-        secondBoxParentData.offset = Offset(
-          _xOffset,
-          _yOffset - _actionBoxSize.height - gapBetweenContentAndAction,
-        );
-      } else {
-        // For other positions, action box goes below content
-        secondBoxParentData.offset = Offset(
-          _xOffset,
-          _yOffset + _toolTipBoxSize.height + gapBetweenContentAndAction,
-        );
-      }
+    } else {
+      // For other positions, action box goes below content
+      secondBoxParentData?.offset = Offset(
+        _xOffset,
+        _yOffset + _toolTipBoxSize.height + gapBetweenContentAndAction,
+      );
     }
   }
 
@@ -926,11 +911,19 @@ class _RenderPositionDelegate extends RenderBox
     return Offset(xOffset, yOffset);
   }
 
-  /// Helper method to check if tooltip fits in a specific position
+  /// Determines in which positions the tooltip can be displayed without exceeding screen boundaries.
   ///
-  /// Returns true if the tooltip fits in the given position without
-  /// extending beyond screen boundaries
-  _FitsInPosition _fitsInPosition(
+  /// This method evaluates the available space in all four directions (top, bottom, left, right)
+  /// around the target element and determines whether the tooltip can fit in each direction
+  /// while respecting screen edge padding.
+  ///
+  /// Parameters:
+  /// - [tooltipSize]: The current width and height of the tooltip content
+  /// - [totalHeight]: The total height including tooltip content and action box (if present)
+  ///
+  /// Returns:
+  /// A [_SuitablePosition] object containing boolean flags for each valid position
+  _SuitablePosition _getSuitablePosition(
     Size tooltipSize,
     double totalHeight,
   ) {
@@ -967,7 +960,7 @@ class _RenderPositionDelegate extends RenderBox
             arrowPadding -
             showcaseOffset.dx <=
         screenSize.width - screenEdgePadding;
-    return _FitsInPosition(
+    return _SuitablePosition(
       isBottom: isBottom,
       isLeft: isLeft,
       isRight: isRight,
@@ -976,8 +969,8 @@ class _RenderPositionDelegate extends RenderBox
   }
 }
 
-class _FitsInPosition {
-  const _FitsInPosition({
+class _SuitablePosition {
+  const _SuitablePosition({
     this.isRight = false,
     this.isLeft = false,
     this.isTop = false,
@@ -1005,7 +998,7 @@ class _FitsInPosition {
     }
   }
 
-  TooltipPosition getPosition() {
+  TooltipPosition get() {
     if (isBottom) return TooltipPosition.bottom;
     if (isTop) return TooltipPosition.top;
     if (isLeft) return TooltipPosition.left;

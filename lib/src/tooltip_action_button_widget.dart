@@ -14,7 +14,7 @@ class TooltipActionButtonWidget extends StatelessWidget {
 
   /// This is used for [TooltipActionButton] to close, next and previous
   /// showcase navigation
-  final ShowCaseWidgetState showCaseState;
+  final ShowcaseView showCaseState;
 
   @override
   Widget build(BuildContext context) {

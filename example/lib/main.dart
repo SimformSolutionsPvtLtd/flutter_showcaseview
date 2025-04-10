@@ -24,75 +24,8 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xffEE5366),
       ),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: ShowCaseWidget(
-          hideFloatingActionWidgetForShowcase: [_lastShowcaseWidget],
-          globalFloatingActionWidget: (showcaseContext) => FloatingActionWidget(
-            left: 16,
-            bottom: 16,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: ShowCaseWidget.of(showcaseContext).dismiss,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xffEE5366),
-                ),
-                child: const Text(
-                  'Skip',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          onStart: (index, key) {
-            log('onStart: $index, $key');
-          },
-          onComplete: (index, key) {
-            log('onComplete: $index, $key');
-            if (index == 4) {
-              SystemChrome.setSystemUIOverlayStyle(
-                SystemUiOverlayStyle.light.copyWith(
-                  statusBarIconBrightness: Brightness.dark,
-                  statusBarColor: Colors.white,
-                ),
-              );
-            }
-          },
-          blurValue: 1,
-          autoPlayDelay: const Duration(seconds: 3),
-          builder: (context) => const MailPage(),
-          globalTooltipActionConfig: const TooltipActionConfig(
-            position: TooltipActionPosition.inside,
-            alignment: MainAxisAlignment.spaceBetween,
-            actionGap: 20,
-          ),
-          globalTooltipActions: [
-            // Here we don't need previous action for the first showcase widget
-            // so we hide this action for the first showcase widget
-            TooltipActionButton(
-              type: TooltipDefaultActionType.previous,
-              textStyle: const TextStyle(
-                color: Colors.white,
-              ),
-              hideActionWidgetForShowcase: [_firstShowcaseWidget],
-            ),
-            // Here we don't need next action for the last showcase widget so we
-            // hide this action for the last showcase widget
-            TooltipActionButton(
-              type: TooltipDefaultActionType.next,
-              textStyle: const TextStyle(
-                color: Colors.white,
-              ),
-              hideActionWidgetForShowcase: [_lastShowcaseWidget],
-            ),
-          ],
-          onDismiss: (key) {
-            debugPrint('Dismissed at $key');
-          },
-        ),
+      home: const Scaffold(
+        body: MailPage(),
       ),
     );
   }
@@ -109,6 +42,7 @@ class _MailPageState extends State<MailPage> {
   final GlobalKey _two = GlobalKey();
   final GlobalKey _three = GlobalKey();
   final GlobalKey _four = GlobalKey();
+  final mainScreenScope = '_mainScreen';
   List<Mail> mails = [];
 
   final scrollController = ScrollController();
@@ -116,9 +50,78 @@ class _MailPageState extends State<MailPage> {
   @override
   void initState() {
     super.initState();
+    // Register the showcase view
+    ShowcaseView.register(
+      scope: mainScreenScope,
+      hideFloatingActionWidgetForShowcase: [_lastShowcaseWidget],
+      globalFloatingActionWidget: (showcaseContext) => FloatingActionWidget(
+        left: 16,
+        bottom: 16,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: ShowcaseView.getNamed(mainScreenScope).dismiss,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xffEE5366),
+            ),
+            child: const Text(
+              'Skip',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+              ),
+            ),
+          ),
+        ),
+      ),
+      onStart: (index, key) {
+        log('onStart: $index, $key');
+      },
+      onComplete: (index, key) {
+        log('onComplete: $index, $key');
+        if (index == 4) {
+          SystemChrome.setSystemUIOverlayStyle(
+            SystemUiOverlayStyle.light.copyWith(
+              statusBarIconBrightness: Brightness.dark,
+              statusBarColor: Colors.white,
+            ),
+          );
+        }
+      },
+      blurValue: 1,
+      autoPlayDelay: const Duration(seconds: 3),
+      globalTooltipActionConfig: const TooltipActionConfig(
+        position: TooltipActionPosition.inside,
+        alignment: MainAxisAlignment.spaceBetween,
+        actionGap: 20,
+      ),
+      globalTooltipActions: [
+        // Here we don't need previous action for the first showcase widget
+        // so we hide this action for the first showcase widget
+        TooltipActionButton(
+          type: TooltipDefaultActionType.previous,
+          textStyle: const TextStyle(
+            color: Colors.white,
+          ),
+          hideActionWidgetForShowcase: [_firstShowcaseWidget],
+        ),
+        // Here we don't need next action for the last showcase widget so we
+        // hide this action for the last showcase widget
+        TooltipActionButton(
+          type: TooltipDefaultActionType.next,
+          textStyle: const TextStyle(
+            color: Colors.white,
+          ),
+          hideActionWidgetForShowcase: [_lastShowcaseWidget],
+        ),
+      ],
+      onDismiss: (key) {
+        debugPrint('Dismissed at $key');
+      },
+    );
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ShowCaseWidget.of(context).startShowCase(
+      (_) => ShowcaseView.get().startShowCase(
           [_firstShowcaseWidget, _two, _three, _four, _lastShowcaseWidget]),
     );
     mails = [
@@ -237,7 +240,7 @@ class _MailPageState extends State<MailPage> {
                                           'Floating Action widget for first '
                                           'showcase is now hidden',
                                         );
-                                        ShowCaseWidget.of(context)
+                                        ShowcaseView.get()
                                             .hideFloatingActionWidgetForKeys([
                                           _firstShowcaseWidget,
                                           _lastShowcaseWidget
@@ -299,7 +302,7 @@ class _MailPageState extends State<MailPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xffEE5366),
                             ),
-                            onPressed: ShowCaseWidget.of(context).dismiss,
+                            onPressed: ShowcaseView.get().dismiss,
                             child: const Text(
                               'Close Showcase',
                               style: TextStyle(
@@ -397,7 +400,7 @@ class _MailPageState extends State<MailPage> {
               name: 'Back',
               onTap: () {
                 // Write your code on button tap
-                ShowCaseWidget.of(context).previous();
+                ShowcaseView.get().previous();
               },
               backgroundColor: Colors.pink.shade50,
               textStyle: const TextStyle(
@@ -426,7 +429,7 @@ class _MailPageState extends State<MailPage> {
                * currently rendered so the showcased keys are available in the
                * render tree. */
               scrollController.jumpTo(0);
-              ShowCaseWidget.of(context).startShowCase([
+              ShowcaseView.get().startShowCase([
                 _firstShowcaseWidget,
                 _two,
                 _three,
@@ -468,10 +471,10 @@ class _MailPageState extends State<MailPage> {
               ),
             ).then((_) {
               setState(() {
-                ShowCaseWidget.of(context).startShowCase(
+                ShowcaseView.getNamed(mainScreenScope).startShowCase(
                   [_four, _lastShowcaseWidget],
                   delay: const Duration(
-                    milliseconds: 200,
+                    milliseconds: 0,
                   ),
                 );
               });
@@ -489,7 +492,7 @@ class _MailPageState extends State<MailPage> {
               name: 'Back',
               onTap: () {
                 // Write your code on button tap
-                ShowCaseWidget.of(context).previous();
+                ShowcaseView.get().previous();
               },
               backgroundColor: Colors.pink.shade50,
               textStyle: const TextStyle(

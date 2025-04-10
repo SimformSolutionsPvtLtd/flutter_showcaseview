@@ -126,7 +126,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final box = widget.showcaseController.position?.renderBox;
     // This is a workaround to avoid the error when the widget is not mounted
     // but won't happen in general cases
-    if (box == null) {
+    if (box == null || !box.attached) {
       return const SizedBox.shrink();
     }
     final targetPosition = box.localToGlobal(Offset.zero);

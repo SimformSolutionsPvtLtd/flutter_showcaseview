@@ -567,11 +567,10 @@ class Showcase extends StatefulWidget {
 }
 
 class _ShowcaseState extends State<Showcase> {
-  ShowcaseController get _controller =>
-      ShowcaseService.instance.getControllerForShowcase(
+  ShowcaseController get _controller => ShowcaseService.instance.getController(
         key: widget.showcaseKey,
-        showcaseId: _uniqueId,
-        scope: _showCaseWidgetManager.scope,
+        id: _uniqueId,
+        scope: _showCaseWidgetManager.name,
       );
 
   late ShowcaseScope _showCaseWidgetManager;
@@ -581,16 +580,17 @@ class _ShowcaseState extends State<Showcase> {
   @override
   void initState() {
     super.initState();
-    _showCaseWidgetManager = ShowcaseService.instance.getShowcaseManager();
+    _showCaseWidgetManager = ShowcaseService.instance.getScope();
     ShowcaseController(
       id: _uniqueId,
       key: widget.showcaseKey,
-      showcaseState: () => this,
+      getShowcaseState: () => this,
       showCaseView: _showCaseWidgetManager.showcaseView,
     );
 
-    OverlayManager.instance.overlayState =
-        context.findRootAncestorStateOfType<OverlayState>();
+    OverlayManager.instance.updateState(
+      context.findRootAncestorStateOfType<OverlayState>(),
+    );
   }
 
   @override
@@ -601,15 +601,15 @@ class _ShowcaseState extends State<Showcase> {
   }
 
   _updateControllerValues() {
-    _showCaseWidgetManager = ShowcaseService.instance.getShowcaseManager(
-      scope: _showCaseWidgetManager.scope,
+    _showCaseWidgetManager = ShowcaseService.instance.getScope(
+      scope: _showCaseWidgetManager.name,
     );
-    ShowcaseService.instance.registerShowcaseController(
+    ShowcaseService.instance.registerController(
       controller: _controller
         ..showCaseView = _showCaseWidgetManager.showcaseView,
       key: widget.showcaseKey,
-      showcaseId: _uniqueId,
-      scope: _showCaseWidgetManager.scope,
+      id: _uniqueId,
+      scope: _showCaseWidgetManager.name,
     );
   }
 
@@ -624,10 +624,10 @@ class _ShowcaseState extends State<Showcase> {
 
   @override
   void dispose() {
-    ShowcaseService.instance.removeShowcaseController(
+    ShowcaseService.instance.removeController(
       key: widget.showcaseKey,
-      uniqueShowcaseKey: _uniqueId,
-      scope: _showCaseWidgetManager.scope,
+      id: _uniqueId,
+      scope: _showCaseWidgetManager.name,
     );
     super.dispose();
   }

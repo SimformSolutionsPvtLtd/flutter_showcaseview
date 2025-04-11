@@ -42,7 +42,7 @@ class OverlayManager {
   OverlayManager._();
 
   /// Singleton instance of the manager
-  static final OverlayManager _instance = OverlayManager._();
+  static final _instance = OverlayManager._();
 
   /// Public accessor for the singleton instance
   static OverlayManager get instance => _instance;
@@ -54,26 +54,23 @@ class OverlayManager {
   OverlayEntry? _overlayEntry;
 
   /// Flag to determine if overlay should be shown
-  bool _needToShowOverlay = false;
-
-  /// Returns whether overlays should be shown
-  bool get showOverlays => _needToShowOverlay;
-
-  /// Returns whether an overlay is currently being displayed
-  bool get isShowingOverlay => _overlayEntry != null;
+  var _shouldShow = false;
 
   /// The current showcase scope identifier
-  String _currentScope = Constants.initialScope;
+  var _currentScope = Constants.initialScope;
+
+  /// Returns whether an overlay is currently being displayed
+  bool get _isShowing => _overlayEntry != null;
 
   /// Updates the overlay visibility based on the provided showcase view
   ///
   /// This method is called from showcase widgets to control overlay visibility.
   /// If the scope has changed, it will dispose the previous overlay.
   ///
-  /// * [showOverlay] - Whether to show or hide the overlay
+  /// * [show] - Whether to show or hide the overlay
   /// * [showcaseView] - The showcase view requesting this update
-  void updateOverlay({
-    required bool showOverlay,
+  void update({
+    required bool show,
     required ShowcaseView showcaseView,
   }) {
     if (_currentScope != showcaseView.scope) {
@@ -81,15 +78,37 @@ class OverlayManager {
       _currentScope = showcaseView.scope;
       return;
     }
-    _needToShowOverlay = showOverlay;
+    _shouldShow = show;
     _buildOverlay();
-    _syncWidgetAndOverlay(showcaseView);
+    _sync(showcaseView);
+  }
+
+  /// Updates the overlay state reference used by the manager
+  ///
+  /// This method allows setting or updating the [OverlayState] that will be used
+  /// for inserting overlay entries.
+  ///
+  /// * [overlayState] - The new overlay state to use, can be null
+  void updateState(OverlayState? overlayState) {
+    this.overlayState = overlayState;
+  }
+
+  /// Disposes the overlay for the specified scope
+  ///
+  /// Hides the overlay if it's currently showing and matches the provided scope.
+  ///
+  /// * [scope] - The scope to dispose overlays for
+  void dispose({required String scope}) {
+    if (!_isShowing || _currentScope != scope) {
+      return;
+    }
+    _hide();
   }
 
   /// Shows the overlay using the provided builder
   ///
   /// Creates a new overlay entry if none exists, otherwise rebuilds the existing one.
-  void _showOverlay(WidgetBuilder overlayBuilder) {
+  void _show(WidgetBuilder overlayBuilder) {
     if (_overlayEntry != null) {
       // Rebuild overlay.
       _buildOverlay();
@@ -99,19 +118,19 @@ class OverlayManager {
     _overlayEntry = OverlayEntry(
       builder: overlayBuilder,
     );
-    _addToOverlay(_overlayEntry!);
+    _add(_overlayEntry!);
   }
 
   /// Adds the overlay entry to the overlay state
   ///
   /// Safely handles the case where overlay state might be null.
-  void _addToOverlay(OverlayEntry overlayEntry) {
+  void _add(OverlayEntry overlayEntry) {
     if (overlayState == null) return;
     overlayState!.insert(overlayEntry);
   }
 
   /// Removes and clears the current overlay entry
-  void _hideOverlay() {
+  void _hide() {
     if (_overlayEntry == null) return;
     _overlayEntry!.remove();
     _overlayEntry = null;
@@ -119,21 +138,21 @@ class OverlayManager {
 
   /// Synchronizes the overlay visibility with the showcase manager state
   ///
-  /// Shows or hides the overlay based on the [_needToShowOverlay] flag.
-  void _syncWidgetAndOverlay(ShowcaseView showcaseView) {
-    if (isShowingOverlay && !_needToShowOverlay) {
-      _hideOverlay();
-    } else if (!isShowingOverlay && _needToShowOverlay) {
-      _showOverlay((_) => _getOverlayBuilder(showcaseView));
+  /// Shows or hides the overlay based on the [_shouldShow] flag.
+  void _sync(ShowcaseView showcaseView) {
+    if (_isShowing && !_shouldShow) {
+      _hide();
+    } else if (!_isShowing && _shouldShow) {
+      _show((_) => _getBuilder(showcaseView));
     }
   }
 
   /// Creates and returns the overlay widget structure
   ///
   /// Builds a stack with background and tooltip widgets based on active controllers.
-  Widget _getOverlayBuilder(ShowcaseView showcaseView) {
+  Widget _getBuilder(ShowcaseView showcaseView) {
     final controller = ShowcaseService.instance
-            .getShowCaseControllers(
+            .getControllers(
               scope: showcaseView.scope,
             )[showcaseView.getCurrentActiveShowcaseKey]
             ?.values
@@ -203,16 +222,4 @@ class OverlayManager {
 
   /// Forces the overlay entry to rebuild
   void _buildOverlay() => _overlayEntry?.markNeedsBuild();
-
-  /// Disposes the overlay for the specified scope
-  ///
-  /// Hides the overlay if it's currently showing and matches the provided scope.
-  ///
-  /// * [scope] - The scope to dispose overlays for
-  void dispose({required String scope}) {
-    if (!isShowingOverlay || _currentScope != scope) {
-      return;
-    }
-    _hideOverlay();
-  }
 }

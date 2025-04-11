@@ -25,18 +25,18 @@ class ShowcaseController {
   ///
   /// * [id] - Unique identifier for this showcase instance
   /// * [key] - Global key associated with the showcase widget
-  /// * [showcaseState] - Reference to the showcase state
+  /// * [getShowcaseState] - Reference to the showcase state
   /// * [showCaseView] - Reference to the parent showcase view
   ShowcaseController({
     required this.id,
     required this.key,
-    required this.showcaseState,
+    required this.getShowcaseState,
     required this.showCaseView,
   }) {
-    ShowcaseService.instance.registerShowcaseController(
+    ShowcaseService.instance.registerController(
       controller: this,
       key: key,
-      showcaseId: id,
+      id: id,
       scope: showCaseView.scope,
     );
     initRootWidget();
@@ -49,7 +49,7 @@ class ShowcaseController {
   final GlobalKey key;
 
   /// Configuration for the showcase
-  final ValueGetter<State<Showcase>> showcaseState;
+  final ValueGetter<State<Showcase>> getShowcaseState;
 
   /// Reference to the parent showcase widget state
   ShowcaseView showCaseView;
@@ -85,19 +85,19 @@ class ShowcaseController {
   ///
   /// Provides access to all properties and settings of the current showcase widget.
   /// This is used throughout the controller to access showcase configuration options.
-  Showcase get config => showcaseState().widget;
+  Showcase get config => getShowcaseState().widget;
 
   /// Returns the BuildContext for this showcase
   ///
   /// Used for positioning calculations and widget rendering.
   /// This context represents the location of the showcase target in the widget tree.
-  BuildContext get _context => showcaseState().context;
+  BuildContext get _context => getShowcaseState().context;
 
   /// Checks if the showcase context is still valid
   ///
   /// Returns true if the context is mounted (valid) and false otherwise.
   /// Used to prevent operations on widgets that have been removed from the tree.
-  bool get _mounted => showcaseState().mounted;
+  bool get _mounted => getShowcaseState().mounted;
 
   /// Initializes the root widget size and render object
   ///
@@ -130,8 +130,8 @@ class ShowcaseController {
       if (!showCaseView.enableShowcase) return;
       updateControllerData();
       if (!showCaseView.isShowcaseRunning) return;
-      OverlayManager.instance.updateOverlay(
-        showOverlay: showCaseView.isShowcaseRunning,
+      OverlayManager.instance.update(
+        show: showCaseView.isShowcaseRunning,
         showcaseView: showCaseView,
       );
     });
@@ -312,8 +312,8 @@ class ShowcaseController {
     isScrollRunning = true;
     updateControllerData();
     startShowcase();
-    OverlayManager.instance.updateOverlay(
-      showOverlay: showCaseView.isShowcaseRunning,
+    OverlayManager.instance.update(
+      show: showCaseView.isShowcaseRunning,
       showcaseView: showCaseView,
     );
     await Scrollable.ensureVisible(
@@ -322,16 +322,11 @@ class ShowcaseController {
       alignment: config.scrollAlignment,
     );
 
-    if (!_mounted) {
-      assert(_mounted);
-      return;
-    }
-
     isScrollRunning = false;
     updateControllerData();
     startShowcase();
-    OverlayManager.instance.updateOverlay(
-      showOverlay: showCaseView.isShowcaseRunning,
+    OverlayManager.instance.update(
+      show: showCaseView.isShowcaseRunning,
       showcaseView: showCaseView,
     );
   }

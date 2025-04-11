@@ -4,6 +4,7 @@ import 'constants.dart';
 import 'models/showcase_scope.dart';
 import 'showcase/showcase_controller.dart';
 import 'showcase_view.dart';
+import 'utils/extensions.dart';
 
 /// A scoped service locator for showcase functionality
 ///
@@ -21,7 +22,7 @@ class ShowcaseService {
   static ShowcaseService get instance => _instance;
 
   /// Map of scope names to showcase managers
-  final Map<String, ShowcaseScope> _managers = {};
+  final Map<String, ShowcaseScope> _showcaseViews = {};
 
   /// Map of scope names to showcase controllers
 
@@ -37,9 +38,9 @@ class ShowcaseService {
   /// * [scope] - Optional scope name (defaults to current scope)
   void register(ShowcaseView showcaseView, {String? scope}) {
     final scopeName = scope ?? currentScope;
-    _managers[scopeName] = ShowcaseScope(
+    _showcaseViews[scopeName] = ShowcaseScope(
       showcaseView: showcaseView,
-      scope: scopeName,
+      name: scopeName,
     );
 
     // If a new scope is provided, push it to the stack
@@ -51,29 +52,15 @@ class ShowcaseService {
   /// Unregisters the [ShowcaseView] from the specified scope
   ///
   /// * [scope] - Optional scope name (defaults to current scope)
-  void unregister({String? scope}) {
+  String? unregister({String? scope}) {
     final scopeName = scope ?? currentScope;
-    _managers.remove(scopeName);
+    _showcaseViews.remove(scopeName);
 
     // If we're removing the current scope, pop it from the stack
-    if (scopeName != currentScope || _scopeStack.isEmpty) return;
-    _scopeStack.removeLast();
-  }
-
-  /// Push a new scope to the stack without registering a manager
-  ///
-  /// Useful when navigating to a new screen
-  void pushScope(String scope) {
-    if (_scopeStack.contains(scope)) return;
-    _scopeStack.add(scope);
-  }
-
-  /// Pop the current scope from the stack
-  ///
-  /// Returns to previous scope, useful when popping a screen
-  void popScope() {
-    if (_scopeStack.isEmpty) return;
-    _scopeStack.removeLast();
+    _scopeStack.removeFirstWhere(
+      (element) => element == scope,
+    );
+    return scope;
   }
 
   /// Returns whether a manager is registered in the specified scope
@@ -81,12 +68,12 @@ class ShowcaseService {
   /// * [scope] - Optional scope name (defaults to current scope)
   bool isRegistered({String? scope}) {
     final scopeName = scope ?? currentScope;
-    return _managers.containsKey(scopeName);
+    return _showcaseViews.containsKey(scopeName);
   }
 
-  ShowcaseScope getShowcaseManager({String? scope}) {
+  ShowcaseScope getScope({String? scope}) {
     final scopeName = scope ?? currentScope;
-    final manager = _managers[scopeName];
+    final manager = _showcaseViews[scopeName];
     if (manager == null) {
       throw Exception('No ShowcaseManager registered for scope "$scopeName". '
           'Make sure ShowCaseWidget is initialized in this scope.');
@@ -94,10 +81,10 @@ class ShowcaseService {
     return manager;
   }
 
-  Map<GlobalKey, Map<int, ShowcaseController>> getShowCaseControllers({
+  Map<GlobalKey, Map<int, ShowcaseController>> getControllers({
     required String scope,
   }) =>
-      getShowcaseManager(scope: scope).controllers;
+      getScope(scope: scope).controllers;
 
   /// Returns the [ShowcaseView] from the specified scope
   ///
@@ -105,46 +92,46 @@ class ShowcaseService {
   ///
   /// Throws an exception if no manager is registered in the specified scope
   ShowcaseView get({String? scope}) =>
-      getShowcaseManager(scope: scope ?? currentScope).showcaseView;
+      getScope(scope: scope ?? currentScope).showcaseView;
 
   /// Registers a showcase controller for given key and ID
-  void registerShowcaseController({
+  void registerController({
     required GlobalKey key,
     required ShowcaseController controller,
-    required int showcaseId,
+    required int id,
     required String scope,
   }) {
-    getShowCaseControllers(scope: scope)
+    getControllers(scope: scope)
         .putIfAbsent(
           key,
           () => {},
         )
         .update(
-          showcaseId,
+          id,
           (value) => controller,
           ifAbsent: () => controller,
         );
   }
 
   /// Removes showcase controller for given key and ID
-  void removeShowcaseController({
+  void removeController({
     required GlobalKey key,
-    required int uniqueShowcaseKey,
+    required int id,
     required String scope,
   }) {
-    getShowCaseControllers(scope: scope).remove(
-      uniqueShowcaseKey,
+    getControllers(scope: scope).remove(
+      id,
     );
   }
 
   /// Returns showcase controller for given key and ID
   /// Throws assertion error if controller not found
-  ShowcaseController getControllerForShowcase({
+  ShowcaseController getController({
     required GlobalKey key,
-    required int showcaseId,
+    required int id,
     required String scope,
   }) {
-    final controller = getShowCaseControllers(scope: scope)[key]?[showcaseId];
+    final controller = getControllers(scope: scope)[key]?[id];
     assert(
       controller != null,
       'Please register showcase controller first by calling '

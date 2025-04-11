@@ -5,11 +5,11 @@ import '../showcase_view.dart';
 
 class ShowcaseScope {
   ShowcaseScope({
-    required this.scope,
+    required this.name,
     required this.showcaseView,
   });
 
-  final String scope;
+  final String name;
   final ShowcaseView showcaseView;
 
   /// A mapping of showcase keys to their associated controllers

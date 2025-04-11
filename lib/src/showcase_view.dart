@@ -151,7 +151,7 @@ class ShowcaseView {
   /// Returns list of showcase controllers for current active showcase
   List<ShowcaseController> get _getCurrentActiveControllers {
     return ShowcaseService.instance
-            .getShowCaseControllers(
+            .getControllers(
               scope: scope,
             )[getCurrentActiveShowcaseKey]
             ?.values
@@ -205,8 +205,8 @@ class ShowcaseView {
       _ids = widgetIds;
       _activeWidgetId = 0;
       _onStart();
-      OverlayManager.instance.updateOverlay(
-        showOverlay: isShowcaseRunning,
+      OverlayManager.instance.update(
+        show: isShowcaseRunning,
         showcaseView: this,
       );
     } else {
@@ -223,8 +223,8 @@ class ShowcaseView {
   ///
   /// This method should be called when showcase state changes
   void updateOverlay() {
-    OverlayManager.instance.updateOverlay(
-      showOverlay: isShowcaseRunning,
+    OverlayManager.instance.update(
+      show: isShowcaseRunning,
       showcaseView: this,
     );
   }
@@ -297,8 +297,8 @@ class ShowcaseView {
       _cleanupAfterSteps();
       onFinish?.call();
     }
-    OverlayManager.instance.updateOverlay(
-      showOverlay: isShowcaseRunning,
+    OverlayManager.instance.update(
+      show: isShowcaseRunning,
       showcaseView: this,
     );
   }
@@ -313,8 +313,8 @@ class ShowcaseView {
     if (!_mounted) return;
 
     _cleanupAfterSteps();
-    OverlayManager.instance.updateOverlay(
-      showOverlay: isShowcaseRunning,
+    OverlayManager.instance.update(
+      show: isShowcaseRunning,
       showcaseView: this,
     );
   }

@@ -506,33 +506,39 @@ class _RenderPositionDelegate extends RenderBox
   /// Handle tooltip exceeding top screen edge
   void _handleTopEdgeBoundary(double tooltipHeight) {
     if (tooltipPosition.isTop) {
-      final suitablePosition = _getSuitablePosition(
-        _toolTipBoxSize,
-        tooltipHeight,
+      final optimalPosition = _getOptimalPositionForConstraint(
+        currentPosition: TooltipPosition.top,
+        tooltipHeight: tooltipHeight,
+        canResize: false, // Top positioning is constrained by screen edge
       );
 
-      if (suitablePosition.checkFor(TooltipPosition.bottom)) {
-        // Option 1: Flip to bottom side if it fits
-        _needToFlip = true;
-      } else if (suitablePosition.checkFor(TooltipPosition.left)) {
-        // Option 2: Switch to left position if it fits
-        tooltipPosition = TooltipPosition.left;
-        if (_maxHeight > _availableScreenHeight) {
-          _maxHeight = _availableScreenHeight;
-        }
-        _needToResize = true;
-      } else if (suitablePosition.checkFor(TooltipPosition.right)) {
-        // Option 3: Switch to right position if it fits
-        tooltipPosition = TooltipPosition.right;
-        if (_maxHeight > _availableScreenHeight) {
-          _maxHeight = _availableScreenHeight;
-        }
-        _needToResize = true;
-      } else {
-        // Option 4: Last resort - resize and keep at top
-        _maxHeight -= screenEdgePadding - _xOffset;
-        _yOffset = screenEdgePadding + showcaseOffset.dy;
-        _needToResize = true;
+      switch (optimalPosition) {
+        case TooltipPosition.bottom:
+          // Option 1: Flip to bottom side if it fits
+          _needToFlip = true;
+          break;
+        case TooltipPosition.left:
+          // Option 2: Switch to left position if it fits
+          tooltipPosition = TooltipPosition.left;
+          if (_maxHeight > _availableScreenHeight) {
+            _maxHeight = _availableScreenHeight;
+          }
+          _needToResize = true;
+          break;
+        case TooltipPosition.right:
+          // Option 3: Switch to right position if it fits
+          tooltipPosition = TooltipPosition.right;
+          if (_maxHeight > _availableScreenHeight) {
+            _maxHeight = _availableScreenHeight;
+          }
+          _needToResize = true;
+          break;
+        case TooltipPosition.top:
+          // Option 4: Last resort - resize and keep at top
+          _maxHeight -= screenEdgePadding - _xOffset;
+          _yOffset = screenEdgePadding + showcaseOffset.dy;
+          _needToResize = true;
+          break;
       }
     } else if (tooltipPosition.isHorizontal) {
       // For left/right positions, ensure height fits and align to top edge
@@ -547,37 +553,44 @@ class _RenderPositionDelegate extends RenderBox
   /// Handle tooltip exceeding bottom screen edge
   void _handleBottomEdgeBoundary(double tooltipHeight) {
     if (tooltipPosition.isBottom) {
-      final suitablePosition = _getSuitablePosition(
-        _toolTipBoxSize,
-        tooltipHeight,
+      final optimalPosition = _getOptimalPositionForConstraint(
+        currentPosition: TooltipPosition.bottom,
+        tooltipHeight: tooltipHeight,
+        canResize: false, // Bottom positioning is constrained by screen edge
       );
-      if (suitablePosition.checkFor(TooltipPosition.top)) {
-        // Option 1: Flip to top side if it fits
-        _needToFlip = true;
-      } else if (suitablePosition.checkFor(TooltipPosition.left)) {
-        // Option 2: Switch to left position if it fits
-        tooltipPosition = TooltipPosition.left;
-        if (_maxHeight > _availableScreenHeight) {
-          _maxHeight = _availableScreenHeight;
-        }
-        _needToResize = true;
-      } else if (suitablePosition.checkFor(TooltipPosition.right)) {
-        // Option 3: Switch to right position if it fits
-        tooltipPosition = TooltipPosition.right;
-        if (_maxHeight > _availableScreenHeight) {
-          _maxHeight = _availableScreenHeight;
-        }
-        _needToResize = true;
-      } else {
-        // Option 4: Last resort - resize and keep at bottom
-        _maxHeight += _calculateExtraVerticalHeight();
-        _needToResize = true;
-        _yOffset = screenSize.height -
-            showcaseOffset.dy -
-            screenEdgePadding -
-            _maxHeight;
+
+      switch (optimalPosition) {
+        case TooltipPosition.top:
+          // Option 1: Flip to top side if it fits
+          _needToFlip = true;
+          break;
+        case TooltipPosition.left:
+          // Option 2: Switch to left position if it fits
+          tooltipPosition = TooltipPosition.left;
+          if (_maxHeight > _availableScreenHeight) {
+            _maxHeight = _availableScreenHeight;
+          }
+          _needToResize = true;
+          break;
+        case TooltipPosition.right:
+          // Option 3: Switch to right position if it fits
+          tooltipPosition = TooltipPosition.right;
+          if (_maxHeight > _availableScreenHeight) {
+            _maxHeight = _availableScreenHeight;
+          }
+          _needToResize = true;
+          break;
+        case TooltipPosition.bottom:
+          // Option 4: Last resort - resize and keep at bottom
+          _maxHeight += _calculateExtraVerticalHeight();
+          _needToResize = true;
+          _yOffset = screenSize.height -
+              showcaseOffset.dy -
+              screenEdgePadding -
+              _maxHeight;
+          break;
       }
-    } else {
+    } else if (tooltipPosition.isHorizontal) {
       // For left/right positions, ensure height fits and adjust alignment
       if (_maxHeight > _availableScreenHeight) {
         _maxHeight = _availableScreenHeight;

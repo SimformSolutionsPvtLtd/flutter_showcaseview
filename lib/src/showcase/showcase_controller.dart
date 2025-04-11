@@ -49,7 +49,7 @@ class ShowcaseController {
   final GlobalKey key;
 
   /// Configuration for the showcase
-  State<Showcase> showcaseState;
+  final ValueGetter<State<Showcase>> showcaseState;
 
   /// Reference to the parent showcase widget state
   ShowcaseView showCaseView;
@@ -85,19 +85,19 @@ class ShowcaseController {
   ///
   /// Provides access to all properties and settings of the current showcase widget.
   /// This is used throughout the controller to access showcase configuration options.
-  Showcase get config => showcaseState.widget;
+  Showcase get config => showcaseState().widget;
 
   /// Returns the BuildContext for this showcase
   ///
   /// Used for positioning calculations and widget rendering.
   /// This context represents the location of the showcase target in the widget tree.
-  BuildContext get _context => showcaseState.context;
+  BuildContext get _context => showcaseState().context;
 
   /// Checks if the showcase context is still valid
   ///
   /// Returns true if the context is mounted (valid) and false otherwise.
   /// Used to prevent operations on widgets that have been removed from the tree.
-  bool get _mounted => showcaseState.context.mounted;
+  bool get _mounted => showcaseState().mounted;
 
   /// Initializes the root widget size and render object
   ///
@@ -147,6 +147,7 @@ class ShowcaseController {
   /// page transition case where page transition may take some time to reach
   /// to it's original position
   void updateControllerData() {
+    if (!_mounted) return;
     final renderBox = _context.findRenderObject() as RenderBox?;
     final screenSize = MediaQuery.of(_context).size;
     final size = rootWidgetSize ?? screenSize;
@@ -268,7 +269,7 @@ class ShowcaseController {
   /// This method is typically called internally by the showcase system but
   /// can also be called manually to force a recalculation of showcase elements.
   void startShowcase() {
-    if (!showCaseView.enableShowcase) return;
+    if (!showCaseView.enableShowcase || !_mounted) return;
 
     recalculateRootWidgetSize(_context);
     globalFloatingActionWidget = showCaseView
@@ -303,7 +304,10 @@ class ShowcaseController {
   /// Returns a Future that completes when scrolling is finished. If the widget
   /// is unmounted during scrolling, the operation will be canceled safely.
   Future<void> scrollIntoView() async {
-    if (!_mounted) return;
+    if (!_mounted) {
+      assert(_mounted);
+      return;
+    }
 
     isScrollRunning = true;
     updateControllerData();
@@ -317,7 +321,11 @@ class ShowcaseController {
       duration: showCaseView.scrollDuration,
       alignment: config.scrollAlignment,
     );
-    if (!_mounted) return;
+
+    if (!_mounted) {
+      assert(_mounted);
+      return;
+    }
 
     isScrollRunning = false;
     updateControllerData();

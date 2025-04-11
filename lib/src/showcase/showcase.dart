@@ -576,7 +576,7 @@ class _ShowcaseState extends State<Showcase> {
 
   late ShowcaseScope _showCaseWidgetManager;
 
-  final int _uniqueId = UniqueKey().hashCode;
+  late final int _uniqueId = widget.hashCode;
 
   @override
   void initState() {
@@ -585,7 +585,7 @@ class _ShowcaseState extends State<Showcase> {
     ShowcaseController(
       id: _uniqueId,
       key: widget.showcaseKey,
-      showcaseState: this,
+      showcaseState: () => this,
       showCaseView: _showCaseWidgetManager.showcaseView,
     );
 
@@ -606,7 +606,6 @@ class _ShowcaseState extends State<Showcase> {
     );
     ShowcaseService.instance.registerShowcaseController(
       controller: _controller
-        ..showcaseState = this
         ..showCaseView = _showCaseWidgetManager.showcaseView,
       key: widget.showcaseKey,
       showcaseId: _uniqueId,

@@ -19,16 +19,11 @@ class _DetailState extends State<Detail> {
       scope: "_detailsScreen",
     );
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => Future.delayed(const Duration(milliseconds: 200), () {
-        ShowcaseView.get().startShowCase([_one]);
-      }),
+      (_) => ShowcaseView.get().startShowCase(
+        [_one],
+        delay: const Duration(milliseconds: 200),
+      ),
     );
-  }
-
-  @override
-  void dispose() {
-    ShowcaseView.get().dispose();
-    super.dispose();
   }
 
   @override
@@ -117,5 +112,11 @@ class _DetailState extends State<Detail> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    ShowcaseView.get().dispose();
+    super.dispose();
   }
 }

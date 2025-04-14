@@ -42,7 +42,6 @@ class _MailPageState extends State<MailPage> {
   final GlobalKey _two = GlobalKey();
   final GlobalKey _three = GlobalKey();
   final GlobalKey _four = GlobalKey();
-  final mainScreenScope = '_mainScreen';
   List<Mail> mails = [];
 
   final scrollController = ScrollController();
@@ -52,7 +51,6 @@ class _MailPageState extends State<MailPage> {
     super.initState();
     // Register the showcase view
     ShowcaseView.register(
-      scope: mainScreenScope,
       hideFloatingActionWidgetForShowcase: [_lastShowcaseWidget],
       globalFloatingActionWidget: (showcaseContext) => FloatingActionWidget(
         left: 16,
@@ -60,7 +58,7 @@ class _MailPageState extends State<MailPage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: ShowcaseView.getNamed(mainScreenScope).dismiss,
+            onPressed: () => ShowcaseView.get().dismiss(),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xffEE5366),
             ),
@@ -470,14 +468,13 @@ class _MailPageState extends State<MailPage> {
                 builder: (_) => const Detail(),
               ),
             ).then((_) {
-              setState(() {
-                ShowcaseView.getNamed(mainScreenScope).startShowCase(
-                  [_four, _lastShowcaseWidget],
-                  delay: const Duration(
-                    milliseconds: 0,
-                  ),
-                );
-              });
+              // First we need to unregister the details screen showcase
+              ShowcaseView.getNamed("_detailsScreen").unregister();
+
+              // Then we need to start the main screen showcase
+              ShowcaseView.get().startShowCase(
+                [_four, _lastShowcaseWidget],
+              );
             });
           },
           tooltipActionConfig: const TooltipActionConfig(

@@ -584,7 +584,7 @@ class _ShowcaseState extends State<Showcase> {
     ShowcaseController(
       id: _uniqueId,
       key: widget.showcaseKey,
-      getShowcaseState: () => this,
+      getState: () => this,
       showCaseView: _showCaseWidgetManager.showcaseView,
     );
 
@@ -624,7 +624,7 @@ class _ShowcaseState extends State<Showcase> {
 
   @override
   void dispose() {
-    ShowcaseService.instance.removeController(
+    ShowcaseService.instance.unregisterController(
       key: widget.showcaseKey,
       id: _uniqueId,
       scope: _showCaseWidgetManager.name,

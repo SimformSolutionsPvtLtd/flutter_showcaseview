@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2021 Simform Solutions
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -25,12 +46,12 @@ class ShowcaseController {
   ///
   /// * [id] - Unique identifier for this showcase instance
   /// * [key] - Global key associated with the showcase widget
-  /// * [getShowcaseState] - Reference to the showcase state
+  /// * [getState] - Reference to the showcase state
   /// * [showCaseView] - Reference to the parent showcase view
   ShowcaseController({
     required this.id,
     required this.key,
-    required this.getShowcaseState,
+    required this.getState,
     required this.showCaseView,
   }) {
     ShowcaseService.instance.registerController(
@@ -49,7 +70,7 @@ class ShowcaseController {
   final GlobalKey key;
 
   /// Configuration for the showcase
-  final ValueGetter<State<Showcase>> getShowcaseState;
+  final ValueGetter<State<Showcase>> getState;
 
   /// Reference to the parent showcase widget state
   ShowcaseView showCaseView;
@@ -85,19 +106,19 @@ class ShowcaseController {
   ///
   /// Provides access to all properties and settings of the current showcase widget.
   /// This is used throughout the controller to access showcase configuration options.
-  Showcase get config => getShowcaseState().widget;
+  Showcase get config => getState().widget;
 
   /// Returns the BuildContext for this showcase
   ///
   /// Used for positioning calculations and widget rendering.
   /// This context represents the location of the showcase target in the widget tree.
-  BuildContext get _context => getShowcaseState().context;
+  BuildContext get _context => getState().context;
 
   /// Checks if the showcase context is still valid
   ///
   /// Returns true if the context is mounted (valid) and false otherwise.
   /// Used to prevent operations on widgets that have been removed from the tree.
-  bool get _mounted => getShowcaseState().mounted;
+  bool get _mounted => getState().mounted;
 
   /// Initializes the root widget size and render object
   ///
@@ -305,7 +326,7 @@ class ShowcaseController {
   /// is unmounted during scrolling, the operation will be canceled safely.
   Future<void> scrollIntoView() async {
     if (!_mounted) {
-      assert(_mounted);
+      assert(_mounted, 'Widget has been unmounted');
       return;
     }
 

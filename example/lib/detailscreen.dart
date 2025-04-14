@@ -111,10 +111,4 @@ class _DetailState extends State<Detail> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    ShowcaseView.getNamed(scopeName).dispose();
-    super.dispose();
-  }
 }

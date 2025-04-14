@@ -29,6 +29,7 @@ import 'shape_clipper.dart';
 import 'showcase/showcase_controller.dart';
 import 'showcase_service.dart';
 import 'showcase_view.dart';
+import 'utils/extensions.dart';
 
 /// A singleton manager class responsible for displaying and controlling overlays
 /// in the ShowcaseView.
@@ -76,7 +77,7 @@ class OverlayManager {
       ShowcaseService.instance.updateCurrentScope(scope);
     }
     _shouldShow = show;
-    _buildOverlay();
+    _rebuild();
     _sync();
   }
 
@@ -107,7 +108,7 @@ class OverlayManager {
   void _show(WidgetBuilder overlayBuilder) {
     if (_overlayEntry != null) {
       // Rebuild overlay.
-      _buildOverlay();
+      _rebuild();
       return;
     }
     // Create the overlay.
@@ -148,7 +149,7 @@ class OverlayManager {
   /// Builds a stack with background and tooltip widgets based on active controllers.
   Widget _getBuilder() {
     final showcaseView = ShowcaseView.getNamed(_currentScope);
-    final controller = ShowcaseService.instance
+    final controllers = ShowcaseService.instance
             .getControllers(
               scope: showcaseView.scope,
             )[showcaseView.getCurrentActiveShowcaseKey]
@@ -156,22 +157,21 @@ class OverlayManager {
             .toList() ??
         <ShowcaseController>[];
 
-    if (controller.isEmpty) {
+    if (controllers.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    final controllerLength = controller.length;
+    final controllerLength = controllers.length;
     for (var i = 0; i < controllerLength; i++) {
-      controller[i].updateControllerData();
+      controllers[i].updateControllerData();
     }
 
-    final firstController = controller.first;
+    final firstController = controllers.first;
     final firstShowcaseConfig = firstController.config;
 
     final backgroundContainer = ColoredBox(
       color: firstShowcaseConfig.overlayColor
-          //ignore: deprecated_member_use
-          .withOpacity(firstShowcaseConfig.overlayOpacity),
+          .reduceOpacity(firstShowcaseConfig.overlayOpacity),
       child: const Align(),
     );
 
@@ -181,11 +181,7 @@ class OverlayManager {
           onTap: () => showcaseView.handleBarrierTap(firstShowcaseConfig),
           child: ClipPath(
             clipper: RRectClipper(
-              area: Rect.zero,
-              isCircle: false,
-              radius: BorderRadius.zero,
-              overlayPadding: EdgeInsets.zero,
-              linkedObjectData: _getLinkedShowcasesData(controller),
+              linkedObjectData: _getLinkedShowcasesData(controllers),
             ),
             child: firstController.blur == 0
                 ? backgroundContainer
@@ -198,7 +194,7 @@ class OverlayManager {
                   ),
           ),
         ),
-        ...controller.expand((object) => object.getToolTipWidget).toList(),
+        ...controllers.expand((object) => object.getToolTipWidget).toList(),
       ],
     );
   }
@@ -218,5 +214,5 @@ class OverlayManager {
   }
 
   /// Forces the overlay entry to rebuild
-  void _buildOverlay() => _overlayEntry?.markNeedsBuild();
+  void _rebuild() => _overlayEntry?.markNeedsBuild();
 }

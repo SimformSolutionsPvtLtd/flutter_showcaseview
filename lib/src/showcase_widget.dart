@@ -143,7 +143,7 @@ class ShowCaseWidget extends StatefulWidget {
   /// - `hideFloatingActionWidgetForShowcase`: Hides a [globalFloatingActionWidget] for the provided showcase keys.
   @Deprecated(
     'This will be removed in v5.0.0. '
-    'please use `ShowcaseView.Register()` instead',
+    'Please use `ShowcaseView.register()` instead',
   )
   const ShowCaseWidget({
     required this.builder,
@@ -193,13 +193,13 @@ class ShowCaseWidget extends StatefulWidget {
 }
 
 class ShowCaseWidgetState extends State<ShowCaseWidget> {
-  late ShowcaseView showcaseView;
+  late ShowcaseView _showcaseView;
 
   @override
   void initState() {
     super.initState();
-    showcaseView = ShowcaseView.register(
-      scope: UniqueKey().toString(),
+    _showcaseView = ShowcaseView.register(
+      scope: widget.hashCode.toString(),
       onFinish: widget.onFinish,
       onStart: widget.onStart,
       onComplete: widget.onComplete,
@@ -225,7 +225,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   void didUpdateWidget(covariant ShowCaseWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    showcaseView
+    _showcaseView
       ..autoPlay = widget.autoPlay
       ..autoPlayDelay = widget.autoPlayDelay
       ..enableAutoPlayLock = widget.enableAutoPlayLock
@@ -245,7 +245,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   @override
   void dispose() {
-    showcaseView.dispose();
+    _showcaseView.unregister();
     super.dispose();
   }
 
@@ -265,7 +265,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     List<GlobalKey> widgetIds, {
     Duration delay = Duration.zero,
   }) {
-    showcaseView.startShowCase(widgetIds, delay: delay);
+    _showcaseView.startShowCase(widgetIds, delay: delay);
   }
 
   /// Completes showcase of given key and starts next one
@@ -274,7 +274,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().completed` instead',
   )
-  void completed(GlobalKey? key) => showcaseView.completed(key);
+  void completed(GlobalKey? key) => _showcaseView.completed(key);
 
   /// Completes current active showcase and starts next one
   /// otherwise will finish the entire showcase view
@@ -287,7 +287,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     '`ShowcaseView.get().completed` instead',
   )
   void next({bool force = false}) {
-    showcaseView.next(force: force);
+    _showcaseView.next(force: force);
   }
 
   /// Completes current active showcase and starts previous one
@@ -297,7 +297,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     '`ShowcaseView.get().previous` instead',
   )
   void previous() {
-    showcaseView.previous();
+    _showcaseView.previous();
   }
 
   /// Dismiss entire showcase view
@@ -306,7 +306,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     '`ShowcaseView.get().dismiss` instead',
   )
   void dismiss() {
-    showcaseView.dismiss();
+    _showcaseView.dismiss();
   }
 
   /// Disables the [globalFloatingActionWidget] for the provided keys.
@@ -315,7 +315,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     '`ShowcaseView.get().hideFloatingActionWidgetForKeys` instead',
   )
   void hideFloatingActionWidgetForKeys(List<GlobalKey> updatedList) {
-    showcaseView.hideFloatingActionWidgetForKeys(updatedList);
+    _showcaseView.hideFloatingActionWidgetForKeys(updatedList);
   }
 
   // Forward property accessors to ShowcaseManager
@@ -323,85 +323,85 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().autoPlay` instead',
   )
-  bool get autoPlay => showcaseView.autoPlay;
+  bool get autoPlay => _showcaseView.autoPlay;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().disableMovingAnimation` instead',
   )
-  bool get disableMovingAnimation => showcaseView.disableMovingAnimation;
+  bool get disableMovingAnimation => _showcaseView.disableMovingAnimation;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().disableScaleAnimation` instead',
   )
-  bool get disableScaleAnimation => showcaseView.disableScaleAnimation;
+  bool get disableScaleAnimation => _showcaseView.disableScaleAnimation;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().autoPlayDelay` instead',
   )
-  Duration get autoPlayDelay => showcaseView.autoPlayDelay;
+  Duration get autoPlayDelay => _showcaseView.autoPlayDelay;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().enableAutoPlayLock` instead',
   )
-  bool get enableAutoPlayLock => showcaseView.enableAutoPlayLock;
+  bool get enableAutoPlayLock => _showcaseView.enableAutoPlayLock;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().enableAutoScroll` instead',
   )
-  bool get enableAutoScroll => showcaseView.enableAutoScroll;
+  bool get enableAutoScroll => _showcaseView.enableAutoScroll;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().disableBarrierInteraction` instead',
   )
-  bool get disableBarrierInteraction => showcaseView.disableBarrierInteraction;
+  bool get disableBarrierInteraction => _showcaseView.disableBarrierInteraction;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().enableShowcase` instead',
   )
-  bool get enableShowcase => showcaseView.enableShowcase;
+  bool get enableShowcase => _showcaseView.enableShowcase;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().isShowCaseCompleted` instead',
   )
-  bool get isShowCaseCompleted => showcaseView.isShowCaseCompleted;
+  bool get isShowCaseCompleted => _showcaseView.isShowCaseCompleted;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().scrollDuration` instead',
   )
-  Duration get scrollDuration => showcaseView.scrollDuration;
+  Duration get scrollDuration => _showcaseView.scrollDuration;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().blurValue` instead',
   )
-  double get blurValue => showcaseView.blurValue;
+  double get blurValue => _showcaseView.blurValue;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().getCurrentActiveShowcaseKey` instead',
   )
   GlobalKey? get getCurrentActiveShowcaseKey =>
-      showcaseView.getCurrentActiveShowcaseKey;
+      _showcaseView.getCurrentActiveShowcaseKey;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().isShowcaseRunning` instead',
   )
-  bool get isShowcaseRunning => showcaseView.isShowcaseRunning;
+  bool get isShowcaseRunning => _showcaseView.isShowcaseRunning;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().hiddenFloatingActionKeys` instead',
   )
   List<GlobalKey> get hiddenFloatingActionKeys =>
-      showcaseView.hiddenFloatingActionKeys;
+      _showcaseView.hiddenFloatingActionKeys;
 }

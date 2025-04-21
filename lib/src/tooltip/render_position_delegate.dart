@@ -311,7 +311,7 @@ class _RenderPositionDelegate extends RenderBox
           _maxWidth = minWidth;
           _xOffset = screenEdgePadding + showcaseOffset.dx;
           _needToResize = true;
-          //TODO: remove breaks when we remove support for older version of the
+          //TODO: remove breaks when we remove support for below dart v3.0.0
           // flutter : https://dart.dev/tools/linter-rules/unnecessary_breaks
           break;
         case TooltipPosition.right:
@@ -421,33 +421,15 @@ class _RenderPositionDelegate extends RenderBox
     required bool canResize,
   }) {
     // First preference: resize in current position if possible
-    if (canResize) {
-      return currentPosition;
-    }
+    if (canResize) return currentPosition;
 
     // Second preference: check opposite direction
-    TooltipPosition oppositePosition;
-    switch (currentPosition) {
-      case TooltipPosition.left:
-        oppositePosition = TooltipPosition.right;
-        break;
-      case TooltipPosition.right:
-        oppositePosition = TooltipPosition.left;
-        break;
-      case TooltipPosition.top:
-        oppositePosition = TooltipPosition.bottom;
-        break;
-      case TooltipPosition.bottom:
-        oppositePosition = TooltipPosition.top;
-        break;
-    }
+    final oppositePosition = currentPosition.opposite;
 
     final suitablePosition =
         _getSuitablePosition(_toolTipBoxSize, tooltipHeight);
 
-    if (suitablePosition.checkFor(oppositePosition)) {
-      return oppositePosition;
-    }
+    if (suitablePosition.checkFor(oppositePosition)) return oppositePosition;
 
     // Third preference: try bottom position
     if (currentPosition != TooltipPosition.bottom &&
@@ -806,7 +788,9 @@ class _RenderPositionDelegate extends RenderBox
 
   /// Position the arrow element
   void _positionArrow() {
-    if (!hasArrow || TooltipLayoutSlot.arrow.getObjectManager == null) {
+    final arrowBoxParentData =
+        TooltipLayoutSlot.arrow.getObjectManager?.layoutParentData;
+    if (!hasArrow || arrowBoxParentData == null) {
       return;
     }
 
@@ -814,9 +798,6 @@ class _RenderPositionDelegate extends RenderBox
     const halfArrowHeight = Constants.arrowWidth * 0.5;
     final halfTargetHeight = targetSize.height * 0.5;
     final halfTargetWidth = targetSize.width * 0.5;
-
-    final arrowBoxParentData =
-        TooltipLayoutSlot.arrow.getObjectManager!.layoutParentData;
 
     // Position arrow differently based on tooltip direction
     switch (tooltipPosition) {

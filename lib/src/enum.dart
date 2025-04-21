@@ -69,6 +69,19 @@ enum TooltipPosition {
 
   bool get isHorizontal => isRight || isLeft;
   bool get isVertical => isTop || isBottom;
+
+  TooltipPosition get opposite {
+    switch (this) {
+      case TooltipPosition.left:
+        return TooltipPosition.right;
+      case TooltipPosition.right:
+        return TooltipPosition.left;
+      case TooltipPosition.top:
+        return TooltipPosition.bottom;
+      case TooltipPosition.bottom:
+        return TooltipPosition.top;
+    }
+  }
 }
 
 enum TooltipActionPosition {

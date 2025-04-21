@@ -20,9 +20,7 @@ class RenderObjectManager {
   static Map<TooltipLayoutSlot, RenderObjectManager> renderObjects = {};
 
   /// Clears renderObjects map
-  static void clear() {
-    renderObjects.clear();
-  }
+  static void clear() => renderObjects.clear();
 
   /// Performs dry layout to calculate the preferred size without actually laying out
   Size performDryLayout(BoxConstraints constraints) {

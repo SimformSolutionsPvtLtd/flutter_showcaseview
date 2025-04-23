@@ -19,6 +19,9 @@ class RenderObjectManager {
 
   static Map<TooltipLayoutSlot, RenderObjectManager> renderObjects = {};
 
+  /// Clears renderObjects map
+  static void clear() => renderObjects.clear();
+
   /// Performs dry layout to calculate the preferred size without actually laying out
   Size performDryLayout(BoxConstraints constraints) {
     renderConstraints = constraints;
@@ -29,12 +32,18 @@ class RenderObjectManager {
   /// Performs actual layout on the RenderBox
   void performLayout(BoxConstraints constraints, {bool parentUsesSize = true}) {
     customRenderBox.layout(constraints, parentUsesSize: parentUsesSize);
+    dryLayoutSize = customRenderBox.size;
   }
 
   /// Gets the current size of the RenderBox
   Size get size => dryLayoutSize ?? customRenderBox.size;
 
   Offset get getOffset => Offset(xOffset ?? 0, yOffset ?? 0);
+
+  MultiChildLayoutParentData get layoutParentData {
+    assert(customRenderBox.parentData is MultiChildLayoutParentData);
+    return customRenderBox.parentData! as MultiChildLayoutParentData;
+  }
 
   /// Sets the position of the RenderBox
   void setOffset(double x, double y) {

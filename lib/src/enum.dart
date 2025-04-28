@@ -24,7 +24,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import 'showcase_widget.dart';
+import 'showcase_view.dart';
 import 'tooltip/render_object_manager.dart';
 
 enum TooltipPosition {
@@ -104,16 +104,16 @@ enum TooltipDefaultActionType {
 
   final String actionName;
 
-  void onTap(ShowCaseWidgetState showCaseState) {
+  void onTap(ShowcaseView showcaseView) {
     switch (this) {
       case TooltipDefaultActionType.next:
-        showCaseState.next(force: true);
+        showcaseView.next(force: true);
         break;
       case TooltipDefaultActionType.previous:
-        showCaseState.previous();
+        showcaseView.previous();
         break;
       case TooltipDefaultActionType.skip:
-        showCaseState.dismiss();
+        showcaseView.dismiss();
         break;
       default:
         throw ArgumentError('Invalid tooltip default action type');

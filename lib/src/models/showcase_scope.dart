@@ -19,46 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-class DefaultTooltipTextWidget extends StatelessWidget {
-  const DefaultTooltipTextWidget({
-    super.key,
-    required this.alignment,
-    required this.padding,
-    required this.text,
-    this.textAlign,
-    this.textDirection,
-    this.textColor,
-    this.textStyle,
+import '../showcase/showcase_controller.dart';
+import '../showcase_view.dart';
+
+class ShowcaseScope {
+  ShowcaseScope({
+    required this.name,
+    required this.showcaseView,
   });
 
-  final AlignmentGeometry alignment;
-  final EdgeInsetsGeometry padding;
-  final String text;
-  final TextAlign? textAlign;
-  final TextDirection? textDirection;
-  final Color? textColor;
-  final TextStyle? textStyle;
+  final String name;
+  final ShowcaseView showcaseView;
 
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: alignment,
-      child: Padding(
-        padding: padding,
-        child: Text(
-          text,
-          textAlign: textAlign,
-          textDirection: textDirection,
-          style: textStyle ??
-              Theme.of(context).textTheme.titleSmall!.merge(
-                    TextStyle(
-                      color: textColor,
-                    ),
-                  ),
-        ),
-      ),
-    );
-  }
+  /// A mapping of showcase keys to their associated controllers
+  /// - Key: GlobalKey of a showcase (provided by user)
+  /// - Value: Map of showcase IDs to their controllers
+  final Map<GlobalKey, Map<int, ShowcaseController>> controllers = {};
 }

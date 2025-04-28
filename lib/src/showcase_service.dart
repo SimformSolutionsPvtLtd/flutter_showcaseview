@@ -84,11 +84,10 @@ class ShowcaseService {
     _scopeStack.removeFirstWhere(
       (element) => element == scope,
     );
-    if (_scopeStack.isEmpty) {
-      currentScope = Constants.initialScope;
-    } else {
-      currentScope = _scopeStack.last;
-    }
+    _scopeStack.isEmpty
+        ? currentScope = Constants.initialScope
+        : currentScope = _scopeStack.last;
+
     return scope;
   }
 

@@ -18,8 +18,9 @@ class _DetailState extends State<Detail> {
     super.initState();
     ShowcaseView.register(scope: scopeName);
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ShowcaseView.get().startShowCase(
+      (_) => ShowcaseView.getNamed(scopeName).startShowCase(
         [_one],
+        delay: const Duration(milliseconds: 200),
       ),
     );
   }

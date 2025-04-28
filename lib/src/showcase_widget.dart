@@ -34,7 +34,14 @@ typedef OnDismissCallback = void Function(
 );
 
 class ShowCaseWidget extends StatefulWidget {
+  @Deprecated(
+    'This will be removed in v5.0.0. '
+    'Please use `child` property instead',
+  )
   final WidgetBuilder builder;
+
+  // TODO: Make this required in v5.0.0
+  final Widget? child;
 
   /// Triggered when all the showcases are completed.
   final VoidCallback? onFinish;
@@ -147,6 +154,7 @@ class ShowCaseWidget extends StatefulWidget {
   )
   const ShowCaseWidget({
     required this.builder,
+    this.child,
     this.onFinish,
     this.onStart,
     this.onComplete,
@@ -241,7 +249,12 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => Builder(builder: widget.builder);
+  Widget build(BuildContext context) =>
+      widget.child ??
+      Builder(
+        //ignore: deprecated_member_use_from_same_package
+        builder: widget.builder,
+      );
 
   @override
   void dispose() {
@@ -284,7 +297,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// [TooltipDefaultActionType.next]
   @Deprecated(
     'This will be removed in v5.0.0. please use '
-    '`ShowcaseView.get().completed` instead',
+    '`ShowcaseView.get().next` instead',
   )
   void next({bool force = false}) {
     _showcaseView.next(force: force);

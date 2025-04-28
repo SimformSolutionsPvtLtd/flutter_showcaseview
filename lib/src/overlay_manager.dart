@@ -122,8 +122,7 @@ class OverlayManager {
   ///
   /// Safely handles the case where overlay state might be null.
   void _add(OverlayEntry overlayEntry) {
-    if (overlayState == null) return;
-    overlayState!.insert(overlayEntry);
+    overlayState?.insert(overlayEntry);
   }
 
   /// Removes and clears the current overlay entry

@@ -24,9 +24,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xffEE5366),
       ),
       debugShowCheckedModeBanner: false,
-      home: const Scaffold(
-        body: MailPage(),
-      ),
+      home: const MailPage(),
     );
   }
 }

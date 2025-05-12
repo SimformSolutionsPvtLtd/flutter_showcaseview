@@ -76,6 +76,20 @@ class GetPosition {
     return rect;
   }
 
+  Rect getRectForOverlay() {
+    if (_checkBoxOrOffsetIsNull(checkDy: true, checkDx: true)) {
+      return Rect.zero;
+    }
+    final topLeft = renderBox!.size.topLeft(_boxOffset!);
+    final bottomRight = renderBox!.size.bottomRight(_boxOffset!);
+    return Rect.fromLTRB(
+      topLeft.dx,
+      topLeft.dy,
+      bottomRight.dx,
+      bottomRight.dy,
+    );
+  }
+
   ///Get the bottom position of the widget
   double getBottom() {
     if (_checkBoxOrOffsetIsNull(checkDy: true)) {

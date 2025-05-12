@@ -50,7 +50,9 @@ class RRectClipper extends CustomClipper<ui.Path> {
     for (var i = 0; i < linkedObjectLength; i++) {
       final widgetInfo = linkedObjectData[i];
       final customRadius = widgetInfo.isCircle
-          ? Radius.circular(widgetInfo.rect.height)
+          ? Radius.circular(
+              widgetInfo.rect.height + widgetInfo.overlayPadding.vertical,
+            )
           : Constants.defaultTargetRadius;
 
       final rect = Rect.fromLTRB(

@@ -181,7 +181,7 @@ class ShowcaseController {
     );
 
     position = newPosition;
-    final rect = newPosition.getRect();
+    final rect = newPosition.getRectForOverlay();
     linkedShowcaseDataModel = LinkedShowcaseDataModel(
       rect: isScrollRunning ? Rect.zero : rect,
       radius: config.targetBorderRadius,

@@ -581,13 +581,18 @@ class _ShowcaseState extends State<Showcase> {
   void initState() {
     super.initState();
     _showCaseWidgetManager = ShowcaseService.instance.getScope();
-    ShowcaseController(
+    ShowcaseController.register(
       id: _uniqueId,
       key: widget.showcaseKey,
       getState: () => this,
       showCaseView: _showCaseWidgetManager.showcaseView,
     );
 
+    // We need to update this in every showcase so we can get the latest overlay
+    // state every time
+    // This is helpful in scenarios like in first screen showcase is in
+    // normal place and in second screen it is in some nested navigator
+    // so offset and overlay position may change
     OverlayManager.instance.updateState(
       context.findRootAncestorStateOfType<OverlayState>(),
     );
@@ -604,7 +609,7 @@ class _ShowcaseState extends State<Showcase> {
     _showCaseWidgetManager = ShowcaseService.instance.getScope(
       scope: _showCaseWidgetManager.name,
     );
-    ShowcaseService.instance.registerController(
+    ShowcaseService.instance.addController(
       controller: _controller
         ..showCaseView = _showCaseWidgetManager.showcaseView,
       key: widget.showcaseKey,
@@ -624,7 +629,7 @@ class _ShowcaseState extends State<Showcase> {
 
   @override
   void dispose() {
-    ShowcaseService.instance.unregisterController(
+    ShowcaseService.instance.removeController(
       key: widget.showcaseKey,
       id: _uniqueId,
       scope: _showCaseWidgetManager.name,

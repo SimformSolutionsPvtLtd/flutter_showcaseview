@@ -259,6 +259,16 @@ class ShowcaseView {
     }
   }
 
+  /// Finds the appropriate ShowcaseView that can handle all the specified widget keys.
+  ///
+  /// This method searches through all registered scopes to find a ShowcaseView that
+  /// contains all the widget keys in [widgetIds]. This is necessary when starting a
+  /// showcase that might include widgets registered across different scopes.
+  ///
+  /// * [widgetIds] - List of GlobalKeys for widgets to showcase
+  ///
+  /// Returns either the current ShowcaseView if all keys are in this scope, or
+  /// another scope's ShowcaseView that contains the keys not found in the current scope.
   ShowcaseView _findEnclosingShowcaseView(
     List<GlobalKey<State<StatefulWidget>>> widgetIds,
   ) {

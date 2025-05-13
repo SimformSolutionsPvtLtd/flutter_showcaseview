@@ -84,9 +84,8 @@ class ShowcaseService {
     _scopeStack.removeFirstWhere(
       (element) => element == scope,
     );
-    _scopeStack.isEmpty
-        ? currentScope = Constants.initialScope
-        : currentScope = _scopeStack.last;
+    currentScope =
+        _scopeStack.isEmpty ? Constants.initialScope : _scopeStack.last;
 
     return scope;
   }
@@ -94,17 +93,15 @@ class ShowcaseService {
   /// Returns whether a manager is registered in the specified scope
   ///
   /// * [scope] - Optional scope name (defaults to current scope)
-  bool isRegistered({String? scope}) {
-    final scopeName = scope ?? currentScope;
-    return _showcaseViews.containsKey(scopeName);
-  }
+  bool isRegistered({String? scope}) =>
+      _showcaseViews.containsKey(scope ?? currentScope);
 
   ShowcaseScope getScope({String? scope}) {
     final scopeName = scope ?? currentScope;
     final manager = _showcaseViews[scopeName];
     if (manager == null) {
-      throw Exception('No ShowcaseManager registered for scope "$scopeName". '
-          'Make sure ShowCaseWidget is initialized in this scope.');
+      throw Exception('No ShowcaseView registered for scope "$scopeName". '
+          'Make sure ShowcaseView is initialized in this scope.');
     }
     return manager;
   }
@@ -125,7 +122,7 @@ class ShowcaseService {
   void updateCurrentScope(String scope) => currentScope = scope;
 
   /// Registers a showcase controller for given key and ID
-  void registerController({
+  void addController({
     required GlobalKey key,
     required ShowcaseController controller,
     required int id,
@@ -144,7 +141,7 @@ class ShowcaseService {
   }
 
   /// Removes showcase controller for given key and ID
-  void unregisterController({
+  void removeController({
     required GlobalKey key,
     required int id,
     required String scope,
@@ -162,7 +159,7 @@ class ShowcaseService {
     assert(
       controller != null,
       'Please register showcase controller first by calling '
-      'registerShowcaseController',
+      'ShowcaseView.register()',
     );
     return controller!;
   }

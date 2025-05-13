@@ -48,6 +48,8 @@ class _MailPageState extends State<MailPage> {
   void initState() {
     super.initState();
     // Register the showcase view
+    // This is alternative of ShowCaseWidget register all the configuration here which are in ShowCaseWidget.
+    // if we don't register the ShowcaseView then showcase functionality will not work.
     ShowcaseView.register(
       hideFloatingActionWidgetForShowcase: [_lastShowcaseWidget],
       globalFloatingActionWidget: (showcaseContext) => FloatingActionWidget(
@@ -467,6 +469,7 @@ class _MailPageState extends State<MailPage> {
               ),
             ).then((_) {
               // First we need to unregister the details screen showcase
+              // as get method will use the latest registered scopes
               ShowcaseView.getNamed("_detailsScreen").unregister();
 
               // Then we need to start the main screen showcase

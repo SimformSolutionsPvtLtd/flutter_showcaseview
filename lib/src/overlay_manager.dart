@@ -115,20 +115,13 @@ class OverlayManager {
     _overlayEntry = OverlayEntry(
       builder: overlayBuilder,
     );
-    _add(_overlayEntry!);
-  }
 
-  /// Adds the overlay entry to the overlay state
-  ///
-  /// Safely handles the case where overlay state might be null.
-  void _add(OverlayEntry overlayEntry) {
-    overlayState?.insert(overlayEntry);
+    overlayState?.insert(_overlayEntry!);
   }
 
   /// Removes and clears the current overlay entry
   void _hide() {
-    if (_overlayEntry == null) return;
-    _overlayEntry!.remove();
+    _overlayEntry?.remove();
     _overlayEntry = null;
   }
 

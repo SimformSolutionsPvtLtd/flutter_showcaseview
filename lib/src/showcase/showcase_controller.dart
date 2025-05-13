@@ -48,13 +48,13 @@ class ShowcaseController {
   /// * [key] - Global key associated with the showcase widget
   /// * [getState] - Reference to the showcase state
   /// * [showCaseView] - Reference to the parent showcase view
-  ShowcaseController({
+  ShowcaseController.register({
     required this.id,
     required this.key,
     required this.getState,
     required this.showCaseView,
   }) {
-    ShowcaseService.instance.registerController(
+    ShowcaseService.instance.addController(
       controller: this,
       key: key,
       id: id,

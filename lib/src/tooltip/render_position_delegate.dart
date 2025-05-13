@@ -671,18 +671,35 @@ class _RenderPositionDelegate extends RenderBox
   /// Apply final boundary constraints to ensure tooltip stays on screen
   void _applyBoundaryConstraints(double tooltipHeight) {
     // Ensure tooltip stays within horizontal screen bounds
-    _xOffset = _xOffset.clamp(
+    final screenStart = Offset(
       screenEdgePadding + showcaseOffset.dx,
+      screenEdgePadding + showcaseOffset.dy,
+    );
+
+    final screenEnd = Offset(
       screenSize.width -
           _toolTipBoxSize.width -
           screenEdgePadding +
           showcaseOffset.dx,
+      screenSize.height - tooltipHeight - screenEdgePadding + showcaseOffset.dy,
+    );
+    assert(
+      screenStart.dx <= screenEnd.dx,
+      'Tooltip width is more then available size',
+    );
+    _xOffset = _xOffset.clamp(
+      screenStart.dx,
+      screenEnd.dx,
     );
 
     // Ensure tooltip stays within vertical screen bounds
+    assert(
+      screenStart.dy <= screenEnd.dy,
+      'Tooltip height is more then available size',
+    );
     _yOffset = _yOffset.clamp(
-      screenEdgePadding + showcaseOffset.dy,
-      screenSize.height - tooltipHeight - screenEdgePadding + showcaseOffset.dy,
+      screenStart.dy,
+      screenEnd.dy,
     );
 
     // Apply target padding based on position

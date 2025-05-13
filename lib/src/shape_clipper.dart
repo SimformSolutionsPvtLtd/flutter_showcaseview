@@ -30,41 +30,19 @@ import 'models/linked_showcase_data.dart';
 
 class RRectClipper extends CustomClipper<ui.Path> {
   const RRectClipper({
-    this.isCircle = false,
-    this.overlayPadding = EdgeInsets.zero,
-    this.area = Rect.zero,
     this.linkedObjectData = const <LinkedShowcaseDataModel>[],
-    this.radius,
   });
 
-  final bool isCircle;
-  final BorderRadius? radius;
-  final EdgeInsets overlayPadding;
-  final Rect area;
   final List<LinkedShowcaseDataModel> linkedObjectData;
 
   @override
   ui.Path getClip(ui.Size size) {
-    final customRadius =
-        isCircle ? Radius.circular(area.height) : Constants.defaultTargetRadius;
-
-    final rect = Rect.fromLTRB(
-      area.left - overlayPadding.left,
-      area.top - overlayPadding.top,
-      area.right + overlayPadding.right,
-      area.bottom + overlayPadding.bottom,
-    );
-
     var mainObjectPath = Path()
       ..fillType = ui.PathFillType.evenOdd
       ..addRect(Offset.zero & size)
       ..addRRect(
         RRect.fromRectAndCorners(
-          rect,
-          topLeft: (radius?.topLeft ?? customRadius),
-          topRight: (radius?.topRight ?? customRadius),
-          bottomLeft: (radius?.bottomLeft ?? customRadius),
-          bottomRight: (radius?.bottomRight ?? customRadius),
+          ui.Rect.zero,
         ),
       );
 
@@ -72,7 +50,9 @@ class RRectClipper extends CustomClipper<ui.Path> {
     for (var i = 0; i < linkedObjectLength; i++) {
       final widgetInfo = linkedObjectData[i];
       final customRadius = widgetInfo.isCircle
-          ? Radius.circular(widgetInfo.rect.height)
+          ? Radius.circular(
+              widgetInfo.rect.height + widgetInfo.overlayPadding.vertical,
+            )
           : Constants.defaultTargetRadius;
 
       final rect = Rect.fromLTRB(
@@ -105,9 +85,5 @@ class RRectClipper extends CustomClipper<ui.Path> {
 
   @override
   bool shouldReclip(covariant RRectClipper oldClipper) =>
-      isCircle != oldClipper.isCircle ||
-      radius != oldClipper.radius ||
-      overlayPadding != oldClipper.overlayPadding ||
-      area != oldClipper.area ||
       !listEquals(linkedObjectData, oldClipper.linkedObjectData);
 }

@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2021 Simform Solutions
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 part of 'tooltip.dart';
 
 /// Custom RenderObject that handles tooltip positioning and layout
@@ -650,18 +671,35 @@ class _RenderPositionDelegate extends RenderBox
   /// Apply final boundary constraints to ensure tooltip stays on screen
   void _applyBoundaryConstraints(double tooltipHeight) {
     // Ensure tooltip stays within horizontal screen bounds
-    _xOffset = _xOffset.clamp(
+    final screenStart = Offset(
       screenEdgePadding + showcaseOffset.dx,
+      screenEdgePadding + showcaseOffset.dy,
+    );
+
+    final screenEnd = Offset(
       screenSize.width -
           _toolTipBoxSize.width -
           screenEdgePadding +
           showcaseOffset.dx,
+      screenSize.height - tooltipHeight - screenEdgePadding + showcaseOffset.dy,
+    );
+    assert(
+      screenStart.dx <= screenEnd.dx,
+      'Tooltip width is more then available size',
+    );
+    _xOffset = _xOffset.clamp(
+      screenStart.dx,
+      screenEnd.dx,
     );
 
     // Ensure tooltip stays within vertical screen bounds
+    assert(
+      screenStart.dy <= screenEnd.dy,
+      'Tooltip height is more then available size',
+    );
     _yOffset = _yOffset.clamp(
-      screenEdgePadding + showcaseOffset.dy,
-      screenSize.height - tooltipHeight - screenEdgePadding + showcaseOffset.dy,
+      screenStart.dy,
+      screenEnd.dy,
     );
 
     // Apply target padding based on position

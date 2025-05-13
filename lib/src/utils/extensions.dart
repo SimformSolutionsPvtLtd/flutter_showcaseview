@@ -19,46 +19,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'package:flutter/material.dart';
+import 'dart:ui';
 
-class DefaultTooltipTextWidget extends StatelessWidget {
-  const DefaultTooltipTextWidget({
-    super.key,
-    required this.alignment,
-    required this.padding,
-    required this.text,
-    this.textAlign,
-    this.textDirection,
-    this.textColor,
-    this.textStyle,
-  });
-
-  final AlignmentGeometry alignment;
-  final EdgeInsetsGeometry padding;
-  final String text;
-  final TextAlign? textAlign;
-  final TextDirection? textDirection;
-  final Color? textColor;
-  final TextStyle? textStyle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: alignment,
-      child: Padding(
-        padding: padding,
-        child: Text(
-          text,
-          textAlign: textAlign,
-          textDirection: textDirection,
-          style: textStyle ??
-              Theme.of(context).textTheme.titleSmall!.merge(
-                    TextStyle(
-                      color: textColor,
-                    ),
-                  ),
-        ),
-      ),
-    );
+extension ListExtension<E> on List<E> {
+  /// Removes and returns the first element that satisfies the provided test function.
+  /// If no element satisfies the test, returns the result of calling [orElse],
+  /// or null if [orElse] is omitted.
+  E? removeFirstWhere(
+    bool Function(E element) test, {
+    E Function()? orElse,
+  }) {
+    int length = this.length;
+    for (int i = 0; i < length; i++) {
+      E element = this[i];
+      if (test(element)) {
+        removeAt(i);
+        return element;
+      }
+      if (length != this.length) {
+        throw ConcurrentModificationError(this);
+      }
+    }
+    if (orElse != null) return orElse();
+    return null;
   }
+}
+
+extension ColorExtension on Color {
+  /// Converts opacity value to color with alpha
+  /// This avoids using the deprecated overlayOpacity directly
+  Color reduceOpacity(double opacity) => withAlpha((opacity * 255).round());
 }

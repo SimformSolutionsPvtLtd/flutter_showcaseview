@@ -20,16 +20,9 @@
  * SOFTWARE.
  */
 
-import 'dart:async';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../showcaseview.dart';
-import 'models/linked_showcase_data.dart';
-import 'overlay_builder.dart';
-import 'shape_clipper.dart';
-import 'showcase/showcase_controller.dart';
 
 typedef FloatingActionBuilderCallback = FloatingActionWidget Function(
   BuildContext context,
@@ -41,6 +34,7 @@ typedef OnDismissCallback = void Function(
 );
 
 class ShowCaseWidget extends StatefulWidget {
+  @Deprecated('This will be removed in v5.0.0.')
   final WidgetBuilder builder;
 
   /// Triggered when all the showcases are completed.
@@ -148,6 +142,10 @@ class ShowCaseWidget extends StatefulWidget {
   /// - `globalTooltipActionConfig`: Configuration options for the global tooltip actions.
   /// - `globalFloatingActionWidget`: Custom static floating action widget to show a static widget anywhere for all the showcase widgets.
   /// - `hideFloatingActionWidgetForShowcase`: Hides a [globalFloatingActionWidget] for the provided showcase keys.
+  @Deprecated(
+    'This will be removed in v5.0.0. '
+    'Please use `ShowcaseView.register()` instead',
+  )
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -170,10 +168,18 @@ class ShowCaseWidget extends StatefulWidget {
     this.hideFloatingActionWidgetForShowcase = const [],
   });
 
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().getCurrentActiveShowcaseKey` instead',
+  )
   static GlobalKey? activeTargetWidget(BuildContext context) => context
       .findAncestorStateOfType<ShowCaseWidgetState>()
       ?.getCurrentActiveShowcaseKey;
 
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get()` instead',
+  )
   static ShowCaseWidgetState of(BuildContext context) {
     final state = context.findAncestorStateOfType<ShowCaseWidgetState>();
     if (state != null) {
@@ -188,166 +194,63 @@ class ShowCaseWidget extends StatefulWidget {
 }
 
 class ShowCaseWidgetState extends State<ShowCaseWidget> {
-  List<GlobalKey>? ids;
-  int? activeWidgetId;
-  RenderBox? rootRenderObject;
-  Size? rootWidgetSize;
-
-  late final TooltipActionConfig? globalTooltipActionConfig;
-
-  late final List<TooltipActionButton>? globalTooltipActions;
-
-  /// These properties are only here so that it can be accessed by
-  /// [Showcase]
-  bool get autoPlay => widget.autoPlay;
-
-  bool get disableMovingAnimation => widget.disableMovingAnimation;
-
-  bool get disableScaleAnimation => widget.disableScaleAnimation;
-
-  Duration get autoPlayDelay => widget.autoPlayDelay;
-
-  bool get enableAutoPlayLock => widget.enableAutoPlayLock;
-
-  bool get enableAutoScroll => widget.enableAutoScroll;
-
-  bool get disableBarrierInteraction => widget.disableBarrierInteraction;
-
-  bool get enableShowcase => widget.enableShowcase;
-
-  bool get isShowCaseCompleted => ids == null && activeWidgetId == null;
-
-  Duration get scrollDuration => widget.scrollDuration;
-
-  List<GlobalKey> get hiddenFloatingActionKeys =>
-      _hideFloatingWidgetKeys.keys.toList();
-
-  ValueSetter<bool>? updateOverlay;
-
-  /// Return a [widget.globalFloatingActionWidget] if not need to hide this for
-  /// current showcase.
-  FloatingActionBuilderCallback? globalFloatingActionWidget(
-    GlobalKey showcaseKey,
-  ) {
-    return _hideFloatingWidgetKeys[showcaseKey] ?? false
-        ? null
-        : widget.globalFloatingActionWidget;
-  }
-
-  /// Returns value of [ShowCaseWidget.blurValue]
-  double get blurValue => widget.blurValue;
-
-  /// Returns current active showcase key
-  GlobalKey? get getCurrentActiveShowcaseKey {
-    if (ids == null || activeWidgetId == null) return null;
-
-    if (activeWidgetId! < ids!.length && activeWidgetId! >= 0) {
-      return ids![activeWidgetId!];
-    } else {
-      return null;
-    }
-  }
-
-  bool get isShowcaseRunning => getCurrentActiveShowcaseKey != null;
-
-  Timer? _timer;
-
-  /// A mapping of showcase keys to their associated controllers.
-  /// - Key: GlobalKey of a showcase (provided by user)
-  /// - Value: Map of showcase IDs to their controllers,
-  /// allowing multiple controllers
-  /// to be associated with a single showcase key (e.g., for linked showcases)
-  final Map<GlobalKey, Map<int, ShowcaseController>> _showcaseControllers = {};
-
-  /// This Stores keys of showcase for which we will hide the
-  /// [globalFloatingActionWidget].
-  late final _hideFloatingWidgetKeys = {
-    for (final item in widget.hideFloatingActionWidgetForShowcase) item: true,
-  };
-
-  List<ShowcaseController> get _getCurrentActiveControllers {
-    return _showcaseControllers[getCurrentActiveShowcaseKey]?.values.toList() ??
-        <ShowcaseController>[];
-  }
+  late ShowcaseView _showcaseView;
 
   @override
   void initState() {
     super.initState();
-    globalTooltipActions = widget.globalTooltipActions;
-    globalTooltipActionConfig = widget.globalTooltipActionConfig;
-    _initRootWidget();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _updateRootWidget();
+    _showcaseView = ShowcaseView.register(
+      scope: widget.hashCode.toString(),
+      onFinish: widget.onFinish,
+      onStart: widget.onStart,
+      onComplete: widget.onComplete,
+      onDismiss: widget.onDismiss,
+      autoPlay: widget.autoPlay,
+      autoPlayDelay: widget.autoPlayDelay,
+      enableAutoPlayLock: widget.enableAutoPlayLock,
+      blurValue: widget.blurValue,
+      scrollDuration: widget.scrollDuration,
+      disableMovingAnimation: widget.disableMovingAnimation,
+      disableScaleAnimation: widget.disableScaleAnimation,
+      enableAutoScroll: widget.enableAutoScroll,
+      disableBarrierInteraction: widget.disableBarrierInteraction,
+      enableShowcase: widget.enableShowcase,
+      globalTooltipActionConfig: widget.globalTooltipActionConfig,
+      globalTooltipActions: widget.globalTooltipActions,
+      globalFloatingActionWidget: widget.globalFloatingActionWidget,
+      hideFloatingActionWidgetForShowcase:
+          widget.hideFloatingActionWidgetForShowcase,
+    );
   }
 
   @override
   void didUpdateWidget(covariant ShowCaseWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _updateRootWidget();
+    _showcaseView
+      ..autoPlay = widget.autoPlay
+      ..autoPlayDelay = widget.autoPlayDelay
+      ..enableAutoPlayLock = widget.enableAutoPlayLock
+      ..blurValue = widget.blurValue
+      ..scrollDuration = widget.scrollDuration
+      ..disableMovingAnimation = widget.disableMovingAnimation
+      ..disableScaleAnimation = widget.disableScaleAnimation
+      ..enableAutoScroll = widget.enableAutoScroll
+      ..disableBarrierInteraction = widget.disableBarrierInteraction
+      ..enableShowcase = widget.enableShowcase
+      ..globalTooltipActionConfig = widget.globalTooltipActionConfig
+      ..globalTooltipActions = widget.globalTooltipActions;
   }
 
   @override
-  Widget build(BuildContext context) {
-    return OverlayBuilder(
-      updateOverlay: (updateOverlays) => updateOverlay = updateOverlays,
-      overlayBuilder: (_) {
-        final controller = _getCurrentActiveControllers;
+  Widget build(BuildContext context) => Builder(
+        //ignore: deprecated_member_use_from_same_package
+        builder: widget.builder,
+      );
 
-        if (getCurrentActiveShowcaseKey == null || controller.isEmpty) {
-          return const SizedBox.shrink();
-        }
-
-        final controllerLength = controller.length;
-        for (var i = 0; i < controllerLength; i++) {
-          controller[i].updateControllerData();
-        }
-
-        final firstController = controller.first;
-        final firstShowcaseConfig = firstController.config;
-
-        final backgroundContainer = ColoredBox(
-          color: firstShowcaseConfig.overlayColor
-
-              //TODO: Update when we remove support for older version
-              //ignore: deprecated_member_use
-              .withOpacity(firstShowcaseConfig.overlayOpacity),
-          child: const Align(),
-        );
-
-        return Stack(
-          children: [
-            GestureDetector(
-              onTap: () => _barrierOnTap(firstShowcaseConfig),
-              child: ClipPath(
-                clipper: RRectClipper(
-                  area: Rect.zero,
-                  isCircle: false,
-                  radius: BorderRadius.zero,
-                  overlayPadding: EdgeInsets.zero,
-                  linkedObjectData: _getLinkedShowcasesData(controller),
-                ),
-                child: firstController.blur == 0
-                    ? backgroundContainer
-                    : BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: firstController.blur,
-                          sigmaY: firstController.blur,
-                        ),
-                        child: backgroundContainer,
-                      ),
-              ),
-            ),
-            ...controller.expand((object) => object.getToolTipWidget).toList(),
-          ],
-        );
-      },
-      child: Builder(builder: widget.builder),
-    );
+  @override
+  void dispose() {
+    _showcaseView.unregister();
+    super.dispose();
   }
 
   /// Starts Showcase view from the beginning of specified list of widget ids.
@@ -358,51 +261,24 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// which is useful when animation may take some time to complete.
   ///
   /// Refer this issue https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/378
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().startShowCase` instead',
+  )
   void startShowCase(
     List<GlobalKey> widgetIds, {
     Duration delay = Duration.zero,
   }) {
-    if (!mounted) return;
-    if (!enableShowcase) {
-      throw Exception(
-        "You are trying to start Showcase while it has been disabled with "
-        "`enableShowcase` parameter to false from ShowCaseWidget",
-      );
-    }
-
-    if (delay.inMilliseconds == 0) {
-      ids = widgetIds;
-      activeWidgetId = 0;
-      _onStart();
-      updateOverlay?.call(isShowcaseRunning);
-    } else {
-      Future.delayed(
-        delay,
-        () => startShowCase(widgetIds),
-      );
-    }
+    _showcaseView.startShowCase(widgetIds, delay: delay);
   }
 
   /// Completes showcase of given key and starts next one
   /// otherwise will finish the entire showcase view
-  void completed(GlobalKey? key) {
-    if (activeWidgetId == null || ids?[activeWidgetId!] != key || !mounted) {
-      return;
-    }
-    _onComplete().then(
-      (_) {
-        if (!mounted) return;
-        activeWidgetId = activeWidgetId! + 1;
-        _onStart();
-
-        if (activeWidgetId! >= ids!.length) {
-          _cleanupAfterSteps();
-          widget.onFinish?.call();
-        }
-        updateOverlay?.call(isShowcaseRunning);
-      },
-    );
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().completed` instead',
+  )
+  void completed(GlobalKey? key) => _showcaseView.completed(key);
 
   /// Completes current active showcase and starts next one
   /// otherwise will finish the entire showcase view
@@ -410,202 +286,126 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// if [force] is true then it will ignore the [enableAutoPlayLock] and
   /// move to next showcase. This is default behaviour for
   /// [TooltipDefaultActionType.next]
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().next` instead',
+  )
   void next({bool force = false}) {
-    // If this call is from autoPlay timer or action widget we will override the
-    // enableAutoPlayLock so user can move forward in showcase
-    if ((!force && widget.enableAutoPlayLock) || ids == null || !mounted) {
-      return;
-    }
-
-    /// We are using [.then] to maintain older functionality.
-    /// here [_onComplete] method waits for animation to complete so we need
-    /// to wait before moving to next showcase
-    _onComplete().then(
-      (_) {
-        if (!mounted) return;
-        activeWidgetId = activeWidgetId! + 1;
-        _onStart();
-        if (activeWidgetId! >= ids!.length) {
-          _cleanupAfterSteps();
-          widget.onFinish?.call();
-        }
-        updateOverlay?.call(isShowcaseRunning);
-      },
-    );
+    _showcaseView.next(force: force);
   }
 
   /// Completes current active showcase and starts previous one
   /// otherwise will finish the entire showcase view
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().previous` instead',
+  )
   void previous() {
-    if (ids == null || ((activeWidgetId ?? 0) - 1).isNegative || !mounted) {
-      return;
-    }
-    _onComplete().then(
-      (_) {
-        if (!mounted) return;
-
-        activeWidgetId = activeWidgetId! - 1;
-        _onStart();
-        if (activeWidgetId! >= ids!.length) {
-          _cleanupAfterSteps();
-          widget.onFinish?.call();
-        }
-        updateOverlay?.call(isShowcaseRunning);
-      },
-    );
+    _showcaseView.previous();
   }
 
   /// Dismiss entire showcase view
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().dismiss` instead',
+  )
   void dismiss() {
-    // This will check if valid active widget id exist or not and based on that
-    // we will return the widget key with `onDismiss` callback or will return
-    // null value.
-    final idNotExist =
-        activeWidgetId == null || ids == null || ids!.length < activeWidgetId!;
-
-    widget.onDismiss?.call(idNotExist ? null : ids?[activeWidgetId!]);
-    if (!mounted) return;
-
-    _cleanupAfterSteps.call();
-    updateOverlay?.call(isShowcaseRunning);
+    _showcaseView.dismiss();
   }
 
   /// Disables the [globalFloatingActionWidget] for the provided keys.
-  void hideFloatingActionWidgetForKeys(
-    List<GlobalKey> updatedList,
-  ) {
-    _hideFloatingWidgetKeys
-      ..clear()
-      ..addAll({
-        for (final item in updatedList) item: true,
-      });
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().hideFloatingActionWidgetForKeys` instead',
+  )
+  void hideFloatingActionWidgetForKeys(List<GlobalKey> updatedList) {
+    _showcaseView.hideFloatingActionWidgetForKeys(updatedList);
   }
 
-  void registerShowcaseController({
-    required GlobalKey key,
-    required ShowcaseController controller,
-    required int showcaseId,
-  }) {
-    _showcaseControllers
-        .putIfAbsent(
-          key,
-          () => {},
-        )
-        .update(
-          showcaseId,
-          (value) => controller,
-          ifAbsent: () => controller,
-        );
-  }
+  // Forward property accessors to ShowcaseManager
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().autoPlay` instead',
+  )
+  bool get autoPlay => _showcaseView.autoPlay;
 
-  void removeShowcaseController({
-    required GlobalKey key,
-    required int uniqueShowcaseKey,
-  }) =>
-      _showcaseControllers[key]?.remove(uniqueShowcaseKey);
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().disableMovingAnimation` instead',
+  )
+  bool get disableMovingAnimation => _showcaseView.disableMovingAnimation;
 
-  ShowcaseController getControllerForShowcase({
-    required GlobalKey key,
-    required int showcaseId,
-  }) {
-    assert(
-      _showcaseControllers[key]?[showcaseId] != null,
-      'Please register showcase controller first by calling '
-      'registerShowcaseController',
-    );
-    return _showcaseControllers[key]![showcaseId]!;
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().disableScaleAnimation` instead',
+  )
+  bool get disableScaleAnimation => _showcaseView.disableScaleAnimation;
 
-  List<LinkedShowcaseDataModel> _getLinkedShowcasesData(
-    List<ShowcaseController> controllers,
-  ) {
-    final controllerLength = controllers.length;
-    return [
-      for (var i = 0; i < controllerLength; i++)
-        if (controllers[i].linkedShowcaseDataModel != null)
-          controllers[i].linkedShowcaseDataModel!,
-    ];
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().autoPlayDelay` instead',
+  )
+  Duration get autoPlayDelay => _showcaseView.autoPlayDelay;
 
-  void _updateRootWidget() {
-    if (!mounted) return;
-    final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
-    rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
-    rootWidgetSize = rootWidget == null
-        ? MediaQuery.of(context).size
-        : rootRenderObject?.size;
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().enableAutoPlayLock` instead',
+  )
+  bool get enableAutoPlayLock => _showcaseView.enableAutoPlayLock;
 
-  void _barrierOnTap(Showcase firstShowcaseConfig) {
-    firstShowcaseConfig.onBarrierClick?.call();
-    if (disableBarrierInteraction ||
-        firstShowcaseConfig.disableBarrierInteraction) {
-      return;
-    }
-    next();
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().enableAutoScroll` instead',
+  )
+  bool get enableAutoScroll => _showcaseView.enableAutoScroll;
 
-  void _initRootWidget() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
-      rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
-      rootWidgetSize = rootWidget == null
-          ? MediaQuery.of(context).size
-          : rootRenderObject?.size;
-    });
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().disableBarrierInteraction` instead',
+  )
+  bool get disableBarrierInteraction => _showcaseView.disableBarrierInteraction;
 
-  Future<void> _onStart() async {
-    if (activeWidgetId! < ids!.length) {
-      widget.onStart?.call(activeWidgetId, ids![activeWidgetId!]);
-      final controllers = _getCurrentActiveControllers;
-      final controllerLength = controllers.length;
-      for (var i = 0; i < controllerLength; i++) {
-        final controller = controllers[i];
-        final isAutoScroll =
-            controller.config.enableAutoScroll ?? widget.enableAutoScroll;
-        if (controllerLength == 1 && isAutoScroll) {
-          await controller.scrollIntoView();
-        } else {
-          controller.startShowcase();
-        }
-      }
-    }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().enableShowcase` instead',
+  )
+  bool get enableShowcase => _showcaseView.enableShowcase;
 
-    if (widget.autoPlay) {
-      _cancelTimer();
-      _timer = Timer(
-        Duration(seconds: widget.autoPlayDelay.inSeconds),
-        () => next(force: true),
-      );
-    }
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().isShowCaseCompleted` instead',
+  )
+  bool get isShowCaseCompleted => _showcaseView.isShowCaseCompleted;
 
-  Future<void> _onComplete() async {
-    final currentControllers = _getCurrentActiveControllers;
-    final controllerLength = currentControllers.length;
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().scrollDuration` instead',
+  )
+  Duration get scrollDuration => _showcaseView.scrollDuration;
 
-    await Future.wait([
-      for (var i = 0; i < controllerLength; i++)
-        if (!(currentControllers[i].config.disableScaleAnimation ??
-                widget.disableScaleAnimation) &&
-            currentControllers[i].reverseAnimationCallback != null)
-          currentControllers[i].reverseAnimationCallback!.call(),
-    ]);
-    widget.onComplete?.call(activeWidgetId, ids![activeWidgetId!]);
-    if (widget.autoPlay) _cancelTimer();
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().blurValue` instead',
+  )
+  double get blurValue => _showcaseView.blurValue;
 
-  void _cancelTimer() {
-    if (!(_timer?.isActive ?? false)) return;
-    _timer?.cancel();
-    _timer = null;
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().getCurrentActiveShowcaseKey` instead',
+  )
+  GlobalKey? get getCurrentActiveShowcaseKey =>
+      _showcaseView.getCurrentActiveShowcaseKey;
 
-  void _cleanupAfterSteps() {
-    ids = null;
-    activeWidgetId = null;
-    _cancelTimer();
-  }
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().isShowcaseRunning` instead',
+  )
+  bool get isShowcaseRunning => _showcaseView.isShowcaseRunning;
+
+  @Deprecated(
+    'This will be removed in v5.0.0. please use '
+    '`ShowcaseView.get().hiddenFloatingActionKeys` instead',
+  )
+  List<GlobalKey> get hiddenFloatingActionKeys =>
+      _showcaseView.hiddenFloatingActionKeys;
 }

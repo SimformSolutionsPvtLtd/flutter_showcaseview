@@ -396,7 +396,7 @@ class ShowcaseController {
   ///
   /// @return List of tooltip action widgets
   List<Widget> _getTooltipActions() {
-    final doesHaveLocalActions = config.tooltipActions?.isNotEmpty ?? false;
+    final doesHaveLocalActions = config.tooltipActions != null;
     final actionData = doesHaveLocalActions
         ? config.tooltipActions!
         : showCaseView.globalTooltipActions ?? [];

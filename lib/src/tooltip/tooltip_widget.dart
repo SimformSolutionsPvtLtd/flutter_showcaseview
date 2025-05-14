@@ -50,6 +50,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.showcaseController,
     required this.tooltipPadding,
     required this.toolTipSlideEndDistance,
+    required this.targetTooltipGap,
     this.scaleAnimationAlignment,
     this.tooltipPosition,
     this.titlePadding,
@@ -90,6 +91,7 @@ class ToolTipWidget extends StatefulWidget {
   final List<Widget> tooltipActions;
   final EdgeInsets targetPadding;
   final ShowcaseController showcaseController;
+  final double targetTooltipGap;
 
   @override
   State<ToolTipWidget> createState() => _ToolTipWidgetState();
@@ -272,6 +274,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         showcaseOffset: widget.showcaseController.rootRenderObject
                 ?.localToGlobal(Offset.zero) ??
             Offset.zero,
+        targetTooltipGap: widget.targetTooltipGap,
         children: [
           _TooltipLayoutId(
             id: TooltipLayoutSlot.tooltipBox,

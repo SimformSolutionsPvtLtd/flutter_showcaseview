@@ -52,6 +52,7 @@ class _RenderPositionDelegate extends RenderBox
     required this.screenEdgePadding,
     required this.targetPadding,
     required this.showcaseOffset,
+    required this.targetTooltipGap,
   });
 
   // Core positioning parameters
@@ -65,6 +66,7 @@ class _RenderPositionDelegate extends RenderBox
   double gapBetweenContentAndAction;
   double screenEdgePadding;
   EdgeInsets targetPadding;
+  double targetTooltipGap;
 
   /// This is used when there is some space around showcaseview as this widget
   /// implementation works in global coordinate system so because of that we
@@ -325,7 +327,7 @@ class _RenderPositionDelegate extends RenderBox
         ? targetPosition.dx -
             showcaseOffset.dx -
             screenEdgePadding -
-            Constants.tooltipOffset -
+            targetTooltipGap -
             targetPadding.left -
             _getArrowPadding
         : screenSize.width - screenEdgePadding - _xOffset - targetPadding.right;
@@ -489,9 +491,7 @@ class _RenderPositionDelegate extends RenderBox
 
   /// Calculate extra vertical component height for arrow and padding
   double _calculateExtraVerticalHeight() {
-    return tooltipPosition.isVertical
-        ? Constants.tooltipOffset + _getArrowPadding
-        : 0;
+    return tooltipPosition.isVertical ? targetTooltipGap + _getArrowPadding : 0;
   }
 
   /// Handle tooltip exceeding top or bottom screen edge
@@ -639,7 +639,7 @@ class _RenderPositionDelegate extends RenderBox
         tooltipPosition = TooltipPosition.top;
         _yOffset = targetPosition.dy -
             _toolTipBoxSize.height -
-            Constants.tooltipOffset -
+            targetTooltipGap -
             _getArrowPadding;
         break;
 
@@ -648,7 +648,7 @@ class _RenderPositionDelegate extends RenderBox
         tooltipPosition = TooltipPosition.bottom;
         _yOffset = targetPosition.dy +
             targetSize.height +
-            Constants.tooltipOffset +
+            targetTooltipGap +
             _getArrowPadding;
         break;
 
@@ -657,7 +657,7 @@ class _RenderPositionDelegate extends RenderBox
         tooltipPosition = TooltipPosition.right;
         _xOffset = targetPosition.dx +
             targetSize.width +
-            Constants.tooltipOffset +
+            targetTooltipGap +
             _getArrowPadding;
         break;
 
@@ -666,7 +666,7 @@ class _RenderPositionDelegate extends RenderBox
         tooltipPosition = TooltipPosition.left;
         _xOffset = targetPosition.dx -
             _toolTipBoxSize.width -
-            Constants.tooltipOffset -
+            targetTooltipGap -
             _getArrowPadding;
         break;
     }
@@ -856,8 +856,7 @@ class _RenderPositionDelegate extends RenderBox
         // Center horizontally below target
         xOffset = targetPosition.dx + centerDxForTooltip;
         // Position below target with appropriate offset
-        yOffset =
-            targetPosition.dy + targetSize.height + Constants.tooltipOffset;
+        yOffset = targetPosition.dy + targetSize.height + targetTooltipGap;
         // Add additional padding if arrow is shown
 
         yOffset += _getArrowPadding;
@@ -870,7 +869,7 @@ class _RenderPositionDelegate extends RenderBox
         // Position above target with appropriate offset
         yOffset = targetPosition.dy -
             toolTipBoxSize.height -
-            Constants.tooltipOffset -
+            targetTooltipGap -
             _getArrowPadding;
         break;
 
@@ -878,7 +877,7 @@ class _RenderPositionDelegate extends RenderBox
         // Position to the left of target with appropriate offset
         xOffset = targetPosition.dx -
             toolTipBoxSize.width -
-            Constants.tooltipOffset -
+            targetTooltipGap -
             _getArrowPadding;
 
         // Center vertically beside target
@@ -889,7 +888,7 @@ class _RenderPositionDelegate extends RenderBox
         // Position to the right of target with appropriate offset
         xOffset = targetPosition.dx +
             targetSize.width +
-            Constants.tooltipOffset +
+            targetTooltipGap +
             _getArrowPadding;
 
         // Center vertically beside target
@@ -920,21 +919,21 @@ class _RenderPositionDelegate extends RenderBox
     final isBottom = targetPosition.dy +
             targetSize.height +
             totalHeight +
-            Constants.tooltipOffset +
+            targetTooltipGap +
             arrowPadding -
             showcaseOffset.dy <=
         screenSize.height - screenEdgePadding;
 
     final isTop = targetPosition.dy -
             totalHeight -
-            Constants.tooltipOffset -
+            targetTooltipGap -
             arrowPadding -
             showcaseOffset.dy >=
         screenEdgePadding;
 
     final isLeft = targetPosition.dx -
             tooltipSize.width -
-            Constants.tooltipOffset -
+            targetTooltipGap -
             arrowPadding -
             showcaseOffset.dx >=
         screenEdgePadding;
@@ -942,7 +941,7 @@ class _RenderPositionDelegate extends RenderBox
     final isRight = targetPosition.dx +
             targetSize.width +
             tooltipSize.width +
-            Constants.tooltipOffset +
+            targetTooltipGap +
             arrowPadding -
             showcaseOffset.dx <=
         screenSize.width - screenEdgePadding;

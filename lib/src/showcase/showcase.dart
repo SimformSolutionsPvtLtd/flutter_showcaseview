@@ -300,6 +300,11 @@ class Showcase extends StatefulWidget {
   /// for this showcase.
   final bool? enableAutoScroll;
 
+  /// Defines the space between target widget and tooltip.
+  ///
+  /// Defaults to 10.
+  final double targetTooltipGap;
+
   /// Highlights a specific widget on the screen with an informative tooltip.
   ///
   /// This widget helps you showcase specific parts of your UI by drawing an
@@ -326,6 +331,7 @@ class Showcase extends StatefulWidget {
   ///   - `tooltipPadding`: Padding around the content inside the tooltip.
   ///   - `onToolTipClick`: A callback function called when the user clicks the tooltip.
   ///   - `tooltipBorderRadius`: The border radius of the tooltip (defaults to 8dp).
+  ///   - `targetTooltipGap`: The gap between the target widget and the tooltip (defaults to 10dp).
   ///
   /// **Highlight:**
   ///   - `targetShapeBorder`: The border to draw around the showcased widget (defaults to a rounded rectangle).
@@ -419,10 +425,15 @@ class Showcase extends StatefulWidget {
     this.scrollAlignment = 0.5,
     this.enableAutoScroll,
     this.floatingActionWidget,
+    this.targetTooltipGap = 10,
   })  : height = null,
         width = null,
         container = null,
         showcaseKey = key,
+        assert(
+          targetTooltipGap >= 0,
+          'targetTooltipGap must be greater than 0',
+        ),
         assert(
           overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
           'overlay opacity must be between 0 and 1.',
@@ -523,6 +534,7 @@ class Showcase extends StatefulWidget {
     this.scrollAlignment = 0.5,
     this.enableAutoScroll,
     this.toolTipMargin = 14,
+    this.targetTooltipGap = 10,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -546,6 +558,10 @@ class Showcase extends StatefulWidget {
         titleTextDirection = null,
         descriptionTextDirection = null,
         showcaseKey = key,
+        assert(
+          targetTooltipGap >= 0,
+          'targetTooltipGap must be greater than 0',
+        ),
         assert(
           overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
           'overlay opacity must be between 0 and 1.',

@@ -92,8 +92,14 @@ class _RenderPositionDelegate extends RenderBox
   // Layout properties - keep only those not managed by RenderObjectManager
   var _needToResize = false;
   var _needToFlip = false;
+
+  // These are the max size tooltip can have
+  // these can change as per the tooltip widget configuration and content
   var _maxWidth = 0.0;
   var _maxHeight = 0.0;
+
+  // These are the total size that we can use for tooltip
+  // This will be fixed after initial layout and will not change after that
   var _availableScreenWidth = 0.0;
   var _availableScreenHeight = 0.0;
   var _minimumActionBoxSize = Size.zero;
@@ -530,7 +536,6 @@ class _RenderPositionDelegate extends RenderBox
     } else if (tooltipPosition.isHorizontal) {
       // For left/right positions, ensure height fits
       if (_maxHeight > _availableScreenHeight) {
-        _maxHeight = _availableScreenHeight;
         _needToResize = true;
         _yOffset = screenEdgePadding + showcaseOffset.dy;
       } else if (!isTopEdge) {
@@ -574,8 +579,7 @@ class _RenderPositionDelegate extends RenderBox
       _maxHeight -= screenEdgePadding - _xOffset;
       _yOffset = screenEdgePadding + showcaseOffset.dy;
     } else {
-      // Bottom edge - resize and keep at bottom
-      _maxHeight += _calculateExtraVerticalHeight();
+      // Bottom edge - keep at bottom
       _yOffset = screenSize.height -
           showcaseOffset.dy -
           screenEdgePadding -
@@ -670,7 +674,6 @@ class _RenderPositionDelegate extends RenderBox
 
   /// Apply final boundary constraints to ensure tooltip stays on screen
   void _applyBoundaryConstraints(double tooltipHeight) {
-    // Ensure tooltip stays within horizontal screen bounds
     final screenStart = Offset(
       screenEdgePadding + showcaseOffset.dx,
       screenEdgePadding + showcaseOffset.dy,
@@ -683,24 +686,22 @@ class _RenderPositionDelegate extends RenderBox
           showcaseOffset.dx,
       screenSize.height - tooltipHeight - screenEdgePadding + showcaseOffset.dy,
     );
-    assert(
-      screenStart.dx <= screenEnd.dx,
-      'Tooltip width is more then available size',
-    );
-    _xOffset = _xOffset.clamp(
-      screenStart.dx,
-      screenEnd.dx,
-    );
+
+    // Ensure tooltip stays within horizontal screen bounds
+    _xOffset = screenStart.dx > screenEnd.dx
+        ? screenStart.dx
+        : _xOffset.clamp(
+            screenStart.dx,
+            screenEnd.dx,
+          );
 
     // Ensure tooltip stays within vertical screen bounds
-    assert(
-      screenStart.dy <= screenEnd.dy,
-      'Tooltip height is more then available size',
-    );
-    _yOffset = _yOffset.clamp(
-      screenStart.dy,
-      screenEnd.dy,
-    );
+    _yOffset = screenStart.dy > screenEnd.dy
+        ? screenStart.dy
+        : _yOffset.clamp(
+            screenStart.dy,
+            screenEnd.dy,
+          );
 
     // Apply target padding based on position
     _applyTargetPadding();

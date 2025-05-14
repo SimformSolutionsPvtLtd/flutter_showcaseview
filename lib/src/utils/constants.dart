@@ -38,9 +38,6 @@ class Constants {
   /// Padding when arrow is not visible
   static const double withOutArrowToolTipPadding = 0;
 
-  /// Distance between target and tooltip
-  static const double tooltipOffset = 10;
-
   /// Minimum tooltip dimensions to maintain usability
   static const double minimumToolTipWidth = 50;
   // Currently we are not constraining height but will do in future

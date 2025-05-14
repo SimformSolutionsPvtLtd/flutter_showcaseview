@@ -269,6 +269,7 @@ class ShowcaseController {
               tooltipActionConfig: _getTooltipActionConfig(),
               tooltipActions: _getTooltipActions(),
               targetPadding: config.targetPadding,
+              targetTooltipGap: config.targetTooltipGap,
               showcaseController: this,
             ),
             if (_getFloatingActionWidget != null) _getFloatingActionWidget!,

@@ -20,6 +20,21 @@
   Bumped dart minimum sdk to 2.19.6
 - Fixed [#515](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/515) - Added
   missing assertions for `Showcase.withWidget()`.
+- Feature [#518](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/518) - created
+  a showcaseView and overlay manager classes to handle showcaseView widget functionality
+  independently.
+- Feature [#518](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/518) -
+  Deprecated `ShowCaseWidget`
+  widget and added `ShowcaseView` class to handle showcase widget functionality independently
+  without context.
+- Format [#528](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/528) - Formatted
+  project structure
+- Fixed [#526](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/526) - Fixed
+  screen edge assertions.
+- Feature [#521](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/521) - Added
+  `toolTipMargin` support for `Showcase.withWidget`
+- Feature [#520](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/520) - Added
+  `targetTooltipGap` to manage space between tooltip and target widget
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

@@ -481,6 +481,7 @@ class Showcase extends StatefulWidget {
   /// - `tooltipActions`: A list of custom actions (widgets) to display within the tooltip.
   /// - `tooltipActionConfig`: Configuration options for custom tooltip actions.
   /// - `floatingActionWidget`: Custom static floating action widget to show a static widget anywhere
+  /// - `toolTipMargin`: The margin around the screen which tooltip try not to cross (defaults to 14dp).
   ///
   /// **Differences from default constructor:**
   ///
@@ -521,6 +522,7 @@ class Showcase extends StatefulWidget {
     this.tooltipActionConfig,
     this.scrollAlignment = 0.5,
     this.enableAutoScroll,
+    this.toolTipMargin = 14,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -543,7 +545,6 @@ class Showcase extends StatefulWidget {
         descriptionPadding = null,
         titleTextDirection = null,
         descriptionTextDirection = null,
-        toolTipMargin = 14,
         showcaseKey = key,
         assert(
           overlayOpacity >= 0.0 && overlayOpacity <= 1.0,

@@ -1,6 +1,5 @@
 ![Showcase View - Simform LLC.](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/banner.png)
 
-
 # ShowCaseView
 
 [![Build](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions/workflows/flutter.yaml/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions) [![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)
@@ -11,16 +10,16 @@ _Check out other amazing open-source [Flutter libraries](https://simform-flutter
 
 ## Preview
 
-![The example app running in Android](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
+![The example app running on mobile](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
 
 ## Features
 
-- Guide users through your app by highlighting specific widgets step by step
-- Customize tooltips with titles, descriptions, and styling
-- Handles scrolling the widget into view for showcasing
-- Support for custom tooltip widgets
-- Animation and transition effects for tooltip
-- Options to showcase multiple widgets at the same time
+- Guide users through your app by highlighting specific widgets step by step.
+- Customize tooltips with titles, descriptions, and styling.
+- Handles scrolling the widget into view for showcasing.
+- Support for custom tooltip widgets.
+- Animation and transition effects for tooltip.
+- Options to showcase multiple widgets at the same time.
 
 ## Documentation
 

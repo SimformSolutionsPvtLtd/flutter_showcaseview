@@ -22,7 +22,7 @@
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
+import '../utils/constants.dart';
 
 class ShowcaseCircularProgressIndicator extends StatelessWidget {
   const ShowcaseCircularProgressIndicator({super.key});

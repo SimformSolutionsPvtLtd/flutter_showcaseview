@@ -24,8 +24,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class GetPosition {
-  GetPosition({
+class TargetPositionService {
+  TargetPositionService({
     required this.renderBox,
     required this.screenWidth,
     required this.screenHeight,

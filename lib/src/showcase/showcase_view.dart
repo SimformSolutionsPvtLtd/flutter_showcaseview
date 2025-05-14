@@ -23,14 +23,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'constants.dart';
-import 'models/tooltip_action_button.dart';
-import 'models/tooltip_action_config.dart';
-import 'overlay_manager.dart';
-import 'showcase/showcase.dart';
-import 'showcase/showcase_controller.dart';
+import '../models/tooltip_action_button.dart';
+import '../models/tooltip_action_config.dart';
+import '../showcase_widget.dart';
+import '../utils/constants.dart';
+import '../utils/overlay_manager.dart';
+import 'showcase_controller.dart';
 import 'showcase_service.dart';
-import 'showcase_widget.dart';
 
 /// Callback type for showcase events that need index and key information
 typedef OnShowcaseCallback = void Function(int? showcaseIndex, GlobalKey key);
@@ -413,19 +412,6 @@ class ShowcaseView {
       ..addAll({
         for (final item in updatedList) item: true,
       });
-  }
-
-  /// Handles tap on barrier area
-  ///
-  /// * [config] - The showcase configuration for the current showcase
-  ///
-  /// Respects [disableBarrierInteraction] settings from both global and local config
-  void handleBarrierTap(Showcase config) {
-    config.onBarrierClick?.call();
-    if (disableBarrierInteraction || config.disableBarrierInteraction) {
-      return;
-    }
-    next();
   }
 
   /// Internal method to handle showcase start

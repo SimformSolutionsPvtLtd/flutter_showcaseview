@@ -24,16 +24,16 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../get_position.dart';
 import '../models/linked_showcase_data.dart';
 import '../models/tooltip_action_config.dart';
-import '../overlay_manager.dart';
-import '../showcase_service.dart';
-import '../showcase_view.dart';
 import '../tooltip/tooltip.dart';
-import '../tooltip_action_button_widget.dart';
+import '../utils/overlay_manager.dart';
+import '../utils/target_position_service.dart';
 import '../widget/floating_action_widget.dart';
+import '../widget/tooltip_action_button_widget.dart';
 import 'showcase.dart';
+import 'showcase_service.dart';
+import 'showcase_view.dart';
 import 'target_widget.dart';
 
 /// Controller class for managing showcase functionality
@@ -76,7 +76,7 @@ class ShowcaseController {
   ShowcaseView showCaseView;
 
   /// Position information for the showcase target
-  GetPosition? position;
+  TargetPositionService? position;
 
   /// Data model for linked showcases
   LinkedShowcaseDataModel? linkedShowcaseDataModel;
@@ -172,7 +172,7 @@ class ShowcaseController {
     final renderBox = _context.findRenderObject() as RenderBox?;
     final screenSize = MediaQuery.of(_context).size;
     final size = rootWidgetSize ?? screenSize;
-    final newPosition = GetPosition(
+    final newPosition = TargetPositionService(
       rootRenderObject: rootRenderObject,
       renderBox: renderBox,
       padding: config.targetPadding,
@@ -297,7 +297,7 @@ class ShowcaseController {
         .getFloatingActionWidget(config.showcaseKey)
         ?.call(_context);
     final size = rootWidgetSize ?? MediaQuery.of(_context).size;
-    position ??= GetPosition(
+    position ??= TargetPositionService(
       rootRenderObject: rootRenderObject,
       renderBox: _context.findRenderObject() as RenderBox?,
       padding: config.targetPadding,
@@ -435,6 +435,18 @@ class ShowcaseController {
     return config.tooltipActionConfig ??
         showCaseView.globalTooltipActionConfig ??
         const TooltipActionConfig();
+  }
+
+  /// Handles tap on barrier area
+  ///
+  /// Respects [disableBarrierInteraction] settings from both global and local config
+  void handleBarrierTap() {
+    config.onBarrierClick?.call();
+    if (showCaseView.disableBarrierInteraction ||
+        config.disableBarrierInteraction) {
+      return;
+    }
+    _nextIfAny();
   }
 
   /// Retrieves the floating action widget if available

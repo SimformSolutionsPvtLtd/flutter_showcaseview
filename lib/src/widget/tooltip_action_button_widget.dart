@@ -21,7 +21,7 @@
  */
 import 'package:flutter/material.dart';
 
-import '../showcaseview.dart';
+import '../../showcaseview.dart';
 
 class TooltipActionButtonWidget extends StatelessWidget {
   const TooltipActionButtonWidget({

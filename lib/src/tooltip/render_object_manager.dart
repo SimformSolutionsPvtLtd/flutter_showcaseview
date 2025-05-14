@@ -21,7 +21,7 @@
  */
 import 'package:flutter/rendering.dart';
 
-import '../enum.dart';
+import '../utils/enum.dart';
 
 class RenderObjectManager {
   RenderObjectManager({

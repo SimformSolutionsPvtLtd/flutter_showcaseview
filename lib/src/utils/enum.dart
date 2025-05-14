@@ -24,8 +24,8 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import 'showcase_view.dart';
-import 'tooltip/render_object_manager.dart';
+import '../showcase/showcase_view.dart';
+import '../tooltip/render_object_manager.dart';
 
 enum TooltipPosition {
   top(rotationAngle: pi, scaleAlignment: Alignment.topCenter),

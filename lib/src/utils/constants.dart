@@ -21,7 +21,7 @@
  */
 import 'package:flutter/material.dart';
 
-import 'widget/showcase_circular_progress_indicator.dart';
+import '../widget/showcase_circular_progress_indicator.dart';
 
 class Constants {
   Constants._();

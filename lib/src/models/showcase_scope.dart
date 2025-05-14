@@ -22,7 +22,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../showcase/showcase_controller.dart';
-import '../showcase_view.dart';
+import '../showcase/showcase_view.dart';
 
 class ShowcaseScope {
   ShowcaseScope({

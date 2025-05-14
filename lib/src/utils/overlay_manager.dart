@@ -24,12 +24,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import 'models/linked_showcase_data.dart';
+import '../models/linked_showcase_data.dart';
+import '../showcase/showcase_controller.dart';
+import '../showcase/showcase_service.dart';
+import '../showcase/showcase_view.dart';
+import 'extensions.dart';
 import 'shape_clipper.dart';
-import 'showcase/showcase_controller.dart';
-import 'showcase_service.dart';
-import 'showcase_view.dart';
-import 'utils/extensions.dart';
 
 /// A singleton manager class responsible for displaying and controlling overlays
 /// in the ShowcaseView.
@@ -170,7 +170,7 @@ class OverlayManager {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () => showcaseView.handleBarrierTap(firstShowcaseConfig),
+          onTap: () => firstController.handleBarrierTap(),
           child: ClipPath(
             clipper: RRectClipper(
               linkedObjectData: _getLinkedShowcasesData(controllers),

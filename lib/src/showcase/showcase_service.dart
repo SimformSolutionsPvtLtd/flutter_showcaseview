@@ -21,11 +21,11 @@
  */
 import 'package:flutter/widgets.dart';
 
-import 'constants.dart';
-import 'models/showcase_scope.dart';
-import 'showcase/showcase_controller.dart';
-import 'showcase_view.dart';
-import 'utils/extensions.dart';
+import '../../showcaseview.dart';
+import '../models/showcase_scope.dart';
+import '../utils/constants.dart';
+import '../utils/extensions.dart';
+import 'showcase_controller.dart';
 
 /// A scoped service locator for showcase functionality
 ///

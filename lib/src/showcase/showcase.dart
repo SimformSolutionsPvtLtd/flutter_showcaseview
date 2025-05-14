@@ -22,16 +22,16 @@
 
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
-import '../enum.dart';
 import '../models/showcase_scope.dart';
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
-import '../overlay_manager.dart';
-import '../showcase_service.dart';
 import '../showcase_widget.dart';
+import '../utils/constants.dart';
+import '../utils/enum.dart';
+import '../utils/overlay_manager.dart';
 import '../widget/floating_action_widget.dart';
 import 'showcase_controller.dart';
+import 'showcase_service.dart';
 
 class Showcase extends StatefulWidget {
   /// A key that is unique across the entire app.

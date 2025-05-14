@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../constants.dart';
-import '../enum.dart';
 import '../models/tooltip_action_config.dart';
 import '../showcase/showcase_controller.dart';
+import '../utils/constants.dart';
+import '../utils/enum.dart';
 import '../widget/action_widget.dart';
 import '../widget/default_tooltip_text_widget.dart';
 import 'render_object_manager.dart';

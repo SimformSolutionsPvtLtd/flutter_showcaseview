@@ -100,8 +100,13 @@ class ShowcaseService {
     final scopeName = scope ?? currentScope;
     final manager = _showcaseViews[scopeName];
     if (manager == null) {
-      throw Exception('No ShowcaseView registered for scope "$scopeName". '
-          'Make sure ShowcaseView is initialized in this scope.');
+      if (scopeName != Constants.initialScope) {
+        throw Exception('No ShowcaseView registered for scope "$scopeName". '
+            'Make sure ShowcaseView is initialized in this scope.');
+      } else {
+        throw Exception('No ShowcaseView is registered. '
+            'Make sure ShowcaseView is registered before using Showcase widget');
+      }
     }
     return manager;
   }

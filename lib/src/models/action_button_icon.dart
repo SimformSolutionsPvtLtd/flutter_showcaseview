@@ -23,16 +23,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ActionButtonIcon {
+  /// Creates an icon configuration for a tooltip action button with a
+  /// standard [Icon].
+  ///
+  /// The [icon] parameter is required and specifies the icon to display.
+  /// The optional [padding] parameter defines spacing around the icon.
   const ActionButtonIcon({
     required Icon this.icon,
     this.padding,
   });
 
+  /// Creates an icon configuration for a tooltip action button with an
+  /// [ImageIcon].
+  ///
+  /// The [icon] parameter is required and specifies the image icon to display.
+  /// The optional [padding] parameter defines spacing around the icon.
   const ActionButtonIcon.withImageIcon({
     required ImageIcon this.icon,
     this.padding,
   });
 
+  /// The icon widget to display in the button.
+  ///
+  /// Can be either an [Icon] or [ImageIcon] depending on which constructor
+  /// is used.
   final Widget icon;
+
+  /// Optional padding to apply around the icon.
   final EdgeInsets? padding;
 }

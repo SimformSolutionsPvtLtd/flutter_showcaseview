@@ -25,6 +25,18 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class TargetPositionService {
+  /// A service class that handles positioning calculations for showcase
+  /// targets.
+  ///
+  /// This class calculates and provides the position and dimensions of a
+  /// target widget within the context of the showcase overlay. It's
+  /// responsible for:
+  ///
+  /// - Determining the exact position of a target widget in global coordinates.
+  /// - Computing the boundaries of the target widget with optional padding.
+  /// - Providing helper methods for tooltip positioning around the target.
+  /// - Ensuring the target stays within screen bounds.
+  /// - Supporting different ancestral coordinate systems.
   TargetPositionService({
     required this.renderBox,
     required this.screenWidth,
@@ -43,22 +55,11 @@ class TargetPositionService {
 
   Offset? _boxOffset;
 
-  void _getRenderBoxOffset() {
-    if (renderBox == null) return;
-
-    _boxOffset = renderBox?.localToGlobal(
-      Offset.zero,
-      ancestor: rootRenderObject,
-    );
-  }
-
-  bool _checkBoxOrOffsetIsNull({bool checkDy = false, bool checkDx = false}) {
-    return renderBox == null ||
-        _boxOffset == null ||
-        (checkDx && (_boxOffset?.dx.isNaN ?? true)) ||
-        (checkDy && (_boxOffset?.dy.isNaN ?? true));
-  }
-
+  /// Calculates the rectangle representing the target widget with padding
+  ///
+  /// This method returns a rectangle that represents the target widget's bounds
+  /// including any padding, clamped to stay within the screen boundaries.
+  /// Used by the showcase system to determine where to draw highlight effects.
   Rect getRect() {
     if (_checkBoxOrOffsetIsNull(checkDy: true, checkDx: true)) {
       return Rect.zero;
@@ -76,6 +77,12 @@ class TargetPositionService {
     return rect;
   }
 
+  /// Gets the raw rectangle bounds of the target widget without clamping
+  ///
+  /// Unlike [getRect], this method returns the exact rectangle of the target widget
+  /// without applying any screen boundary constraints. It's used by the showcase
+  /// controller to create the cutout area in the overlay where the target widget
+  /// will be visible.
   Rect getRectForOverlay() {
     if (_checkBoxOrOffsetIsNull(checkDy: true, checkDx: true)) {
       return Rect.zero;
@@ -90,7 +97,7 @@ class TargetPositionService {
     );
   }
 
-  ///Get the bottom position of the widget
+  /// Gets the bottom edge position of the target widget with padding.
   double getBottom() {
     if (_checkBoxOrOffsetIsNull(checkDy: true)) {
       return padding.bottom;
@@ -99,7 +106,7 @@ class TargetPositionService {
     return bottomRight.dy + padding.bottom;
   }
 
-  ///Get the top position of the widget
+  /// Gets the top edge position of the target widget with padding.
   double getTop() {
     if (_checkBoxOrOffsetIsNull(checkDy: true)) {
       return -padding.top;
@@ -108,7 +115,7 @@ class TargetPositionService {
     return topLeft.dy - padding.top;
   }
 
-  ///Get the left position of the widget
+  /// Gets the left edge position of the target widget with padding.
   double getLeft() {
     if (_checkBoxOrOffsetIsNull(checkDx: true)) {
       return -padding.left;
@@ -117,7 +124,7 @@ class TargetPositionService {
     return topLeft.dx - padding.left;
   }
 
-  ///Get the right position of the widget
+  /// Gets the right edge position of the target widget with padding.
   double getRight() {
     if (_checkBoxOrOffsetIsNull(checkDx: true)) {
       return padding.right;
@@ -126,12 +133,16 @@ class TargetPositionService {
     return bottomRight.dx + padding.right;
   }
 
+  /// Calculates the total height of the target widget including padding.
   double getHeight() => getBottom() - getTop();
 
+  /// Calculates the total width of the target widget including padding.
   double getWidth() => getRight() - getLeft();
 
+  /// Calculates the horizontal center position of the target widget.
   double getCenter() => (getLeft() + getRight()) * 0.5;
 
+  /// Gets the top-left corner of the render box in global coordinates.
   Offset topLeft() {
     final box = renderBox;
     if (box == null) return Offset.zero;
@@ -144,5 +155,35 @@ class TargetPositionService {
     );
   }
 
+  /// Gets the center position of the target widget in global coordinates.
   Offset getOffset() => renderBox?.size.center(topLeft()) ?? Offset.zero;
+
+  /// Calculates and stores the global position of the render box.
+  ///
+  /// This method translates the widget's local coordinates to global screen
+  /// coordinates, optionally relative to a specified ancestor widget.
+  void _getRenderBoxOffset() {
+    if (renderBox == null) return;
+
+    _boxOffset = renderBox?.localToGlobal(
+      Offset.zero,
+      ancestor: rootRenderObject,
+    );
+  }
+
+  /// Checks if the render box or its offset are null or have invalid
+  /// components.
+  ///
+  /// This helper method is used internally to safely handle cases where
+  /// position calculations might fail due to missing or invalid render
+  /// information.
+  ///
+  /// * [checkDy] - Whether to check if the y-coordinate is valid
+  /// * [checkDx] - Whether to check if the x-coordinate is valid
+  bool _checkBoxOrOffsetIsNull({bool checkDy = false, bool checkDx = false}) {
+    return renderBox == null ||
+        _boxOffset == null ||
+        (checkDx && (_boxOffset?.dx.isNaN ?? true)) ||
+        (checkDy && (_boxOffset?.dy.isNaN ?? true));
+  }
 }

@@ -38,7 +38,8 @@ import 'target_widget.dart';
 
 /// Controller class for managing showcase functionality
 ///
-/// This controller handles the lifecycle and presentation of a single showcase element.
+/// This controller handles the lifecycle and presentation of a single
+/// showcase element.
 /// It manages the position, state, and rendering of showcase elements including
 /// tooltips, target highlighting, and floating action widgets.
 class ShowcaseController {
@@ -97,27 +98,31 @@ class ShowcaseController {
   bool isScrollRunning = false;
 
   /// Blur effect value for the overlay background
-  double blur = 0.0;
+  double blur = 0;
 
   /// Global floating action widget to be displayed
   FloatingActionWidget? globalFloatingActionWidget;
 
   /// Returns the Showcase widget configuration
   ///
-  /// Provides access to all properties and settings of the current showcase widget.
-  /// This is used throughout the controller to access showcase configuration options.
+  /// Provides access to all properties and settings of the current showcase
+  /// widget.
+  /// This is used throughout the controller to access showcase configuration
+  /// options.
   Showcase get config => getState().widget;
 
   /// Returns the BuildContext for this showcase
   ///
   /// Used for positioning calculations and widget rendering.
-  /// This context represents the location of the showcase target in the widget tree.
+  /// This context represents the location of the showcase target in the
+  /// widget tree.
   BuildContext get _context => getState().context;
 
   /// Checks if the showcase context is still valid
   ///
   /// Returns true if the context is mounted (valid) and false otherwise.
-  /// Used to prevent operations on widgets that have been removed from the tree.
+  /// Used to prevent operations on widgets that have been removed from the
+  /// tree.
   bool get _mounted => getState().mounted;
 
   /// Initializes the root widget size and render object
@@ -163,10 +168,10 @@ class ShowcaseController {
   /// Rebuilds the showcase overlay with updated positioning information.
   /// Creates positioning data and updates the visual representation.
   ///
-  /// Another use of this is to update the controller data just before overlay is
-  /// inserted so we can get the correct position. Which is need in
+  /// Another use of this is to update the controller data just before
+  /// overlay is inserted so we can get the correct position. Which is need in
   /// page transition case where page transition may take some time to reach
-  /// to it's original position
+  /// to it's original position.
   void updateControllerData() {
     if (!_mounted) return;
     final renderBox = _context.findRenderObject() as RenderBox?;
@@ -212,7 +217,7 @@ class ShowcaseController {
     required Rect rectBound,
     required Size screenSize,
   }) {
-    blur = kIsWeb ? 0.0 : max(0.0, config.blurValue ?? showCaseView.blurValue);
+    blur = kIsWeb ? 0.0 : max(0, config.blurValue ?? showCaseView.blurValue);
 
     getToolTipWidget = isScrollRunning
         ? [
@@ -244,10 +249,9 @@ class ShowcaseController {
               tooltipBackgroundColor: config.tooltipBackgroundColor,
               textColor: config.textColor,
               showArrow: config.showArrow,
-              onTooltipTap:
-                  config.disposeOnTap == true || config.onToolTipClick != null
-                      ? _getOnTooltipTap
-                      : null,
+              onTooltipTap: config.disposeOnTap ?? config.onToolTipClick != null
+                  ? _getOnTooltipTap
+                  : null,
               tooltipPadding: config.tooltipPadding,
               disableMovingAnimation: config.disableMovingAnimation ??
                   showCaseView.disableMovingAnimation,
@@ -278,9 +282,10 @@ class ShowcaseController {
 
   /// Callback to start the showcase
   ///
-  /// Initializes the showcase by calculating positions and preparing visual elements.
-  /// This method is called when a showcase is about to be displayed to ensure all
-  /// positioning data is accurate and up-to-date.
+  /// Initializes the showcase by calculating positions and preparing visual
+  /// elements.
+  /// This method is called when a showcase is about to be displayed to
+  /// ensure all positioning data is accurate and up-to-date.
   ///
   /// The method performs these key actions:
   /// - Exits early if showcases are disabled in the parent widget
@@ -364,10 +369,12 @@ class ShowcaseController {
 
   /// Handles target tap behavior based on configuration
   ///
-  /// Either dismisses the showcase or moves to the next step based on configuration.
-  /// If [disposeOnTap] is true, dismisses the entire showcase, otherwise advances.
+  /// Either dismisses the showcase or moves to the next step based on
+  /// configuration.
+  /// If [Showcase.disposeOnTap] is true, dismisses the entire showcase,
+  /// otherwise advances.
   void _getOnTargetTap() {
-    if (config.disposeOnTap == true) {
+    if (config.disposeOnTap ?? false) {
       showCaseView.dismiss();
       assert(
         config.onTargetClick != null,
@@ -381,12 +388,12 @@ class ShowcaseController {
 
   /// Handles tooltip tap behavior based on configuration
   ///
-  /// Dismisses the showcase if configured to do so, and executes any configured callback.
-  /// If [disposeOnTap] is true, dismisses the entire showcase before executing callback.
+  /// Dismisses the showcase if configured to do so, and executes any
+  /// configured callback.
+  /// If [Showcase.disposeOnTap] is true, dismisses the entire showcase before
+  /// executing callback.
   void _getOnTooltipTap() {
-    if (config.disposeOnTap == true) {
-      showCaseView.dismiss();
-    }
+    if (config.disposeOnTap ?? false) showCaseView.dismiss();
     config.onToolTipClick?.call();
   }
 
@@ -417,9 +424,6 @@ class ShowcaseController {
             ),
             child: TooltipActionButtonWidget(
               config: actionData[i],
-              // We have to pass showcaseState from here because
-              // [TooltipActionButtonWidget] is not direct child of showcaseWidget
-              // so it won't be able to get the state by using it's context
               showCaseState: showCaseView,
             ),
           ),
@@ -440,7 +444,8 @@ class ShowcaseController {
 
   /// Handles tap on barrier area
   ///
-  /// Respects [disableBarrierInteraction] settings from both global and local config
+  /// Respects [Showcase.disableBarrierInteraction] settings from both global
+  /// and local config.
   void handleBarrierTap() {
     config.onBarrierClick?.call();
     if (showCaseView.disableBarrierInteraction ||

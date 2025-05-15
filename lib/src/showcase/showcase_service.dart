@@ -29,9 +29,9 @@ import 'showcase_controller.dart';
 
 /// A scoped service locator for showcase functionality
 ///
-/// This class provides global access to [ShowcaseView] instances without requiring
-/// a BuildContext, similar to the GetIt service locator pattern, but with support
-/// for multiple independent scopes.
+/// This class provides global access to [ShowcaseView] instances without
+/// requiring a BuildContext, similar to the GetIt service locator pattern,
+/// but with support for multiple independent scopes.
 class ShowcaseService {
   /// Private constructor to prevent external instantiation
   ShowcaseService._();
@@ -96,21 +96,40 @@ class ShowcaseService {
   bool isRegistered({String? scope}) =>
       _showcaseViews.containsKey(scope ?? currentScope);
 
+  /// Returns the [ShowcaseScope] instance for the specified scope name.
+  ///
+  /// * [scope] - Optional scope name (defaults to [currentScope])
+  ///
+  /// Throws an exception if no [ShowcaseView] is registered in the specified
+  /// scope.
   ShowcaseScope getScope({String? scope}) {
     final scopeName = scope ?? currentScope;
     final manager = _showcaseViews[scopeName];
     if (manager == null) {
       if (scopeName != Constants.initialScope) {
-        throw Exception('No ShowcaseView registered for scope "$scopeName". '
-            'Make sure ShowcaseView is initialized in this scope.');
+        throw Exception(
+          'No ShowcaseView registered for scope "$scopeName". '
+          'Make sure ShowcaseView is initialized in this scope.',
+        );
       } else {
-        throw Exception('No ShowcaseView is registered. '
-            'Make sure ShowcaseView is registered before using Showcase widget');
+        throw Exception(
+          'No ShowcaseView is registered. Make sure ShowcaseView is '
+          'registered before using Showcase widget',
+        );
       }
     }
     return manager;
   }
 
+  /// Returns a map of showcase controllers for the specified scope.
+  ///
+  /// This method provides access to all controllers registered in a specific
+  /// scope, organized by their GlobalKeys and IDs.
+  ///
+  /// * [scope] - The scope name to retrieve controllers from
+  ///
+  /// Returns a nested map where the outer key is the GlobalKey and the inner
+  /// key is the controller ID.
   Map<GlobalKey, Map<int, ShowcaseController>> getControllers({
     required String scope,
   }) =>

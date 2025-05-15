@@ -21,16 +21,17 @@
  */
 import 'package:flutter/material.dart';
 
-/// A widget that represents the target of a showcase.
-///
-/// This widget creates a transparent overlay that highlights a UI element
-/// that needs to be showcased. It defines the position, size, and interaction
-/// behavior of the target area.
-///
-/// The [TargetWidget] is positioned absolutely within the showcase overlay and
-/// can respond to various gestures like tap, double tap, and long press.
 class TargetWidget extends StatelessWidget {
   /// Creates a target widget for showcasing.
+  ///
+  /// A widget that represents the target of a showcase.
+  ///
+  /// This widget creates a transparent overlay that highlights a UI element
+  /// that needs to be showcased. It defines the position, size, and interaction
+  /// behavior of the target area.
+  ///
+  /// The [TargetWidget] is positioned absolutely within the showcase overlay and
+  /// can respond to various gestures like tap, double tap, and long press.
   ///
   /// * [offset] - The position of the target widget in the overlay
   /// * [size] - The size of the target widget
@@ -53,6 +54,7 @@ class TargetWidget extends StatelessWidget {
     this.onDoubleTap,
     this.onLongPress,
     this.disableDefaultChildGestures = false,
+    super.key,
   });
 
   /// The position of the target widget in the overlay coordinates
@@ -95,8 +97,9 @@ class TargetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     /// Creates the content of the target widget
     ///
-    /// This includes the gesture detector and the container with the appropriate
-    /// shape decoration that defines the target's visual appearance.
+    /// This includes the gesture detector and the container with the
+    /// appropriate shape decoration that defines the target's visual
+    /// appearance.
     final targetWidgetContent = GestureDetector(
       onTap: onTap,
       onLongPress: onLongPress,

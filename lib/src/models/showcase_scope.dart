@@ -25,6 +25,19 @@ import '../showcase/showcase_controller.dart';
 import '../showcase/showcase_view.dart';
 
 class ShowcaseScope {
+  /// A container class that manages showcase views within a specific named scope.
+  ///
+  /// This class is responsible for:
+  /// - Maintain a reference to a named scope and its associated [ShowcaseView].
+  /// - Store and organize [ShowcaseController] instances by their GlobalKeys.
+  /// - Enable multiple independent showcase systems to coexist in different
+  /// parts of the app.
+  /// - Facilitate proper routing of showcase events to the correct controllers.
+  ///
+  /// This class is primarily used by [ShowcaseService] to manage showcase
+  /// views and their controllers within different scopes, allowing for
+  /// isolated showcase experiences that can be independently controlled and
+  /// navigated.
   ShowcaseScope({
     required this.name,
     required this.showcaseView,

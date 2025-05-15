@@ -28,8 +28,21 @@ import 'package:flutter/material.dart';
 import '../models/linked_showcase_data.dart';
 import 'constants.dart';
 
-class RRectClipper extends CustomClipper<ui.Path> {
-  const RRectClipper({
+class ShapeClipper extends CustomClipper<ui.Path> {
+  /// A custom clipper that creates cutout shapes in the overlay for showcased
+  /// widgets.
+  ///
+  /// This clipper is used by the [ShowcaseView]'s overlay system to create
+  /// transparent regions that reveal the target widgets being showcased. It
+  /// works by:
+  ///
+  /// 1. Creating a base path covering the entire overlay area.
+  /// 2. For each target widget in [linkedObjectData], cutting out a shape using
+  ///    the difference operation.
+  /// 3. Supporting different shape types (circular or rectangular with custom
+  /// radius).
+  /// 4. Handling multiple target shapes that can merge when overlapping.
+  const ShapeClipper({
     this.linkedObjectData = const <LinkedShowcaseDataModel>[],
   });
 
@@ -84,6 +97,6 @@ class RRectClipper extends CustomClipper<ui.Path> {
   }
 
   @override
-  bool shouldReclip(covariant RRectClipper oldClipper) =>
+  bool shouldReclip(covariant ShapeClipper oldClipper) =>
       !listEquals(linkedObjectData, oldClipper.linkedObjectData);
 }

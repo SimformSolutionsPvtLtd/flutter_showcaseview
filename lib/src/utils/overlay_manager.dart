@@ -31,12 +31,12 @@ import '../showcase/showcase_view.dart';
 import 'extensions.dart';
 import 'shape_clipper.dart';
 
-/// A singleton manager class responsible for displaying and controlling overlays
-/// in the ShowcaseView.
+/// A singleton manager class responsible for displaying and controlling
+/// overlays in the ShowcaseView.
 ///
-/// This class manages the creation, display, and removal of overlays used by the
-/// showcase system. It coordinates with [ShowcaseView] to control overlay visibility
-/// and maintains the current showcase scope.
+/// This class manages the creation, display, and removal of overlays used by
+/// the showcase system. It coordinates with [ShowcaseView] to control
+/// overlay visibility and maintains the current showcase scope.
 class OverlayManager {
   /// Private constructor for singleton implementation
   OverlayManager._();
@@ -62,13 +62,13 @@ class OverlayManager {
   /// Returns whether an overlay is currently being displayed
   bool get _isShowing => _overlayEntry != null;
 
-  /// Updates the overlay visibility based on the provided showcase view
+  /// Updates the overlay visibility based on the provided showcase view.
   ///
   /// This method is called from showcase widgets to control overlay visibility.
   /// If the scope has changed, it will dispose the previous overlay.
   ///
-  /// * [show] - Whether to show or hide the overlay
-  /// * [showcaseView] - The showcase view requesting this update
+  /// * [show] - Whether to show or hide the overlay.
+  /// * [scope] - The new scope to be set as current.
   void update({
     required bool show,
     required String scope,
@@ -83,8 +83,8 @@ class OverlayManager {
 
   /// Updates the overlay state reference used by the manager
   ///
-  /// This method allows setting or updating the [OverlayState] that will be used
-  /// for inserting overlay entries.
+  /// This method allows setting or updating the [OverlayState] that will be
+  /// used for inserting overlay entries.
   ///
   /// * [overlayState] - The new overlay state to use, can be null
   void updateState(OverlayState? overlayState) =>
@@ -92,7 +92,8 @@ class OverlayManager {
 
   /// Disposes the overlay for the specified scope
   ///
-  /// Hides the overlay if it's currently showing and matches the provided scope.
+  /// Hides the overlay if it's currently showing and matches the provided
+  /// scope.
   ///
   /// * [scope] - The scope to dispose overlays for
   void dispose({required String scope}) {
@@ -104,7 +105,8 @@ class OverlayManager {
 
   /// Shows the overlay using the provided builder
   ///
-  /// Creates a new overlay entry if none exists, otherwise rebuilds the existing one.
+  /// Creates a new overlay entry if none exists, otherwise rebuilds the
+  /// existing one.
   void _show(WidgetBuilder overlayBuilder) {
     if (_overlayEntry != null) {
       // Rebuild overlay.
@@ -138,7 +140,8 @@ class OverlayManager {
 
   /// Creates and returns the overlay widget structure
   ///
-  /// Builds a stack with background and tooltip widgets based on active controllers.
+  /// Builds a stack with background and tooltip widgets based on active
+  /// controllers.
   Widget _getBuilder() {
     final showcaseView = ShowcaseView.getNamed(_currentScope);
     final controllers = ShowcaseService.instance
@@ -170,9 +173,9 @@ class OverlayManager {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () => firstController.handleBarrierTap(),
+          onTap: firstController.handleBarrierTap,
           child: ClipPath(
-            clipper: RRectClipper(
+            clipper: ShapeClipper(
               linkedObjectData: _getLinkedShowcasesData(controllers),
             ),
             child: firstController.blur == 0
@@ -186,7 +189,7 @@ class OverlayManager {
                   ),
           ),
         ),
-        ...controllers.expand((object) => object.getToolTipWidget).toList(),
+        ...controllers.expand((object) => object.getToolTipWidget),
       ],
     );
   }

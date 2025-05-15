@@ -21,6 +21,12 @@
  */
 part of 'tooltip.dart';
 
+/// A callback function type used for painting children within a render object.
+///
+/// This callback takes a [RenderObject] child and an [Offset] that defines
+/// the position where the child should be painted.
+///
+/// Used primarily in custom painting operations within tooltip rendering.
 typedef PaintChildCallBack = void Function(RenderObject child, Offset offset);
 
 /// A delegate for handling tooltip animations including scaling and movement.

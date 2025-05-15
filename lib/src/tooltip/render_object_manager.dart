@@ -24,6 +24,25 @@ import 'package:flutter/rendering.dart';
 import '../utils/enum.dart';
 
 class RenderObjectManager {
+  /// A utility class that manages RenderBox objects used within the tooltip
+  /// layout system.
+  ///
+  /// This class does:
+  /// - Act as a registry for render objects indexed by their [TooltipLayoutSlot]
+  /// - Provide methods to perform layout operations on render objects without
+  /// direct coupling.
+  /// - Manage position, size and constraint information for tooltip
+  /// components (content box, action box, and arrow).
+  /// - Facilitate communication between the main [_RenderPositionDelegate]
+  /// and its child elements.
+  /// - Support both dry layout calculation (for measurement) and actual
+  /// layout operations.
+  /// - Handle position adjustment through offset management.
+  ///
+  /// This class is primarily used by the tooltip rendering system to
+  /// coordinate the layout and positioning of tooltip components while
+  /// ensuring they stay within screen boundaries and maintain proper alignment
+  /// relative to the target widget.
   RenderObjectManager({
     required this.customRenderBox,
     required TooltipLayoutSlot slot,
@@ -40,23 +59,24 @@ class RenderObjectManager {
 
   static Map<TooltipLayoutSlot, RenderObjectManager> renderObjects = {};
 
-  /// Clears renderObjects map
+  /// Clears renderObjects map.
   static void clear() => renderObjects.clear();
 
-  /// Performs dry layout to calculate the preferred size without actually laying out
+  /// Performs dry layout to calculate the preferred size without actually
+  /// laying out.
   Size performDryLayout(BoxConstraints constraints) {
     renderConstraints = constraints;
     dryLayoutSize = customRenderBox.getDryLayout(constraints);
     return dryLayoutSize!;
   }
 
-  /// Performs actual layout on the RenderBox
+  /// Performs actual layout on the RenderBox.
   void performLayout(BoxConstraints constraints, {bool parentUsesSize = true}) {
     customRenderBox.layout(constraints, parentUsesSize: parentUsesSize);
     dryLayoutSize = customRenderBox.size;
   }
 
-  /// Gets the current size of the RenderBox
+  /// Gets the current size of the RenderBox.
   Size get size => dryLayoutSize ?? customRenderBox.size;
 
   Offset get getOffset => Offset(xOffset ?? 0, yOffset ?? 0);
@@ -66,7 +86,7 @@ class RenderObjectManager {
     return customRenderBox.parentData! as MultiChildLayoutParentData;
   }
 
-  /// Sets the position of the RenderBox
+  /// Sets the position of the RenderBox.
   void setOffset(double x, double y) {
     xOffset = x;
     yOffset = y;

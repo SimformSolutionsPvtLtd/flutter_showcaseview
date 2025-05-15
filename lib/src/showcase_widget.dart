@@ -24,16 +24,103 @@ import 'package:flutter/material.dart';
 
 import '../showcaseview.dart';
 
+/// Callback function type for building a floating action widget.
+///
+/// Parameters:
+///   * [context] - The build context used to access the ShowcaseView state.
 typedef FloatingActionBuilderCallback = FloatingActionWidget Function(
   BuildContext context,
 );
 
+/// Callback function type for handling showcase dismissal events.
+///
+/// This callback is triggered when a showcase is dismissed, providing the key
+/// of the dismissed showcase widget if available.
+///
+/// Parameters:
+///   * [dismissedAt] - The global key of the showcase widget that was dismissed.
+///                     May be null if the showcase was dismissed globally.
 typedef OnDismissCallback = void Function(
-  /// this is the key on which showcase is dismissed
+  /// The key on which showcase is dismissed. Null if dismissed globally.
   GlobalKey? dismissedAt,
 );
 
 class ShowCaseWidget extends StatefulWidget {
+  /// A widget that manages multiple Showcase widgets.
+  ///
+  /// This widget provides a way to sequentially showcase multiple widgets
+  /// with customizable options like auto-play, animation, and user interaction.
+  ///
+  /// **Required arguments:**
+  ///
+  /// - `builder`: A builder function that returns a widget containing the
+  /// `Showcase` widgets to be showcased.
+  ///
+  /// **Optional arguments:**
+  ///
+  /// - `onFinish`: A callback function triggered when all showcases are
+  /// completed.
+  /// - `onStart`: A callback function triggered at the start of each
+  /// showcase, providing the index and key of the target widget.
+  /// - `onComplete`: A callback function triggered at the completion of each
+  /// showcase, providing the index and key of the target widget.
+  /// - `onDismiss`: A callback function triggered when showcase view is
+  /// dismissed.
+  /// - `autoPlay`: Whether to automatically start showcasing the next widget
+  /// after a delay (defaults to `false`).
+  /// - `autoPlayDelay`: The delay between each showcase during auto-play
+  /// (defaults to 2 seconds).
+  /// - `enableAutoPlayLock`: Whether to block user interaction while
+  /// auto-play is enabled (defaults to `false`).
+  /// - `blurValue`: The amount of background blur applied during the
+  /// showcase (defaults to 0).
+  /// - `scrollDuration`: The duration of the scrolling animation when
+  /// auto-scrolling to a target widget (defaults to 300 milliseconds).
+  /// - `disableMovingAnimation`: Disables the animation when moving the
+  /// tooltip for all showcases (defaults to `false`).
+  /// - `disableScaleAnimation`: Disables the initial scale animation for all
+  /// tooltips (defaults to `false`).
+  /// - `enableAutoScroll`: Enables automatic scrolling to bring the target
+  /// widget into view (defaults to `false`).
+  /// - `disableBarrierInteraction`: Disables user interaction with the area
+  /// outside the showcase overlay (defaults to `false`).
+  /// - `enableShowcase`: Enables or disables the showcase functionality
+  /// globally (defaults to `true`).
+  /// - `globalTooltipActions`: A list of custom actions to be added to all
+  /// tooltips.
+  /// - `globalTooltipActionConfig`: Configuration options for the global
+  /// tooltip actions.
+  /// - `globalFloatingActionWidget`: Custom static floating action widget to
+  /// show a static widget anywhere for all the showcase widgets.
+  /// - `hideFloatingActionWidgetForShowcase`: Hides a
+  /// [globalFloatingActionWidget] for the provided showcase keys.
+  @Deprecated(
+    'This will be removed in v5.0.0. '
+    'Please use `ShowcaseView.register()` instead',
+  )
+  const ShowCaseWidget({
+    @Deprecated('This will be removed in v5.0.0.') required this.builder,
+    this.onFinish,
+    this.onStart,
+    this.onComplete,
+    this.onDismiss,
+    this.autoPlay = false,
+    this.autoPlayDelay = const Duration(milliseconds: 2000),
+    this.enableAutoPlayLock = false,
+    this.blurValue = 0,
+    this.scrollDuration = const Duration(milliseconds: 300),
+    this.disableMovingAnimation = false,
+    this.disableScaleAnimation = false,
+    this.enableAutoScroll = false,
+    this.disableBarrierInteraction = false,
+    this.enableShowcase = true,
+    this.globalTooltipActionConfig,
+    this.globalTooltipActions,
+    this.globalFloatingActionWidget,
+    this.hideFloatingActionWidgetForShowcase = const [],
+    super.key,
+  });
+
   @Deprecated('This will be removed in v5.0.0.')
   final WidgetBuilder builder;
 
@@ -44,10 +131,10 @@ class ShowCaseWidget extends StatefulWidget {
   final OnDismissCallback? onDismiss;
 
   /// Triggered every time on start of each showcase.
-  final Function(int?, GlobalKey)? onStart;
+  final void Function(int?, GlobalKey)? onStart;
 
   /// Triggered every time on completion of each showcase
-  final Function(int?, GlobalKey)? onComplete;
+  final void Function(int?, GlobalKey)? onComplete;
 
   /// Whether all showcases will auto sequentially start
   /// having time interval of [autoPlayDelay] .
@@ -108,65 +195,12 @@ class ShowCaseWidget extends StatefulWidget {
   /// Global Config for tooltip action to auto apply for all the toolTip.
   final TooltipActionConfig? globalTooltipActionConfig;
 
-  /// Hides [globalFloatingActionWidget] for the provided showcase widgets. Add key of
-  /// showcase in which [globalFloatingActionWidget] should be hidden this list.
+  /// Hides [globalFloatingActionWidget] for the provided showcase widgets.
+  /// Add key of showcase in which [globalFloatingActionWidget] should be
+  /// hidden this list.
+  ///
   /// Defaults to [].
   final List<GlobalKey> hideFloatingActionWidgetForShowcase;
-
-  /// A widget that manages multiple Showcase widgets.
-  ///
-  /// This widget provides a way to sequentially showcase multiple widgets
-  /// with customizable options like auto-play, animation, and user interaction.
-  ///
-  /// **Required arguments:**
-  ///
-  /// - `builder`: A builder function that returns a widget containing the `Showcase` widgets to be showcased.
-  ///
-  /// **Optional arguments:**
-  ///
-  /// - `onFinish`: A callback function triggered when all showcases are completed.
-  /// - `onStart`: A callback function triggered at the start of each showcase, providing the index and key of the target widget.
-  /// - `onComplete`: A callback function triggered at the completion of each showcase, providing the index and key of the target widget.
-  /// - `onDismiss`: A callback function triggered when showcase view is dismissed.
-  /// - `autoPlay`: Whether to automatically start showcasing the next widget after a delay (defaults to `false`).
-  /// - `autoPlayDelay`: The delay between each showcase during auto-play (defaults to 2 seconds).
-  /// - `enableAutoPlayLock`: Whether to block user interaction while auto-play is enabled (defaults to `false`).
-  /// - `blurValue`: The amount of background blur applied during the showcase (defaults to 0).
-  /// - `scrollDuration`: The duration of the scrolling animation when auto-scrolling to a target widget (defaults to 300 milliseconds).
-  /// - `disableMovingAnimation`: Disables the animation when moving the tooltip for all showcases (defaults to `false`).
-  /// - `disableScaleAnimation`: Disables the initial scale animation for all tooltips (defaults to `false`).
-  /// - `enableAutoScroll`: Enables automatic scrolling to bring the target widget into view (defaults to `false`).
-  /// - `disableBarrierInteraction`: Disables user interaction with the area outside the showcase overlay (defaults to `false`).
-  /// - `enableShowcase`: Enables or disables the showcase functionality globally (defaults to `true`).
-  /// - `globalTooltipActions`: A list of custom actions to be added to all tooltips.
-  /// - `globalTooltipActionConfig`: Configuration options for the global tooltip actions.
-  /// - `globalFloatingActionWidget`: Custom static floating action widget to show a static widget anywhere for all the showcase widgets.
-  /// - `hideFloatingActionWidgetForShowcase`: Hides a [globalFloatingActionWidget] for the provided showcase keys.
-  @Deprecated(
-    'This will be removed in v5.0.0. '
-    'Please use `ShowcaseView.register()` instead',
-  )
-  const ShowCaseWidget({
-    required this.builder,
-    this.onFinish,
-    this.onStart,
-    this.onComplete,
-    this.onDismiss,
-    this.autoPlay = false,
-    this.autoPlayDelay = const Duration(milliseconds: 2000),
-    this.enableAutoPlayLock = false,
-    this.blurValue = 0,
-    this.scrollDuration = const Duration(milliseconds: 300),
-    this.disableMovingAnimation = false,
-    this.disableScaleAnimation = false,
-    this.enableAutoScroll = false,
-    this.disableBarrierInteraction = false,
-    this.enableShowcase = true,
-    this.globalTooltipActionConfig,
-    this.globalTooltipActions,
-    this.globalFloatingActionWidget,
-    this.hideFloatingActionWidgetForShowcase = const [],
-  });
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '
@@ -243,6 +277,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   @override
   Widget build(BuildContext context) => Builder(
+        // Will be removed in v5.0.0.
         //ignore: deprecated_member_use_from_same_package
         builder: widget.builder,
       );
@@ -313,7 +348,8 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     _showcaseView.dismiss();
   }
 
-  /// Disables the [globalFloatingActionWidget] for the provided keys.
+  /// Disables the [ShowCaseWidget.globalFloatingActionWidget] for the
+  /// provided keys.
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().hideFloatingActionWidgetForKeys` instead',

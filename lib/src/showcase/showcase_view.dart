@@ -34,15 +34,14 @@ import 'showcase_service.dart';
 /// Callback type for showcase events that need index and key information
 typedef OnShowcaseCallback = void Function(int? showcaseIndex, GlobalKey key);
 
-/// A controller class that manages showcase functionality independently.
-///
-/// This class provides a way to manage showcase state and control showcase flow
-/// with customizable options like auto-play, animation, and user interaction.
 class ShowcaseView {
   /// Creates and registers a [ShowcaseView] with the specified scope.
   ///
-  /// Use this constructor to create a new showcase view and automatically register
-  /// it with the [ShowcaseService].
+  /// A controller class that manages showcase functionality independently.
+  ///
+  /// This class provides a way to manage showcase state and control showcase
+  /// flow with customizable options like auto-play, animation, and user
+  /// interaction.
   ShowcaseView.register({
     this.scope = Constants.defaultScope,
     this.onFinish,
@@ -156,7 +155,8 @@ class ShowcaseView {
   /// Map to store keys for which floating action widget should be hidden
   late final Map<GlobalKey, bool> _hideFloatingWidgetKeys;
 
-  /// Returns whether showcase is completed by checking if ids and activeWidgetId are null
+  /// Returns whether showcase is completed by checking if [_ids] and
+  /// [_activeWidgetId] are null
   bool get isShowCaseCompleted => _ids == null && _activeWidgetId == null;
 
   /// Returns list of keys for which floating action widget is hidden
@@ -236,8 +236,8 @@ class ShowcaseView {
     ShowcaseService.instance.updateCurrentScope(scope);
     if (!enableShowcase) {
       throw Exception(
-        "You are trying to start Showcase while it has been disabled with "
-        "`enableShowcase` parameter to false from ShowCaseWidget",
+        'You are trying to start Showcase while it has been disabled with '
+        '`enableShowcase` parameter to false from ShowCaseWidget',
       );
     }
     if (delay == Duration.zero) {
@@ -258,16 +258,19 @@ class ShowcaseView {
     }
   }
 
-  /// Finds the appropriate ShowcaseView that can handle all the specified widget keys.
+  /// Finds the appropriate ShowcaseView that can handle all the specified
+  /// widget keys.
   ///
-  /// This method searches through all registered scopes to find a ShowcaseView that
-  /// contains all the widget keys in [widgetIds]. This is necessary when starting a
-  /// showcase that might include widgets registered across different scopes.
+  /// This method searches through all registered scopes to find a
+  /// [ShowcaseView] that contains all the widget keys in [widgetIds]. This
+  /// is necessary when starting a showcase that might include widgets
+  /// registered across different scopes.
   ///
   /// * [widgetIds] - List of GlobalKeys for widgets to showcase
   ///
   /// Returns either the current ShowcaseView if all keys are in this scope, or
-  /// another scope's ShowcaseView that contains the keys not found in the current scope.
+  /// another scope's ShowcaseView that contains the keys not found in the
+  /// current scope.
   ShowcaseView _findEnclosingShowcaseView(
     List<GlobalKey<State<StatefulWidget>>> widgetIds,
   ) {
@@ -371,7 +374,8 @@ class ShowcaseView {
 
   /// Process showcase update after navigation
   ///
-  /// This method handles the common logic needed when navigating between showcases:
+  /// This method handles the common logic needed when navigating between
+  /// showcases:
   /// - Starts the current showcase
   /// - Checks if we've reached the end of showcases
   /// - Updates the overlay to reflect current state

@@ -1,4 +1,4 @@
-## [4.1.0] - (UnRelease)
+## [5.0.0] - (UnRelease)
 - Feature [#500](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/500) -
   Added `onDismiss` callback in `ShowCaseWidget` which will trigger whenever `onDismiss` method is
   called.
@@ -35,6 +35,8 @@
   `toolTipMargin` support for `Showcase.withWidget`
 - Feature [#520](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/520) - Added
   `targetTooltipGap` to manage space between tooltip and target widget
+- Improvement [#530](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/530) - 
+  Upgraded minimum dart sdk version to 3.0.0 and utilised Dart 3 features accordingly.
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

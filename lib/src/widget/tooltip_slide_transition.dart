@@ -31,6 +31,7 @@ class ToolTipSlideTransition extends AnimatedWidget {
   const ToolTipSlideTransition({
     required Listenable position,
     required this.child,
+    super.key,
   }) : super(listenable: position);
 
   final Widget child;
@@ -38,9 +39,6 @@ class ToolTipSlideTransition extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     final progress = listenable as Animation<Offset>;
-    return Transform.translate(
-      offset: progress.value,
-      child: child,
-    );
+    return Transform.translate(offset: progress.value, child: child);
   }
 }

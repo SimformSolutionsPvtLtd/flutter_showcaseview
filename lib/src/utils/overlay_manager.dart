@@ -90,20 +90,18 @@ class OverlayManager {
   void updateState(OverlayState? overlayState) =>
       this.overlayState = overlayState;
 
-  /// Disposes the overlay for the specified scope
+  /// Disposes the overlay for the specified scope.
   ///
   /// Hides the overlay if it's currently showing and matches the provided
   /// scope.
   ///
   /// * [scope] - The scope to dispose overlays for
   void dispose({required String scope}) {
-    if (!_isShowing || _currentScope != scope) {
-      return;
-    }
+    if (!_isShowing || _currentScope != scope) return;
     _hide();
   }
 
-  /// Shows the overlay using the provided builder
+  /// Shows the overlay using the provided builder.
   ///
   /// Creates a new overlay entry if none exists, otherwise rebuilds the
   /// existing one.
@@ -114,20 +112,17 @@ class OverlayManager {
       return;
     }
     // Create the overlay.
-    _overlayEntry = OverlayEntry(
-      builder: overlayBuilder,
-    );
-
+    _overlayEntry = OverlayEntry(builder: overlayBuilder);
     overlayState?.insert(_overlayEntry!);
   }
 
-  /// Removes and clears the current overlay entry
+  /// Removes and clears the current overlay entry.
   void _hide() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
 
-  /// Synchronizes the overlay visibility with the showcase manager state
+  /// Synchronizes the overlay visibility with the showcase manager state.
   ///
   /// Shows or hides the overlay based on the [_shouldShow] flag.
   void _sync() {
@@ -138,7 +133,7 @@ class OverlayManager {
     }
   }
 
-  /// Creates and returns the overlay widget structure
+  /// Creates and returns the overlay widget structure.
   ///
   /// Builds a stack with background and tooltip widgets based on active
   /// controllers.
@@ -147,14 +142,12 @@ class OverlayManager {
     final controllers = ShowcaseService.instance
             .getControllers(
               scope: showcaseView.scope,
-            )[showcaseView.getCurrentActiveShowcaseKey]
+            )[showcaseView.getActiveShowcaseKey]
             ?.values
             .toList() ??
         <ShowcaseController>[];
 
-    if (controllers.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (controllers.isEmpty) return const SizedBox.shrink();
 
     final controllerLength = controllers.length;
     for (var i = 0; i < controllerLength; i++) {
@@ -189,12 +182,12 @@ class OverlayManager {
                   ),
           ),
         ),
-        ...controllers.expand((object) => object.getToolTipWidget),
+        ...controllers.expand((object) => object.tooltipWidgets),
       ],
     );
   }
 
-  /// Extracts and returns linked showcase data from controllers
+  /// Extracts and returns linked showcase data from controllers.
   ///
   /// Filters out null data and collects valid linked showcase information.
   List<LinkedShowcaseDataModel> _getLinkedShowcasesData(
@@ -203,8 +196,7 @@ class OverlayManager {
     final controllerLength = controllers.length;
     return [
       for (var i = 0; i < controllerLength; i++)
-        if (controllers[i].linkedShowcaseDataModel != null)
-          controllers[i].linkedShowcaseDataModel!,
+        if (controllers[i].linkedShowcaseDataModel case final model?) model
     ];
   }
 

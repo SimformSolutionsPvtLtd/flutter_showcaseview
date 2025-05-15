@@ -53,11 +53,7 @@ class ShapeClipper extends CustomClipper<ui.Path> {
     var mainObjectPath = Path()
       ..fillType = ui.PathFillType.evenOdd
       ..addRect(Offset.zero & size)
-      ..addRRect(
-        RRect.fromRectAndCorners(
-          ui.Rect.zero,
-        ),
-      );
+      ..addRRect(RRect.fromRectAndCorners(ui.Rect.zero));
 
     final linkedObjectLength = linkedObjectData.length;
     for (var i = 0; i < linkedObjectLength; i++) {

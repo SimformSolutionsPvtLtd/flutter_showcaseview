@@ -22,26 +22,43 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:showcaseview/src/utils/enum.dart';
 
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
-import '../showcase_widget.dart';
 import '../utils/constants.dart';
 import '../utils/overlay_manager.dart';
+import '../widget/floating_action_widget.dart';
 import 'showcase_controller.dart';
 import 'showcase_service.dart';
 
 /// Callback type for showcase events that need index and key information
 typedef OnShowcaseCallback = void Function(int? showcaseIndex, GlobalKey key);
 
+/// Callback function type for building a floating action widget.
+///
+/// Parameters:
+///   * [context] - The build context used to access the ShowcaseView state.
+typedef FloatingActionBuilderCallback = FloatingActionWidget Function(
+  BuildContext context,
+);
+
+/// Callback function type for handling showcase dismissal events.
+///
+/// This callback is triggered when a showcase is dismissed, providing the key
+/// of the dismissed showcase widget if available.
+typedef OnDismissCallback = void Function(
+  /// The key on which showcase is dismissed. Null if no showcase was active.
+  GlobalKey? dismissedAt,
+);
+
 class ShowcaseView {
-  /// Creates and registers a [ShowcaseView] with the specified scope.
+  /// Creates and registers a [ShowcaseView] with the specified [scope].
   ///
   /// A controller class that manages showcase functionality independently.
   ///
-  /// This class provides a way to manage showcase state and control showcase
-  /// flow with customizable options like auto-play, animation, and user
-  /// interaction.
+  /// This class provides a way to manage showcase state and configure various
+  /// options like auto-play, animation, and many more.
   ShowcaseView.register({
     this.scope = Constants.defaultScope,
     this.onFinish,
@@ -72,99 +89,98 @@ class ShowcaseView {
   /// Retrieves last registered [ShowcaseView].
   factory ShowcaseView.get() => ShowcaseService.instance.get();
 
-  /// Retrieves registered Showcase with the specified scope.
+  /// Retrieves registered Showcase with the specified [scope].
   ///
-  /// This is recommended to use when you have multiple scopes.
+  /// This is recommended to use when you have multiple scopes registered.
   factory ShowcaseView.getNamed(String scope) =>
       ShowcaseService.instance.get(scope: scope);
 
-  /// Unique identifier for this manager instance
+  /// The enclosing scope for this instance.
   final String scope;
 
-  /// Triggered when all the showcases are completed
+  /// Triggered when all the showcases are completed.
   final VoidCallback? onFinish;
 
-  /// Triggered when showcase view is dismissed
+  /// Triggered when showcase view is dismissed.
   final OnDismissCallback? onDismiss;
 
-  /// Triggered every time on start of each showcase
+  /// Triggered every time on start of each showcase.
   final OnShowcaseCallback? onStart;
 
-  /// Triggered every time on completion of each showcase
+  /// Triggered every time on completion of each showcase.
   final OnShowcaseCallback? onComplete;
 
   /// Whether all showcases will auto sequentially start
-  /// having time interval of [autoPlayDelay]
+  /// having time interval of [autoPlayDelay].
   bool autoPlay;
 
-  /// Visibility time of current showcase when [autoPlay] is enabled
+  /// Visibility time of current showcase when [autoPlay] is enabled.
   Duration autoPlayDelay;
 
-  /// Whether blocking user interaction while [autoPlay] is enabled
+  /// Whether blocking user interaction while [autoPlay] is enabled.
   bool enableAutoPlayLock;
 
-  /// Whether disabling bouncing/moving animation for all tooltips
-  /// while showcasing
+  /// Whether to disable bouncing/moving animation for all tooltips while
+  /// showcasing.
   bool disableMovingAnimation;
 
-  /// Whether disabling initial scale animation for all the default tooltips
-  /// when showcase is started and completed
+  /// Whether to disable scale animation for all the default tooltips when
+  /// showcase appears and goes away.
   bool disableScaleAnimation;
 
-  /// Whether disabling barrier interaction
+  /// Whether to disable barrier interaction.
   bool disableBarrierInteraction;
 
-  /// Provides time duration for auto scrolling when [enableAutoScroll] is true
+  /// Determines the time taken to scroll when [enableAutoScroll] is true.
   Duration scrollDuration;
 
-  /// Default overlay blur used by showcase
+  /// The overlay blur used by showcase.
   double blurValue;
 
-  /// While target widget is out viewport then
-  /// whether enabling auto scroll so as to make the target widget visible
+  /// Whether to enable auto scroll as to bring the target widget in the
+  /// viewport.
   bool enableAutoScroll;
 
-  /// Enable/disable showcase globally
+  /// Enable/disable showcase globally.
   bool enableShowcase;
 
-  /// Custom static floating action widget to show a static widget anywhere
-  /// on the screen for all the showcase widget
+  /// Custom static floating action widget to show a static non-animating
+  /// widget anywhere on the screen for all the showcase widget.
   FloatingActionBuilderCallback? globalFloatingActionWidget;
 
-  /// Global action to apply on every tooltip widget
+  /// Global action to show on every tooltip widget.
   List<TooltipActionButton>? globalTooltipActions;
 
-  /// Global Config for tooltip action to auto apply for all the toolTip
+  /// Global Config for tooltip action to auto apply for all the tooltip.
   TooltipActionConfig? globalTooltipActionConfig;
 
-  /// Hides [globalFloatingActionWidget] for the provided showcase widgets
+  /// Hides [globalFloatingActionWidget] for the provided showcase widgets.
   List<GlobalKey> hideFloatingActionWidgetForShowcase;
 
-  /// Internal list to store showcase widget keys
+  /// Internal list to store showcase widget keys.
   List<GlobalKey>? _ids;
 
-  /// Current active showcase widget index
+  /// Current active showcase widget index.
   int? _activeWidgetId;
 
-  /// Timer for auto-play functionality
+  /// Timer for auto-play functionality.
   Timer? _timer;
 
-  /// Whether the manager is mounted and active
+  /// Whether the manager is mounted and active.
   bool _mounted = true;
 
-  /// Map to store keys for which floating action widget should be hidden
+  /// Map to store keys for which floating action widget should be hidden.
   late final Map<GlobalKey, bool> _hideFloatingWidgetKeys;
 
-  /// Returns whether showcase is completed by checking if [_ids] and
-  /// [_activeWidgetId] are null
+  /// Returns whether showcase is completed or not.
   bool get isShowCaseCompleted => _ids == null && _activeWidgetId == null;
 
-  /// Returns list of keys for which floating action widget is hidden
+  /// Returns list of keys for which floating action widget is hidden.
   List<GlobalKey> get hiddenFloatingActionKeys =>
       _hideFloatingWidgetKeys.keys.toList();
 
-  /// Returns current active showcase key if it exists and is within valid range
-  GlobalKey? get getCurrentActiveShowcaseKey {
+  /// Returns the current active showcase key if any.
+  GlobalKey? get getActiveShowcaseKey {
     if (_ids == null || _activeWidgetId == null) return null;
 
     if (_activeWidgetId! < _ids!.length && _activeWidgetId! >= 0) {
@@ -174,21 +190,85 @@ class ShowcaseView {
     }
   }
 
-  /// Returns whether showcase is currently running by checking active key
-  bool get isShowcaseRunning => getCurrentActiveShowcaseKey != null;
+  /// Returns whether showcase is currently running or not.
+  bool get isShowcaseRunning => getActiveShowcaseKey != null;
 
-  /// Returns list of showcase controllers for current active showcase
+  /// Returns list of showcase controllers for current active showcase.
   List<ShowcaseController> get _getCurrentActiveControllers {
     return ShowcaseService.instance
             .getControllers(
               scope: scope,
-            )[getCurrentActiveShowcaseKey]
+            )[getActiveShowcaseKey]
             ?.values
             .toList() ??
         <ShowcaseController>[];
   }
 
-  /// Cleans up resources when manager is unRegister
+  /// Starts showcase with given widget ids after the optional delay.
+  ///
+  /// * [widgetIds] - List of GlobalKeys for widgets to showcase
+  /// * [delay] - Optional delay before starting showcase
+  void startShowCase(
+    List<GlobalKey> widgetIds, {
+    Duration delay = Duration.zero,
+  }) {
+    assert(_mounted, 'ShowcaseView is no longer mounted');
+    if (!_mounted) return;
+    _findEnclosingShowcaseView(widgetIds)._startShowcase(delay, widgetIds);
+  }
+
+  /// Moves to next showcase if possible.
+  ///
+  /// Will finish entire showcase if no more widgets to show.
+  ///
+  /// * [force] - Whether to ignore autoPlayLock, defaults to false.
+  void next({bool force = false}) {
+    if ((!force && enableAutoPlayLock) || _ids == null || !_mounted) {
+      return;
+    }
+    _changeSequence(ShowcaseProgressType.forward);
+  }
+
+  /// Moves to previous showcase if possible.
+  ///
+  /// Does nothing if already at the first showcase.
+  void previous() {
+    if (_ids == null || ((_activeWidgetId ?? 0) - 1).isNegative || !_mounted) {
+      return;
+    }
+    _changeSequence(ShowcaseProgressType.backward);
+  }
+
+  /// Completes showcase for given key and starts next one.
+  ///
+  /// * [key] - The key of the showcase to complete.
+  ///
+  /// Will finish entire showcase if no more widgets to show.
+  void completed(GlobalKey? key) {
+    if (_activeWidgetId == null ||
+        _ids?[_activeWidgetId!] != key ||
+        !_mounted) {
+      return;
+    }
+    _changeSequence(ShowcaseProgressType.forward);
+  }
+
+  /// Dismisses the entire showcase and calls [onDismiss] callback.
+  void dismiss() {
+    final idDoesNotExist =
+        _activeWidgetId == null || (_ids?.length ?? -1) <= _activeWidgetId!;
+
+    onDismiss?.call(idDoesNotExist ? null : _ids?[_activeWidgetId!]);
+    if (!_mounted) return;
+
+    _cleanupAfterSteps();
+    OverlayManager.instance.update(
+      show: isShowcaseRunning,
+      scope: scope,
+    );
+  }
+
+  /// Cleans up resources when unregistering the showcase view.
   void unregister() {
     if (isShowcaseRunning) {
       OverlayManager.instance.dispose(scope: scope);
@@ -198,11 +278,24 @@ class ShowcaseView {
     _cancelTimer();
   }
 
-  /// Returns floating action widget for given showcase key if not hidden
+  /// Updates the overlay to reflect current showcase state.
+  void updateOverlay() =>
+      OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
+
+  /// Updates list of showcase keys that should hide floating action widget.
   ///
-  /// * [showcaseKey] - The key of the showcase to check
+  /// * [updatedList] - New list of keys to hide floating action widget for
+  void hideFloatingActionWidgetForKeys(List<GlobalKey> updatedList) {
+    _hideFloatingWidgetKeys
+      ..clear()
+      ..addAll({
+        for (final item in updatedList) item: true,
+      });
+  }
+
+  /// Returns floating action widget for given showcase key if not hidden.
   ///
-  /// Returns null if the floating action widget is hidden for this key
+  /// * [showcaseKey] - The key of the showcase to check.
   FloatingActionBuilderCallback? getFloatingActionWidget(
     GlobalKey showcaseKey,
   ) {
@@ -211,35 +304,18 @@ class ShowcaseView {
         : globalFloatingActionWidget;
   }
 
-  /// Starts showcase with given widget ids after optional delay
-  ///
-  /// * [widgetIds] - List of GlobalKeys for widgets to showcase
-  /// * [delay] - Optional delay before starting showcase
-  ///
-  /// Throws an exception if showcase is disabled
-  void startShowCase(
-    List<GlobalKey> widgetIds, {
-    Duration delay = Duration.zero,
-  }) {
-    assert(_mounted, 'ShowcaseView is no longer mounted');
-    if (!_mounted) return;
-
-    final enclosingShowcase = _findEnclosingShowcaseView(widgetIds);
-
-    enclosingShowcase._startShowcase(delay, widgetIds);
-  }
-
   void _startShowcase(
     Duration delay,
     List<GlobalKey<State<StatefulWidget>>> widgetIds,
   ) {
+    assert(
+      enableShowcase,
+      'You are trying to start Showcase while it has been disabled with '
+      '[enableShowcase] parameter.',
+    );
+    if (!enableShowcase) return;
+
     ShowcaseService.instance.updateCurrentScope(scope);
-    if (!enableShowcase) {
-      throw Exception(
-        'You are trying to start Showcase while it has been disabled with '
-        '`enableShowcase` parameter to false from ShowCaseWidget',
-      );
-    }
     if (delay == Duration.zero) {
       _ids = widgetIds;
       _activeWidgetId = 0;
@@ -249,13 +325,35 @@ class ShowcaseView {
         scope: scope,
       );
     } else {
-      Future.delayed(
-        delay,
-        () {
-          _startShowcase(Duration.zero, widgetIds);
-        },
-      );
+      Future.delayed(delay, () => _startShowcase(Duration.zero, widgetIds));
     }
+  }
+
+  /// Process showcase update after navigation
+  ///
+  /// This method handles the common logic needed when navigating between
+  /// showcases:
+  /// - Starts the current showcase
+  /// - Checks if we've reached the end of showcases
+  /// - Updates the overlay to reflect current state
+  void _changeSequence(ShowcaseProgressType type) {
+    assert(_activeWidgetId != null, 'Please ensure to call startShowcase.');
+    final id = switch (type) {
+      ShowcaseProgressType.forward => _activeWidgetId! + 1,
+      ShowcaseProgressType.backward => _activeWidgetId! - 1,
+    };
+    _onComplete().then(
+      (_) {
+        if (!_mounted) return;
+        _activeWidgetId = id;
+        _onStart();
+        if (_activeWidgetId! >= _ids!.length) {
+          _cleanupAfterSteps();
+          onFinish?.call();
+        }
+        OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
+      },
+    );
   }
 
   /// Finds the appropriate ShowcaseView that can handle all the specified
@@ -281,9 +379,7 @@ class ShowcaseView {
         if (!currentScopeControllers.containsKey(key)) key: true,
     };
 
-    if (keysNotInCurrentScope.isEmpty) {
-      return this;
-    }
+    if (keysNotInCurrentScope.isEmpty) return this;
 
     final scopes = ShowcaseService.instance.scopes;
     final scopeLength = scopes.length;
@@ -296,132 +392,20 @@ class ShowcaseView {
       final otherScope = ShowcaseService.instance.getScope(
         scope: otherScopeName,
       );
-      final otherScopeShowcase = otherScope.showcaseView;
       final otherScopeControllers = otherScope.controllers;
 
       if (otherScopeControllers.keys.any(keysNotInCurrentScope.containsKey)) {
-        return otherScopeShowcase;
+        return otherScope.showcaseView;
       }
     }
     return this;
   }
 
-  /// Updates the overlay to reflect current showcase state
+  /// Internal method to handle showcase start.
   ///
-  /// This method should be called when showcase state changes
-  void updateOverlay() {
-    OverlayManager.instance.update(
-      show: isShowcaseRunning,
-      scope: scope,
-    );
-  }
-
-  /// Completes showcase for given key and starts next one
-  ///
-  /// * [key] - The key of the showcase to complete
-  ///
-  /// Will finish entire showcase if no more widgets to show
-  void completed(GlobalKey? key) {
-    if (_activeWidgetId == null ||
-        _ids?[_activeWidgetId!] != key ||
-        !_mounted) {
-      return;
-    }
-    _onComplete().then(
-      (_) {
-        if (!_mounted) return;
-        _activeWidgetId = _activeWidgetId! + 1;
-        _processShowcaseUpdate();
-      },
-    );
-  }
-
-  /// Moves to next showcase if possible
-  ///
-  /// * [force] - Whether to ignore autoPlayLock, defaults to false
-  ///
-  /// Will finish entire showcase if no more widgets to show
-  void next({bool force = false}) {
-    if ((!force && enableAutoPlayLock) || _ids == null || !_mounted) {
-      return;
-    }
-
-    _onComplete().then(
-      (_) {
-        if (!_mounted) return;
-        _activeWidgetId = _activeWidgetId! + 1;
-        _processShowcaseUpdate();
-      },
-    );
-  }
-
-  /// Moves to previous showcase if possible
-  ///
-  /// Does nothing if already at the first showcase
-  void previous() {
-    if (_ids == null || ((_activeWidgetId ?? 0) - 1) < 0 || !_mounted) {
-      return;
-    }
-    _onComplete().then(
-      (_) {
-        if (!_mounted) return;
-
-        _activeWidgetId = _activeWidgetId! - 1;
-        _processShowcaseUpdate();
-      },
-    );
-  }
-
-  /// Process showcase update after navigation
-  ///
-  /// This method handles the common logic needed when navigating between
-  /// showcases:
-  /// - Starts the current showcase
-  /// - Checks if we've reached the end of showcases
-  /// - Updates the overlay to reflect current state
-  void _processShowcaseUpdate() {
-    _onStart();
-    if (_activeWidgetId! >= _ids!.length) {
-      _cleanupAfterSteps();
-      onFinish?.call();
-    }
-    OverlayManager.instance.update(
-      show: isShowcaseRunning,
-      scope: scope,
-    );
-  }
-
-  /// Dismisses the entire showcase and calls onDismiss callback
-  void dismiss() {
-    final idNotExist = _activeWidgetId == null ||
-        _ids == null ||
-        _ids!.length <= _activeWidgetId!;
-
-    onDismiss?.call(idNotExist ? null : _ids?[_activeWidgetId!]);
-    if (!_mounted) return;
-
-    _cleanupAfterSteps();
-    OverlayManager.instance.update(
-      show: isShowcaseRunning,
-      scope: scope,
-    );
-  }
-
-  /// Updates list of showcase keys that should hide floating action widget
-  ///
-  /// * [updatedList] - New list of keys to hide floating action widget for
-  void hideFloatingActionWidgetForKeys(List<GlobalKey> updatedList) {
-    _hideFloatingWidgetKeys
-      ..clear()
-      ..addAll({
-        for (final item in updatedList) item: true,
-      });
-  }
-
-  /// Internal method to handle showcase start
-  ///
-  /// Initializes controllers and sets up auto-play timer if enabled
+  /// Initializes controllers and sets up auto-play timer if enabled.
   Future<void> _onStart() async {
+    _activeWidgetId ??= 0;
     if (_activeWidgetId! < _ids!.length) {
       onStart?.call(_activeWidgetId, _ids![_activeWidgetId!]);
       final controllers = _getCurrentActiveControllers;
@@ -440,16 +424,13 @@ class ShowcaseView {
 
     if (autoPlay) {
       _cancelTimer();
-      _timer = Timer(
-        autoPlayDelay,
-        () => next(force: true),
-      );
+      _timer = Timer(autoPlayDelay, () => next(force: true));
     }
   }
 
-  /// Internal method to handle showcase completion
+  /// Internal method to handle showcase completion.
   ///
-  /// Runs reverse animations and triggers completion callbacks
+  /// Runs reverse animations and triggers completion callbacks.
   Future<void> _onComplete() async {
     final currentControllers = _getCurrentActiveControllers;
     final controllerLength = currentControllers.length;
@@ -462,26 +443,24 @@ class ShowcaseView {
           currentControllers[i].reverseAnimationCallback!.call(),
     ]);
 
-    if (_activeWidgetId != null &&
-        _ids != null &&
-        _activeWidgetId! < _ids!.length) {
-      onComplete?.call(_activeWidgetId, _ids![_activeWidgetId!]);
+    final activeId = _activeWidgetId ?? -1;
+    if (activeId < (_ids?.length ?? activeId)) {
+      onComplete?.call(activeId, _ids![activeId]);
     }
 
     if (autoPlay) _cancelTimer();
   }
 
-  /// Cancels auto-play timer if active
+  /// Cancels auto-play timer if active.
   void _cancelTimer() {
     if (!(_timer?.isActive ?? false)) return;
     _timer?.cancel();
     _timer = null;
   }
 
-  /// Cleans up showcase state after completion
+  /// Cleans up showcase state after completion.
   void _cleanupAfterSteps() {
-    _ids = null;
-    _activeWidgetId = null;
+    _ids = _activeWidgetId = null;
     _cancelTimer();
   }
 }

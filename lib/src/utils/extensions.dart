@@ -36,12 +36,10 @@ extension ListExtension<E> on List<E> {
         removeAt(i);
         return element;
       }
-      if (length != this.length) {
-        throw ConcurrentModificationError(this);
-      }
+
+      if (length != this.length) throw ConcurrentModificationError(this);
     }
-    if (orElse != null) return orElse();
-    return null;
+    return orElse?.call();
   }
 }
 

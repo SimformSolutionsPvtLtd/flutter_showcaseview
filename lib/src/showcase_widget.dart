@@ -24,27 +24,6 @@ import 'package:flutter/material.dart';
 
 import '../showcaseview.dart';
 
-/// Callback function type for building a floating action widget.
-///
-/// Parameters:
-///   * [context] - The build context used to access the ShowcaseView state.
-typedef FloatingActionBuilderCallback = FloatingActionWidget Function(
-  BuildContext context,
-);
-
-/// Callback function type for handling showcase dismissal events.
-///
-/// This callback is triggered when a showcase is dismissed, providing the key
-/// of the dismissed showcase widget if available.
-///
-/// Parameters:
-///   * [dismissedAt] - The global key of the showcase widget that was dismissed.
-///                     May be null if the showcase was dismissed globally.
-typedef OnDismissCallback = void Function(
-  /// The key on which showcase is dismissed. Null if dismissed globally.
-  GlobalKey? dismissedAt,
-);
-
 class ShowCaseWidget extends StatefulWidget {
   /// A widget that manages multiple Showcase widgets.
   ///
@@ -219,7 +198,7 @@ class ShowCaseWidget extends StatefulWidget {
     if (state != null) {
       return state;
     } else {
-      throw Exception('Please provide ShowCaseView context');
+      throw Exception('Please provide a context that has ShowCaseWidget');
     }
   }
 
@@ -325,9 +304,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().next` instead',
   )
-  void next({bool force = false}) {
-    _showcaseView.next(force: force);
-  }
+  void next({bool force = false}) => _showcaseView.next(force: force);
 
   /// Completes current active showcase and starts previous one
   /// otherwise will finish the entire showcase view
@@ -335,18 +312,14 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().previous` instead',
   )
-  void previous() {
-    _showcaseView.previous();
-  }
+  void previous() => _showcaseView.previous();
 
   /// Dismiss entire showcase view
   @Deprecated(
     'This will be removed in v5.0.0. please use '
     '`ShowcaseView.get().dismiss` instead',
   )
-  void dismiss() {
-    _showcaseView.dismiss();
-  }
+  void dismiss() => _showcaseView.dismiss();
 
   /// Disables the [ShowCaseWidget.globalFloatingActionWidget] for the
   /// provided keys.
@@ -430,7 +403,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
     '`ShowcaseView.get().getCurrentActiveShowcaseKey` instead',
   )
   GlobalKey? get getCurrentActiveShowcaseKey =>
-      _showcaseView.getCurrentActiveShowcaseKey;
+      _showcaseView.getActiveShowcaseKey;
 
   @Deprecated(
     'This will be removed in v5.0.0. please use '

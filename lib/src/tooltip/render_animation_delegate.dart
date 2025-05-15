@@ -31,15 +31,6 @@ typedef PaintChildCallBack = void Function(RenderObject child, Offset offset);
 
 /// A delegate for handling tooltip animations including scaling and movement.
 class _RenderAnimationDelegate extends _RenderPositionDelegate {
-  AnimationController _scaleController;
-  AnimationController _moveController;
-  Animation<double> _scaleAnimation;
-  Animation<double> _moveAnimation;
-  Alignment? scaleAlignment;
-
-  /// This will stop extra repaint when paint function is already in progress
-  bool _isPreviousRepaintInProgress = false;
-
   _RenderAnimationDelegate({
     required AnimationController scaleController,
     required AnimationController moveController,
@@ -67,27 +58,30 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
     _moveAnimation.addListener(_effectivelyMarkNeedsPaint);
   }
 
+  AnimationController _scaleController;
+  AnimationController _moveController;
+  Animation<double> _scaleAnimation;
+  Animation<double> _moveAnimation;
+  Alignment? scaleAlignment;
+
+  /// This will stop extra repaint when paint function is already in progress
+  bool _isPreviousRepaintInProgress = false;
+
   /// Updates the scale animation controller.
   set scaleController(AnimationController value) {
-    if (_scaleController == value) {
-      return;
-    }
+    if (_scaleController == value) return;
     _scaleController = value;
   }
 
   /// Updates the move animation controller.
   set moveController(AnimationController value) {
-    if (_moveController == value) {
-      return;
-    }
+    if (_moveController == value) return;
     _moveController = value;
   }
 
   /// Updates the scale animation and refreshes listeners.
   set scaleAnimation(Animation<double> value) {
-    if (_scaleAnimation == value) {
-      return;
-    }
+    if (_scaleAnimation == value) return;
     _scaleAnimation.removeListener(_effectivelyMarkNeedsPaint);
     _scaleAnimation = value;
     _scaleAnimation.addListener(_effectivelyMarkNeedsPaint);
@@ -96,9 +90,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
 
   /// Updates the move animation and refreshes listeners.
   set moveAnimation(Animation<double> value) {
-    if (_moveAnimation == value) {
-      return;
-    }
+    if (_moveAnimation == value) return;
     _moveAnimation.removeListener(_effectivelyMarkNeedsPaint);
     _moveAnimation = value;
     _moveAnimation.addListener(_effectivelyMarkNeedsPaint);
@@ -114,9 +106,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
 
   /// Sets the scale alignment and marks the widget for repaint.
   void setScaleAlignment(Alignment alignment) {
-    if (scaleAlignment == alignment) {
-      return;
-    }
+    if (scaleAlignment == alignment) return;
     scaleAlignment = alignment;
     _effectivelyMarkNeedsPaint();
   }
@@ -135,7 +125,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       context.canvas.save();
 
       // Calculate target widget bounds.
-      final Rect targetRect = Rect.fromLTWH(
+      final targetRect = Rect.fromLTWH(
         targetPosition.dx,
         targetPosition.dy,
         targetSize.width,
@@ -149,7 +139,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
       final halfTargetWidth = targetRect.width * 0.5;
       final halfTargetHeight = targetRect.height * 0.5;
 
-      Offset scaleOrigin = Offset(
+      var scaleOrigin = Offset(
         targetRect.left +
             halfTargetWidth +
             (scaleAlignment!.x * halfTargetWidth),
@@ -163,29 +153,25 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
             0,
             targetPadding.top + Constants.extraAlignmentOffset,
           );
-          break;
         case TooltipPosition.bottom:
           scaleOrigin += Offset(
             0,
             targetPadding.bottom + Constants.extraAlignmentOffset,
           );
-          break;
         case TooltipPosition.left:
           scaleOrigin -= Offset(
             targetPadding.left + Constants.extraAlignmentOffset,
             0,
           );
-          break;
         case TooltipPosition.right:
           scaleOrigin += Offset(
             targetPadding.right + Constants.extraAlignmentOffset,
             0,
           );
-          break;
       }
 
       // Compute movement offset based on animation progress.
-      final Offset moveOffset = tooltipPosition.calculateMoveOffset(
+      final moveOffset = tooltipPosition.calculateMoveOffset(
         _moveAnimation.value,
         toolTipSlideEndDistance,
       );
@@ -240,10 +226,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
 
     // Step 4: Paint the child (arrow) with its center at the canvas origin
     // The negative offsets ensure the child is centered at the origin point
-    paintChild(
-      child,
-      Offset(-halfChildWidth, -halfChildHeight),
-    );
+    paintChild(child, Offset(-halfChildWidth, -halfChildHeight));
   }
 
   /// Paints normal children with translation and animation effects.
@@ -254,10 +237,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
     Offset scaleOrigin,
     Offset moveOffset,
   ) {
-    paintChild(
-      child,
-      moveOffset + childParentData.offset - scaleOrigin,
-    );
+    paintChild(child, moveOffset + childParentData.offset - scaleOrigin);
   }
 
   void _paintChildren(

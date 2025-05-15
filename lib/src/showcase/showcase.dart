@@ -36,107 +36,29 @@ import 'showcase_service.dart';
 /// A widget that highlights a specific widget on the screen with an
 /// informative message to guide the user.
 class Showcase extends StatefulWidget {
-  /// Highlights a specific widget on the screen with an informative tooltip.
+  /// Creates a showcase widget with standard tooltip.
   ///
-  /// This widget helps you showcase specific parts of your UI by drawing an
-  /// overlay around it and displaying a description. You can customize the
-  /// appearance and behavior of the showcase and tooltip for a seamless user
-  /// experience.
+  /// This constructor creates a showcase widget with a default tooltip that
+  /// displays a title and description. It's used to highlight specific
+  /// widgets within your app and provide explanatory text to guide users.
   ///
-  /// **Required arguments:**
+  /// The showcase creates a visually distinct highlighting effect around the
+  /// target [child] widget and displays an informative tooltip. When
+  /// combined with [ShowcaseView], multiple showcases can be sequenced to
+  /// create a guided tour of your app's features.
   ///
-  /// - `key`: A unique key for this Showcase widget.
-  /// - `description`: A description of the widget being showcased.
-  /// - `child`: The widget you want to highlight.
-  ///
-  /// **Optional arguments:**
-  ///
-  /// **Tooltip:**
-  ///   - `title`: An optional title for the tooltip.
-  ///   - `titleAlignment`: Alignment of the title text within the tooltip
-  ///   (defaults to start).
-  ///   - `descriptionAlignment`: Alignment of the description text within
-  ///   the tooltip (defaults to start).
-  ///   - `titleTextStyle`: Style properties for the title text.
-  ///   - `descTextStyle`: Style properties for the description text.
-  ///   - `tooltipBackgroundColor`: Background color of the tooltip (defaults
-  ///   to white).
-  ///   - `textColor`: Color of the text in the tooltip (defaults to black).
-  ///   - `tooltipPadding`: Padding around the content inside the tooltip.
-  ///   - `onToolTipClick`: A callback function called when the user clicks
-  ///   the tooltip.
-  ///   - `tooltipBorderRadius`: The border radius of the tooltip (defaults
-  ///   to 8dp).
-  ///   - `targetTooltipGap`: The gap between the target widget and the
-  ///   tooltip (defaults to 10dp).
-  ///
-  /// **Highlight:**
-  ///   - `targetShapeBorder`: The border to draw around the showcased widget
-  ///   (defaults to a rounded rectangle).
-  ///   - `targetPadding`: Padding around the showcased widget (defaults to
-  ///   none).
-  ///   - `showArrow`: Whether to show an arrow pointing to the showcased
-  ///   widget (defaults to true).
-  ///
-  /// **Animations:**
-  ///   - `movingAnimationDuration`: Duration of the animation when moving
-  ///   the tooltip (defaults to 2 seconds).
-  ///   - `disableMovingAnimation`: Disables the animation when moving the
-  ///   tooltip.
-  ///   - `disableScaleAnimation`: Disables the animation when scaling the
-  ///   tooltip.
-  ///   - `scaleAnimationDuration`: Duration of the animation when scaling
-  ///   the tooltip (defaults to 300 milliseconds).
-  ///   - `scaleAnimationCurve`: The curve used for the scaling animation
-  ///   (defaults to ease-in).
-  ///   - `scaleAnimationAlignment`: The alignment point for the scaling
-  ///   animation.
-  ///
-  /// **Interactions:**
-  ///   - `onTargetClick`: A callback function called when the user clicks
-  ///   the showcased widget.
-  ///   - `disposeOnTap`: Whether to dispose of the showcase after a tap on
-  ///   the showcased widget (requires `onTargetClick`).
-  ///   - `onTargetLongPress`: A callback function called when the user
-  ///   long-presses the showcased widget.
-  ///   - `onTargetDoubleTap`: A callback function called when the user
-  ///   double-taps the showcased widget.
-  ///   - `disableDefaultTargetGestures`: Disables default gestures on the
-  ///   target widget (panning, zooming).
-  ///   - `onBarrierClick`: A callback function called when the user clicks
-  ///   outside the showcase overlay.
-  ///   - `disableBarrierInteraction`: Disables user interaction with the
-  ///   area outside the showcase overlay.
-  ///
-  /// **Advanced:**
-  ///   - `container`: A custom widget to use as the tooltip instead of the
-  ///   default one.
-  ///   - `overlayColor`: Color of the showcase overlay (defaults to black
-  ///   with 75% opacity).
-  ///   - `overlayOpacity`: Opacity of the showcase overlay (0.0 to 1.0).
-  ///   - `scrollLoadingWidget`: A widget to display while content is loading
-  ///  (for infinite scrolling scenarios).
-  ///   - `blurValue`: The amount of background blur applied during the
-  ///   showcase.
-  ///   - `tooltipPosition`: The position of the tooltip relative to the
-  ///   showcased widget.
-  ///   - `toolTipSlideEndDistance`: The distance the tooltip slides in from
-  ///   the edge of the screen (defaults to 7dp).
-  ///   - `toolTipMargin`: The margin around the screen which tooltip try not
-  ///   to cross (defaults to 14dp).
-  ///   - `tooltipActions`: A list of custom actions (widgets) to display
-  ///   within the tooltip.
-  ///   - `tooltipActionConfig`: Configuration options for custom tooltip
-  ///   actions.
-  ///   - `scrollAlignment`: Defines the alignment for the auto scroll function.
-  ///   - `enableAutoScroll`:This is used to override the [ShowCaseWidget
-  ///   .enableAutoScroll] behaviour for this showcase.
-  ///
-  /// **Assertions:**
-  ///
-  /// - `overlayOpacity` must be between 0.0 and 1.0.
-  /// - `onTargetClick` and `disposeOnTap` must be used together (one cannot
-  /// exist without the other).
+  /// Example usage:
+  /// ```dart
+  /// Showcase(
+  ///   key: _myShowcaseKey,
+  ///   title: 'Profile',
+  ///   description: 'Tap to view your profile details',
+  ///   child: IconButton(
+  ///     icon: Icon(Icons.person),
+  ///     onPressed: () {},
+  ///   ),
+  /// )
+  /// ```
   const Showcase({
     required GlobalKey key,
     required this.description,
@@ -216,78 +138,38 @@ class Showcase extends StatefulWidget {
           'at same time',
         );
 
-  /// Creates a Showcase widget with a custom tooltip widget.
+  /// Creates a showcase with a completely custom tooltip widget.
   ///
-  /// This constructor allows you to provide a completely custom widget
-  /// for the tooltip instead of using the default one with title and
-  /// description.  This gives you more flexibility in designing the
-  /// appearance and behavior of the tooltip.
+  /// Unlike the standard constructor, this constructor allows you to provide
+  /// your own custom widget to use as the tooltip through the [container]
+  /// parameter. This gives you full control over the tooltip's appearance.
   ///
-  /// **Required arguments:**
+  /// Use this constructor when you need a tooltip design that can't be achieved
+  /// with the standard title/description format, such as including images,
+  /// interactive elements, or complex layouts in your tooltip.
   ///
-  /// - `key`: A unique key for this Showcase widget.
-  /// - `height`: The height of the custom tooltip widget.
-  /// - `width`: The width of the custom tooltip widget.
-  /// - `container`: The custom widget to use as the tooltip.
-  /// - `child`: The widget you want to highlight.
-  ///
-  /// **Optional arguments:**
-  ///
-  /// **Highlight:**
-  /// - `targetShapeBorder`: The border to draw around the showcased widget
-  /// (defaults to a rounded rectangle).
-  /// - `targetBorderRadius`: The border radius of the showcased widget.
-  /// - `overlayColor`: Color of the showcase overlay (defaults to black with
-  /// 75% opacity).
-  /// - `overlayOpacity`: Opacity of the showcase overlay (0.0 to 1.0).
-  /// - `scrollLoadingWidget`: A widget to display while content is loading
-  /// (for infinite scrolling scenarios).
-  /// - `onTargetClick`: A callback function called when the user clicks the
-  ///showcased widget.
-  /// - `disposeOnTap`: Whether to dispose of the showcase after a tap on the
-  /// showcased widget (requires `onTargetClick`).
-  /// - `movingAnimationDuration`: Duration of the animation when moving the
-  /// tooltip (defaults to 2 seconds).
-  /// - `disableMovingAnimation`: Disables the animation when moving the
-  /// tooltip.
-  /// - `targetPadding`: Padding around the showcased widget (defaults to none).
-  /// - `blurValue`: The amount of background blur applied during the showcase.
-  /// - `onTargetLongPress`: A callback function called when the user
-  /// long-presses the showcased widget.
-  /// - `onTargetDoubleTap`: A callback function called when the user
-  /// double-taps the showcased widget.
-  /// - `disableDefaultTargetGestures`: Disables default gestures on the
-  /// target widget (panning, zooming).
-  /// - `tooltipPosition`: The position of the tooltip relative to the
-  /// showcased widget.
-  /// - `onBarrierClick`: A callback function called when the user clicks
-  /// outside the showcase overlay.
-  /// - `disableBarrierInteraction`: Disables user interaction with the area
-  /// outside the showcase overlay.
-  ///
-  /// **Advanced:**
-  /// - `toolTipSlideEndDistance`: The distance the tooltip slides in from
-  /// the edge of the screen (defaults to 7dp).
-  /// - `tooltipActions`: A list of custom actions (widgets) to display
-  /// within the tooltip.
-  /// - `tooltipActionConfig`: Configuration options for custom tooltip actions.
-  /// - `floatingActionWidget`: Custom static floating action widget to show
-  /// a static widget anywhere
-  /// - `toolTipMargin`: The margin around the screen which tooltip try not
-  /// to cross (defaults to 14dp).
-  ///
-  /// **Differences from default constructor:**
-  ///
-  /// - This constructor doesn't require `title` or `description` arguments.
-  /// - By default, the tooltip won't have an arrow pointing to the target
-  /// widget (`showArrow` is set to `false`).
-  /// - Default click behavior is disabled (`onToolTipClick` is set to `null`).
-  /// - Default animation settings are slightly different (e.g.,
-  /// `scaleAnimationCurve` is `Curves.decelerate`).
-  ///
-  /// **Assertions:**
-  ///   - `overlayOpacity` must be between 0.0 and 1.0.
-  ///   - `onBarrierClick` cannot be used with `disableBarrierInteraction`.
+  /// Example usage:
+  /// ```dart
+  /// Showcase.withWidget(
+  ///   key: _customKey,
+  ///   height: 80,
+  ///   width: 140,
+  ///   container: Column(
+  ///     children: [
+  ///       Text(
+  ///         "This is a custom widget!",
+  ///         style: TextStyle(color: Colors.white),
+  ///       ),
+  ///       SizedBox(height: 10),
+  ///       Image.asset('assets/tutorial_image.png', width: 100),
+  ///     ],
+  ///   ),
+  ///   child: FloatingActionButton(
+  ///     onPressed: () {},
+  ///     child: Icon(Icons.add),
+  ///   ),
+  /// )
+  /// ```
   const Showcase.withWidget({
     required GlobalKey key,
     required this.height,
@@ -367,7 +249,7 @@ class Showcase extends StatefulWidget {
   /// A key that is unique across the entire app.
   ///
   /// This Key will be used to control state of individual showcase and also
-  /// used in [ShowCaseView.startShowcase] to define position of current
+  /// used in [ShowcaseView.startShowcase] to define position of current
   /// target widget while showcasing.
   final GlobalKey showcaseKey;
 
@@ -661,7 +543,7 @@ class _ShowcaseState extends State<Showcase> {
       id: _uniqueId,
       key: widget.showcaseKey,
       getState: () => this,
-      showCaseView: _showCaseWidgetManager.showcaseView,
+      showcaseView: _showCaseWidgetManager.showcaseView,
     );
 
     // We need to update this in every showcase so we can get the latest overlay
@@ -707,7 +589,7 @@ class _ShowcaseState extends State<Showcase> {
     );
     ShowcaseService.instance.addController(
       controller: _controller
-        ..showCaseView = _showCaseWidgetManager.showcaseView,
+        ..showcaseView = _showCaseWidgetManager.showcaseView,
       key: widget.showcaseKey,
       id: _uniqueId,
       scope: _showCaseWidgetManager.name,

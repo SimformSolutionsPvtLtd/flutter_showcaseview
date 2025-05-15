@@ -24,10 +24,20 @@ import 'package:flutter/material.dart';
 import '../../showcaseview.dart';
 
 class TooltipActionButtonWidget extends StatelessWidget {
+  /// A widget that renders action buttons within showcase tooltips.
+  ///
+  /// This widget is responsible for building interactive buttons that appear
+  /// in showcase tooltips, such as "Next," "Previous," or "Skip" buttons. It
+  /// renders either a custom button provided in the config or builds a
+  /// standard button with optional leading/trailing icons based on the
+  /// provided configuration.
+  ///
+  /// It supports both local tooltip actions (specific to a single showcase)
+  /// and global tooltip actions (applied to all showcases in a sequence).
   const TooltipActionButtonWidget({
-    super.key,
     required this.config,
     required this.showCaseState,
+    super.key,
   });
 
   /// This will provide the configuration for the action buttons
@@ -45,7 +55,7 @@ class TooltipActionButtonWidget extends StatelessWidget {
         MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
-            onTap: handleOnTap,
+            onTap: _handleOnTap,
             child: Container(
               padding: config.padding,
               decoration: BoxDecoration(
@@ -56,21 +66,19 @@ class TooltipActionButtonWidget extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (config.leadIcon != null)
+                  if (config.leadIcon case final lead?)
                     Padding(
-                      padding: config.leadIcon?.padding ??
-                          const EdgeInsets.only(right: 5),
-                      child: config.leadIcon?.icon,
+                      padding: lead.padding ?? const EdgeInsets.only(right: 5),
+                      child: lead.icon,
                     ),
                   Text(
                     config.name ?? config.type?.actionName ?? '',
                     style: config.textStyle,
                   ),
-                  if (config.tailIcon != null)
+                  if (config.tailIcon case final tail?)
                     Padding(
-                      padding: config.tailIcon?.padding ??
-                          const EdgeInsets.only(left: 5),
-                      child: config.tailIcon?.icon,
+                      padding: tail.padding ?? const EdgeInsets.only(left: 5),
+                      child: tail.icon,
                     ),
                 ],
               ),
@@ -79,7 +87,7 @@ class TooltipActionButtonWidget extends StatelessWidget {
         );
   }
 
-  void handleOnTap() {
+  void _handleOnTap() {
     if (config.onTap != null) {
       config.onTap?.call();
     } else {

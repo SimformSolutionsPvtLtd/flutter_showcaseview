@@ -89,7 +89,6 @@ class FloatingActionWidget extends StatelessWidget {
       case TextDirection.rtl:
         left = end;
         right = start;
-        break;
     }
     return FloatingActionWidget(
       key: key,
@@ -172,10 +171,7 @@ class FloatingActionWidget extends StatelessWidget {
       bottom: bottom,
       width: width,
       height: height,
-      child: Material(
-        color: Colors.transparent,
-        child: child,
-      ),
+      child: Material(color: Colors.transparent, child: child),
     );
   }
 }

@@ -37,10 +37,10 @@ class _TooltipLayoutId extends ParentDataWidget<MultiChildLayoutParentData> {
     if (parentData.id == id) return;
 
     parentData.id = id;
+
     final targetObject = renderObject.parent;
-    if (targetObject is! RenderObject) {
-      return;
-    }
+    if (targetObject is! RenderObject) return;
+
     targetObject.markNeedsLayout();
   }
 

@@ -27,13 +27,12 @@ import '../utils/constants.dart';
 import '../utils/extensions.dart';
 import 'showcase_controller.dart';
 
-/// A scoped service locator for showcase functionality
+/// A scoped service locator for showcase functionality.
 ///
 /// This class provides global access to [ShowcaseView] instances without
 /// requiring a BuildContext, similar to the GetIt service locator pattern,
 /// but with support for multiple independent scopes.
 class ShowcaseService {
-  /// Private constructor to prevent external instantiation
   ShowcaseService._();
 
   /// Singleton instance of the service
@@ -42,10 +41,8 @@ class ShowcaseService {
   /// Returns the global instance of the service
   static ShowcaseService get instance => _instance;
 
-  /// Map of scope names to showcase managers
-  final Map<String, ShowcaseScope> _showcaseViews = {};
-
   /// Map of scope names to showcase controllers
+  final Map<String, ShowcaseScope> _showcaseViews = {};
 
   /// Stack of scope names to track navigation
   final List<String> _scopeStack = [Constants.initialScope];
@@ -56,10 +53,10 @@ class ShowcaseService {
   /// Returns the all scope name
   List<String> get scopes => _scopeStack;
 
-  /// Registers a [ShowcaseView] with the service in the specified scope
+  /// Registers a [ShowcaseView] with the service in the specified scope.
   ///
   /// * [showcaseView] - The showcase manager to register
-  /// * [scope] - Optional scope name (defaults to current scope)
+  /// * [scope] - Optional scope name (defaults to [currentScope])
   void register(ShowcaseView showcaseView, {String? scope}) {
     final scopeName = scope ?? currentScope;
     _showcaseViews[scopeName] = ShowcaseScope(
@@ -73,26 +70,24 @@ class ShowcaseService {
     _scopeStack.add(scope);
   }
 
-  /// Unregisters the [ShowcaseView] from the specified scope
+  /// Unregisters the [ShowcaseView] from the specified scope.
   ///
-  /// * [scope] - Optional scope name (defaults to current scope)
+  /// * [scope] - Optional scope name (defaults to [currentScope])
   String? unregister({String? scope}) {
     final scopeName = scope ?? currentScope;
     _showcaseViews.remove(scopeName);
 
     // If we're removing the current scope, pop it from the stack
-    _scopeStack.removeFirstWhere(
-      (element) => element == scope,
-    );
+    _scopeStack.removeFirstWhere((existingScope) => existingScope == scope);
     currentScope =
         _scopeStack.isEmpty ? Constants.initialScope : _scopeStack.last;
 
     return scope;
   }
 
-  /// Returns whether a manager is registered in the specified scope
+  /// Returns whether a manager is registered in the specified scope.
   ///
-  /// * [scope] - Optional scope name (defaults to current scope)
+  /// * [scope] - Optional scope name (defaults to [currentScope])
   bool isRegistered({String? scope}) =>
       _showcaseViews.containsKey(scope ?? currentScope);
 
@@ -100,25 +95,23 @@ class ShowcaseService {
   ///
   /// * [scope] - Optional scope name (defaults to [currentScope])
   ///
-  /// Throws an exception if no [ShowcaseView] is registered in the specified
-  /// scope.
+  /// Throws an exception if not registered.
   ShowcaseScope getScope({String? scope}) {
     final scopeName = scope ?? currentScope;
-    final manager = _showcaseViews[scopeName];
-    if (manager == null) {
-      if (scopeName != Constants.initialScope) {
-        throw Exception(
-          'No ShowcaseView registered for scope "$scopeName". '
-          'Make sure ShowcaseView is initialized in this scope.',
-        );
-      } else {
-        throw Exception(
-          'No ShowcaseView is registered. Make sure ShowcaseView is '
-          'registered before using Showcase widget',
-        );
-      }
+    final showcaseScope = _showcaseViews[scopeName];
+    if (showcaseScope != null) return showcaseScope;
+
+    if (scopeName != Constants.initialScope) {
+      throw Exception(
+        'No ShowcaseView registered for scope "$scopeName". '
+        'Make sure ShowcaseView is initialized in this scope.',
+      );
+    } else {
+      throw Exception(
+        'No ShowcaseView is registered. Make sure ShowcaseView is '
+        'registered before using Showcase widget',
+      );
     }
-    return manager;
   }
 
   /// Returns a map of showcase controllers for the specified scope.
@@ -135,17 +128,17 @@ class ShowcaseService {
   }) =>
       getScope(scope: scope).controllers;
 
-  /// Returns the [ShowcaseView] from the specified scope
+  /// Returns the [ShowcaseView] from the specified scope.
   ///
-  /// * [scope] - Optional scope name (defaults to current scope)
+  /// * [scope] - Optional scope name (defaults to [currentScope])
   ///
-  /// Throws an exception if no manager is registered in the specified scope
+  /// Throws an exception if no [scope] is not registered.
   ShowcaseView get({String? scope}) =>
       getScope(scope: scope ?? currentScope).showcaseView;
 
   void updateCurrentScope(String scope) => currentScope = scope;
 
-  /// Registers a showcase controller for given key and ID
+  /// Registers a showcase controller for given key and ID.
   void addController({
     required GlobalKey key,
     required ShowcaseController controller,
@@ -164,16 +157,16 @@ class ShowcaseService {
         );
   }
 
-  /// Removes showcase controller for given key and ID
+  /// Removes showcase controller for given key and ID.
   void removeController({
     required GlobalKey key,
     required int id,
     required String scope,
   }) =>
-      _showcaseViews[scope]?.controllers.remove(id);
+      _showcaseViews[scope]?.controllers[key]?.remove(id);
 
-  /// Returns showcase controller for given key and ID
-  /// Throws assertion error if controller not found
+  /// Returns showcase controller for given key and ID.
+  /// Throws assertion error if controller not found.
   ShowcaseController getController({
     required GlobalKey key,
     required int id,
@@ -182,8 +175,8 @@ class ShowcaseService {
     final controller = getControllers(scope: scope)[key]?[id];
     assert(
       controller != null,
-      'Please register showcase controller first by calling '
-      'ShowcaseView.register()',
+      'Please register [ShowcaseView] first by calling '
+      '[ShowcaseView.register()]',
     );
     return controller!;
   }

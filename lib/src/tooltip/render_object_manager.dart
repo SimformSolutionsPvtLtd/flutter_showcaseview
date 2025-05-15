@@ -28,7 +28,8 @@ class RenderObjectManager {
   /// layout system.
   ///
   /// This class does:
-  /// - Act as a registry for render objects indexed by their [TooltipLayoutSlot]
+  /// - Act as a registry for render objects indexed by their
+  /// [TooltipLayoutSlot].
   /// - Provide methods to perform layout operations on render objects without
   /// direct coupling.
   /// - Manage position, size and constraint information for tooltip
@@ -90,8 +91,8 @@ class RenderObjectManager {
   void setOffset(double x, double y) {
     xOffset = x;
     yOffset = y;
-    assert(customRenderBox.parentData is MultiChildLayoutParentData);
-    final parentData = customRenderBox.parentData as MultiChildLayoutParentData;
+    final parentData = customRenderBox.parentData;
+    if (parentData is! MultiChildLayoutParentData) return;
     parentData.offset = Offset(x, y);
   }
 }

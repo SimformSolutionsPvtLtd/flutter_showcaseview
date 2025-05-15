@@ -92,16 +92,16 @@ enum TooltipPosition {
     double animationValue,
     double toolTipSlideEndDistance,
   ) {
-    switch (this) {
-      case TooltipPosition.top:
-        return Offset(0, (1 - animationValue) * -toolTipSlideEndDistance);
-      case TooltipPosition.bottom:
-        return Offset(0, (1 - animationValue) * toolTipSlideEndDistance);
-      case TooltipPosition.left:
-        return Offset((1 - animationValue) * -toolTipSlideEndDistance, 0);
-      case TooltipPosition.right:
-        return Offset((1 - animationValue) * toolTipSlideEndDistance, 0);
-    }
+    return switch (this) {
+      TooltipPosition.top =>
+        Offset(0, (1 - animationValue) * -toolTipSlideEndDistance),
+      TooltipPosition.bottom =>
+        Offset(0, (1 - animationValue) * toolTipSlideEndDistance),
+      TooltipPosition.left =>
+        Offset((1 - animationValue) * -toolTipSlideEndDistance, 0),
+      TooltipPosition.right =>
+        Offset((1 - animationValue) * toolTipSlideEndDistance, 0),
+    };
   }
 
   bool get isRight => this == TooltipPosition.right;
@@ -113,16 +113,12 @@ enum TooltipPosition {
   bool get isVertical => isTop || isBottom;
 
   TooltipPosition get opposite {
-    switch (this) {
-      case TooltipPosition.left:
-        return TooltipPosition.right;
-      case TooltipPosition.right:
-        return TooltipPosition.left;
-      case TooltipPosition.top:
-        return TooltipPosition.bottom;
-      case TooltipPosition.bottom:
-        return TooltipPosition.top;
-    }
+    return switch (this) {
+      TooltipPosition.left => TooltipPosition.right,
+      TooltipPosition.right => TooltipPosition.left,
+      TooltipPosition.top => TooltipPosition.bottom,
+      TooltipPosition.bottom => TooltipPosition.top,
+    };
   }
 }
 
@@ -178,15 +174,10 @@ enum TooltipDefaultActionType {
     switch (this) {
       case TooltipDefaultActionType.next:
         showcaseView.next(force: true);
-        break;
       case TooltipDefaultActionType.previous:
         showcaseView.previous();
-        break;
       case TooltipDefaultActionType.skip:
         showcaseView.dismiss();
-        break;
-      default:
-        throw ArgumentError('Invalid tooltip default action type');
     }
   }
 }
@@ -225,4 +216,13 @@ enum TooltipLayoutSlot {
 
   RenderObjectManager? get getObjectManager =>
       RenderObjectManager.renderObjects[this];
+}
+
+/// Defines the progress of the showcase widgets.
+enum ShowcaseProgressType {
+  /// Indicates that the showcase is moving forward to the next item.
+  forward,
+
+  /// Indicates that the showcase is moving backward to the previous item.
+  backward,
 }

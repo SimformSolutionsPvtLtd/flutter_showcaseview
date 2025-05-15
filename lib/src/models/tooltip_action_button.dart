@@ -24,48 +24,39 @@ import 'package:flutter/material.dart';
 import '../../showcaseview.dart';
 
 class TooltipActionButton {
-  /// A configuration for a tooltip action button or Provide a custom tooltip
-  /// action.
+  /// A class that defines interactive action buttons within showcase tooltips.
   ///
-  /// This class allows you to define predefined actions like "Next,"
-  /// "Previous," and "Close," or specify a custom action widget.
+  /// Provides a way to add interactive buttons to tooltips in the showcase
+  /// view. These buttons can perform standard navigation actions also
+  /// supports custom actions through callback functions and fully custom
+  /// button widgets.
   ///
-  /// **Required arguments:**
+  /// There are two ways to create tooltip action buttons:
+  /// 1. Using the default constructor for standard buttons with predefined
+  /// styles and standard action types (next, previous, skip).
+  /// 2. Using the [TooltipActionButton.custom] constructor for fully custom
+  /// button widgets.
   ///
-  /// - `type`: The type of the action button (e.g.,
-  /// `TooltipDefaultActionType.next`).
+  /// Tooltip action buttons can be used in two contexts:
+  /// - As local actions specific to a single showcase tooltip by providing
+  /// them in [Showcase.tooltipActions].
+  /// - As global actions that appear in all showcase tooltips by providing
+  /// them in [ShowcaseView.globalTooltipActions].
   ///
-  /// **Optional arguments:**
-  ///
-  /// - `backgroundColor`: The background color of the button
-  /// - `textStyle`: The text style for the button label.
-  /// - `borderRadius`: The border radius of the button. Defaults to a
-  /// rounded shape.
-  /// - `padding`: The padding around the button content.
-  /// - `leadIcon`: An optional leading icon for the button.
-  /// - `tailIcon`: An optional trailing icon for the button.
-  /// - `name`: The text for the button label (ignored if `type` is provided).
-  /// - `onTap`: A callback function triggered when the button is tapped.
-  /// - `border`: A border to draw around the button.
-  /// - `hideActionWidgetForShowcase`: A list of `GlobalKey`s of showcases
-  /// where this action widget should be hidden. This only works for global
-  /// action widgets.
+  /// The appearance and position of these buttons are controlled by the
+  /// [TooltipActionConfig] class, which can define whether the buttons appear
+  /// inside or outside the tooltip container and how they are aligned.
   const TooltipActionButton({
     required this.type,
+    this.borderRadius = const BorderRadius.all(Radius.circular(50)),
+    this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+    this.hideActionWidgetForShowcase = const [],
     this.backgroundColor,
     this.textStyle,
-    this.borderRadius = const BorderRadius.all(
-      Radius.circular(50),
-    ),
-    this.padding = const EdgeInsets.symmetric(
-      horizontal: 15,
-      vertical: 4,
-    ),
     this.leadIcon,
     this.tailIcon,
     this.name,
     this.onTap,
-    this.hideActionWidgetForShowcase = const [],
     this.border,
   }) : button = null;
 
@@ -83,45 +74,51 @@ class TooltipActionButton {
         onTap = null,
         border = null;
 
-  /// To Provide Background color to the action
+  /// Background color for the action button.
+  ///
+  /// If not provided, theme's primary color will be used as default.
   final Color? backgroundColor;
 
-  /// To Provide borderRadius to the action
+  /// Border radius for the action button.
   ///
-  /// Defaults to const BorderRadius.all(Radius.circular(50)),
+  /// Defaults to a rounded shape with circular radius of 50.
   final BorderRadius? borderRadius;
 
-  /// To Provide textStyle to the action text
+  /// Text style for the button label.
+  ///
+  /// Controls the appearance of the text inside the button.
   final TextStyle? textStyle;
 
-  /// To Provide padding to the action widget
-  ///
-  /// Defaults to const EdgeInsets.symmetric(horizontal: 15,vertical: 4,)
+  /// Padding inside the action button.
   final EdgeInsets? padding;
 
-  /// To Provide a custom widget for the action in [TooltipActionButton.custom]
+  /// A custom widget to use instead of the default button appearance.
+  ///
+  /// When provided, most other appearance properties are ignored.
   final Widget? button;
 
-  /// To Provide a leading icon for the action
+  /// Icon to display before the button text.
   final ActionButtonIcon? leadIcon;
 
-  /// To Provide a tail icon for the action
+  /// Icon to display after the button text.
   final ActionButtonIcon? tailIcon;
 
-  /// To Provide a action type
+  /// Predefined action type that determines the button's default behavior.
   final TooltipDefaultActionType? type;
 
-  /// To Provide a text for action
+  /// Display text for the button.
   ///
-  /// If type is provided then it will take type name
+  /// If not provided, uses the name from the action type.
   final String? name;
 
-  /// To Provide a onTap for action
+  /// Callback function triggered when the button is tapped.
   ///
-  /// If type is provided then it will take type's OnTap
+  /// When provided, this overrides the default behavior of the action type.
   final VoidCallback? onTap;
 
-  /// To Provide a border for action
+  /// Border to apply around the button.
+  ///
+  /// Allows for custom border styling such as color, width, and style.
   final Border? border;
 
   /// Hides action widgets for the showcase. Add key of particular showcase

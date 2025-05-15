@@ -19,11 +19,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-part of "tooltip.dart";
+part of 'tooltip.dart';
 
 class ToolTipWidget extends StatefulWidget {
+  /// A tooltip widget that is displayed alongside a target widget during a
+  /// showcase.
+  ///
+  /// This widget is responsible for rendering the tooltip content, managing
+  /// tooltip animations, and handling user interactions with the tooltip. It
+  /// works in conjunction with the [ShowcaseController] to position itself
+  /// correctly relative to the target widget.
+  ///
+  /// The tooltip can display:
+  /// - Title and description text with customizable styling.
+  /// - A custom container widget instead of the default tooltip layout.
+  /// - Action buttons (inside or outside the tooltip).
+  /// - An optional arrow pointing to the target widget.
+  ///
+  /// It supports various animations:
+  /// - Scale animation when the tooltip appears/disappears.
+  /// - Moving/bouncing animation while the tooltip is displayed.
+  ///
+  /// The tooltip automatically handles positioning constraints to ensure it
+  /// stays within screen boundaries and maintains proper spacing from the
+  /// target widget.
   const ToolTipWidget({
-    super.key,
     required this.title,
     required this.description,
     required this.titleTextStyle,
@@ -57,6 +77,7 @@ class ToolTipWidget extends StatefulWidget {
     this.descriptionPadding,
     this.titleTextDirection,
     this.descriptionTextDirection,
+    super.key,
   });
 
   final String? title;
@@ -169,9 +190,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
           )
         : ClipRRect(
             borderRadius: widget.tooltipBorderRadius ??
-                const BorderRadius.all(
-                  Radius.circular(8.0),
-                ),
+                const BorderRadius.all(Radius.circular(8)),
             child: MouseRegion(
               cursor: widget.onTooltipTap == null
                   ? MouseCursor.defer
@@ -287,7 +306,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
               id: TooltipLayoutSlot.actionBox,
               child: ActionWidget(
                 tooltipActionConfig: widget.tooltipActionConfig,
-                outsidePadding: EdgeInsets.zero,
                 alignment: widget.tooltipActionConfig.alignment,
                 crossAxisAlignment:
                     widget.tooltipActionConfig.crossAxisAlignment,

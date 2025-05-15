@@ -63,12 +63,13 @@ class TooltipActionConfig {
 
   /// Defines running direction alignment for the Action widgets.
   ///
-  /// Default to [crossAxisAlignment.start]
+  /// Default to [CrossAxisAlignment.start]
   final CrossAxisAlignment crossAxisAlignment;
 
   /// If aligning items according to their baseline, which baseline to use.
   ///
-  /// This must be set if using baseline alignment. There is no default because there is no
-  /// way for the framework to know the correct baseline _a priori_.
+  /// This must be set if using baseline alignment. There is no default
+  /// because there is no way for the framework to know the correct baseline
+  /// _a priori_.
   final TextBaseline? textBaseline;
 }

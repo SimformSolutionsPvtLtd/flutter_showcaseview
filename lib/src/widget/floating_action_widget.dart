@@ -22,8 +22,30 @@
 import 'package:flutter/material.dart';
 
 class FloatingActionWidget extends StatelessWidget {
+  /// A widget that displays a floating action button that doesn't animate
+  /// during the showcase tour. It can be used for:
+  ///
+  /// * Adding custom buttons like 'Skip', 'Next', or 'Close'.
+  /// * Creating persistent UI elements that remain visible throughout the
+  /// showcase.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// Showcase(
+  ///   key: showcaseKey,
+  ///   description: 'Feature description',
+  ///   child: YourWidget(),
+  ///   floatingActionWidget: FloatingActionWidget(
+  ///     left: 16,
+  ///     bottom: 16,
+  ///     child: ElevatedButton(
+  ///       onPressed: () => ShowcaseView.of(context).dismiss(),
+  ///       child: Text('Skip'),
+  ///     ),
+  ///   ),
+  /// )
+  /// ```
   const FloatingActionWidget({
-    super.key,
     required this.child,
     this.right,
     this.width,
@@ -31,6 +53,7 @@ class FloatingActionWidget extends StatelessWidget {
     this.left,
     this.bottom,
     this.top,
+    super.key,
   });
 
   /// This is same as the Positioned.directional widget
@@ -47,7 +70,6 @@ class FloatingActionWidget extends StatelessWidget {
   /// then the `start` argument is used for the [left] property and the `end`
   /// argument is used for the [right] property.
   factory FloatingActionWidget.directional({
-    Key? key,
     required TextDirection textDirection,
     required Widget child,
     double? start,
@@ -56,6 +78,7 @@ class FloatingActionWidget extends StatelessWidget {
     double? bottom,
     double? width,
     double? height,
+    Key? key,
   }) {
     /// Default value will be [TextDirection.ltr].
     var left = start;
@@ -85,10 +108,11 @@ class FloatingActionWidget extends StatelessWidget {
   /// {@macro flutter.widgets.ProxyWidget.child}
   final Widget child;
 
-  /// The distance that the child's left edge is inset from the left of the stack.
+  /// The distance that the child's left edge is inset from the left of the
+  /// stack.
   ///
-  /// Only two out of the three horizontal values ([left], [right], [width]) can be
-  /// set. The third must be null.
+  /// Only two out of the three horizontal values ([left], [right], [width])
+  /// can be set. The third must be null.
   ///
   /// If all three are null, the [Stack.alignment] is used to position the child
   /// horizontally.
@@ -96,26 +120,25 @@ class FloatingActionWidget extends StatelessWidget {
 
   /// The distance that the child's top edge is inset from the top of the stack.
   ///
-  /// Only two out of the three vertical values ([top], [bottom], [height]) can be
-  /// set. The third must be null.
+  /// Only two out of the three vertical values ([top], [bottom], [height])
+  /// can be set. The third must be null.
   ///
   /// If all three are null, the [Stack.alignment] is used to position the child
   /// vertically.
   final double? top;
 
-  /// The distance that the child's right edge is inset from the right of the stack.
-  ///
-  /// Only two out of the three horizontal values ([left], [right], [width]) can be
-  /// set. The third must be null.
+  /// Only two out of the three horizontal values ([left], [right], [width])
+  /// can be set. The third must be null.
   ///
   /// If all three are null, the [Stack.alignment] is used to position the child
   /// horizontally.
   final double? right;
 
-  /// The distance that the child's bottom edge is inset from the bottom of the stack.
+  /// The distance that the child's bottom edge is inset from the bottom of
+  /// the stack.
   ///
-  /// Only two out of the three vertical values ([top], [bottom], [height]) can be
-  /// set. The third must be null.
+  /// Only two out of the three vertical values ([top], [bottom], [height])
+  /// can be set. The third must be null.
   ///
   /// If all three are null, the [Stack.alignment] is used to position the child
   /// vertically.
@@ -123,8 +146,8 @@ class FloatingActionWidget extends StatelessWidget {
 
   /// The child's width.
   ///
-  /// Only two out of the three horizontal values ([left], [right], [width]) can be
-  /// set. The third must be null.
+  /// Only two out of the three horizontal values ([left], [right], [width])
+  /// can be set. The third must be null.
   ///
   /// If all three are null, the [Stack.alignment] is used to position the child
   /// horizontally.
@@ -132,8 +155,8 @@ class FloatingActionWidget extends StatelessWidget {
 
   /// The child's height.
   ///
-  /// Only two out of the three vertical values ([top], [bottom], [height]) can be
-  /// set. The third must be null.
+  /// Only two out of the three vertical values ([top], [bottom], [height])
+  /// can be set. The third must be null.
   ///
   /// If all three are null, the [Stack.alignment] is used to position the child
   /// vertically.

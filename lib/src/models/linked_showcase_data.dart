@@ -21,9 +21,10 @@
  */
 import 'package:flutter/widgets.dart';
 
-/// This model is used to move linked showcase overlay data to parent
-/// showcase to crop linked showcase rect
+@immutable
 class LinkedShowcaseDataModel {
+  /// This model is used to move linked showcase overlay data to parent
+  /// showcase to crop linked showcase rect.
   const LinkedShowcaseDataModel({
     required this.rect,
     required this.radius,

@@ -24,14 +24,31 @@ import 'package:flutter/material.dart';
 import '../../showcaseview.dart';
 
 class ActionWidget extends StatelessWidget {
+  /// A widget that displays action buttons in a tooltip.
+  ///
+  /// This widget is responsible for rendering and aligning action buttons
+  /// within the tooltip. It works in conjunction with [TooltipActionConfig] to
+  /// determine how these action buttons should be laid out.
+  ///
+  /// The widget can be positioned in two ways:
+  /// - Inside the tooltip content (when [TooltipActionConfig.position] is set
+  /// to [TooltipActionPosition.inside]).
+  /// - Outside the tooltip content (when [TooltipActionConfig.position] is set
+  /// to [TooltipActionPosition.outside] or when a custom container is used).
+  ///
+  /// The layout of action buttons can be customized using:
+  /// - [alignment] - Controls how buttons are spaced horizontally.
+  /// - [crossAxisAlignment] - Controls how buttons are aligned vertically.
+  /// - [outsidePadding] - Adds padding around the buttons when placed inside
+  /// the tooltip.
   const ActionWidget({
-    super.key,
     required this.children,
     required this.tooltipActionConfig,
     required this.alignment,
     required this.crossAxisAlignment,
     this.outsidePadding = EdgeInsets.zero,
     this.width,
+    super.key,
   });
 
   final TooltipActionConfig tooltipActionConfig;
@@ -48,7 +65,6 @@ class ActionWidget extends StatelessWidget {
       child: Padding(
         padding: outsidePadding,
         child: Row(
-          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: alignment,
           crossAxisAlignment: crossAxisAlignment,
           textBaseline: tooltipActionConfig.textBaseline,

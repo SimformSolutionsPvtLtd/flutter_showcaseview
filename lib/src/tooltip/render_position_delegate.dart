@@ -30,14 +30,16 @@ class _RenderPositionDelegate extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   /// Creates a new RenderPositionDelegate for tooltip layout
   ///
-  /// [targetPosition] - Position of the target widget that triggered the tooltip
+  /// [targetPosition] - Position of the target widget that triggered the
+  /// tooltip
   /// [targetSize] - Size of the target widget
   /// [position] - Optional preferred position for the tooltip
   /// [screenSize] - Current screen size to respect boundaries
   /// [hasSecondBox] - Whether an action box exists below the main tooltip
   /// [hasArrow] - Whether to show a directional arrow pointing to the target
   /// [toolTipSlideEndDistance] - Distance for slide animations
-  /// [gapBetweenContentAndAction] - Spacing between tooltip content and action buttons
+  /// [gapBetweenContentAndAction] - Spacing between tooltip content and
+  /// action buttons
   /// [screenEdgePadding] - Minimum padding from screen edges
   /// [targetPadding] - Padding around the target
   _RenderPositionDelegate({
@@ -898,18 +900,22 @@ class _RenderPositionDelegate extends RenderBox
     return Offset(xOffset, yOffset);
   }
 
-  /// Determines in which positions the tooltip can be displayed without exceeding screen boundaries.
+  /// Determines in which positions the tooltip can be displayed without
+  /// exceeding screen boundaries.
   ///
-  /// This method evaluates the available space in all four directions (top, bottom, left, right)
-  /// around the target element and determines whether the tooltip can fit in each direction
-  /// while respecting screen edge padding.
+  /// This method evaluates the available space in all four directions (top,
+  /// bottom, left, right)
+  /// around the target element and determines whether the tooltip can fit in
+  /// each direction while respecting screen edge padding.
   ///
   /// Parameters:
   /// - [tooltipSize]: The current width and height of the tooltip content
-  /// - [totalHeight]: The total height including tooltip content and action box (if present)
+  /// - [totalHeight]: The total height including tooltip content and action
+  /// box (if present)
   ///
   /// Returns:
-  /// A [_SuitablePosition] object containing boolean flags for each valid position
+  /// A [_SuitablePosition] object containing boolean flags for each valid
+  /// position
   _SuitablePosition _getSuitablePosition(
     Size tooltipSize,
     double totalHeight,

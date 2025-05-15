@@ -22,12 +22,8 @@
 part of 'tooltip.dart';
 
 class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
-  // TODO: make this const when update to new flutter version
-  // ignore: prefer_const_constructors_in_immutables
-  _AnimatedTooltipMultiLayout({
-    // If we remove this parameter it will cause error in v3.29.0 so ignore
-    // ignore: unused_element_parameter
-    super.key,
+  const _AnimatedTooltipMultiLayout({
+    required super.children,
     required this.scaleController,
     required this.moveController,
     required this.scaleAnimation,
@@ -39,13 +35,15 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
     required this.hasArrow,
     required this.gapBetweenContentAndAction,
     required this.toolTipSlideEndDistance,
-    required super.children,
     required this.position,
     required this.scaleAlignment,
     required this.screenEdgePadding,
     required this.targetPadding,
     required this.showcaseOffset,
     required this.targetTooltipGap,
+    // If we remove this parameter it will cause error in v3.29.0 so ignore
+    // ignore: unused_element_parameter
+    super.key,
   });
 
   final AnimationController scaleController;

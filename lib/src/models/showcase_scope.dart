@@ -25,7 +25,8 @@ import '../showcase/showcase_controller.dart';
 import '../showcase/showcase_view.dart';
 
 class ShowcaseScope {
-  /// A container class that manages showcase views within a specific named scope.
+  /// A container class that manages showcase views within a specific named
+  /// scope.
   ///
   /// This class is responsible for:
   /// - Maintain a reference to a named scope and its associated [ShowcaseView].

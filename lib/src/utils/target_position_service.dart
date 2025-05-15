@@ -39,8 +39,7 @@ class TargetPositionService {
   /// - Supporting different ancestral coordinate systems.
   TargetPositionService({
     required this.renderBox,
-    required this.screenWidth,
-    required this.screenHeight,
+    required this.screenSize,
     this.padding = EdgeInsets.zero,
     this.rootRenderObject,
   }) {
@@ -49,8 +48,7 @@ class TargetPositionService {
 
   final RenderBox? renderBox;
   final EdgeInsets padding;
-  final double screenWidth;
-  final double screenHeight;
+  final Size screenSize;
   final RenderObject? rootRenderObject;
 
   Offset? _boxOffset;
@@ -71,8 +69,8 @@ class TargetPositionService {
     final rect = Rect.fromLTRB(
       leftDx.clamp(0, double.maxFinite),
       leftDy.clamp(0, double.maxFinite),
-      min(bottomRight.dx + padding.right, screenWidth),
-      min(bottomRight.dy + padding.bottom, screenHeight),
+      min(bottomRight.dx + padding.right, screenSize.width),
+      min(bottomRight.dy + padding.bottom, screenSize.height),
     );
     return rect;
   }
@@ -99,36 +97,28 @@ class TargetPositionService {
 
   /// Gets the bottom edge position of the target widget with padding.
   double getBottom() {
-    if (_checkBoxOrOffsetIsNull(checkDy: true)) {
-      return padding.bottom;
-    }
+    if (_checkBoxOrOffsetIsNull(checkDy: true)) return padding.bottom;
     final bottomRight = renderBox!.size.bottomRight(_boxOffset!);
     return bottomRight.dy + padding.bottom;
   }
 
   /// Gets the top edge position of the target widget with padding.
   double getTop() {
-    if (_checkBoxOrOffsetIsNull(checkDy: true)) {
-      return -padding.top;
-    }
+    if (_checkBoxOrOffsetIsNull(checkDy: true)) return -padding.top;
     final topLeft = renderBox!.size.topLeft(_boxOffset!);
     return topLeft.dy - padding.top;
   }
 
   /// Gets the left edge position of the target widget with padding.
   double getLeft() {
-    if (_checkBoxOrOffsetIsNull(checkDx: true)) {
-      return -padding.left;
-    }
+    if (_checkBoxOrOffsetIsNull(checkDx: true)) return -padding.left;
     final topLeft = renderBox!.size.topLeft(_boxOffset!);
     return topLeft.dx - padding.left;
   }
 
   /// Gets the right edge position of the target widget with padding.
   double getRight() {
-    if (_checkBoxOrOffsetIsNull(checkDx: true)) {
-      return padding.right;
-    }
+    if (_checkBoxOrOffsetIsNull(checkDx: true)) return padding.right;
     final bottomRight = renderBox!.size.bottomRight(_boxOffset!);
     return bottomRight.dx + padding.right;
   }
@@ -148,10 +138,7 @@ class TargetPositionService {
     if (box == null) return Offset.zero;
 
     return box.size.topLeft(
-      box.localToGlobal(
-        Offset.zero,
-        ancestor: rootRenderObject,
-      ),
+      box.localToGlobal(Offset.zero, ancestor: rootRenderObject),
     );
   }
 

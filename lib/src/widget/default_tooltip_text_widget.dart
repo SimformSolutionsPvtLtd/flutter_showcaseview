@@ -23,7 +23,6 @@ import 'package:flutter/material.dart';
 
 class DefaultTooltipTextWidget extends StatelessWidget {
   const DefaultTooltipTextWidget({
-    super.key,
     required this.alignment,
     required this.padding,
     required this.text,
@@ -31,6 +30,7 @@ class DefaultTooltipTextWidget extends StatelessWidget {
     this.textDirection,
     this.textColor,
     this.textStyle,
+    super.key,
   });
 
   final AlignmentGeometry alignment;
@@ -52,11 +52,10 @@ class DefaultTooltipTextWidget extends StatelessWidget {
           textAlign: textAlign,
           textDirection: textDirection,
           style: textStyle ??
-              Theme.of(context).textTheme.titleSmall!.merge(
-                    TextStyle(
-                      color: textColor,
-                    ),
-                  ),
+              Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.merge(TextStyle(color: textColor)),
         ),
       ),
     );

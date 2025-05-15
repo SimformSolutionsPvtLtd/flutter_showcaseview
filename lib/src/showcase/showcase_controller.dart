@@ -43,67 +43,62 @@ import 'target_widget.dart';
 /// It manages the position, state, and rendering of showcase elements including
 /// tooltips, target highlighting, and floating action widgets.
 class ShowcaseController {
-  /// Creates a [ShowcaseController] with required parameters
-  ///
-  /// * [id] - Unique identifier for this showcase instance
-  /// * [key] - Global key associated with the showcase widget
-  /// * [getState] - Reference to the showcase state
-  /// * [showCaseView] - Reference to the parent showcase view
+  /// Creates a [ShowcaseController] under the given [ShowcaseView.scope].
   ShowcaseController.register({
     required this.id,
     required this.key,
     required this.getState,
-    required this.showCaseView,
+    required this.showcaseView,
   }) {
     ShowcaseService.instance.addController(
       controller: this,
       key: key,
       id: id,
-      scope: showCaseView.scope,
+      scope: showcaseView.scope,
     );
-    initRootWidget();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initRootWidget());
   }
 
-  /// Unique identifier for the showcase
+  /// Unique identifier for the showcase.
   final int id;
 
-  /// Global key associated with the showcase widget
+  /// Global key associated with the showcase widget.
   final GlobalKey key;
 
-  /// Configuration for the showcase
+  /// Configuration for the showcase.
   final ValueGetter<State<Showcase>> getState;
 
-  /// Reference to the parent showcase widget state
-  ShowcaseView showCaseView;
+  /// Reference to the parent showcase widget state.
+  ShowcaseView showcaseView;
 
-  /// Position information for the showcase target
+  /// Position information for the showcase target.
   TargetPositionService? position;
 
-  /// Data model for linked showcases
+  /// Data model for linked showcases.
   LinkedShowcaseDataModel? linkedShowcaseDataModel;
 
-  /// Optional function to reverse the animation
+  /// Optional function to reverse the animation.
   ValueGetter<Future<void>>? reverseAnimationCallback;
 
-  /// Size of the root widget
+  /// Size of the root widget.
   Size? rootWidgetSize;
 
-  /// Render box for the root widget
+  /// Render box for the root widget.
   RenderBox? rootRenderObject;
 
-  /// List of tooltip widgets to be displayed
-  List<Widget> getToolTipWidget = [];
+  /// List of tooltip widgets to be displayed.
+  List<Widget> tooltipWidgets = [];
 
-  /// Flag to track if scrolling is in progress
+  /// Flag to track if scrolling is in progress.
   bool isScrollRunning = false;
 
-  /// Blur effect value for the overlay background
+  /// Blur effect value for the overlay background.
   double blur = 0;
 
   /// Global floating action widget to be displayed
   FloatingActionWidget? globalFloatingActionWidget;
 
-  /// Returns the Showcase widget configuration
+  /// Returns the Showcase widget configuration.
   ///
   /// Provides access to all properties and settings of the current showcase
   /// widget.
@@ -111,62 +106,132 @@ class ShowcaseController {
   /// options.
   Showcase get config => getState().widget;
 
-  /// Returns the BuildContext for this showcase
+  /// Returns the BuildContext for this showcase.
   ///
-  /// Used for positioning calculations and widget rendering.
-  /// This context represents the location of the showcase target in the
-  /// widget tree.
+  /// Used for positioning calculations and widget rendering. This context
+  /// represents the location of the showcase target in the widget tree.
   BuildContext get _context => getState().context;
 
-  /// Checks if the showcase context is still valid
+  /// Checks if the showcase context is still valid.
   ///
   /// Returns true if the context is mounted (valid) and false otherwise.
   /// Used to prevent operations on widgets that have been removed from the
   /// tree.
   bool get _mounted => getState().mounted;
 
-  /// Initializes the root widget size and render object
+  /// Callback to start the showcase.
   ///
-  /// Must be called after the widget is mounted to ensure proper measurements.
-  /// Uses a post-frame callback to capture accurate widget dimensions.
-  void initRootWidget() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final rootWidget = _context.findRootAncestorStateOfType<State<Overlay>>();
-      rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
-      rootWidgetSize = rootWidget == null
-          ? MediaQuery.of(_context).size
-          : rootRenderObject?.size;
-    });
+  /// Initializes the showcase by calculating positions and preparing visual
+  /// elements.
+  /// This method is called when a showcase is about to be displayed to
+  /// ensure all positioning data is accurate and up-to-date.
+  ///
+  /// The method performs these key actions:
+  /// - Exits early if showcases are disabled in the parent widget
+  /// - Recalculates the root widget size to ensure accurate positioning
+  /// - Sets up any global floating action widgets
+  /// - Initializes position data if not already set
+  ///
+  /// This method is typically called internally by the showcase system but
+  /// can also be called manually to force a recalculation of showcase elements.
+  void startShowcase() {
+    if (!showcaseView.enableShowcase || !_mounted) return;
+
+    recalculateRootWidgetSize(_context);
+    globalFloatingActionWidget = showcaseView
+        .getFloatingActionWidget(config.showcaseKey)
+        ?.call(_context);
+    final size = rootWidgetSize ?? MediaQuery.sizeOf(_context);
+    position ??= TargetPositionService(
+      rootRenderObject: rootRenderObject,
+      screenSize: size,
+      renderBox: _context.findRenderObject() as RenderBox?,
+      padding: config.targetPadding,
+    );
   }
 
-  /// Updates root widget size and render object when the context changes
+  /// Used to scroll the target into view.
   ///
-  /// Called during build to ensure showcase positioning is correct.
-  /// Recalculates sizes, updates controller data, and triggers overlay updates.
-  /// mounted check ensure the context is still valid before proceeding.
-  /// * [context] The BuildContext of the showcase widget
+  /// Ensures the showcased widget is visible on screen by scrolling to it.
+  /// This method handles the complete scrolling process including:
+  ///
+  /// - Setting visual indicators while scrolling is in progress
+  /// - Updating the overlay to show loading state
+  /// - Performing the actual scrolling operation
+  /// - Refreshing the showcase display after scrolling completes
+  /// - Manages the [isScrollRunning] state to coordinate UI updates.
+  ///
+  /// Note: Multi Showcase will not be scrolled into view!
+  ///
+  /// Returns a Future that completes when scrolling is finished. If the widget
+  /// is unmounted during scrolling, the operation will be canceled safely.
+  Future<void> scrollIntoView() async {
+    if (!_mounted) {
+      assert(_mounted, 'Widget has been unmounted');
+      return;
+    }
+
+    isScrollRunning = true;
+    updateControllerData();
+    startShowcase();
+    OverlayManager.instance.update(
+      show: showcaseView.isShowcaseRunning,
+      scope: showcaseView.scope,
+    );
+    await Scrollable.ensureVisible(
+      _context,
+      duration: showcaseView.scrollDuration,
+      alignment: config.scrollAlignment,
+    );
+
+    isScrollRunning = false;
+    updateControllerData();
+    startShowcase();
+    OverlayManager.instance.update(
+      show: showcaseView.isShowcaseRunning,
+      scope: showcaseView.scope,
+    );
+  }
+
+  /// Handles tap on barrier area.
+  ///
+  /// Respects [Showcase.disableBarrierInteraction] and [ShowcaseView
+  /// .disableBarrierInteraction] settings.
+  void handleBarrierTap() {
+    config.onBarrierClick?.call();
+    if (showcaseView.disableBarrierInteraction ||
+        config.disableBarrierInteraction) return;
+    _nextIfAny();
+  }
+
+  /// Updates root widget size and render object when the context changes.
+  ///
+  /// - Called during build to ensure showcase positioning is correct.
+  /// - Recalculates sizes, updates controller data, and triggers overlay
+  /// updates.
+  ///
+  /// Parameter:
+  /// * [context] The BuildContext of the [Showcase] widget.
   void recalculateRootWidgetSize(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!context.mounted) return;
-      final rootWidget = context.findRootAncestorStateOfType<State<Overlay>>();
-      rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
-      rootWidgetSize = rootWidget == null
-          ? MediaQuery.of(context).size
-          : rootRenderObject?.size;
-      if (!showCaseView.enableShowcase) return;
+
+      _initRootWidget();
+      if (!showcaseView.enableShowcase) return;
+
       updateControllerData();
-      if (!showCaseView.isShowcaseRunning) return;
+      if (!showcaseView.isShowcaseRunning) return;
+
       OverlayManager.instance.update(
-        show: showCaseView.isShowcaseRunning,
-        scope: showCaseView.scope,
+        show: showcaseView.isShowcaseRunning,
+        scope: showcaseView.scope,
       );
     });
   }
 
-  /// Updates the controller's data when the showcase position or size changes
-  ///
-  /// Rebuilds the showcase overlay with updated positioning information.
-  /// Creates positioning data and updates the visual representation.
+  /// Updates the controller's data when the showcase position or size
+  /// changes. Rebuilds the showcase overlay with updated positioning
+  /// information.
   ///
   /// Another use of this is to update the controller data just before
   /// overlay is inserted so we can get the correct position. Which is need in
@@ -175,14 +240,13 @@ class ShowcaseController {
   void updateControllerData() {
     if (!_mounted) return;
     final renderBox = _context.findRenderObject() as RenderBox?;
-    final screenSize = MediaQuery.of(_context).size;
+    final screenSize = MediaQuery.sizeOf(_context);
     final size = rootWidgetSize ?? screenSize;
     final newPosition = TargetPositionService(
       rootRenderObject: rootRenderObject,
+      screenSize: size,
       renderBox: renderBox,
       padding: config.targetPadding,
-      screenWidth: size.width,
-      screenHeight: size.height,
     );
 
     position = newPosition;
@@ -194,7 +258,7 @@ class ShowcaseController {
       isCircle: config.targetShapeBorder is CircleBorder,
     );
 
-    buildOverlayOnTarget(
+    _buildOverlayOnTarget(
       offset: newPosition.getOffset(),
       size: rect.size,
       rectBound: rect,
@@ -202,27 +266,36 @@ class ShowcaseController {
     );
   }
 
-  /// Builds the overlay widgets for the target widget
+  /// Initializes the root widget size and render object.
+  ///
+  /// Must be called after the widget is mounted to ensure proper measurements.
+  void _initRootWidget() {
+    final rootWidget = _context.findRootAncestorStateOfType<State<Overlay>>();
+    rootRenderObject = rootWidget?.context.findRenderObject() as RenderBox?;
+    rootWidgetSize = rootWidget == null
+        ? MediaQuery.sizeOf(_context)
+        : rootRenderObject?.size;
+  }
+
+  /// Builds the overlay widgets for the target widget.
   ///
   /// Includes target highlight, tooltip, and optional floating action widget.
   /// Creates different widget sets based on whether scrolling is in progress.
   ///
-  /// * [offset] The position offset of the target
-  /// * [size] The size of the target
-  /// * [rectBound] The target's bounding rectangle
-  /// * [screenSize] The current screen size
-  void buildOverlayOnTarget({
+  /// * [offset] The position offset of the target.
+  /// * [size] The size of the target.
+  /// * [rectBound] The target's bounding rectangle.
+  /// * [screenSize] The current screen size.
+  void _buildOverlayOnTarget({
     required Offset offset,
     required Size size,
     required Rect rectBound,
     required Size screenSize,
   }) {
-    blur = kIsWeb ? 0.0 : max(0, config.blurValue ?? showCaseView.blurValue);
+    blur = kIsWeb ? 0.0 : max(0, config.blurValue ?? showcaseView.blurValue);
 
-    getToolTipWidget = isScrollRunning
-        ? [
-            Center(child: config.scrollLoadingWidget),
-          ]
+    tooltipWidgets = isScrollRunning
+        ? [Center(child: config.scrollLoadingWidget)]
         : [
             TargetWidget(
               offset: rectBound.topLeft,
@@ -254,9 +327,9 @@ class ShowcaseController {
                   : null,
               tooltipPadding: config.tooltipPadding,
               disableMovingAnimation: config.disableMovingAnimation ??
-                  showCaseView.disableMovingAnimation,
+                  showcaseView.disableMovingAnimation,
               disableScaleAnimation: (config.disableScaleAnimation ??
-                      showCaseView.disableScaleAnimation) ||
+                      showcaseView.disableScaleAnimation) ||
                   config.container != null,
               movingAnimationDuration: config.movingAnimationDuration,
               tooltipBorderRadius: config.tooltipBorderRadius,
@@ -276,128 +349,45 @@ class ShowcaseController {
               targetTooltipGap: config.targetTooltipGap,
               showcaseController: this,
             ),
-            if (_getFloatingActionWidget != null) _getFloatingActionWidget!,
+            if (_getFloatingActionWidget case final floatAction?) floatAction,
           ];
   }
 
-  /// Callback to start the showcase
-  ///
-  /// Initializes the showcase by calculating positions and preparing visual
-  /// elements.
-  /// This method is called when a showcase is about to be displayed to
-  /// ensure all positioning data is accurate and up-to-date.
-  ///
-  /// The method performs these key actions:
-  /// - Exits early if showcases are disabled in the parent widget
-  /// - Recalculates the root widget size to ensure accurate positioning
-  /// - Sets up any global floating action widgets
-  /// - Initializes position data if not already set
-  ///
-  /// This method is typically called internally by the showcase system but
-  /// can also be called manually to force a recalculation of showcase elements.
-  void startShowcase() {
-    if (!showCaseView.enableShowcase || !_mounted) return;
-
-    recalculateRootWidgetSize(_context);
-    globalFloatingActionWidget = showCaseView
-        .getFloatingActionWidget(config.showcaseKey)
-        ?.call(_context);
-    final size = rootWidgetSize ?? MediaQuery.of(_context).size;
-    position ??= TargetPositionService(
-      rootRenderObject: rootRenderObject,
-      renderBox: _context.findRenderObject() as RenderBox?,
-      padding: config.targetPadding,
-      screenWidth: size.width,
-      screenHeight: size.height,
-    );
-  }
-
-  /// Used to scroll the target into view
-  ///
-  /// Ensures the showcased widget is visible on screen by scrolling to it.
-  /// This method handles the complete scrolling process including:
-  ///
-  /// - Setting visual indicators while scrolling is in progress
-  /// - Updating the overlay to show loading state
-  /// - Performing the actual scrolling operation
-  /// - Refreshing the showcase display after scrolling completes
-  ///
-  /// The method shows a loading indicator during scrolling and updates
-  /// the showcase position after scrolling completes. It manages the
-  /// `isScrollRunning` state to coordinate UI updates.
-  ///
-  /// Note: Multi Showcase will not be scrolled into view
-  ///
-  /// Returns a Future that completes when scrolling is finished. If the widget
-  /// is unmounted during scrolling, the operation will be canceled safely.
-  Future<void> scrollIntoView() async {
-    if (!_mounted) {
-      assert(_mounted, 'Widget has been unmounted');
-      return;
-    }
-
-    isScrollRunning = true;
-    updateControllerData();
-    startShowcase();
-    OverlayManager.instance.update(
-      show: showCaseView.isShowcaseRunning,
-      scope: showCaseView.scope,
-    );
-    await Scrollable.ensureVisible(
-      _context,
-      duration: showCaseView.scrollDuration,
-      alignment: config.scrollAlignment,
-    );
-
-    isScrollRunning = false;
-    updateControllerData();
-    startShowcase();
-    OverlayManager.instance.update(
-      show: showCaseView.isShowcaseRunning,
-      scope: showCaseView.scope,
-    );
-  }
-
-  /// Moves to the next showcase if any are remaining
-  ///
-  /// Called when a showcase is completed.
-  /// Notifies the showcase widget state to advance to the next showcase.
+  /// Moves to the next showcase if any are remaining. Called when a showcase
+  /// step is completed. Notifies the showcase widget state to advance to the
+  /// next showcase.
   void _nextIfAny() {
-    if (showCaseView.isShowCaseCompleted) return;
-    showCaseView.completed(config.showcaseKey);
+    if (showcaseView.isShowCaseCompleted) return;
+    showcaseView.completed(config.showcaseKey);
   }
 
-  /// Handles target tap behavior based on configuration
+  /// Handles target tap behavior based on configuration.
   ///
-  /// Either dismisses the showcase or moves to the next step based on
-  /// configuration.
   /// If [Showcase.disposeOnTap] is true, dismisses the entire showcase,
   /// otherwise advances.
   void _getOnTargetTap() {
     if (config.disposeOnTap ?? false) {
-      showCaseView.dismiss();
+      showcaseView.dismiss();
       assert(
         config.onTargetClick != null,
         'onTargetClick callback should be provided when disposeOnTap is true',
       );
-      config.onTargetClick!();
+      config.onTargetClick?.call();
     } else {
       (config.onTargetClick ?? _nextIfAny).call();
     }
   }
 
-  /// Handles tooltip tap behavior based on configuration
+  /// Handles tooltip tap behavior based on configuration.
   ///
-  /// Dismisses the showcase if configured to do so, and executes any
-  /// configured callback.
   /// If [Showcase.disposeOnTap] is true, dismisses the entire showcase before
   /// executing callback.
   void _getOnTooltipTap() {
-    if (config.disposeOnTap ?? false) showCaseView.dismiss();
+    if (config.disposeOnTap ?? false) showcaseView.dismiss();
     config.onToolTipClick?.call();
   }
 
-  /// Retrieves tooltip action widgets based on configuration
+  /// Retrieves tooltip action widgets based on configuration.
   ///
   /// Filters actions that should be hidden for the current showcase.
   /// Assembles action widgets with appropriate spacing and configuration.
@@ -407,8 +397,10 @@ class ShowcaseController {
     final doesHaveLocalActions = config.tooltipActions != null;
     final actionData = doesHaveLocalActions
         ? config.tooltipActions!
-        : showCaseView.globalTooltipActions ?? [];
+        : showcaseView.globalTooltipActions ?? [];
     final actionDataLength = actionData.length;
+    final lastAction = actionData.last;
+    final actionGap = _getTooltipActionConfig().actionGap;
 
     return [
       for (var i = 0; i < actionDataLength; i++)
@@ -418,13 +410,11 @@ class ShowcaseController {
                 .contains(config.showcaseKey))
           Padding(
             padding: EdgeInsetsDirectional.only(
-              end: actionData[i] == actionData.last
-                  ? 0
-                  : _getTooltipActionConfig().actionGap,
+              end: actionData[i] == lastAction ? 0 : actionGap,
             ),
             child: TooltipActionButtonWidget(
               config: actionData[i],
-              showCaseState: showCaseView,
+              showCaseState: showcaseView,
             ),
           ),
     ];
@@ -438,30 +428,13 @@ class ShowcaseController {
   /// @return The tooltip action configuration to use
   TooltipActionConfig _getTooltipActionConfig() {
     return config.tooltipActionConfig ??
-        showCaseView.globalTooltipActionConfig ??
+        showcaseView.globalTooltipActionConfig ??
         const TooltipActionConfig();
   }
 
-  /// Handles tap on barrier area
-  ///
-  /// Respects [Showcase.disableBarrierInteraction] settings from both global
-  /// and local config.
-  void handleBarrierTap() {
-    config.onBarrierClick?.call();
-    if (showCaseView.disableBarrierInteraction ||
-        config.disableBarrierInteraction) {
-      return;
-    }
-    _nextIfAny();
-  }
-
-  /// Retrieves the floating action widget if available
-  ///
-  /// Combines local widget with global floating action widget.
-  /// Prefers local configuration over global when available.
-  ///
-  /// @return The floating action widget or null if none is configured
-  Widget? get _getFloatingActionWidget =>
+  /// Retrieves the floating action widget if available. Prefers local
+  /// configuration over global when available.
+  FloatingActionWidget? get _getFloatingActionWidget =>
       config.floatingActionWidget ?? globalFloatingActionWidget;
 
   @override

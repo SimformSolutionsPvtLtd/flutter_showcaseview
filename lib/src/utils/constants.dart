@@ -48,13 +48,13 @@ class Constants {
   /// in bottom
   static const double extraAlignmentOffset = 5;
 
-  static const Radius defaultTargetRadius = Radius.circular(3.0);
+  static const Radius defaultTargetRadius = Radius.circular(3);
 
   static const ShapeBorder defaultTargetShapeBorder = RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(8)),
   );
 
-  static const double cupertinoActivityIndicatorRadius = 12.0;
+  static const double cupertinoActivityIndicatorRadius = 12;
   static const Widget defaultProgressIndicator =
       ShowcaseCircularProgressIndicator();
 

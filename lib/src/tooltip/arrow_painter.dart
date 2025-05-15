@@ -22,11 +22,6 @@
 part of 'tooltip.dart';
 
 class _Arrow extends CustomPainter {
-  final Color strokeColor;
-  final PaintingStyle paintingStyle;
-  final double strokeWidth;
-  final Paint _paint;
-
   _Arrow({
     this.strokeColor = Colors.black,
     this.strokeWidth = Constants.arrowStrokeWidth,
@@ -35,6 +30,11 @@ class _Arrow extends CustomPainter {
           ..color = strokeColor
           ..strokeWidth = strokeWidth
           ..style = paintingStyle;
+
+  final Color strokeColor;
+  final PaintingStyle paintingStyle;
+  final double strokeWidth;
+  final Paint _paint;
 
   @override
   void paint(Canvas canvas, Size size) {

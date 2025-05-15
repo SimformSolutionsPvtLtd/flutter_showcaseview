@@ -25,11 +25,6 @@ class ToolTipWidget extends StatefulWidget {
   /// A tooltip widget that is displayed alongside a target widget during a
   /// showcase.
   ///
-  /// This widget is responsible for rendering the tooltip content, managing
-  /// tooltip animations, and handling user interactions with the tooltip. It
-  /// works in conjunction with the [ShowcaseController] to position itself
-  /// correctly relative to the target widget.
-  ///
   /// The tooltip can display:
   /// - Title and description text with customizable styling.
   /// - A custom container widget instead of the default tooltip layout.
@@ -150,16 +145,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     } else {
       _scaleAnimationController
         ..addStatusListener((scaleAnimationStatus) {
-          if (scaleAnimationStatus != AnimationStatus.completed) {
-            return;
-          }
+          if (scaleAnimationStatus != AnimationStatus.completed) return;
           movingAnimationListener();
         })
         ..forward();
     }
-    if (!widget.disableMovingAnimation) {
-      _movingAnimationController.forward();
-    }
+    if (!widget.disableMovingAnimation) _movingAnimationController.forward();
     widget.showcaseController.reverseAnimationCallback =
         widget.disableScaleAnimation ? null : _scaleAnimationController.reverse;
   }
@@ -170,9 +161,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final box = widget.showcaseController.position?.renderBox;
     // This is a workaround to avoid the error when the widget is not mounted
     // but won't happen in general cases
-    if (box == null || !box.attached) {
-      return const SizedBox.shrink();
-    }
+    if (box == null || !box.attached) return const SizedBox.shrink();
+
     final targetPosition = box.localToGlobal(Offset.zero);
     final targetSize = box.size;
 
@@ -183,9 +173,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                 : SystemMouseCursors.click,
             child: GestureDetector(
               onTap: widget.onTooltipTap,
-              child: Center(
-                child: widget.container ?? const SizedBox.shrink(),
-              ),
+              child: Center(child: widget.container ?? const SizedBox.shrink()),
             ),
           )
         : ClipRRect(
@@ -198,15 +186,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
               child: GestureDetector(
                 onTap: widget.onTooltipTap,
                 child: Container(
-                  padding: widget.tooltipPadding?.copyWith(
-                    left: 0,
-                    right: 0,
-                  ),
+                  padding: widget.tooltipPadding?.copyWith(left: 0, right: 0),
                   color: widget.tooltipBackgroundColor,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      if (widget.title != null)
+                      if (widget.title case final title?)
                         DefaultTooltipTextWidget(
                           padding: (widget.titlePadding ?? EdgeInsets.zero).add(
                             EdgeInsets.only(
@@ -214,19 +199,17 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                               right: widget.tooltipPadding?.right ?? 0,
                             ),
                           ),
-                          text: widget.title!,
+                          text: title,
                           textAlign: widget.titleTextAlign,
                           alignment: widget.titleAlignment,
                           textColor: widget.textColor,
                           textDirection: widget.titleTextDirection,
                           textStyle: widget.titleTextStyle ??
-                              Theme.of(context).textTheme.titleLarge!.merge(
-                                    TextStyle(
-                                      color: widget.textColor,
-                                    ),
+                              Theme.of(context).textTheme.titleLarge?.merge(
+                                    TextStyle(color: widget.textColor),
                                   ),
                         ),
-                      if (widget.description != null)
+                      if (widget.description case final desc?)
                         DefaultTooltipTextWidget(
                           padding:
                               (widget.descriptionPadding ?? EdgeInsets.zero)
@@ -236,16 +219,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                               right: widget.tooltipPadding?.right ?? 0,
                             ),
                           ),
-                          text: widget.description!,
+                          text: desc,
                           textAlign: widget.descriptionTextAlign,
                           alignment: widget.descriptionAlignment,
                           textColor: widget.textColor,
                           textDirection: widget.descriptionTextDirection,
                           textStyle: widget.descTextStyle ??
-                              Theme.of(context).textTheme.titleSmall!.merge(
-                                    TextStyle(
-                                      color: widget.textColor,
-                                    ),
+                              Theme.of(context).textTheme.titleSmall?.merge(
+                                    TextStyle(color: widget.textColor),
                                   ),
                         ),
                       if (widget.tooltipActions.isNotEmpty &&
@@ -279,7 +260,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         targetSize: targetSize,
         position: widget.tooltipPosition,
         screenSize: widget.showcaseController.rootWidgetSize ??
-            MediaQuery.of(context).size,
+            MediaQuery.sizeOf(context),
         hasArrow: widget.showArrow,
         targetPadding: widget.targetPadding,
         scaleAlignment: widget.scaleAnimationAlignment,
@@ -316,13 +297,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             _TooltipLayoutId(
               id: TooltipLayoutSlot.arrow,
               child: CustomPaint(
-                painter: _Arrow(
-                  strokeColor: widget.tooltipBackgroundColor!,
-                ),
-                size: const Size(
-                  Constants.arrowWidth,
-                  Constants.arrowHeight,
-                ),
+                painter: _Arrow(strokeColor: widget.tooltipBackgroundColor!),
+                size: const Size(Constants.arrowWidth, Constants.arrowHeight),
               ),
             ),
         ],

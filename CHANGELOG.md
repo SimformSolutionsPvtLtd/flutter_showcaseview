@@ -37,6 +37,8 @@
   `targetTooltipGap` to manage space between tooltip and target widget
 - Improvement [#530](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/530) - 
   Upgraded minimum dart sdk version to 3.0.0 and utilised Dart 3 features accordingly.
+- Deprecate [#531](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/531) - 
+  Update deprecated `ShowCaseWidget` removal version. 
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

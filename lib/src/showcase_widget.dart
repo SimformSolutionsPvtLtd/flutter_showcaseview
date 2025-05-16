@@ -74,11 +74,11 @@ class ShowCaseWidget extends StatefulWidget {
   /// - `hideFloatingActionWidgetForShowcase`: Hides a
   /// [globalFloatingActionWidget] for the provided showcase keys.
   @Deprecated(
-    'This will be removed in v5.0.0. '
+    'This will be removed in v6.0.0. '
     'Please use `ShowcaseView.register()` instead',
   )
   const ShowCaseWidget({
-    @Deprecated('This will be removed in v5.0.0.') required this.builder,
+    @Deprecated('This will be removed in v6.0.0.') required this.builder,
     this.onFinish,
     this.onStart,
     this.onComplete,
@@ -100,7 +100,7 @@ class ShowCaseWidget extends StatefulWidget {
     super.key,
   });
 
-  @Deprecated('This will be removed in v5.0.0.')
+  @Deprecated('This will be removed in v6.0.0.')
   final WidgetBuilder builder;
 
   /// Triggered when all the showcases are completed.
@@ -182,7 +182,7 @@ class ShowCaseWidget extends StatefulWidget {
   final List<GlobalKey> hideFloatingActionWidgetForShowcase;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().getCurrentActiveShowcaseKey` instead',
   )
   static GlobalKey? activeTargetWidget(BuildContext context) => context
@@ -190,7 +190,7 @@ class ShowCaseWidget extends StatefulWidget {
       ?.getCurrentActiveShowcaseKey;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get()` instead',
   )
   static ShowCaseWidgetState of(BuildContext context) {
@@ -256,7 +256,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   @override
   Widget build(BuildContext context) => Builder(
-        // Will be removed in v5.0.0.
+        // Will be removed in v6.0.0.
         //ignore: deprecated_member_use_from_same_package
         builder: widget.builder,
       );
@@ -276,7 +276,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   ///
   /// Refer this issue https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/378
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().startShowCase` instead',
   )
   void startShowCase(
@@ -289,7 +289,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// Completes showcase of given key and starts next one
   /// otherwise will finish the entire showcase view
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().completed` instead',
   )
   void completed(GlobalKey? key) => _showcaseView.completed(key);
@@ -301,7 +301,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// move to next showcase. This is default behaviour for
   /// [TooltipDefaultActionType.next]
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().next` instead',
   )
   void next({bool force = false}) => _showcaseView.next(force: force);
@@ -309,14 +309,14 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// Completes current active showcase and starts previous one
   /// otherwise will finish the entire showcase view
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().previous` instead',
   )
   void previous() => _showcaseView.previous();
 
   /// Dismiss entire showcase view
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().dismiss` instead',
   )
   void dismiss() => _showcaseView.dismiss();
@@ -324,7 +324,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// Disables the [ShowCaseWidget.globalFloatingActionWidget] for the
   /// provided keys.
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().hideFloatingActionWidgetForKeys` instead',
   )
   void hideFloatingActionWidgetForKeys(List<GlobalKey> updatedList) {
@@ -333,86 +333,86 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   // Forward property accessors to ShowcaseManager
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().autoPlay` instead',
   )
   bool get autoPlay => _showcaseView.autoPlay;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().disableMovingAnimation` instead',
   )
   bool get disableMovingAnimation => _showcaseView.disableMovingAnimation;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().disableScaleAnimation` instead',
   )
   bool get disableScaleAnimation => _showcaseView.disableScaleAnimation;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().autoPlayDelay` instead',
   )
   Duration get autoPlayDelay => _showcaseView.autoPlayDelay;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().enableAutoPlayLock` instead',
   )
   bool get enableAutoPlayLock => _showcaseView.enableAutoPlayLock;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().enableAutoScroll` instead',
   )
   bool get enableAutoScroll => _showcaseView.enableAutoScroll;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().disableBarrierInteraction` instead',
   )
   bool get disableBarrierInteraction => _showcaseView.disableBarrierInteraction;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().enableShowcase` instead',
   )
   bool get enableShowcase => _showcaseView.enableShowcase;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().isShowCaseCompleted` instead',
   )
   bool get isShowCaseCompleted => _showcaseView.isShowCaseCompleted;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().scrollDuration` instead',
   )
   Duration get scrollDuration => _showcaseView.scrollDuration;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().blurValue` instead',
   )
   double get blurValue => _showcaseView.blurValue;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().getCurrentActiveShowcaseKey` instead',
   )
   GlobalKey? get getCurrentActiveShowcaseKey =>
       _showcaseView.getActiveShowcaseKey;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().isShowcaseRunning` instead',
   )
   bool get isShowcaseRunning => _showcaseView.isShowcaseRunning;
 
   @Deprecated(
-    'This will be removed in v5.0.0. please use '
+    'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().hiddenFloatingActionKeys` instead',
   )
   List<GlobalKey> get hiddenFloatingActionKeys =>

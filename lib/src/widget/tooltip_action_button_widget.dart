@@ -40,11 +40,10 @@ class TooltipActionButtonWidget extends StatelessWidget {
     super.key,
   });
 
-  /// This will provide the configuration for the action buttons
+  /// This will provide the configuration for the action buttons.
   final TooltipActionButton config;
 
-  /// This is used for [TooltipActionButton] to close, next and previous
-  /// showcase navigation
+  /// This is used for close, next and previous showcase navigation.
   final ShowcaseView showCaseState;
 
   @override

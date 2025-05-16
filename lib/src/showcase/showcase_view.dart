@@ -22,11 +22,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:showcaseview/src/utils/enum.dart';
 
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
 import '../utils/constants.dart';
+import '../utils/enum.dart';
 import '../utils/overlay_manager.dart';
 import '../widget/floating_action_widget.dart';
 import 'showcase_controller.dart';
@@ -61,20 +61,20 @@ class ShowcaseView {
   /// options like auto-play, animation, and many more.
   ShowcaseView.register({
     this.scope = Constants.defaultScope,
-    this.onFinish,
     this.onStart,
+    this.onFinish,
     this.onComplete,
     this.onDismiss,
+    this.enableShowcase = true,
     this.autoPlay = false,
     this.autoPlayDelay = Constants.defaultAutoPlayDelay,
     this.enableAutoPlayLock = false,
-    this.blurValue = 0,
-    this.scrollDuration = Constants.defaultScrollDuration,
-    this.disableMovingAnimation = false,
-    this.disableScaleAnimation = false,
     this.enableAutoScroll = false,
+    this.scrollDuration = Constants.defaultScrollDuration,
     this.disableBarrierInteraction = false,
-    this.enableShowcase = true,
+    this.disableScaleAnimation = false,
+    this.disableMovingAnimation = false,
+    this.blurValue = 0,
     this.globalTooltipActionConfig,
     this.globalTooltipActions,
     this.globalFloatingActionWidget,

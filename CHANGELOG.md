@@ -1,4 +1,4 @@
-## [5.0.0] - (UnRelease)
+## [5.0.0]
 - Feature [#500](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/500) -
   Added `onDismiss` callback in `ShowCaseWidget` which will trigger whenever `onDismiss` method is
   called.
@@ -8,16 +8,16 @@
 - Fixed [#506](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/506) - Timer
   was not canceling when tapped on `TooltipActionButton` which may cause issue when `autoPlay` is ON.
 - Improvement [#511](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/511) -
-  Improved Tooltip widget
+  Improved Tooltip widget.
 - Feature [#54](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/54) - Added
   Feasibility to position tooltip left and right to the target widget.
 - Feature [#113](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/113) - Added
-  multiple showcase feature
+  multiple showcase feature.
 - Improvement [#514](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/514) -
   Improved showcase widget and showcase with widget, Removed inherited widget, keys and setStates,
-  Added controller to manage showcase
+  Added controller to manage showcase.
 - CHORE [#514](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/514) -
-  Bumped dart minimum sdk to 2.19.6
+  Bumped dart minimum sdk to 2.19.6.
 - Fixed [#515](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/515) - Added
   missing assertions for `Showcase.withWidget()`.
 - Feature [#518](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/518) - created
@@ -28,19 +28,21 @@
   widget and added `ShowcaseView` class to handle showcase widget functionality independently
   without context.
 - Format [#528](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/528) - Formatted
-  project structure
+  project structure.
 - Fixed [#526](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/526) - Fixed
   screen edge assertions.
 - Feature [#521](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/521) - Added
-  `toolTipMargin` support for `Showcase.withWidget`
+  `toolTipMargin` support for `Showcase.withWidget`.
 - Feature [#520](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/520) - Added
-  `targetTooltipGap` to manage space between tooltip and target widget
+  `targetTooltipGap` to manage space between tooltip and target widget.
 - Improvement [#530](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/530) - 
   Upgraded minimum dart sdk version to 3.0.0 and utilised Dart 3 features accordingly.
 - Deprecate [#531](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/531) - 
   Update deprecated `ShowCaseWidget` removal version. 
 - Improvement [#505](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/505) -
   Fixed example app to run in flutter version `v3.32.5`.
+- Feature [#538](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/538) - Add 
+  autoPlayDelay to Showcase widget.
 - Breaking [#541](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/541) - 
   Removed height and width from `Showcase.withWidget` constructor, as it is not required anymore.
 - Improvement [#555](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/555) 
@@ -192,20 +194,26 @@
 
 ## [0.1.5]
 
-* Refactor usage of deprecated methods
-* Add support for `disableAnimation` option.
+- Refactor usage of deprecated methods
+- Add support for `disableAnimation` option.
 
-## [0.1.4] - Added onFinish method [#17](https://github.com/simformsolutions/flutter_showcaseview/issues/17).
+## [0.1.4]
 
-## [0.1.3] - Added feature
+- Added onFinish method [#17](https://github.com/simformsolutions/flutter_showcaseview/issues/17).
 
-Updated syntax to pass new context to ShowCaseWidget
-Added onTargetTap callback feature [#10](https://github.com/simformsolutions/flutter_showcaseview/issues/10).
+## [0.1.3]
 
-## [0.1.2] - Fixed issue [#6](https://github.com/simformsolutions/flutter_showcaseview/issues/6).
+- Feature [#10](https://github.com/simformsolutions/flutter_showcaseview/issues/10) - Updated syntax to pass new context to ShowCaseWidget
+Added onTargetTap callback feature.
 
-## [0.1.1] - Fixed maintenance issues.
+## [0.1.2] 
 
-## [0.1.0] - Initial release on 22nd Augest, 2019.
+- Fixed issue [#6](https://github.com/simformsolutions/flutter_showcaseview/issues/6).
 
-* First release.
+## [0.1.1]
+
+- Fixed maintenance issues.
+
+## [0.1.0]
+
+- Initial release on 22nd August, 2019.

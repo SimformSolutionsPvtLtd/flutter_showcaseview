@@ -399,7 +399,7 @@ class ShowcaseController {
         ? config.tooltipActions!
         : showcaseView.globalTooltipActions ?? [];
     final actionDataLength = actionData.length;
-    final lastAction = actionData.last;
+    final lastAction = actionData.lastOrNull;
     final actionGap = _getTooltipActionConfig().actionGap;
 
     return [

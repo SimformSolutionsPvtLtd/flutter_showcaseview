@@ -22,11 +22,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:showcaseview/src/utils/enum.dart';
 
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
 import '../utils/constants.dart';
+import '../utils/enum.dart';
 import '../utils/overlay_manager.dart';
 import '../widget/floating_action_widget.dart';
 import 'showcase_controller.dart';

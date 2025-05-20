@@ -120,7 +120,8 @@ class _MailPageState extends State<MailPage> {
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => ShowcaseView.get().startShowCase(
-          [_firstShowcaseWidget, _two, _three, _four, _lastShowcaseWidget]),
+        [_firstShowcaseWidget, _two, _three, _four, _lastShowcaseWidget],
+      ),
     );
     mails = [
       Mail(
@@ -192,6 +193,8 @@ class _MailPageState extends State<MailPage> {
   @override
   void dispose() {
     scrollController.dispose();
+    // Unregister the showcase view when the widget is disposed
+    ShowcaseView.get().unregister();
     super.dispose();
   }
 

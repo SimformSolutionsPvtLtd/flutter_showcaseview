@@ -54,8 +54,8 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
         _scaleAnimation = scaleAnimation,
         _moveAnimation = moveAnimation {
     // Add listeners to trigger repaint when animations change.
-    _scaleAnimation.addListener(_effectivelyMarkNeedsPaint);
-    _moveAnimation.addListener(_effectivelyMarkNeedsPaint);
+    _scaleAnimation.addListener(_throttledMarkNeedsPaint);
+    _moveAnimation.addListener(_throttledMarkNeedsPaint);
   }
 
   AnimationController _scaleController;
@@ -66,6 +66,16 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
 
   /// This will stop extra repaint when paint function is already in progress
   bool _isPreviousRepaintInProgress = false;
+
+  /// Cache for animation values to prevent unnecessary repaints
+  double? _lastScaleValue;
+  double? _lastMoveValue;
+
+  /// Last time a repaint was requested (used for throttling)
+  int _lastRepaintTime = 0;
+
+  /// Minimum time between repaints in milliseconds (throttle to reduce load)
+  static const _repaintThrottleMs = 8; // ~120fps
 
   /// Updates the scale animation controller.
   set scaleController(AnimationController value) {
@@ -82,37 +92,57 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
   /// Updates the scale animation and refreshes listeners.
   set scaleAnimation(Animation<double> value) {
     if (_scaleAnimation == value) return;
-    _scaleAnimation.removeListener(_effectivelyMarkNeedsPaint);
+    _scaleAnimation.removeListener(_throttledMarkNeedsPaint);
     _scaleAnimation = value;
-    _scaleAnimation.addListener(_effectivelyMarkNeedsPaint);
+    _scaleAnimation.addListener(_throttledMarkNeedsPaint);
     markNeedsPaint();
   }
 
   /// Updates the move animation and refreshes listeners.
   set moveAnimation(Animation<double> value) {
     if (_moveAnimation == value) return;
-    _moveAnimation.removeListener(_effectivelyMarkNeedsPaint);
+    _moveAnimation.removeListener(_throttledMarkNeedsPaint);
     _moveAnimation = value;
-    _moveAnimation.addListener(_effectivelyMarkNeedsPaint);
-    _effectivelyMarkNeedsPaint();
+    _moveAnimation.addListener(_throttledMarkNeedsPaint);
+    _throttledMarkNeedsPaint();
   }
 
-  void _effectivelyMarkNeedsPaint() {
+  /// Throttled version of markNeedsPaint to avoid excessive repaints
+  void _throttledMarkNeedsPaint() {
+    // Skip if a repaint is already in progress
     if (_isPreviousRepaintInProgress) return;
-    _isPreviousRepaintInProgress = true;
-    markNeedsPaint();
-    _isPreviousRepaintInProgress = false;
+
+    final currentTime = DateTime.now().millisecondsSinceEpoch;
+    final timeSinceLastRepaint = currentTime - _lastRepaintTime;
+
+    // Check if animation values have actually changed
+    final currentScaleValue = _scaleAnimation.value;
+    final currentMoveValue = _moveAnimation.value;
+
+    // Only repaint if values changed and sufficient time has passed
+    if ((currentScaleValue != _lastScaleValue ||
+            currentMoveValue != _lastMoveValue) &&
+        timeSinceLastRepaint >= _repaintThrottleMs) {
+      _lastScaleValue = currentScaleValue;
+      _lastMoveValue = currentMoveValue;
+      _lastRepaintTime = currentTime;
+      markNeedsPaint();
+    }
   }
 
   /// Sets the scale alignment and marks the widget for repaint.
   void setScaleAlignment(Alignment alignment) {
     if (scaleAlignment == alignment) return;
     scaleAlignment = alignment;
-    _effectivelyMarkNeedsPaint();
+    _throttledMarkNeedsPaint();
   }
 
   @override
+  bool get isRepaintBoundary => true;
+
+  @override
   void paint(PaintingContext context, Offset offset) {
+    _isPreviousRepaintInProgress = true;
     var child = firstChild;
 
     while (child != null) {

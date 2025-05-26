@@ -53,6 +53,13 @@ class TargetPositionService {
 
   Offset? _boxOffset;
 
+  // Caching fields to avoid redundant calculations
+  Rect? _cachedRect;
+  Rect? _cachedRectForOverlay;
+
+  // Flag to track if dimensions have changed and cache needs to be invalidated
+  bool _dimensionsChanged = true;
+
   /// Calculates the rectangle representing the target widget with padding
   ///
   /// This method returns a rectangle that represents the target widget's bounds
@@ -62,17 +69,24 @@ class TargetPositionService {
     if (_checkBoxOrOffsetIsNull(checkDy: true, checkDx: true)) {
       return Rect.zero;
     }
+
+    // Use cached value if available and dimensions haven't changed
+    if (_cachedRect != null && !_dimensionsChanged) {
+      return _cachedRect!;
+    }
+
     final topLeft = renderBox!.size.topLeft(_boxOffset!);
     final bottomRight = renderBox!.size.bottomRight(_boxOffset!);
     final leftDx = topLeft.dx - padding.left;
     final leftDy = topLeft.dy - padding.top;
-    final rect = Rect.fromLTRB(
+
+    _dimensionsChanged = false;
+    return _cachedRect = Rect.fromLTRB(
       leftDx.clamp(0, double.maxFinite),
       leftDy.clamp(0, double.maxFinite),
       min(bottomRight.dx + padding.right, screenSize.width),
       min(bottomRight.dy + padding.bottom, screenSize.height),
     );
-    return rect;
   }
 
   /// Gets the raw rectangle bounds of the target widget without clamping
@@ -85,9 +99,17 @@ class TargetPositionService {
     if (_checkBoxOrOffsetIsNull(checkDy: true, checkDx: true)) {
       return Rect.zero;
     }
+
+    // Use cached value if available and dimensions haven't changed
+    if (_cachedRectForOverlay != null && !_dimensionsChanged) {
+      return _cachedRectForOverlay!;
+    }
+
     final topLeft = renderBox!.size.topLeft(_boxOffset!);
     final bottomRight = renderBox!.size.bottomRight(_boxOffset!);
-    return Rect.fromLTRB(
+
+    _dimensionsChanged = false;
+    return _cachedRectForOverlay = Rect.fromLTRB(
       topLeft.dx,
       topLeft.dy,
       bottomRight.dx,

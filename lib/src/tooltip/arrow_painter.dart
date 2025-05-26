@@ -26,33 +26,33 @@ class _Arrow extends CustomPainter {
     this.strokeColor = Colors.black,
     this.strokeWidth = Constants.arrowStrokeWidth,
     this.paintingStyle = PaintingStyle.fill,
-  }) : _paint = Paint()
+  })  : _paint = Paint()
           ..color = strokeColor
           ..strokeWidth = strokeWidth
-          ..style = paintingStyle;
+          ..style = paintingStyle,
+        // Cache the triangle path since it never changes
+        _trianglePath = Path()
+          ..moveTo(0, Constants.arrowHeight)
+          ..lineTo(Constants.arrowWidth * 0.5, 0)
+          ..lineTo(Constants.arrowWidth, Constants.arrowHeight)
+          ..lineTo(0, Constants.arrowHeight);
 
   final Color strokeColor;
   final PaintingStyle paintingStyle;
   final double strokeWidth;
   final Paint _paint;
+  final Path _trianglePath;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawPath(_getTrianglePath(), _paint);
-  }
+  void paint(Canvas canvas, Size size) => canvas.drawPath(
+        _trianglePath,
+        _paint,
+      );
 
   @override
   bool shouldRepaint(covariant _Arrow oldDelegate) {
     return oldDelegate.strokeColor != strokeColor ||
         oldDelegate.paintingStyle != paintingStyle ||
         oldDelegate.strokeWidth != strokeWidth;
-  }
-
-  Path _getTrianglePath() {
-    return Path()
-      ..moveTo(0, Constants.arrowHeight)
-      ..lineTo(Constants.arrowWidth * 0.5, 0)
-      ..lineTo(Constants.arrowWidth, Constants.arrowHeight)
-      ..lineTo(0, Constants.arrowHeight);
   }
 }

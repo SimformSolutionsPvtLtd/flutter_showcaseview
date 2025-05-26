@@ -129,7 +129,7 @@ class OverlayManager {
     if (_isShowing && !_shouldShow) {
       _hide();
     } else if (!_isShowing && _shouldShow) {
-      _show((_) => _getBuilder());
+      _show(_getBuilder);
     }
   }
 
@@ -137,7 +137,11 @@ class OverlayManager {
   ///
   /// Builds a stack with background and tooltip widgets based on active
   /// controllers.
-  Widget _getBuilder() {
+  Widget _getBuilder(BuildContext context) {
+    if (!context.mounted || !(_overlayEntry?.mounted ?? true)) {
+      return const SizedBox.shrink();
+    }
+
     final showcaseView = ShowcaseView.getNamed(_currentScope);
     final controllers = ShowcaseService.instance
             .getControllers(
@@ -171,15 +175,14 @@ class OverlayManager {
             clipper: ShapeClipper(
               linkedObjectData: _getLinkedShowcasesData(controllers),
             ),
-            child: firstController.blur == 0
-                ? backgroundContainer
-                : BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: firstController.blur,
-                      sigmaY: firstController.blur,
-                    ),
-                    child: backgroundContainer,
-                  ),
+            child: ImageFiltered(
+              enabled: firstController.blur > 0.2,
+              imageFilter: ImageFilter.blur(
+                sigmaX: firstController.blur,
+                sigmaY: firstController.blur,
+              ),
+              child: backgroundContainer,
+            ),
           ),
         ),
         ...controllers.expand((object) => object.tooltipWidgets),

@@ -24,10 +24,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../models/linked_showcase_data.dart';
+import '../../showcaseview.dart';
+import '../models/linked_showcase_data_model.dart';
 import '../showcase/showcase_controller.dart';
 import '../showcase/showcase_service.dart';
-import '../showcase/showcase_view.dart';
 import 'extensions.dart';
 import 'shape_clipper.dart';
 
@@ -129,7 +129,7 @@ class OverlayManager {
     if (_isShowing && !_shouldShow) {
       _hide();
     } else if (!_isShowing && _shouldShow) {
-      _show((_) => _getBuilder());
+      _show(_getBuilder);
     }
   }
 
@@ -137,7 +137,11 @@ class OverlayManager {
   ///
   /// Builds a stack with background and tooltip widgets based on active
   /// controllers.
-  Widget _getBuilder() {
+  Widget _getBuilder(BuildContext context) {
+    if (!context.mounted || !(_overlayEntry?.mounted ?? true)) {
+      return const SizedBox.shrink();
+    }
+
     final showcaseView = ShowcaseView.getNamed(_currentScope);
     final controllers = ShowcaseService.instance
             .getControllers(
@@ -149,13 +153,21 @@ class OverlayManager {
 
     if (controllers.isEmpty) return const SizedBox.shrink();
 
+    final currentShowcaseKey = showcaseView.getActiveShowcaseKey;
+
+    late final ShowcaseController firstController;
+    late final Showcase firstShowcaseConfig;
     final controllerLength = controllers.length;
     for (var i = 0; i < controllerLength; i++) {
-      controllers[i].updateControllerData();
+      final controller = controllers[i];
+      if (i == 0) {
+        firstController = controller;
+        firstShowcaseConfig = firstController.config;
+      }
+      if (controller.key == currentShowcaseKey) {
+        controller.updateControllerData();
+      }
     }
-
-    final firstController = controllers.first;
-    final firstShowcaseConfig = firstController.config;
 
     final backgroundContainer = ColoredBox(
       color: firstShowcaseConfig.overlayColor
@@ -171,15 +183,14 @@ class OverlayManager {
             clipper: ShapeClipper(
               linkedObjectData: _getLinkedShowcasesData(controllers),
             ),
-            child: firstController.blur == 0
-                ? backgroundContainer
-                : BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: firstController.blur,
-                      sigmaY: firstController.blur,
-                    ),
-                    child: backgroundContainer,
-                  ),
+            child: ImageFiltered(
+              enabled: firstController.blur > 0.2,
+              imageFilter: ImageFilter.blur(
+                sigmaX: firstController.blur,
+                sigmaY: firstController.blur,
+              ),
+              child: backgroundContainer,
+            ),
           ),
         ),
         ...controllers.expand((object) => object.tooltipWidgets),

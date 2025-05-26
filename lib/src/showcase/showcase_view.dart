@@ -21,6 +21,7 @@
  */
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../models/tooltip_action_button.dart';
@@ -320,10 +321,7 @@ class ShowcaseView {
       _ids = widgetIds;
       _activeWidgetId = 0;
       _onStart();
-      OverlayManager.instance.update(
-        show: isShowcaseRunning,
-        scope: scope,
-      );
+      // OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
     } else {
       Future.delayed(delay, () => _startShowcase(Duration.zero, widgetIds));
     }
@@ -410,14 +408,17 @@ class ShowcaseView {
       onStart?.call(_activeWidgetId, _ids![_activeWidgetId!]);
       final controllers = _getCurrentActiveControllers;
       final controllerLength = controllers.length;
-      for (var i = 0; i < controllerLength; i++) {
-        final controller = controllers[i];
-        final isAutoScroll =
-            controller.config.enableAutoScroll ?? enableAutoScroll;
-        if (controllerLength == 1 && isAutoScroll) {
-          await controller.scrollIntoView();
-        } else {
-          controller.startShowcase();
+      final firstController = controllers.firstOrNull;
+
+      final isAutoScroll =
+          firstController?.config.enableAutoScroll ?? enableAutoScroll;
+
+      // Auto scroll is not supported for multi-showcase feature.
+      if (controllerLength == 1 && isAutoScroll) {
+        await firstController?.scrollIntoView();
+      } else {
+        for (var i = 0; i < controllerLength; i++) {
+          controllers[i].startShowcase(shouldUpdateOverlay: i == 0);
         }
       }
     }
@@ -467,5 +468,53 @@ class ShowcaseView {
   void _cleanupAfterSteps() {
     _ids = _activeWidgetId = null;
     _cancelTimer();
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ShowcaseView &&
+        scope == other.scope &&
+        autoPlay == other.autoPlay &&
+        autoPlayDelay == other.autoPlayDelay &&
+        enableAutoPlayLock == other.enableAutoPlayLock &&
+        blurValue == other.blurValue &&
+        scrollDuration == other.scrollDuration &&
+        disableMovingAnimation == other.disableMovingAnimation &&
+        disableScaleAnimation == other.disableScaleAnimation &&
+        enableAutoScroll == other.enableAutoScroll &&
+        disableBarrierInteraction == other.disableBarrierInteraction &&
+        enableShowcase == other.enableShowcase &&
+        globalTooltipActionConfig == other.globalTooltipActionConfig &&
+        listEquals(globalTooltipActions, other.globalTooltipActions) &&
+        listEquals(
+          hideFloatingActionWidgetForShowcase,
+          other.hideFloatingActionWidgetForShowcase,
+        );
+  }
+
+  @override
+  int get hashCode {
+    return Object.hashAllUnordered([
+      scope,
+      onFinish,
+      onDismiss,
+      onStart,
+      onComplete,
+      autoPlay,
+      autoPlayDelay,
+      enableAutoPlayLock,
+      blurValue,
+      scrollDuration,
+      disableMovingAnimation,
+      disableScaleAnimation,
+      enableAutoScroll,
+      disableBarrierInteraction,
+      enableShowcase,
+      globalTooltipActionConfig,
+      globalTooltipActions,
+      globalFloatingActionWidget,
+      hideFloatingActionWidgetForShowcase,
+    ]);
   }
 }

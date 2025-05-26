@@ -25,7 +25,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../models/linked_showcase_data.dart';
+import '../models/linked_showcase_data_model.dart';
 import 'constants.dart';
 
 class ShapeClipper extends CustomClipper<ui.Path> {
@@ -50,10 +50,15 @@ class ShapeClipper extends CustomClipper<ui.Path> {
 
   @override
   ui.Path getClip(ui.Size size) {
-    var mainObjectPath = Path()
+    // Create a path for the full screen
+    final mainObjectPath = Path()
       ..fillType = ui.PathFillType.evenOdd
-      ..addRect(Offset.zero & size)
-      ..addRRect(RRect.fromRectAndCorners(ui.Rect.zero));
+      ..addRect(Offset.zero & size);
+
+    // Optimization: If we have multiple objects, we'll create a combined
+    // path for all cutouts rather than using Path.combine in a loop which is
+    // more expensive.
+    final cutoutPath = Path()..fillType = ui.PathFillType.evenOdd;
 
     final linkedObjectLength = linkedObjectData.length;
     for (var i = 0; i < linkedObjectLength; i++) {
@@ -71,22 +76,21 @@ class ShapeClipper extends CustomClipper<ui.Path> {
         widgetInfo.rect.bottom + widgetInfo.overlayPadding.bottom,
       );
 
-      /// We have use this approach so that overlapping cutout will merge with
-      /// each other
-      mainObjectPath = Path.combine(
-        PathOperation.difference,
-        mainObjectPath,
-        Path()
-          ..addRRect(
-            RRect.fromRectAndCorners(
-              rect,
-              topLeft: (widgetInfo.radius?.topLeft ?? customRadius),
-              topRight: (widgetInfo.radius?.topRight ?? customRadius),
-              bottomLeft: (widgetInfo.radius?.bottomLeft ?? customRadius),
-              bottomRight: (widgetInfo.radius?.bottomRight ?? customRadius),
-            ),
-          ),
+      // Add each cutout to our combined path
+      cutoutPath.addRRect(
+        RRect.fromRectAndCorners(
+          rect,
+          topLeft: (widgetInfo.radius?.topLeft ?? customRadius),
+          topRight: (widgetInfo.radius?.topRight ?? customRadius),
+          bottomLeft: (widgetInfo.radius?.bottomLeft ?? customRadius),
+          bottomRight: (widgetInfo.radius?.bottomRight ?? customRadius),
+        ),
       );
+    }
+
+    // Do a single Path.combine operation instead of multiple
+    if (!cutoutPath.getBounds().isEmpty) {
+      mainObjectPath.addPath(cutoutPath, Offset.zero);
     }
 
     return mainObjectPath;

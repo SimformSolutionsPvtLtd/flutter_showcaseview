@@ -573,7 +573,12 @@ class _ShowcaseState extends State<Showcase> {
     // This is to support hot reload
     _updateControllerValues();
 
-    _controller.recalculateRootWidgetSize(context);
+    _controller.recalculateRootWidgetSize(
+      context,
+      shouldUpdateOverlay:
+          _showCaseWidgetManager.showcaseView.getActiveShowcaseKey ==
+              widget.showcaseKey,
+    );
     return widget.child;
   }
 
@@ -584,14 +589,15 @@ class _ShowcaseState extends State<Showcase> {
       id: _uniqueId,
       scope: _showCaseWidgetManager.name,
     );
-
     super.dispose();
   }
 
   void _updateControllerValues() {
-    _showCaseWidgetManager = ShowcaseService.instance.getScope(
+    final manager = ShowcaseService.instance.getScope(
       scope: _showCaseWidgetManager.name,
     );
+    if (manager == _showCaseWidgetManager) return;
+    _showCaseWidgetManager = manager;
     ShowcaseService.instance.addController(
       controller: _controller
         ..showcaseView = _showCaseWidgetManager.showcaseView,

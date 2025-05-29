@@ -76,19 +76,19 @@ class ToolTipWidget extends StatefulWidget {
   });
 
   final String? title;
-  final TextAlign? titleTextAlign;
+  final TextAlign titleTextAlign;
   final String? description;
-  final TextAlign? descriptionTextAlign;
+  final TextAlign descriptionTextAlign;
   final AlignmentGeometry titleAlignment;
   final AlignmentGeometry descriptionAlignment;
   final TextStyle? titleTextStyle;
   final TextStyle? descTextStyle;
   final Widget? container;
-  final Color? tooltipBackgroundColor;
-  final Color? textColor;
+  final Color tooltipBackgroundColor;
+  final Color textColor;
   final bool showArrow;
   final VoidCallback? onTooltipTap;
-  final EdgeInsets? tooltipPadding;
+  final EdgeInsets tooltipPadding;
   final Duration movingAnimationDuration;
   final bool disableMovingAnimation;
   final bool disableScaleAnimation;
@@ -295,7 +295,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             _TooltipLayoutId(
               id: TooltipLayoutSlot.arrow,
               child: CustomPaint(
-                painter: _Arrow(strokeColor: widget.tooltipBackgroundColor!),
+                painter:
+                    _ArrowPainter(strokeColor: widget.tooltipBackgroundColor!),
                 size: const Size(Constants.arrowWidth, Constants.arrowHeight),
               ),
             ),

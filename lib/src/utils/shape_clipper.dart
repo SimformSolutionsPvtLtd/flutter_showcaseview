@@ -25,7 +25,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../models/linked_showcase_data.dart';
+import '../models/linked_showcase_data_model.dart';
 import 'constants.dart';
 
 class ShapeClipper extends CustomClipper<ui.Path> {

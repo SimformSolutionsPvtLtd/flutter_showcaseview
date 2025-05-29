@@ -51,4 +51,15 @@ class ActionButtonIcon {
 
   /// Optional padding to apply around the icon.
   final EdgeInsets? padding;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ActionButtonIcon &&
+        icon == other.icon &&
+        padding == other.padding;
+  }
+
+  @override
+  int get hashCode => Object.hash(icon, padding);
 }

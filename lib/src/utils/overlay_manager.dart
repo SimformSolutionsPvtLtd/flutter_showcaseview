@@ -24,10 +24,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../models/linked_showcase_data.dart';
+import '../../showcaseview.dart';
+import '../models/linked_showcase_data_model.dart';
 import '../showcase/showcase_controller.dart';
 import '../showcase/showcase_service.dart';
-import '../showcase/showcase_view.dart';
 import 'extensions.dart';
 import 'shape_clipper.dart';
 
@@ -153,13 +153,21 @@ class OverlayManager {
 
     if (controllers.isEmpty) return const SizedBox.shrink();
 
+    final currentShowcaseKey = showcaseView.getActiveShowcaseKey;
+
+    late final ShowcaseController firstController;
+    late final Showcase firstShowcaseConfig;
     final controllerLength = controllers.length;
     for (var i = 0; i < controllerLength; i++) {
-      controllers[i].updateControllerData();
+      final controller = controllers[i];
+      if (i == 0) {
+        firstController = controller;
+        firstShowcaseConfig = firstController.config;
+      }
+      if (controller.key == currentShowcaseKey) {
+        controller.updateControllerData();
+      }
     }
-
-    final firstController = controllers.first;
-    final firstShowcaseConfig = firstController.config;
 
     final backgroundContainer = ColoredBox(
       color: firstShowcaseConfig.overlayColor

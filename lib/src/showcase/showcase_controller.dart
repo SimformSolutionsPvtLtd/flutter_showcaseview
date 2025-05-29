@@ -24,7 +24,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../models/linked_showcase_data.dart';
+import '../models/linked_showcase_data_model.dart';
 import '../models/tooltip_action_config.dart';
 import '../tooltip/tooltip.dart';
 import '../utils/overlay_manager.dart';
@@ -134,20 +134,23 @@ class ShowcaseController {
   ///
   /// This method is typically called internally by the showcase system but
   /// can also be called manually to force a recalculation of showcase elements.
-  void startShowcase() {
+  void startShowcase({bool shouldUpdateOverlay = true}) {
     if (!showcaseView.enableShowcase || !_mounted) return;
 
-    recalculateRootWidgetSize(_context);
+    recalculateRootWidgetSize(
+      _context,
+      shouldUpdateOverlay: shouldUpdateOverlay,
+    );
     globalFloatingActionWidget = showcaseView
         .getFloatingActionWidget(config.showcaseKey)
         ?.call(_context);
-    final size = rootWidgetSize ?? MediaQuery.sizeOf(_context);
-    position ??= TargetPositionService(
-      rootRenderObject: rootRenderObject,
-      screenSize: size,
-      renderBox: _context.findRenderObject() as RenderBox?,
-      padding: config.targetPadding,
-    );
+    // final size = rootWidgetSize ?? MediaQuery.sizeOf(_context);
+    // position ??= TargetPositionService(
+    //   rootRenderObject: rootRenderObject,
+    //   screenSize: size,
+    //   renderBox: _context.findRenderObject() as RenderBox?,
+    //   padding: config.targetPadding,
+    // );
   }
 
   /// Used to scroll the target into view.
@@ -165,19 +168,19 @@ class ShowcaseController {
   ///
   /// Returns a Future that completes when scrolling is finished. If the widget
   /// is unmounted during scrolling, the operation will be canceled safely.
-  Future<void> scrollIntoView() async {
+  Future<void> scrollIntoView({bool shouldUpdateOverlay = true}) async {
     if (!_mounted) {
       assert(_mounted, 'Widget has been unmounted');
       return;
     }
 
     isScrollRunning = true;
-    updateControllerData();
-    startShowcase();
-    OverlayManager.instance.update(
-      show: showcaseView.isShowcaseRunning,
-      scope: showcaseView.scope,
-    );
+    // updateControllerData();
+    startShowcase(shouldUpdateOverlay: shouldUpdateOverlay);
+    // OverlayManager.instance.update(
+    //   show: showcaseView.isShowcaseRunning,
+    //   scope: showcaseView.scope,
+    // );
     await Scrollable.ensureVisible(
       _context,
       duration: showcaseView.scrollDuration,
@@ -185,12 +188,12 @@ class ShowcaseController {
     );
 
     isScrollRunning = false;
-    updateControllerData();
-    startShowcase();
-    OverlayManager.instance.update(
-      show: showcaseView.isShowcaseRunning,
-      scope: showcaseView.scope,
-    );
+    // updateControllerData();
+    startShowcase(shouldUpdateOverlay: shouldUpdateOverlay);
+    // OverlayManager.instance.update(
+    //   show: showcaseView.isShowcaseRunning,
+    //   scope: showcaseView.scope,
+    // );
   }
 
   /// Handles tap on barrier area.
@@ -214,20 +217,28 @@ class ShowcaseController {
   ///
   /// Parameter:
   /// * [context] The BuildContext of the [Showcase] widget.
-  void recalculateRootWidgetSize(BuildContext context) {
+  void recalculateRootWidgetSize(
+    BuildContext context, {
+    bool shouldUpdateOverlay = true,
+  }) {
+    if (!showcaseView.enableShowcase || !showcaseView.isShowcaseRunning) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!context.mounted) return;
+      if (!context.mounted ||
+          !showcaseView.enableShowcase ||
+          !showcaseView.isShowcaseRunning) {
+        return;
+      }
 
       _initRootWidget();
-      if (!showcaseView.enableShowcase) return;
 
       updateControllerData();
-      if (!showcaseView.isShowcaseRunning) return;
 
-      OverlayManager.instance.update(
-        show: showcaseView.isShowcaseRunning,
-        scope: showcaseView.scope,
-      );
+      if (shouldUpdateOverlay) {
+        OverlayManager.instance.update(
+          show: showcaseView.isShowcaseRunning,
+          scope: showcaseView.scope,
+        );
+      }
     });
   }
 

@@ -59,4 +59,26 @@ class TooltipActionConfig {
   /// If aligning items according to their baseline, which baseline to use.
   /// This must be set if using baseline alignment.
   final TextBaseline? textBaseline;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is TooltipActionConfig &&
+        alignment == other.alignment &&
+        actionGap == other.actionGap &&
+        position == other.position &&
+        gapBetweenContentAndAction == other.gapBetweenContentAndAction &&
+        crossAxisAlignment == other.crossAxisAlignment &&
+        textBaseline == other.textBaseline;
+  }
+
+  @override
+  int get hashCode => Object.hashAllUnordered([
+        alignment,
+        actionGap,
+        position,
+        gapBetweenContentAndAction,
+        crossAxisAlignment,
+        textBaseline,
+      ]);
 }

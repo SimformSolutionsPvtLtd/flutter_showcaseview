@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../showcaseview.dart';
@@ -126,4 +127,44 @@ class TooltipActionButton {
   /// This only works for the global action widgets
   /// Defaults to []
   final List<GlobalKey> hideActionWidgetForShowcase;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is TooltipActionButton &&
+        other.type == type &&
+        other.borderRadius == borderRadius &&
+        other.padding == padding &&
+        other.backgroundColor == backgroundColor &&
+        other.textStyle == textStyle &&
+        other.leadIcon == leadIcon &&
+        other.tailIcon == tailIcon &&
+        other.name == name &&
+        other.button == button &&
+        other.border == border &&
+        listEquals(
+          other.hideActionWidgetForShowcase,
+          hideActionWidgetForShowcase,
+        );
+  }
+
+  @override
+  int get hashCode {
+    return Object.hashAllUnordered(
+      [
+        type,
+        borderRadius,
+        padding,
+        hideActionWidgetForShowcase,
+        backgroundColor,
+        textStyle,
+        leadIcon,
+        tailIcon,
+        name,
+        onTap,
+        button,
+        border,
+      ],
+    );
+  }
 }

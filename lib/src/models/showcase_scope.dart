@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../showcase/showcase_controller.dart';
@@ -51,4 +52,16 @@ class ShowcaseScope {
   /// - Key: GlobalKey of a showcase (provided by user)
   /// - Value: Map of showcase IDs to their controllers
   final Map<GlobalKey, Map<int, ShowcaseController>> controllers = {};
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ShowcaseScope &&
+        name == other.name &&
+        showcaseView == other.showcaseView &&
+        mapEquals(controllers, other.controllers);
+  }
+
+  @override
+  int get hashCode => Object.hash(name, showcaseView, controllers);
 }

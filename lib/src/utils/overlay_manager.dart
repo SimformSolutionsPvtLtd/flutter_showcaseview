@@ -196,7 +196,7 @@ class OverlayManager {
     final controllerLength = controllers.length;
     return [
       for (var i = 0; i < controllerLength; i++)
-        if (controllers[i].linkedShowcaseDataModel case final model?) model
+        if (controllers[i].linkedShowcaseDataModel case final model?) model,
     ];
   }
 

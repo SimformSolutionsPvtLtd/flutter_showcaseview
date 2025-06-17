@@ -16,12 +16,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install Flutter
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.0'
+          cache: true
+          cache-key: 'flutter-macos-stable-3.10.0-apple'
+          cache-path: '${{ runner.tool_cache }}/flutter/macos-stable-3.10.0-apple'
+          pub-cache-key: 'flutter-pub-macos-stable-3.10.0-apple'
+
       - name: Install dependencies
-        run: flutter packages get
+        run: flutter pub get
       - name: Code Formatting
         run: dart format --set-exit-if-changed .
+      - name: Code Analyse
+        run: dart analyze
       - name: Check Publish Warnings
         run: flutter pub publish --dry-run

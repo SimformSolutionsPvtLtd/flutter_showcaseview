@@ -1,9 +1,9 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
-  strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false
+  language:
+    strict-inference: true
+    strict-raw-types: true
   errors:
     argument_type_not_assignable: error
     invalid_assignment: error

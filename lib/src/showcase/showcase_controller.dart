@@ -200,7 +200,9 @@ class ShowcaseController {
   void handleBarrierTap() {
     config.onBarrierClick?.call();
     if (showcaseView.disableBarrierInteraction ||
-        config.disableBarrierInteraction) return;
+        config.disableBarrierInteraction) {
+      return;
+    }
     _nextIfAny();
   }
 

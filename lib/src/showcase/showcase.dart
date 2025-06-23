@@ -81,6 +81,7 @@ class Showcase extends StatefulWidget {
     this.showArrow = true,
     this.onTargetClick,
     this.disposeOnTap,
+    this.autoPlayDelay,
     this.movingAnimationDuration = const Duration(milliseconds: 2000),
     this.disableMovingAnimation,
     this.disableScaleAnimation,
@@ -184,6 +185,7 @@ class Showcase extends StatefulWidget {
     this.scrollLoadingWidget = Constants.defaultProgressIndicator,
     this.onTargetClick,
     this.disposeOnTap,
+    this.autoPlayDelay,
     this.movingAnimationDuration = Constants.defaultAnimationDuration,
     this.disableMovingAnimation,
     this.targetPadding = EdgeInsets.zero,
@@ -345,6 +347,9 @@ class Showcase extends StatefulWidget {
   ///
   /// Default to [Duration(milliseconds: 2000)]
   final Duration movingAnimationDuration;
+
+  /// The delay before the next play start.
+  final Duration? autoPlayDelay;
 
   /// Triggered when default tooltip is tapped
   final VoidCallback? onToolTipClick;

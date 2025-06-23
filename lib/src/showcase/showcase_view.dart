@@ -424,7 +424,12 @@ class ShowcaseView {
 
     if (autoPlay) {
       _cancelTimer();
-      _timer = Timer(autoPlayDelay, () => next(force: true));
+      // Showcase is first.
+      final config = _getCurrentActiveControllers[_activeWidgetId!];
+      _timer = Timer(
+        config.config.autoPlayDelay ?? autoPlayDelay,
+        () => next(force: true),
+      );
     }
   }
 

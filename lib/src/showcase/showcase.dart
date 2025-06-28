@@ -22,14 +22,10 @@
 
 import 'package:flutter/material.dart';
 
+import '../../showcaseview.dart';
 import '../models/showcase_scope.dart';
-import '../models/tooltip_action_button.dart';
-import '../models/tooltip_action_config.dart';
-import '../showcase_widget.dart';
 import '../utils/constants.dart';
-import '../utils/enum.dart';
 import '../utils/overlay_manager.dart';
-import '../widget/floating_action_widget.dart';
 import 'showcase_controller.dart';
 import 'showcase_service.dart';
 

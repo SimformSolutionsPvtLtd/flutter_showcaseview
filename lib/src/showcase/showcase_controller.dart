@@ -231,7 +231,7 @@ class ShowcaseController {
 
       _initRootWidget();
 
-      updateControllerData();
+      // updateControllerData();
 
       if (shouldUpdateOverlay) {
         OverlayManager.instance.update(

@@ -349,7 +349,7 @@ class ShowcaseView {
           _cleanupAfterSteps();
           onFinish?.call();
         }
-        OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
+        // OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
       },
     );
   }

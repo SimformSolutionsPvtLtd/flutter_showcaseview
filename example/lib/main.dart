@@ -374,7 +374,7 @@ class _MailPageState extends State<MailPage> {
                 controller: scrollController,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  if (index == 0) {
+                  if (index == 1) {
                     return showcaseMailTile(_three, true, context, mails.first);
                   }
                   return MailTile(
@@ -387,7 +387,7 @@ class _MailPageState extends State<MailPage> {
         ),
       ),
       floatingActionButton: Showcase(
-        key: _lastShowcaseWidget,
+        key: _three,
         title: 'Compose Mail',
         description: 'Click here to compose mail',
         targetBorderRadius: const BorderRadius.all(Radius.circular(16)),

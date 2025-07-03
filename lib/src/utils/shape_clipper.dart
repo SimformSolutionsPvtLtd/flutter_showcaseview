@@ -50,19 +50,19 @@ class ShapeClipper extends CustomClipper<ui.Path> {
 
   @override
   ui.Path getClip(ui.Size size) {
-    // Create a path for the full screen
-    final mainObjectPath = Path()
-      ..fillType = ui.PathFillType.evenOdd
-      ..addRect(Offset.zero & size);
+    // Start with a path for the entire screen
+    final screenPath = Path()..addRect(Offset.zero & size);
 
-    // Optimization: If we have multiple objects, we'll create a combined
-    // path for all cutouts rather than using Path.combine in a loop which is
-    // more expensive.
-    final cutoutPath = Path()..fillType = ui.PathFillType.evenOdd;
+    // If there are no showcase items, return the full screen path
+    if (linkedObjectData.isEmpty) {
+      return screenPath;
+    }
 
-    final linkedObjectLength = linkedObjectData.length;
-    for (var i = 0; i < linkedObjectLength; i++) {
-      final widgetInfo = linkedObjectData[i];
+    // Create a path that will contain all the cutout shapes
+    final cutoutsPath = Path();
+
+    // Add all showcase shapes to the cutouts path
+    for (final widgetInfo in linkedObjectData) {
       final customRadius = widgetInfo.isCircle
           ? Radius.circular(
               widgetInfo.rect.height + widgetInfo.overlayPadding.vertical,
@@ -76,8 +76,7 @@ class ShapeClipper extends CustomClipper<ui.Path> {
         widgetInfo.rect.bottom + widgetInfo.overlayPadding.bottom,
       );
 
-      // Add each cutout to our combined path
-      cutoutPath.addRRect(
+      cutoutsPath.addRRect(
         RRect.fromRectAndCorners(
           rect,
           topLeft: (widgetInfo.radius?.topLeft ?? customRadius),
@@ -88,12 +87,15 @@ class ShapeClipper extends CustomClipper<ui.Path> {
       );
     }
 
-    // Do a single Path.combine operation instead of multiple
-    if (!cutoutPath.getBounds().isEmpty) {
-      mainObjectPath.addPath(cutoutPath, Offset.zero);
-    }
+    // Create the final path by subtracting all cutouts from the screen path
+    // Using PathOperation.difference to cut out the shapes
+    final finalPath = Path.combine(
+      PathOperation.difference,
+      screenPath,
+      cutoutsPath,
+    );
 
-    return mainObjectPath;
+    return finalPath;
   }
 
   @override

@@ -162,46 +162,8 @@ class _RenderPositionDelegate extends RenderBox
     // Final layout and positioning
     _performFinalChildLayout();
 
-    // _calculateAndSetFinalSize();
-
     // Cleanup
     RenderObjectManager.clear();
-  }
-
-  /// Calculate and set the final size of the render object based on the bounds of its children
-  void _calculateAndSetFinalSize() {
-    // Start with an empty Rect to track the bounds
-    Rect bounds = Rect.zero;
-    bool firstChild = true;
-
-    // Iterate through all children to calculate the bounding box
-    var child = this.firstChild;
-    while (child != null) {
-      final childParentData = child.parentData! as MultiChildLayoutParentData;
-      final childRect = Rect.fromPoints(
-        childParentData.offset + Offset(child.size.width, child.size.height),
-        childParentData.offset + Offset(child.size.width, child.size.height),
-      );
-
-      // For the first child, initialize bounds; for others, expand it
-      if (firstChild) {
-        bounds = childRect;
-        firstChild = false;
-      } else {
-        bounds = bounds.expandToInclude(childRect);
-      }
-
-      child = childParentData.nextSibling;
-    }
-
-    // Add a small padding to ensure we don't clip any content
-    bounds = bounds.inflate(2.0);
-
-    // Constrain the size to the available constraints
-    final constrainedSize = constraints.constrain(bounds.size);
-
-    // Set the size of this render object to the calculated bounds
-    size = constrainedSize;
   }
 
   /// Initialize layout variables and set size

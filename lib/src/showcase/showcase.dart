@@ -25,7 +25,6 @@ import 'package:flutter/material.dart';
 import '../models/showcase_scope.dart';
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
-import '../showcase_widget.dart';
 import '../utils/constants.dart';
 import '../utils/enum.dart';
 import '../utils/overlay_manager.dart';
@@ -251,7 +250,7 @@ class Showcase extends StatefulWidget {
   /// A key that is unique across the entire app.
   ///
   /// This Key will be used to control state of individual showcase and also
-  /// used in [ShowcaseView.startShowcase] to define position of current
+  /// used in [ShowcaseView.setupShowcase] to define position of current
   /// target widget while showcasing.
   final GlobalKey showcaseKey;
 

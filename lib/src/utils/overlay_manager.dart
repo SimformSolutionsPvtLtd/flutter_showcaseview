@@ -24,10 +24,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../showcaseview.dart';
 import '../models/linked_showcase_data_model.dart';
+import '../showcase/showcase.dart';
 import '../showcase/showcase_controller.dart';
 import '../showcase/showcase_service.dart';
+import '../showcase/showcase_view.dart';
 import 'extensions.dart';
 import 'shape_clipper.dart';
 

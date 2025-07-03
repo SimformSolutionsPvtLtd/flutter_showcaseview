@@ -21,7 +21,7 @@
  */
 import 'package:flutter/material.dart';
 
-import '../../showcaseview.dart';
+import '../models/tooltip_action_config.dart';
 
 class ActionWidget extends StatelessWidget {
   /// A widget that displays action buttons in a tooltip.

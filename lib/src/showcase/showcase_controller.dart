@@ -119,7 +119,7 @@ class ShowcaseController {
   /// tree.
   bool get _mounted => getState().mounted;
 
-  /// Callback to start the showcase.
+  /// Callback to setup the showcase.
   ///
   /// Initializes the showcase by calculating positions and preparing visual
   /// elements.
@@ -134,7 +134,7 @@ class ShowcaseController {
   ///
   /// This method is typically called internally by the showcase system but
   /// can also be called manually to force a recalculation of showcase elements.
-  void startShowcase({bool shouldUpdateOverlay = true}) {
+  void setupShowcase({bool shouldUpdateOverlay = true}) {
     if (!showcaseView.enableShowcase || !_mounted) return;
 
     recalculateRootWidgetSize(
@@ -144,13 +144,6 @@ class ShowcaseController {
     globalFloatingActionWidget = showcaseView
         .getFloatingActionWidget(config.showcaseKey)
         ?.call(_context);
-    // final size = rootWidgetSize ?? MediaQuery.sizeOf(_context);
-    // position ??= TargetPositionService(
-    //   rootRenderObject: rootRenderObject,
-    //   screenSize: size,
-    //   renderBox: _context.findRenderObject() as RenderBox?,
-    //   padding: config.targetPadding,
-    // );
   }
 
   /// Used to scroll the target into view.
@@ -175,12 +168,7 @@ class ShowcaseController {
     }
 
     isScrollRunning = true;
-    // updateControllerData();
-    startShowcase(shouldUpdateOverlay: shouldUpdateOverlay);
-    // OverlayManager.instance.update(
-    //   show: showcaseView.isShowcaseRunning,
-    //   scope: showcaseView.scope,
-    // );
+    setupShowcase(shouldUpdateOverlay: shouldUpdateOverlay);
     await Scrollable.ensureVisible(
       _context,
       duration: showcaseView.scrollDuration,
@@ -188,12 +176,7 @@ class ShowcaseController {
     );
 
     isScrollRunning = false;
-    // updateControllerData();
-    startShowcase(shouldUpdateOverlay: shouldUpdateOverlay);
-    // OverlayManager.instance.update(
-    //   show: showcaseView.isShowcaseRunning,
-    //   scope: showcaseView.scope,
-    // );
+    setupShowcase(shouldUpdateOverlay: shouldUpdateOverlay);
   }
 
   /// Handles tap on barrier area.
@@ -230,8 +213,6 @@ class ShowcaseController {
       }
 
       _initRootWidget();
-
-      updateControllerData();
 
       if (shouldUpdateOverlay) {
         OverlayManager.instance.update(

@@ -62,20 +62,20 @@ class ShowcaseView {
   /// options like auto-play, animation, and many more.
   ShowcaseView.register({
     this.scope = Constants.defaultScope,
-    this.onFinish,
     this.onStart,
+    this.onFinish,
     this.onComplete,
     this.onDismiss,
+    this.enableShowcase = true,
     this.autoPlay = false,
     this.autoPlayDelay = Constants.defaultAutoPlayDelay,
     this.enableAutoPlayLock = false,
-    this.blurValue = 0,
-    this.scrollDuration = Constants.defaultScrollDuration,
-    this.disableMovingAnimation = false,
-    this.disableScaleAnimation = false,
     this.enableAutoScroll = false,
+    this.scrollDuration = Constants.defaultScrollDuration,
     this.disableBarrierInteraction = false,
-    this.enableShowcase = true,
+    this.disableScaleAnimation = false,
+    this.disableMovingAnimation = false,
+    this.blurValue = 0,
     this.globalTooltipActionConfig,
     this.globalTooltipActions,
     this.globalFloatingActionWidget,
@@ -263,10 +263,6 @@ class ShowcaseView {
     if (!_mounted) return;
 
     _cleanupAfterSteps();
-    OverlayManager.instance.update(
-      show: isShowcaseRunning,
-      scope: scope,
-    );
   }
 
   /// Cleans up resources when unregistering the showcase view.
@@ -321,7 +317,7 @@ class ShowcaseView {
       _ids = widgetIds;
       _activeWidgetId = 0;
       _onStart();
-      // OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
+      OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
     } else {
       Future.delayed(delay, () => _startShowcase(Duration.zero, widgetIds));
     }
@@ -344,12 +340,13 @@ class ShowcaseView {
       (_) {
         if (!_mounted) return;
         _activeWidgetId = id;
-        _onStart();
+
         if (_activeWidgetId! >= _ids!.length) {
           _cleanupAfterSteps();
           onFinish?.call();
+        } else {
+          _onStart();
         }
-        OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
       },
     );
   }
@@ -418,7 +415,7 @@ class ShowcaseView {
         await firstController?.scrollIntoView();
       } else {
         for (var i = 0; i < controllerLength; i++) {
-          controllers[i].startShowcase(shouldUpdateOverlay: i == 0);
+          controllers[i].setupShowcase(shouldUpdateOverlay: i == 0);
         }
       }
     }
@@ -468,6 +465,7 @@ class ShowcaseView {
   void _cleanupAfterSteps() {
     _ids = _activeWidgetId = null;
     _cancelTimer();
+    OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
   }
 
   @override

@@ -21,7 +21,7 @@
  */
 import 'package:flutter/material.dart';
 
-import '../../showcaseview.dart';
+import '../utils/enum.dart';
 
 class TooltipActionConfig {
   /// Configuration options for tooltip action buttons.

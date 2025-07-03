@@ -21,7 +21,8 @@
  */
 import 'package:flutter/material.dart';
 
-import '../../showcaseview.dart';
+import '../models/tooltip_action_button.dart';
+import '../showcase/showcase_view.dart';
 
 class TooltipActionButtonWidget extends StatelessWidget {
   /// A widget that renders action buttons within showcase tooltips.
@@ -40,11 +41,10 @@ class TooltipActionButtonWidget extends StatelessWidget {
     super.key,
   });
 
-  /// This will provide the configuration for the action buttons
+  /// This will provide the configuration for the action buttons.
   final TooltipActionButton config;
 
-  /// This is used for [TooltipActionButton] to close, next and previous
-  /// showcase navigation
+  /// This is used for close, next and previous showcase navigation.
   final ShowcaseView showCaseState;
 
   @override

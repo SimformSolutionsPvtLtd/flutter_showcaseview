@@ -183,7 +183,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             child: GestureDetector(
               onTap: widget.onTooltipTap,
               child: Container(
-                padding: widget.tooltipPadding?.copyWith(left: 0, right: 0),
+                padding: widget.tooltipPadding.copyWith(left: 0, right: 0),
                 decoration: BoxDecoration(
                   color: widget.tooltipBackgroundColor,
                   borderRadius: widget.tooltipBorderRadius ??
@@ -195,8 +195,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                     if (widget.title case final title?)
                       DefaultTooltipTextWidget(
                         padding: (widget.titlePadding ?? EdgeInsets.zero).add(
-                          EdgeInsets.symmetric(
-                            horizontal: widget.tooltipPadding?.horizontal ?? 0,
+                          EdgeInsets.only(
+                            left: widget.tooltipPadding.left,
+                            right: widget.tooltipPadding.right,
                           ),
                         ),
                         text: title,
@@ -214,8 +215,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                         padding:
                             (widget.descriptionPadding ?? EdgeInsets.zero).add(
                           EdgeInsets.only(
-                            left: widget.tooltipPadding?.left ?? 0,
-                            right: widget.tooltipPadding?.right ?? 0,
+                            left: widget.tooltipPadding.left,
+                            right: widget.tooltipPadding.right,
                           ),
                         ),
                         text: desc,
@@ -233,8 +234,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                       ActionWidget(
                         tooltipActionConfig: widget.tooltipActionConfig,
                         outsidePadding: EdgeInsets.only(
-                          left: widget.tooltipPadding?.left ?? 0,
-                          right: widget.tooltipPadding?.right ?? 0,
+                          left: widget.tooltipPadding.left,
+                          right: widget.tooltipPadding.right,
                         ),
                         alignment: widget.tooltipActionConfig.alignment,
                         crossAxisAlignment:
@@ -295,8 +296,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             _TooltipLayoutId(
               id: TooltipLayoutSlot.arrow,
               child: CustomPaint(
-                painter:
-                    _ArrowPainter(strokeColor: widget.tooltipBackgroundColor!),
+                painter: _ArrowPainter(
+                  strokeColor: widget.tooltipBackgroundColor,
+                ),
                 size: const Size(Constants.arrowWidth, Constants.arrowHeight),
               ),
             ),

@@ -50,6 +50,64 @@ class ShapeClipper extends CustomClipper<ui.Path> {
 
   @override
   ui.Path getClip(ui.Size size) {
+    // If running on the web, use a different clipping method as below method
+    // has some issues and not able to cut the shape in web
+    if (kIsWeb) {
+      return _webClip(size);
+    }
+    return _optimisedClip(size);
+  }
+
+  /// This clipping method is less optimized but ensures correct cutout rendering
+  /// on web and all platforms. The [_optimisedClip] method does not work reliably
+  /// on web, so a conditional check is used to select this implementation for web.
+  ui.Path _webClip(ui.Size size) {
+    var mainObjectPath = Path()
+      ..fillType = ui.PathFillType.evenOdd
+      ..addRect(Offset.zero & size)
+      ..addRRect(RRect.fromRectAndCorners(ui.Rect.zero));
+
+    final linkedObjectLength = linkedObjectData.length;
+    for (var i = 0; i < linkedObjectLength; i++) {
+      final widgetInfo = linkedObjectData[i];
+      final customRadius = widgetInfo.isCircle
+          ? Radius.circular(
+              widgetInfo.rect.height + widgetInfo.overlayPadding.vertical,
+            )
+          : Constants.defaultTargetRadius;
+
+      final rect = Rect.fromLTRB(
+        widgetInfo.rect.left - widgetInfo.overlayPadding.left,
+        widgetInfo.rect.top - widgetInfo.overlayPadding.top,
+        widgetInfo.rect.right + widgetInfo.overlayPadding.right,
+        widgetInfo.rect.bottom + widgetInfo.overlayPadding.bottom,
+      );
+
+      /// We have use this approach so that overlapping cutout will merge with
+      /// each other
+      mainObjectPath = Path.combine(
+        PathOperation.difference,
+        mainObjectPath,
+        Path()
+          ..addRRect(
+            RRect.fromRectAndCorners(
+              rect,
+              topLeft: (widgetInfo.radius?.topLeft ?? customRadius),
+              topRight: (widgetInfo.radius?.topRight ?? customRadius),
+              bottomLeft: (widgetInfo.radius?.bottomLeft ?? customRadius),
+              bottomRight: (widgetInfo.radius?.bottomRight ?? customRadius),
+            ),
+          ),
+      );
+    }
+
+    return mainObjectPath;
+  }
+
+  /// Returns a [ui.Path] representing the overlay with cutouts for each showcased widget.
+  ///
+  /// This implementation is optimized for non-web platforms.
+  ui.Path _optimisedClip(ui.Size size) {
     // Start with a path for the entire screen
     final screenPath = Path()..addRect(Offset.zero & size);
 

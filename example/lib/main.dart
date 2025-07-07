@@ -120,7 +120,8 @@ class _MailPageState extends State<MailPage> {
     //Start showcase view after current widget frames are drawn.
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => ShowcaseView.get().startShowCase(
-          [_firstShowcaseWidget, _two, _three, _four, _lastShowcaseWidget]),
+        [_firstShowcaseWidget, _two, _three, _four, _lastShowcaseWidget],
+      ),
     );
     mails = [
       Mail(
@@ -192,6 +193,8 @@ class _MailPageState extends State<MailPage> {
   @override
   void dispose() {
     scrollController.dispose();
+    // Unregister the showcase view when the widget is disposed
+    ShowcaseView.get().unregister();
     super.dispose();
   }
 
@@ -374,7 +377,7 @@ class _MailPageState extends State<MailPage> {
                 controller: scrollController,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  if (index == 1) {
+                  if (index == 0) {
                     return showcaseMailTile(_three, true, context, mails.first);
                   }
                   return MailTile(
@@ -387,7 +390,7 @@ class _MailPageState extends State<MailPage> {
         ),
       ),
       floatingActionButton: Showcase(
-        key: _three,
+        key: _lastShowcaseWidget,
         title: 'Compose Mail',
         description: 'Click here to compose mail',
         targetBorderRadius: const BorderRadius.all(Radius.circular(16)),

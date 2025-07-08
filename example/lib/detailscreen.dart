@@ -16,8 +16,6 @@ class _DetailState extends State<Detail> {
   @override
   void initState() {
     super.initState();
-    // This is optional but if you need different configuration in
-    // ShowcaseView then you can register new ShowcaseView
     ShowcaseView.register(scope: scopeName);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => ShowcaseView.getNamed(scopeName).startShowCase(

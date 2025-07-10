@@ -3,7 +3,7 @@
 
 # ShowCaseView
 
-[![Build](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions/workflows/flutter.yaml/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions) [![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)
+[![Build](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions/workflows/flutter.yaml/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions)&nbsp;&nbsp;[![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)&nbsp;&nbsp;[![Visualise&nbsp;Repo](https://img.shields.io/badge/Visualise%20Repo-blue?style=flat)](https://repomapr.com/simformsolutionspvtltd/flutter_showcaseview)
 
 A Flutter package allows you to Showcase/Highlight your widgets.
 

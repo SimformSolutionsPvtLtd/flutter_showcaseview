@@ -339,13 +339,16 @@ class ShowcaseView {
     _onComplete().then(
       (_) {
         if (!_mounted) return;
+        // Update active widget ID before starting the next showcase
         _activeWidgetId = id;
 
         if (_activeWidgetId! >= _ids!.length) {
           _cleanupAfterSteps();
           onFinish?.call();
         } else {
-          _onStart();
+          // Add a short delay before starting the next showcase to ensure proper state update
+          // Then start the new showcase
+          Future.microtask(_onStart);
         }
       },
     );
@@ -402,6 +405,7 @@ class ShowcaseView {
   Future<void> _onStart() async {
     _activeWidgetId ??= 0;
     if (_activeWidgetId! < _ids!.length) {
+      // Call onStart callback with current index and key
       onStart?.call(_activeWidgetId, _ids![_activeWidgetId!]);
       final controllers = _getCurrentActiveControllers;
       final controllerLength = controllers.length;
@@ -414,18 +418,27 @@ class ShowcaseView {
       if (controllerLength == 1 && isAutoScroll) {
         await firstController?.scrollIntoView();
       } else {
+        // Setup showcases after data is updated
         for (var i = 0; i < controllerLength; i++) {
           controllers[i].setupShowcase(shouldUpdateOverlay: i == 0);
         }
+
+        // Make sure the overlay is updated to reflect new properties
+        OverlayManager.instance.update(show: isShowcaseRunning, scope: scope);
       }
     }
 
+    // Cancel any existing timer before setting up a new one
+
     if (autoPlay) {
       _cancelTimer();
-      // Showcase is first.
+      // Get the config from the current showcase if available
       final config = _getCurrentActiveControllers.firstOrNull?.config;
+      final effectiveDelay = config?.autoPlayDelay ?? autoPlayDelay;
+
+      // Create a new timer with the effective delay
       _timer = Timer(
-        config?.autoPlayDelay ?? autoPlayDelay,
+        effectiveDelay,
         () => next(force: true),
       );
     }

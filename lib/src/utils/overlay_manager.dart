@@ -78,7 +78,6 @@ class OverlayManager {
       ShowcaseService.instance.updateCurrentScope(scope);
     }
     _shouldShow = show;
-    _rebuild();
     _sync();
   }
 
@@ -131,6 +130,8 @@ class OverlayManager {
       _hide();
     } else if (!_isShowing && _shouldShow) {
       _show(_getBuilder);
+    } else {
+      _rebuild();
     }
   }
 
@@ -177,6 +178,10 @@ class OverlayManager {
     );
 
     return Stack(
+      // This key is used to force rebuild the overlay when needed.
+      // this key enables `_overlayEntry?.markNeedsBuild();` to detect that
+      // output of the builder has changed.
+      key: ValueKey(firstShowcaseConfig.hashCode),
       children: [
         GestureDetector(
           onTap: firstController.handleBarrierTap,

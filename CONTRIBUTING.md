@@ -67,7 +67,7 @@ and it will be automatically reflected in the PR.
   [file a bug or feature report][GitHub issues], so that we can discuss what direction to follow.
 - [Fork the project][fork guide] on GitHub.
 - Clone the forked repository to your local development machine
-  (e.g. `git clone git@github.com:<YOUR_GITHUB_USER>/flutter_showcaseview.git`).
+  (e.g. `git clone git@github.com:<YOUR_GITHUB_USER>/showcaseview.git`).
 
 
 ### Performing changes
@@ -160,13 +160,13 @@ There are a few things to think about when doing a release:
 - Create a PR containing the updated changelog and `pubspec.yaml` files.
 
 
-[GitHub issue]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/new
-[GitHub issues]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/new
-[GitHub Discussion]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/discussions
+[GitHub issue]: https://github.com/SimformSolutionsPvtLtd/showcaseview/issues/new
+[GitHub issues]: https://github.com/SimformSolutionsPvtLtd/showcaseview/issues/new
+[GitHub Discussion]: https://github.com/SimformSolutionsPvtLtd/showcaseview/discussions
 [style guide]: https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo
 [test writing guide]: https://docs.flutter.dev/cookbook/testing/unit/introduction
 [pubspec doc]: https://dart.dev/tools/pub/pubspec
 [conventional commit]: https://www.conventionalcommits.org
 [fork guide]: https://guides.github.com/activities/forking/#fork
-[PRs]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pulls
+[PRs]: https://github.com/SimformSolutionsPvtLtd/showcaseview/pulls
 [gitmoji]: https://gist.github.com/parmentf/035de27d6ed1dce0b36a

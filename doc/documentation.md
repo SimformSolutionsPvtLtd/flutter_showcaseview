@@ -4,9 +4,9 @@ A Flutter package that allows you to showcase or highlight your widgets step by 
 interactive tutorials for your application's UI.
 
 ## Preview
-_**For live web demo, visit [ShowcaseView Web Example](https://simformsolutionspvtltd.github.io/flutter_showcaseview/)**_
+_**For live web demo, visit [ShowcaseView Web Example](https://simformsolutionspvtltd.github.io/showcaseview/)**_
 
-![The example app running on mobile](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/showcaseview.gif)
+![The example app running on mobile](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/showcaseview/master/preview/showcaseview.gif)
 
 ## Features
 
@@ -677,7 +677,7 @@ ShowCaseWidget(
 - Changed builder property to accept a function directly
 
 For a complete list of changes and new features in each version, please refer to the [release 
-notes](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/releases) on GitHub.
+notes](https://github.com/SimformSolutionsPvtLtd/showcaseview/releases) on GitHub.
 
 # Contributors
 
@@ -712,7 +712,7 @@ Contributions to the ShowCaseView package are welcome! Here's how you can contri
 - Update documentation as needed
 - Make sure all tests pass before submitting a pull request
 
-For more information about contributing, please check the [GitHub repository](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview).
+For more information about contributing, please check the [GitHub repository](https://github.com/SimformSolutionsPvtLtd/showcaseview).
 
 # License
 

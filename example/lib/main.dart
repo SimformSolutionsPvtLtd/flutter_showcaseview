@@ -599,8 +599,8 @@ class MailTile extends StatelessWidget {
                 if (showCaseDetail)
                   Showcase.withWidget(
                     key: showCaseKey!,
-                    height: 50,
-                    width: 150,
+                    height: null,
+                    width: null,
                     tooltipActionConfig: const TooltipActionConfig(
                       alignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -627,42 +627,55 @@ class MailTile extends StatelessWidget {
                       Radius.circular(150),
                     ),
                     container: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(15),
+                      color: Colors.red,
+                      height: 400,
+                      width: 500,
+                      child: const SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                            Text('asds'),
+                          ],
                         ),
-                      ),
-                      width: 150,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            width: 45,
-                            height: 45,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xffFCD8DC),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'S',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text(
-                            "Your sender's profile",
-                          )
-                        ],
                       ),
                     ),
                     child: const SAvatarExampleChild(),

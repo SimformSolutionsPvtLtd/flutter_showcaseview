@@ -711,6 +711,13 @@ class _RenderPositionDelegate extends RenderBox
     final firstBoxParentData =
         TooltipLayoutSlot.tooltipBox.getObjectManager?.layoutParentData;
     firstBoxParentData?.offset = Offset(_xOffset, _yOffset);
+
+    // Debug prints for tooltip positioning
+    print('📦 TOOLTIP BOX POSITIONING:');
+    print('  _xOffset: $_xOffset, _yOffset: $_yOffset');
+    print('  _toolTipBoxSize: $_toolTipBoxSize');
+    print('  showcaseOffset: $showcaseOffset');
+    print('  targetPosition: $targetPosition');
   }
 
   /// Layout the action box

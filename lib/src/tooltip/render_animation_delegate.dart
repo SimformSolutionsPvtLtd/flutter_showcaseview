@@ -162,6 +162,13 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
         targetSize.height,
       );
 
+      // Debug prints to understand painting coordinates
+      print('🎨 RENDER ANIMATION DEBUG:');
+      print('  targetPosition in render: $targetPosition');
+      print('  targetRect: $targetRect');
+      print('  showcaseOffset in render: $showcaseOffset');
+      print('  childParentData.id: ${childParentData.id}');
+
       // Determine scale alignment if not set.
       scaleAlignment ??= tooltipPosition.scaleAlignment;
 
@@ -267,7 +274,32 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
     Offset scaleOrigin,
     Offset moveOffset,
   ) {
-    paintChild(child, moveOffset + childParentData.offset - scaleOrigin);
+    // For custom containers (tooltip boxes), we need to ensure they are positioned correctly
+    // The issue is that subtracting scaleOrigin can cause negative offsets
+    Offset paintOffset;
+
+    if (childParentData.id == TooltipLayoutSlot.tooltipBox) {
+      // For tooltip boxes, use the direct offset without scale origin adjustment
+      // This ensures custom containers appear at their calculated position
+      paintOffset = moveOffset + childParentData.offset;
+      print('SCALE ORIGIN DEBUG: $paintOffset');
+      print('🎨 TOOLTIP BOX PAINT DEBUG:');
+      print('  Using direct offset for tooltip box');
+      print('  childParentData.offset: ${childParentData.offset}');
+      print('  moveOffset: $moveOffset');
+      print('  final paintOffset: $paintOffset');
+    } else {
+      // For other elements (like action boxes), use the original calculation
+      paintOffset = moveOffset + childParentData.offset - scaleOrigin;
+      print('🎨 OTHER CHILD PAINT DEBUG:');
+      print('  childParentData.id: ${childParentData.id}');
+      print('  using scale origin adjustment');
+      print('  calculated paintOffset: $paintOffset');
+    }
+
+    print('  child.runtimeType: ${child.runtimeType}');
+
+    paintChild(child, paintOffset);
   }
 
   void _paintChildren(

@@ -173,7 +173,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                 : SystemMouseCursors.click,
             child: GestureDetector(
               onTap: widget.onTooltipTap,
-              child: Center(child: widget.container ?? const SizedBox.shrink()),
+              child: RepaintBoundary(
+                child: widget.container ?? const SizedBox.shrink(),
+              ),
             ),
           )
         : MouseRegion(
@@ -182,67 +184,70 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                 : SystemMouseCursors.click,
             child: GestureDetector(
               onTap: widget.onTooltipTap,
-              child: Container(
-                padding: widget.tooltipPadding.copyWith(left: 0, right: 0),
-                decoration: BoxDecoration(
-                  color: widget.tooltipBackgroundColor,
-                  borderRadius: widget.tooltipBorderRadius ??
-                      const BorderRadius.all(Radius.circular(8)),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    if (widget.title case final title?)
-                      DefaultTooltipTextWidget(
-                        padding: (widget.titlePadding ?? EdgeInsets.zero).add(
-                          EdgeInsets.only(
+              child: RepaintBoundary(
+                child: Container(
+                  padding: widget.tooltipPadding.copyWith(left: 0, right: 0),
+                  decoration: BoxDecoration(
+                    color: widget.tooltipBackgroundColor,
+                    borderRadius: widget.tooltipBorderRadius ??
+                        const BorderRadius.all(Radius.circular(8)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      if (widget.title case final title?)
+                        DefaultTooltipTextWidget(
+                          padding: (widget.titlePadding ?? EdgeInsets.zero).add(
+                            EdgeInsets.only(
+                              left: widget.tooltipPadding.left,
+                              right: widget.tooltipPadding.right,
+                            ),
+                          ),
+                          text: title,
+                          textAlign: widget.titleTextAlign,
+                          alignment: widget.titleAlignment,
+                          textColor: widget.textColor,
+                          textDirection: widget.titleTextDirection,
+                          textStyle: widget.titleTextStyle ??
+                              Theme.of(context).textTheme.titleLarge?.merge(
+                                    TextStyle(color: widget.textColor),
+                                  ),
+                        ),
+                      if (widget.description case final desc?)
+                        DefaultTooltipTextWidget(
+                          padding:
+                              (widget.descriptionPadding ?? EdgeInsets.zero)
+                                  .add(
+                            EdgeInsets.only(
+                              left: widget.tooltipPadding.left,
+                              right: widget.tooltipPadding.right,
+                            ),
+                          ),
+                          text: desc,
+                          textAlign: widget.descriptionTextAlign,
+                          alignment: widget.descriptionAlignment,
+                          textColor: widget.textColor,
+                          textDirection: widget.descriptionTextDirection,
+                          textStyle: widget.descTextStyle ??
+                              Theme.of(context).textTheme.titleSmall?.merge(
+                                    TextStyle(color: widget.textColor),
+                                  ),
+                        ),
+                      if (widget.tooltipActions.isNotEmpty &&
+                          widget.tooltipActionConfig.position.isInside)
+                        ActionWidget(
+                          tooltipActionConfig: widget.tooltipActionConfig,
+                          outsidePadding: EdgeInsets.only(
                             left: widget.tooltipPadding.left,
                             right: widget.tooltipPadding.right,
                           ),
+                          alignment: widget.tooltipActionConfig.alignment,
+                          crossAxisAlignment:
+                              widget.tooltipActionConfig.crossAxisAlignment,
+                          children: widget.tooltipActions,
                         ),
-                        text: title,
-                        textAlign: widget.titleTextAlign,
-                        alignment: widget.titleAlignment,
-                        textColor: widget.textColor,
-                        textDirection: widget.titleTextDirection,
-                        textStyle: widget.titleTextStyle ??
-                            Theme.of(context).textTheme.titleLarge?.merge(
-                                  TextStyle(color: widget.textColor),
-                                ),
-                      ),
-                    if (widget.description case final desc?)
-                      DefaultTooltipTextWidget(
-                        padding:
-                            (widget.descriptionPadding ?? EdgeInsets.zero).add(
-                          EdgeInsets.only(
-                            left: widget.tooltipPadding.left,
-                            right: widget.tooltipPadding.right,
-                          ),
-                        ),
-                        text: desc,
-                        textAlign: widget.descriptionTextAlign,
-                        alignment: widget.descriptionAlignment,
-                        textColor: widget.textColor,
-                        textDirection: widget.descriptionTextDirection,
-                        textStyle: widget.descTextStyle ??
-                            Theme.of(context).textTheme.titleSmall?.merge(
-                                  TextStyle(color: widget.textColor),
-                                ),
-                      ),
-                    if (widget.tooltipActions.isNotEmpty &&
-                        widget.tooltipActionConfig.position.isInside)
-                      ActionWidget(
-                        tooltipActionConfig: widget.tooltipActionConfig,
-                        outsidePadding: EdgeInsets.only(
-                          left: widget.tooltipPadding.left,
-                          right: widget.tooltipPadding.right,
-                        ),
-                        alignment: widget.tooltipActionConfig.alignment,
-                        crossAxisAlignment:
-                            widget.tooltipActionConfig.crossAxisAlignment,
-                        children: widget.tooltipActions,
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

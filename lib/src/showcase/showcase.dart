@@ -112,9 +112,7 @@ class Showcase extends StatefulWidget {
     this.enableAutoScroll,
     this.floatingActionWidget,
     this.targetTooltipGap = 10,
-  })  : height = null,
-        width = null,
-        container = null,
+  })  : container = null,
         showcaseKey = key,
         assert(
           title != null || description != null,
@@ -157,8 +155,6 @@ class Showcase extends StatefulWidget {
   /// ```dart
   /// Showcase.withWidget(
   ///   key: _customKey,
-  ///   height: 80,
-  ///   width: 140,
   ///   container: Column(
   ///     children: [
   ///       Text(
@@ -177,8 +173,6 @@ class Showcase extends StatefulWidget {
   /// ```
   const Showcase.withWidget({
     required GlobalKey key,
-    required this.height,
-    required this.width,
     required this.container,
     required this.child,
     this.floatingActionWidget,
@@ -345,12 +339,6 @@ class Showcase extends StatefulWidget {
   ///
   /// Default to `true`
   final bool showArrow;
-
-  /// Height of [container]
-  final double? height;
-
-  /// Width of [container]
-  final double? width;
 
   /// The duration of time the bouncing animation of tooltip should last.
   ///

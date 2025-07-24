@@ -339,13 +339,16 @@ class ShowcaseView {
     _onComplete().then(
       (_) {
         if (!_mounted) return;
+        // Update active widget ID before starting the next showcase
         _activeWidgetId = id;
 
         if (_activeWidgetId! >= _ids!.length) {
           _cleanupAfterSteps();
           onFinish?.call();
         } else {
-          _onStart();
+          // Add a short delay before starting the next showcase to ensure proper state update
+          // Then start the new showcase
+          Future.microtask(_onStart);
         }
       },
     );
@@ -414,15 +417,17 @@ class ShowcaseView {
       if (controllerLength == 1 && isAutoScroll) {
         await firstController?.scrollIntoView();
       } else {
+        // Setup showcases after data is updated
         for (var i = 0; i < controllerLength; i++) {
           controllers[i].setupShowcase(shouldUpdateOverlay: i == 0);
         }
       }
     }
 
+    // Cancel any existing timer before setting up a new one
+
     if (autoPlay) {
       _cancelTimer();
-      // Showcase is first.
       final config = _getCurrentActiveControllers.firstOrNull?.config;
       _timer = Timer(
         config?.autoPlayDelay ?? autoPlayDelay,

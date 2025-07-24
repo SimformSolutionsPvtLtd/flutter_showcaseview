@@ -21,6 +21,25 @@
  */
 part of 'tooltip.dart';
 
+class ShowcaseArrow extends StatelessWidget {
+  const ShowcaseArrow({
+    super.key,
+    required this.strokeColor,
+  });
+
+  final Color strokeColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _ArrowPainter(
+        strokeColor: strokeColor,
+      ),
+      size: const Size(Constants.arrowWidth, Constants.arrowHeight),
+    );
+  }
+}
+
 class _ArrowPainter extends CustomPainter {
   _ArrowPainter({
     this.strokeColor = Colors.black,

@@ -43,8 +43,36 @@ extension ListExtension<E> on List<E> {
   }
 }
 
+/// Extension on `Color` that provides non-deprecated, stable access to
+/// ARGB channels and utility functions across all Flutter versions.
+///
+/// ⚠️ NOTE:
+/// - Starting from **Flutter 3.22**, the following `Color` properties are deprecated:
+///   - `.red`, `.green`, `.blue`, `.alpha`, `.opacity`
+/// - This extension uses bitmasking on the `.value` field to extract
+///   ARGB components without relying on deprecated APIs.
 extension ColorExtension on Color {
-  /// Converts opacity value to color with alpha
-  /// This avoids using the deprecated overlayOpacity directly
-  Color reduceOpacity(double opacity) => withAlpha((opacity * 255).round());
+  /// Reduces the opacity of this color by the [opacity] factor (0.0 to 1.0).
+  ///
+  /// ✅ Avoids using deprecated `.opacity` or `.alpha` properties.
+  /// ✅ Uses `.withAlpha()` with calculated alpha from the factor.
+  ///
+  /// Works in all Flutter versions, including Flutter 3.22+.
+  Color reduceOpacity(double opacity) =>
+      withAlpha((opacity.clamp(0.0, 1.0) * 255).round());
+
+  /// Safe replacement for deprecated `.alpha` (Flutter >= 3.22)
+  int get safeAlpha => (value >> 24) & 0xFF;
+
+  /// Safe replacement for deprecated `.red` (Flutter >= 3.22)
+  int get safeRed => (value >> 16) & 0xFF;
+
+  /// Safe replacement for deprecated `.green` (Flutter >= 3.22)
+  int get safeGreen => (value >> 8) & 0xFF;
+
+  /// Safe replacement for deprecated `.blue` (Flutter >= 3.22)
+  int get safeBlue => value & 0xFF;
+
+  /// Safe replacement for deprecated `.opacity` (Flutter >= 3.22)
+  double get safeOpacity => safeAlpha / 255.0;
 }

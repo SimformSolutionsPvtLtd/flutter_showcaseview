@@ -1,6 +1,5 @@
 ![Showcase View - Simform LLC.](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/preview/banner.png)
 
-
 # ShowCaseView
 
 [![Build](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions/workflows/flutter.yaml/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/actions) [![showcaseview](https://img.shields.io/pub/v/showcaseview?label=showcaseview)](https://pub.dev/packages/showcaseview)
@@ -20,6 +19,7 @@ to `descriptionTextAlign` to correspond it more with the TextAlign property.`tit
 and `descriptionAlignment` will be used for widget alignment.
 
 Before:
+
 ```dart
 Showcase(
   titleAlignment: TextAlign.center,
@@ -28,6 +28,7 @@ Showcase(
 ```
 
 After:
+
 ```dart
 Showcase(
   titleTextAlign: TextAlign.center,
@@ -37,21 +38,23 @@ Showcase(
 
 ## Getting Started
 
-1.  Add dependency to `pubspec.yaml`
+1. Add dependency to `pubspec.yaml`
 
-    *Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/packages/showcaseview)*
+    _Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/packages/showcaseview)_
 
 ```dart
 dependencies:
     showcaseview: <latest-version>
 ```
 
-2.  Import the package
+2. Import the package
+
 ```dart
 import 'package:showcaseview/showcaseview.dart';
 ```
 
 3. Register a `ShowCaseView` widget.
+
 ```dart
   void initState() {
   super.initState();
@@ -60,6 +63,7 @@ import 'package:showcaseview/showcaseview.dart';
 ```
 
 4. Adding a `Showcase` widget.
+
 ```dart
 GlobalKey _one = GlobalKey();
 GlobalKey _two = GlobalKey();
@@ -225,6 +229,78 @@ Showcase.withWidget
 )
 ```
 
+### Using Progress Indicator
+
+You can show progress during a showcase sequence to help users understand their position in the tour. The progress indicator will automatically appear next to your global floating action widgets:
+
+```dart
+ShowcaseView.register(
+  progressIndicatorConfig: const ProgressIndicatorConfig(
+    enabled: true,
+    position: ProgressIndicatorPosition.top,
+    backgroundColor: Colors.black54,
+    progressColor: Colors.white,
+    showStepNumbers: true,
+    showProgressBar: true,
+    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  ),
+  globalFloatingActionWidget: (context) => FloatingActionWidget(
+    left: 16,
+    bottom: 16,
+    child: ElevatedButton(
+      onPressed: () => ShowcaseView.get().dismiss(),
+      child: Text('Skip'),
+    ),
+  ),
+  // ... other configuration
+);
+```
+
+The progress indicator will be automatically integrated with your floating action widget, appearing above or below it based on the `position` setting.
+
+#### Custom Progress Indicator
+
+You can also create a custom progress indicator widget:
+
+```dart
+ShowcaseView.register(
+  progressIndicatorConfig: ProgressIndicatorConfig(
+    enabled: true,
+    position: ProgressIndicatorPosition.top,
+    customBuilder: (context, currentIndex, totalCount, progress) {
+      return Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue, Colors.purple],
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.star, color: Colors.white, size: 16),
+            SizedBox(width: 4),
+            Text(
+              '${currentIndex + 1}/$totalCount',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ],
+        ),
+      );
+    },
+  ),
+  globalFloatingActionWidget: (context) => FloatingActionWidget(
+    right: 16,
+    bottom: 16,
+    child: ElevatedButton(
+      onPressed: () => ShowcaseView.get().dismiss(),
+      child: Text('Close'),
+    ),
+  ),
+);
+```
+
 ### Using Tooltip Actions
 
 You can add action buttons to your tooltips to enhance user interaction:
@@ -342,7 +418,7 @@ subtitle: Text('Try swiping this item'
 )
 ```
 
-## Functions of `ShowCaseView.get()` and `ShowCaseView.getNamed(scopeName)`:
+## Functions of `ShowCaseView.get()` and `ShowCaseView.getNamed(scopeName)`
 
 | Function Name | Description                                         |
 |---------------|-----------------------------------------------------|
@@ -364,7 +440,6 @@ subtitle: Text('Try swiping this item'
      <td align="center"><a href="https://github.com/aditya-chavda"><img src="https://avatars.githubusercontent.com/u/41247722?v=4" width="100px;" alt=""/><br /><sub><b>Aditya Chavda</b></sub></a></td>
   </tr>
 </table>
-
 
 ## License
 

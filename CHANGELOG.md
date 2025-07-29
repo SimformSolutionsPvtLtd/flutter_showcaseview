@@ -1,4 +1,6 @@
 ## [5.0.0] - (UnRelease)
+
+- Feature [#557](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/557) - Added progress indicator support for showcase sequences. Displays current step progress integrated with floating action widgets for better UX. Customizable appearance and positioning through `ProgressIndicatorConfig`.
 - Feature [#500](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/500) -
   Added `onDismiss` callback in `ShowCaseWidget` which will trigger whenever `onDismiss` method is
   called.

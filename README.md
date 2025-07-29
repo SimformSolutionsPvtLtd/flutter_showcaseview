@@ -380,43 +380,57 @@ title: Text('Featured Item'),
 Add a floating action widget that appears during the showcase:
 
 ```dart
-Showcase
-(
-key: _floatingKey,
-title: 'Swipe Gesture',
-description: 'Swipe left or right to navigate',
-floatingActionWidget: (context) => Container(
-width: 200,
-height: 100,
-padding: EdgeInsets.all(10),
-margin: EdgeInsets.only(bottom: 50),
-decoration: BoxDecoration(
-color: Colors.white,
-borderRadius: BorderRadius.circular(10),
-boxShadow: [
-BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))
-],
-),
-child: Column(
-children: [
-Icon(Icons.swipe, size: 40),
-Text('Swipe to continue', style: TextStyle(fontWeight: FontWeight.bold)),
-Text('Use your finger to navigate between items'),
-],
-),
-),
-child: Card(
-child: ListTile(
-title: Text('Swipeable Item'),
-subtitle: Text('Try swiping this item'
-)
-,
-)
-,
-)
-,
+Showcase(
+  key: _floatingKey,
+  title: 'Swipe Gesture',
+  description: 'Swipe left or right to navigate',
+  floatingActionWidget: FloatingActionWidget(
+    left: 16,
+    bottom: 16,
+    child: ElevatedButton(
+      onPressed: () => ShowcaseView.get().dismiss(),
+      child: Text('Skip'),
+    ),
+  ),
+  child: Card(
+    child: ListTile(
+      title: Text('Swipeable Item'),
+      subtitle: Text('Try swiping this item'),
+    ),
+  ),
 )
 ```
+
+**Note:** Individual showcase `floatingActionWidget` parameters are automatically integrated with progress indicators when enabled. If you have multiple showcases and progress indicators are enabled in your `ShowcaseView.progressIndicatorConfig`, your floating action widget will automatically include progress indicator functionality without any additional wrapping needed.
+
+For example, if you have progress indicators enabled:
+
+```dart
+ShowcaseView.register(
+  progressIndicatorConfig: const ProgressIndicatorConfig(
+    enabled: true,
+    position: ProgressIndicatorPosition.top,
+  ),
+  // ... other configuration
+);
+
+// Your individual showcase will automatically get progress indicators
+Showcase(
+  key: _key,
+  description: 'Feature description',
+  floatingActionWidget: FloatingActionWidget(
+    left: 16,
+    bottom: 16,
+    child: ElevatedButton(
+      onPressed: () => ShowcaseView.get().dismiss(),
+      child: Text('Skip'),
+    ),
+  ),
+  child: YourWidget(),
+)
+```
+
+The progress indicator will appear above or below your floating action widget based on the `position` setting in your `ProgressIndicatorConfig`.
 
 ## Functions of `ShowCaseView.get()` and `ShowCaseView.getNamed(scopeName)`
 

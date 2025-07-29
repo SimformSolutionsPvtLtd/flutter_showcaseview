@@ -242,30 +242,25 @@ class _MailPageState extends State<MailPage> {
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
-                      floatingActionWidget: ShowcaseFloatingActionWidget(
-                        showcaseView: ShowcaseView.get(),
-                        originalFloatingWidget: FloatingActionWidget(
-                          left: 16,
-                          bottom: 16,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xffEE5366),
-                              ),
-                              onPressed: ShowcaseView.get().dismiss,
-                              child: const Text(
-                                'Close Showcase',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
+                      floatingActionWidget: FloatingActionWidget(
+                        left: 16,
+                        bottom: 16,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xffEE5366),
+                            ),
+                            onPressed: ShowcaseView.get().dismiss,
+                            child: const Text(
+                              'Close Showcase',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
                               ),
                             ),
                           ),
                         ),
-                        progressPosition: ProgressIndicatorPosition.top,
-                        spacing: 8.0,
                       ),
                       targetShapeBorder: const CircleBorder(),
                       tooltipActionConfig: const TooltipActionConfig(

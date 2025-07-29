@@ -24,12 +24,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../models/progress_indicator_config.dart';
 import '../models/tooltip_action_button.dart';
 import '../models/tooltip_action_config.dart';
 import '../utils/constants.dart';
 import '../utils/enum.dart';
 import '../utils/overlay_manager.dart';
 import '../widget/floating_action_widget.dart';
+import '../widget/showcase_floating_action_widget.dart';
 import 'showcase_controller.dart';
 import 'showcase_service.dart';
 
@@ -80,6 +82,7 @@ class ShowcaseView {
     this.globalTooltipActions,
     this.globalFloatingActionWidget,
     this.hideFloatingActionWidgetForShowcase = const [],
+    this.progressIndicatorConfig = const ProgressIndicatorConfig(),
   }) {
     ShowcaseService.instance.register(this, scope: scope);
     _hideFloatingWidgetKeys = {
@@ -158,6 +161,9 @@ class ShowcaseView {
   /// Hides [globalFloatingActionWidget] for the provided showcase widgets.
   List<GlobalKey> hideFloatingActionWidgetForShowcase;
 
+  /// Configuration for the progress indicator.
+  final ProgressIndicatorConfig progressIndicatorConfig;
+
   /// Internal list to store showcase widget keys.
   List<GlobalKey>? _ids;
 
@@ -193,6 +199,12 @@ class ShowcaseView {
 
   /// Returns whether showcase is currently running or not.
   bool get isShowcaseRunning => getActiveShowcaseKey != null;
+
+  /// Returns the current showcase index (0-based) or null if no showcase is active.
+  int? get currentShowcaseIndex => _activeWidgetId;
+
+  /// Returns the total number of showcases in the current sequence.
+  int get totalShowcaseCount => _ids?.length ?? 0;
 
   /// Returns list of showcase controllers for current active showcase.
   List<ShowcaseController> get _getCurrentActiveControllers {
@@ -296,9 +308,30 @@ class ShowcaseView {
   FloatingActionBuilderCallback? getFloatingActionWidget(
     GlobalKey showcaseKey,
   ) {
-    return _hideFloatingWidgetKeys[showcaseKey] ?? false
-        ? null
-        : globalFloatingActionWidget;
+    // If the widget is hidden for this key, return null
+    if (_hideFloatingWidgetKeys[showcaseKey] ?? false) {
+      return null;
+    }
+
+    // If no global floating action widget is configured, return null
+    if (globalFloatingActionWidget == null) {
+      return null;
+    }
+
+    // If progress indicator is enabled, wrap the floating action widget with progress indicator
+    if (progressIndicatorConfig.enabled && totalShowcaseCount > 1) {
+      return (context) {
+        final originalWidget = globalFloatingActionWidget!(context);
+        return ShowcaseFloatingActionWidget(
+          showcaseView: this,
+          originalFloatingWidget: originalWidget,
+          progressPosition: progressIndicatorConfig.position,
+        );
+      };
+    }
+
+    // Return the original floating action widget
+    return globalFloatingActionWidget;
   }
 
   void _startShowcase(
@@ -493,7 +526,8 @@ class ShowcaseView {
         listEquals(
           hideFloatingActionWidgetForShowcase,
           other.hideFloatingActionWidgetForShowcase,
-        );
+        ) &&
+        progressIndicatorConfig == other.progressIndicatorConfig;
   }
 
   @override
@@ -518,6 +552,7 @@ class ShowcaseView {
       globalTooltipActions,
       globalFloatingActionWidget,
       hideFloatingActionWidgetForShowcase,
+      progressIndicatorConfig,
     ]);
   }
 }

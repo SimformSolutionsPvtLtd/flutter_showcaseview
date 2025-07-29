@@ -5,10 +5,12 @@ please read these instructions carefully.
 
 ## Contribution types
 
+
 ### Bug Reports
 
 - If you find a bug, please first report it using [Github issues].
-  - First check if there is not already an issue for it; duplicated issues will be closed.
+    - First check if there is not already an issue for it; duplicated issues will be closed.
+
 
 ### Bug Fix
 
@@ -19,24 +21,28 @@ please read these instructions carefully.
 - Write `Fixes #xxxx` in your PR text, where xxxx is the issue number (if there is one).
 - Include a test that isolates the bug and verifies that it was fixed.
 
+
 ### New Features
 
 - If you'd like to add a feature to the library that doesn't already exist, feel free to describe
   the feature in a new [GitHub issue].
-  - You can also join us on [GitHub Discussion] to discuss some initials thoughts.
+    - You can also join us on [GitHub Discussion] to discuss some initials thoughts.
 - If you'd like to implement the new feature, please wait for feedback from the project maintainers
   before spending too much time writing the code. In some cases, enhancements may not align well
   with the project future development direction.
 - Implement the code for the new feature and please read the [How To](#how-to-contribute).
 
+
 ### Documentation & Miscellaneous
 
 - If you have suggestions for improvements to the documentation, tutorial or examples (or something
   else), we would love to hear about it.
-- As always, first file a [Github issue].
+- As always first file a [Github issue].
 - Implement the changes to the documentation, please read the [How To](#how-to-contribute).
 
+
 ## How To Contribute
+
 
 ### Requirements
 
@@ -54,6 +60,7 @@ If the contribution doesn't meet these criteria, a maintainer will discuss it wi
 or PR. You can still continue to add more commits to the branch you have sent the Pull Request from
 and it will be automatically reflected in the PR.
 
+
 ## Open an issue and fork the repository
 
 - If it is a bigger change or a new feature, first of all
@@ -61,6 +68,7 @@ and it will be automatically reflected in the PR.
 - [Fork the project][fork guide] on GitHub.
 - Clone the forked repository to your local development machine
   (e.g. `git clone git@github.com:<YOUR_GITHUB_USER>/flutter_showcaseview.git`).
+
 
 ### Performing changes
 
@@ -70,6 +78,7 @@ and it will be automatically reflected in the PR.
   (e.g. `git commit -m 'Fixes duplicate key found in example'`).
 - Push your new branch to your own fork into the same remote branch
   (e.g. `git push origin my-username.my-new-feature`, replace `origin` if you use another remote.)
+
 
 ### Breaking changes
 
@@ -86,6 +95,7 @@ Example (if the current version is v1.3.0):
 @Deprecated('Will be removed in v1.5.0, use nonDeprecatedFeature() instead')
 void deprecatedFeature() {}
 ```
+
 
 ### Open a pull request
 
@@ -120,9 +130,11 @@ Examples of PR titles:
 - test: 🚨 Add unit test for `ToolTipWidget`
 - refactor: 🔨 Optimize the structure of the example
 
+
 ## Maintainers
 
 These instructions are for the maintainers of ShowCaseView.
+
 
 ### Merging a pull request
 
@@ -135,6 +147,7 @@ All the default text should be removed from the commit message and the PR descri
 instructions from the "Migration instruction" (if the PR is breaking) should be copied into the
 commit message.
 
+
 ### Creating a release
 
 There are a few things to think about when doing a release:
@@ -146,11 +159,13 @@ There are a few things to think about when doing a release:
   There should be migration docs on each PR, if they haven't been copied to the commit message.
 - Create a PR containing the updated changelog and `pubspec.yaml` files.
 
+
 [GitHub issue]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/new
 [GitHub issues]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/new
 [GitHub Discussion]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/discussions
 [style guide]: https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo
 [test writing guide]: https://docs.flutter.dev/cookbook/testing/unit/introduction
+[pubspec doc]: https://dart.dev/tools/pub/pubspec
 [conventional commit]: https://www.conventionalcommits.org
 [fork guide]: https://guides.github.com/activities/forking/#fork
 [PRs]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pulls

@@ -1,6 +1,6 @@
 ## [5.0.0] - (UnRelease)
 
-- Feature - Added progress indicator support for showcase sequences. Displays current step progress integrated with floating action widgets for better UX. Customizable appearance and positioning through `ProgressIndicatorConfig`.
+- Feature [#557](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/557) - Added progress indicator support for showcase sequences. Displays current step progress integrated with floating action widgets for better UX. Customizable appearance and positioning through `ProgressIndicatorConfig`.
 - Feature [#500](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/500) -
   Added `onDismiss` callback in `ShowCaseWidget` which will trigger whenever `onDismiss` method is
   called.
@@ -37,19 +37,17 @@
   `toolTipMargin` support for `Showcase.withWidget`
 - Feature [#520](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/520) - Added
   `targetTooltipGap` to manage space between tooltip and target widget
-- Improvement [#530](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/530) -
+- Improvement [#530](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/530) - 
   Upgraded minimum dart sdk version to 3.0.0 and utilised Dart 3 features accordingly.
-- Deprecate [#531](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/531) -
-  Update deprecated `ShowCaseWidget` removal version.
+- Deprecate [#531](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/531) - 
+  Update deprecated `ShowCaseWidget` removal version. 
 - Improvement [#505](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/505) -
   Fixed example app to run in flutter version `v3.32.5` .
 
 ## [4.0.1]
-
-- Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue
+- Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 
 
 ## [4.0.0]
-
 - [BREAKING] Fixed [#457](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/457) - titleAlignment property does not work
 - Feature [#466](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/466) - Added Action widget for tooltip
 - Feature [#475](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/475) - Add
@@ -65,7 +63,6 @@
 - Fixed [#464](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/464) - StateError Bad state: RenderBox was not laid out: RenderTransform
 
 ## [3.0.0]
-
 - [BREAKING] Fixed [#434](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/434) removed deprecated text style after Flutter 3.22 follow [migration guide](https://docs.flutter.dev/release/breaking-changes/3-19-deprecations#texttheme)
 - Updated minimum support to dart sdk 2.18.0
 - Fixed [#449](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/449) - Null check operator used on a null value
@@ -73,12 +70,10 @@
 - Fixed [#435](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/435) - Extra padding when add targetShapeBorder
 
 ## [2.1.1]
-
 - Fixed [#425](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/425) - Unhandled breaking change in v2.1.0
 - Fixed [#428](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/428) - _ShowcaseState.recalculateRootWidgetSize null value
 
 ## [2.1.0]
-
 - Feature [#420](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/420) - Dart SDK Upgrade
 - Fixed [#419](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/419) - Suppress Text Scale Factor Warning
 - Improvement [#413](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/413) - Improved `Showcase` class
@@ -92,18 +87,15 @@
 - Fixed [#383](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/383) - Targeted widget focusing issue when we applying size constraint on root widget(MaterialApp).
 
 ## [2.0.3]
-
 - Feature [#148](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/148) - Add feasibility to add `textDirection` of `title` and `description`.
 - Feature [#272](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/272) - Add barrier click callback.
 - Fixed [#360](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/360) - child constructor invocation to get rid out of flutter lint warning.
 
 ## [2.0.2]
-
 - Fixed [#335](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/335) - Flutter inspector makes screen grey
 - Fixed [#346](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/346) - Dont respond to any clicks in target.
 
 ## [2.0.1]
-
 - Feature [#306](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/306) - Added support of manual vertical tooltip position.
 - Fixed [#318](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/318) - Add support for enable/disable showcase globally.
 - Fixed [#316](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/316) - Add title and description padding
@@ -113,7 +105,6 @@
 - Add PR title validation workflow
 
 ## [2.0.0+1]
-
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/261) - Feature added to enable/disable default gesture of ShowcaseView child using `disableDefaultTargetGestures` parameter
 - Fixed [#206](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/206) - getLeft and getRight return wrong result when in middle with a little offset
 - Fixed issue of duplicate key found in example.
@@ -124,7 +115,6 @@
 - Updated parameter name of `ShowCaseWidget` and `Showcase` class
 
 ## [1.1.8]
-
 - Fixed [#237](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/237) - Feature added to enable/disable overlay click using `disableBarrierInteraction` parameters
 - ToolTip BorderRadius setting support
 
@@ -196,20 +186,20 @@
 
 ## [0.1.5]
 
-- Refactor usage of deprecated methods
-- Add support for `disableAnimation` option.
+* Refactor usage of deprecated methods
+* Add support for `disableAnimation` option.
 
-## [0.1.4] - Added onFinish method [#17](https://github.com/simformsolutions/flutter_showcaseview/issues/17)
+## [0.1.4] - Added onFinish method [#17](https://github.com/simformsolutions/flutter_showcaseview/issues/17).
 
 ## [0.1.3] - Added feature
 
 Updated syntax to pass new context to ShowCaseWidget
 Added onTargetTap callback feature [#10](https://github.com/simformsolutions/flutter_showcaseview/issues/10).
 
-## [0.1.2] - Fixed issue [#6](https://github.com/simformsolutions/flutter_showcaseview/issues/6)
+## [0.1.2] - Fixed issue [#6](https://github.com/simformsolutions/flutter_showcaseview/issues/6).
 
-## [0.1.1] - Fixed maintenance issues
+## [0.1.1] - Fixed maintenance issues.
 
-## [0.1.0] - Initial release on 22nd Augest, 2019
+## [0.1.0] - Initial release on 22nd Augest, 2019.
 
-- First release.
+* First release.

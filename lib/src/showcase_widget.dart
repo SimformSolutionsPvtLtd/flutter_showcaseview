@@ -274,7 +274,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   /// [delay] is optional and it will be used to delay the start of showcase
   /// which is useful when animation may take some time to complete.
   ///
-  /// Refer this issue https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/378
+  /// Refer this issue https://github.com/SimformSolutionsPvtLtd/showcaseview/issues/378
   @Deprecated(
     'This will be removed in v6.0.0. please use '
     '`ShowcaseView.get().startShowCase` instead',

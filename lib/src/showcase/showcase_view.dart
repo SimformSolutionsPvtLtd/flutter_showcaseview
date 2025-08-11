@@ -173,6 +173,12 @@ class ShowcaseView {
   /// Map to store keys for which floating action widget should be hidden.
   late final Map<GlobalKey, bool> _hideFloatingWidgetKeys;
 
+  /// Stores functions to call when a onFinish event occurs.
+  final List<VoidCallback> _onFinishCallbacks = [];
+
+  /// Stores functions to call when a onDismiss event occurs.
+  final List<OnDismissCallback> _onDismissCallbacks = [];
+
   /// Returns whether showcase is completed or not.
   bool get isShowCaseCompleted => _ids == null && _activeWidgetId == null;
 
@@ -258,8 +264,13 @@ class ShowcaseView {
   void dismiss() {
     final idDoesNotExist =
         _activeWidgetId == null || (_ids?.length ?? -1) <= _activeWidgetId!;
+    final dismissedAtKey = idDoesNotExist ? null : _ids?[_activeWidgetId!];
 
-    onDismiss?.call(idDoesNotExist ? null : _ids?[_activeWidgetId!]);
+    onDismiss?.call(dismissedAtKey);
+    for (final callback in _onDismissCallbacks) {
+      callback.call(dismissedAtKey);
+    }
+
     if (!_mounted) return;
 
     _cleanupAfterSteps();
@@ -273,6 +284,9 @@ class ShowcaseView {
     ShowcaseService.instance.unregister(scope: scope);
     _mounted = false;
     _cancelTimer();
+
+    _onFinishCallbacks.clear();
+    _onDismissCallbacks.clear();
   }
 
   /// Updates the overlay to reflect current showcase state.
@@ -299,6 +313,26 @@ class ShowcaseView {
     return _hideFloatingWidgetKeys[showcaseKey] ?? false
         ? null
         : globalFloatingActionWidget;
+  }
+
+  /// Adds a listener that will be called when the showcase tour is finished.
+  void addOnFinishCallback(VoidCallback listener) {
+    _onFinishCallbacks.add(listener);
+  }
+
+  /// Removes a listener that was previously added via [addOnFinishCallback].
+  void removeOnFinishCallback(VoidCallback listener) {
+    _onFinishCallbacks.remove(listener);
+  }
+
+  /// Adds a listener that will be called when the showcase tour is dismissed.
+  void addOnDismissCallback(OnDismissCallback listener) {
+    _onDismissCallbacks.add(listener);
+  }
+
+  /// Removes a listener that was previously added via [addOnDismissCallback].
+  void removeOnDismissCallback(OnDismissCallback listener) {
+    _onDismissCallbacks.remove(listener);
   }
 
   void _startShowcase(
@@ -345,6 +379,9 @@ class ShowcaseView {
         if (_activeWidgetId! >= _ids!.length) {
           _cleanupAfterSteps();
           onFinish?.call();
+          for (final callback in _onFinishCallbacks) {
+            callback.call();
+          }
         } else {
           // Add a short delay before starting the next showcase to ensure proper state update
           // Then start the new showcase

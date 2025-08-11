@@ -30,6 +30,7 @@ import '../tooltip/tooltip.dart';
 import '../utils/overlay_manager.dart';
 import '../utils/target_position_service.dart';
 import '../widget/floating_action_widget.dart';
+import '../widget/showcase_floating_action_widget.dart';
 import '../widget/tooltip_action_button_widget.dart';
 import 'showcase.dart';
 import 'showcase_service.dart';
@@ -428,8 +429,31 @@ class ShowcaseController {
 
   /// Retrieves the floating action widget if available. Prefers local
   /// configuration over global when available.
-  FloatingActionWidget? get _getFloatingActionWidget =>
-      config.floatingActionWidget ?? globalFloatingActionWidget;
+  ///
+  /// If progress indicators are enabled and the showcase has a local floating
+  /// action widget, it will be wrapped with progress indicator functionality.
+  FloatingActionWidget? get _getFloatingActionWidget {
+    // Check if there's a local floating action widget
+    if (config.floatingActionWidget != null) {
+      final originalWidget = config.floatingActionWidget!;
+
+      // Apply progress indicator wrapping if enabled and multiple showcases exist
+      final progressConfig = showcaseView.progressIndicatorConfig;
+      if (progressConfig.enabled && showcaseView.totalShowcaseCount > 1) {
+        return ShowcaseFloatingActionWidget(
+          showcaseView: showcaseView,
+          originalFloatingWidget: originalWidget,
+          progressPosition: progressConfig.position,
+        );
+      }
+
+      // Return the original widget if no progress indicator needed
+      return originalWidget;
+    }
+
+    // Fall back to global floating action widget (already wrapped if needed)
+    return globalFloatingActionWidget;
+  }
 
   @override
   int get hashCode => Object.hash(id, key);

@@ -20,11 +20,27 @@ class _DetailState extends State<Detail> {
     // ShowcaseView then you can register new ShowcaseView
     ShowcaseView.register(scope: scopeName);
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ShowcaseView.getNamed(scopeName).startShowCase(
-        [_one],
-        delay: const Duration(milliseconds: 200),
-      ),
+      (_) => ShowcaseView.getNamed(scopeName)
+        ..startShowCase([_one], delay: const Duration(milliseconds: 200))
+        ..addOnFinishCallback(_onShowcaseFinished)
+        ..addOnDismissCallback(_onShowcaseDismissed),
     );
+  }
+
+  @override
+  void dispose() {
+    ShowcaseView.getNamed(scopeName)
+      ..removeOnFinishCallback(_onShowcaseFinished)
+      ..removeOnDismissCallback(_onShowcaseDismissed);
+    super.dispose();
+  }
+
+  void _onShowcaseFinished() {
+    debugPrint("Showcase tour finished!");
+  }
+
+  void _onShowcaseDismissed(GlobalKey? dismissedAt) {
+    debugPrint("Showcase dismissed $dismissedAt");
   }
 
   @override
@@ -51,6 +67,26 @@ class _DetailState extends State<Detail> {
               key: _one,
               title: 'Title',
               description: 'Desc',
+              floatingActionWidget: FloatingActionWidget(
+                left: 16,
+                bottom: 16,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xffEE5366),
+                    ),
+                    onPressed: ShowcaseView.getNamed(scopeName).dismiss,
+                    child: const Text(
+                      'Close Showcase',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               child: InkWell(
                 onTap: () {},
                 child: const Text(

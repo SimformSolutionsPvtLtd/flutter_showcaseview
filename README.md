@@ -344,13 +344,17 @@ subtitle: Text('Try swiping this item'
 
 ## Functions of `ShowCaseView.get()` and `ShowCaseView.getNamed(scopeName)`:
 
-| Function Name | Description                                         |
-|---------------|-----------------------------------------------------|
-| startShowCase | Starting the showcase                               |
-| next          | Starts next showcase                                |
-| previous      | Starts previous showcase                            |
-| dismiss       | Dismisses all showcases                             |
-| unRegister    | UnRegister all showcases and the showcaseView scope |
+| Function Name           | Description                                         |
+|-------------------------|-----------------------------------------------------|
+| startShowCase           | Starting the showcase                               |
+| next                    | Starts next showcase                                |
+| previous                | Starts previous showcase                            |
+| dismiss                 | Dismisses all showcases                             |
+| addOnFinishCallback     | Listener when showcase is finished                  |
+| removeOnFinishCallback  | Clears OnFinishCallback                             |
+| addOnDismissCallback    | Listener when showcase is dismissed                 |
+| removeOnDismissCallback | Clears OnDismissCallback                            |
+| unRegister              | UnRegister all showcases and the showcaseView scope |
 
 ## Main Contributors
 

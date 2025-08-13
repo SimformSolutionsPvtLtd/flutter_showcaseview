@@ -40,7 +40,11 @@
 - Deprecate [#531](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/531) - 
   Update deprecated `ShowCaseWidget` removal version. 
 - Improvement [#505](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/505) -
-  Fixed example app to run in flutter version `v3.32.5` .
+  Fixed example app to run in flutter version `v3.32.5`.
+- Breaking [#541](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/541) - 
+  Removed height and width from `Showcase.withWidget` constructor, as it is not required anymore.
+- Improvement [#555](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/555) 
+  Expose `onFinish` callback via ShowCaseView.get.
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

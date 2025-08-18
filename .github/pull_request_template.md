@@ -45,5 +45,5 @@ Closes #1234
 !-->
 
 <!-- Links -->
-[Contributor Guide]: https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/blob/master/CONTRIBUTING.md
+[Contributor Guide]: https://github.com/SimformSolutionsPvtLtd/showcaseview/blob/master/CONTRIBUTING.md
 [Conventional Commit]: https://conventionalcommits.org

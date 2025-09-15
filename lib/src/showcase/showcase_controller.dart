@@ -24,6 +24,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../models/flutter_inherited_data.dart';
 import '../models/linked_showcase_data_model.dart';
 import '../models/tooltip_action_config.dart';
 import '../tooltip/tooltip.dart';
@@ -97,6 +98,10 @@ class ShowcaseController {
 
   /// Global floating action widget to be displayed
   FloatingActionWidget? globalFloatingActionWidget;
+
+  /// Captured inherited widget data from showcase context
+  late final FlutterInheritedData inheritedData =
+      FlutterInheritedData.fromContext(_context);
 
   /// Returns the Showcase widget configuration.
   ///

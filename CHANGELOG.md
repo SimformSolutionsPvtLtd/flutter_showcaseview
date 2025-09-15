@@ -40,7 +40,9 @@
 - Deprecate [#531](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/531) - 
   Update deprecated `ShowCaseWidget` removal version. 
 - Improvement [#505](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/505) -
-  Fixed example app to run in flutter version `v3.32.5` .
+  Fixed example app to run in flutter version `v3.32.5`.
+- Fixed [#564](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/564) - 
+  Apply textScaler to tooltip widgets.
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

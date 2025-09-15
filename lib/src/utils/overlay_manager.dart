@@ -177,7 +177,7 @@ class OverlayManager {
       child: const Align(),
     );
 
-    return Stack(
+    final overlayChild = Stack(
       // This key is used to force rebuild the overlay when needed.
       // this key enables `_overlayEntry?.markNeedsBuild();` to detect that
       // output of the builder has changed.
@@ -201,6 +201,26 @@ class OverlayManager {
         ),
         ...controllers.expand((object) => object.tooltipWidgets),
       ],
+    );
+
+    final inheritedData = firstController.inheritedData;
+
+    // Wrap the child with captured themes to maintain the original context's
+    // theme. Captured themes are used as to cover cases where there are
+    // multiple themes in the widget tree.
+    final themedChild = inheritedData.capturedThemes.wrap(overlayChild);
+
+    // Wrap with other inherited widgets to maintain showcase's context's
+    // inherited values.
+    return Directionality(
+      textDirection: inheritedData.textDirection,
+      child: MediaQuery(
+        data: inheritedData.mediaQuery,
+        child: DefaultTextStyle(
+          style: inheritedData.textStyle,
+          child: themedChild,
+        ),
+      ),
     );
   }
 

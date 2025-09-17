@@ -599,8 +599,6 @@ class MailTile extends StatelessWidget {
                 if (showCaseDetail)
                   Showcase.withWidget(
                     key: showCaseKey!,
-                    height: 50,
-                    width: 150,
                     tooltipActionConfig: const TooltipActionConfig(
                       alignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,

@@ -395,28 +395,19 @@ class _MailPageState extends State<MailPage> {
         description: 'Click here to compose mail',
         targetBorderRadius: const BorderRadius.all(Radius.circular(16)),
         showArrow: false,
+        tooltipActionConfig: const TooltipActionConfig(
+          position: TooltipActionPosition.insideRight,
+          gapBetweenContentAndAction: 8,
+        ),
         tooltipActions: [
-          TooltipActionButton(
-              type: TooltipDefaultActionType.previous,
-              name: 'Back',
+          TooltipActionButton.custom(
+            button: GestureDetector(
               onTap: () {
-                // Write your code on button tap
-                ShowcaseView.get().previous();
+                ShowcaseView.get().dismiss();
               },
-              backgroundColor: Colors.pink.shade50,
-              textStyle: const TextStyle(
-                color: Colors.pink,
-              )),
-          const TooltipActionButton(
-            type: TooltipDefaultActionType.skip,
-            name: 'Close',
-            textStyle: TextStyle(
-              color: Colors.white,
-            ),
-            tailIcon: ActionButtonIcon(
-              icon: Icon(
+              child: const Icon(
                 Icons.close,
-                color: Colors.white,
+                color: Colors.black,
                 size: 15,
               ),
             ),

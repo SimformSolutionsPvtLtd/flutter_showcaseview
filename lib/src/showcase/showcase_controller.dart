@@ -307,7 +307,7 @@ class ShowcaseController {
               disableDefaultChildGestures: config.disableDefaultTargetGestures,
               targetPadding: config.targetPadding,
             ),
-            ToolTipWidget(
+            ToolTipWrapper(
               key: ValueKey(id),
               title: config.title,
               titleTextAlign: config.titleTextAlign,
@@ -398,8 +398,9 @@ class ShowcaseController {
         ? config.tooltipActions!
         : showcaseView.globalTooltipActions ?? [];
     final actionDataLength = actionData.length;
-    final lastAction = actionData.lastOrNull;
-    final actionGap = _getTooltipActionConfig().actionGap;
+    final actionConfig = _getTooltipActionConfig();
+    final actionGap = actionConfig.actionGap;
+    final areActionsInsideHorizontal = actionConfig.position.isInsideHorizontal;
 
     return [
       for (var i = 0; i < actionDataLength; i++)
@@ -407,9 +408,15 @@ class ShowcaseController {
             !actionData[i]
                 .hideActionWidgetForShowcase
                 .contains(config.showcaseKey))
+          // TODO: Switch to using spacing in [ActionWidget].
           Padding(
             padding: EdgeInsetsDirectional.only(
-              end: actionData[i] == lastAction ? 0 : actionGap,
+              end: i == (actionDataLength - 1) || areActionsInsideHorizontal
+                  ? 0
+                  : actionGap,
+              bottom: i == (actionDataLength - 1) || !areActionsInsideHorizontal
+                  ? 0
+                  : actionGap,
             ),
             child: TooltipActionButtonWidget(
               config: actionData[i],

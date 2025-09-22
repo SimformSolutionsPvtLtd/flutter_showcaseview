@@ -60,9 +60,9 @@ class Showcase extends StatefulWidget {
   /// ```
   const Showcase({
     required GlobalKey key,
-    required this.description,
     required this.child,
     this.title,
+    this.description,
     this.titleTextAlign = TextAlign.start,
     this.descriptionTextAlign = TextAlign.start,
     this.titleAlignment = Alignment.center,
@@ -116,6 +116,11 @@ class Showcase extends StatefulWidget {
         width = null,
         container = null,
         showcaseKey = key,
+        assert(
+          title != null || description != null,
+          "title and description both can't be null. If you don't want to "
+          "provide those then use Showcase.withWidget() constructor",
+        ),
         assert(
           targetTooltipGap >= 0,
           'targetTooltipGap must be greater than 0',
@@ -225,6 +230,11 @@ class Showcase extends StatefulWidget {
         titleTextDirection = null,
         descriptionTextDirection = null,
         showcaseKey = key,
+        assert(
+          container != null,
+          'A container widget must be provided with this constructor. If '
+          'default showcase is desired then use Showcase() constructor',
+        ),
         assert(
           targetTooltipGap >= 0,
           'targetTooltipGap must be greater than 0',

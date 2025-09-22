@@ -34,6 +34,7 @@ class TooltipActionConfig {
     this.position = TooltipActionPosition.inside,
     this.gapBetweenContentAndAction = 10,
     this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.mainAxisSize = MainAxisSize.max,
     this.textBaseline,
   }) : assert(
           crossAxisAlignment != CrossAxisAlignment.stretch,
@@ -60,6 +61,9 @@ class TooltipActionConfig {
   /// This must be set if using baseline alignment.
   final TextBaseline? textBaseline;
 
+  /// Defines the main axis size of action buttons of tooltip action widget.
+  final MainAxisSize mainAxisSize;
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -69,7 +73,8 @@ class TooltipActionConfig {
         position == other.position &&
         gapBetweenContentAndAction == other.gapBetweenContentAndAction &&
         crossAxisAlignment == other.crossAxisAlignment &&
-        textBaseline == other.textBaseline;
+        textBaseline == other.textBaseline &&
+        mainAxisSize == other.mainAxisSize;
   }
 
   @override
@@ -80,5 +85,6 @@ class TooltipActionConfig {
         gapBetweenContentAndAction,
         crossAxisAlignment,
         textBaseline,
+        mainAxisSize,
       ]);
 }

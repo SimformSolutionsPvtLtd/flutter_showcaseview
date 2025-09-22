@@ -124,10 +124,15 @@ enum TooltipPosition {
 
 /// Defines the positioning of action buttons relative to the tooltip content.
 ///
-/// This enum determines whether action buttons (like next, previous, skip buttons)
-/// should be placed:
-/// - Inside the tooltip container itself, appearing as part of the tooltip content
-/// - Outside the tooltip container, appearing as separate UI elements below/above the tooltip
+/// This enum determines whether action buttons (like next, previous, skip
+/// buttons) should be placed:
+/// - Inside the tooltip container itself, appearing as part of the tooltip
+/// content
+/// - Outside the tooltip container, appearing as separate UI elements
+/// below/above the tooltip
+///
+/// When inside, actions can be positioned at the bottom, left, or right of
+/// the tooltip content.
 ///
 /// The position affects the layout calculations, spacing, and visual appearance
 /// of the tooltip component within the showcase.
@@ -138,15 +143,41 @@ enum TooltipActionPosition {
   /// separate UI elements below/above the tooltip content.
   outside,
 
-  /// Places the action buttons inside the tooltip container.
+  /// Places the action buttons inside the tooltip container at the bottom.
   ///
   /// When this option is selected, the action buttons will be rendered as
-  /// part of the tooltip content, appearing within the same container.
-  inside;
+  /// part of the tooltip content, appearing within the same container at the
+  /// bottom.
+  inside,
 
-  bool get isInside => this == inside;
+  /// Places the action buttons inside the tooltip container on the left side.
+  ///
+  /// When this option is selected, the action buttons will be rendered as
+  /// part of the tooltip content, appearing within the same container on the
+  /// left side.
+  /// Actions will be arranged vertically.
+  insideLeft,
+
+  /// Places the action buttons inside the tooltip container on the right side.
+  ///
+  /// When this option is selected, the action buttons will be rendered as
+  /// part of the tooltip content, appearing within the same container on the
+  /// right side.
+  /// Actions will be arranged vertically.
+  insideRight;
+
+  bool get isInside =>
+      this == inside || this == insideLeft || this == insideRight;
 
   bool get isOutside => this == outside;
+
+  bool get isInsideHorizontal => this == insideLeft || this == insideRight;
+
+  bool get isInsideVertical => this == inside;
+
+  bool get isInsideLeft => this == insideLeft;
+
+  bool get isInsideRight => this == insideRight;
 }
 
 /// Defines the standard action types that can be used in tooltip action

@@ -44,18 +44,12 @@ class ActionWidget extends StatelessWidget {
   const ActionWidget({
     required this.children,
     required this.tooltipActionConfig,
-    required this.alignment,
-    required this.crossAxisAlignment,
     this.outsidePadding = EdgeInsets.zero,
-    this.width,
     super.key,
   });
 
   final TooltipActionConfig tooltipActionConfig;
   final List<Widget> children;
-  final double? width;
-  final MainAxisAlignment alignment;
-  final CrossAxisAlignment crossAxisAlignment;
   final EdgeInsets outsidePadding;
 
   @override
@@ -64,12 +58,21 @@ class ActionWidget extends StatelessWidget {
       type: MaterialType.transparency,
       child: Padding(
         padding: outsidePadding,
-        child: Row(
-          mainAxisAlignment: alignment,
-          crossAxisAlignment: crossAxisAlignment,
-          textBaseline: tooltipActionConfig.textBaseline,
-          children: children,
-        ),
+        child: tooltipActionConfig.position.isInsideHorizontal
+            ? Column(
+                mainAxisSize: tooltipActionConfig.mainAxisSize,
+                mainAxisAlignment: tooltipActionConfig.alignment,
+                crossAxisAlignment: tooltipActionConfig.crossAxisAlignment,
+                textBaseline: tooltipActionConfig.textBaseline,
+                children: children,
+              )
+            : Row(
+                mainAxisSize: tooltipActionConfig.mainAxisSize,
+                mainAxisAlignment: tooltipActionConfig.alignment,
+                crossAxisAlignment: tooltipActionConfig.crossAxisAlignment,
+                textBaseline: tooltipActionConfig.textBaseline,
+                children: children,
+              ),
       ),
     );
   }

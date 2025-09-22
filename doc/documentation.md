@@ -11,7 +11,7 @@ _**For live web demo, visit [ShowcaseView Web Example](https://simformsolutionsp
 ## Features
 
 - Guide user through your app by highlighting specific widget step by step.
-- Customize tooltips with titles, descriptions, and styling.
+- Customize tooltips with titles, descriptions, actions, and styling.
 - Handles scrolling the widget into view for showcasing.
 - Support for custom tooltip widgets.
 - Animation and transition effects for tooltip.
@@ -77,6 +77,8 @@ The package offers extensive customization options for:
 - Animation effects and durations.
 - Interactive controls.
 - Auto-scrolling behavior.
+- Tooltip action buttons (previous, next, skip) with customizable styling and positioning.
+- Floating action widgets for additional interactive elements during showcases.
 
 # Installation
 

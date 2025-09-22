@@ -43,6 +43,8 @@
   Fixed example app to run in flutter version `v3.32.5`.
 - Fixed [#564](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/564) - 
   Apply textScaler to tooltip widgets.
+- Improvement [#570](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/pull/570) - 
+  Enable tooltip actions to be placed horizontally inside the tooltip.
 
 ## [4.0.1]
 - Fixed [#493](https://github.com/SimformSolutionsPvtLtd/flutter_showcaseview/issues/493) - ShowCase.withWidget not showing issue 

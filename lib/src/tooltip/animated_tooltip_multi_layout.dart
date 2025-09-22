@@ -33,6 +33,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
     required this.screenSize,
     required this.hasSecondBox,
     required this.hasArrow,
+    required this.arrowAlignment,
     required this.gapBetweenContentAndAction,
     required this.toolTipSlideEndDistance,
     required this.position,
@@ -56,6 +57,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
   final Size screenSize;
   final bool hasSecondBox;
   final bool hasArrow;
+  final ArrowAlignment arrowAlignment;
   final double gapBetweenContentAndAction;
   final double toolTipSlideEndDistance;
   final Alignment? scaleAlignment;
@@ -77,6 +79,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
       screenSize: screenSize,
       hasSecondBox: hasSecondBox,
       hasArrow: hasArrow,
+      arrowAlignment: arrowAlignment,
       scaleAlignment: scaleAlignment,
       gapBetweenContentAndAction: gapBetweenContentAndAction,
       toolTipSlideEndDistance: toolTipSlideEndDistance,
@@ -103,6 +106,7 @@ class _AnimatedTooltipMultiLayout extends MultiChildRenderObjectWidget {
       ..screenSize = screenSize
       ..hasSecondBox = hasSecondBox
       ..hasArrow = hasArrow
+      ..arrowAlignment = arrowAlignment
       ..screenEdgePadding = screenEdgePadding
       ..toolTipSlideEndDistance = toolTipSlideEndDistance
       ..gapBetweenContentAndAction = gapBetweenContentAndAction

@@ -49,6 +49,7 @@ class _RenderPositionDelegate extends RenderBox
     required this.screenSize,
     required this.hasSecondBox,
     required this.hasArrow,
+    required this.arrowAlignment,
     required this.toolTipSlideEndDistance,
     required this.gapBetweenContentAndAction,
     required this.screenEdgePadding,
@@ -64,6 +65,7 @@ class _RenderPositionDelegate extends RenderBox
   Size screenSize;
   bool hasSecondBox;
   bool hasArrow;
+  ArrowAlignment arrowAlignment;
   double toolTipSlideEndDistance;
   double gapBetweenContentAndAction;
   double screenEdgePadding;
@@ -742,38 +744,158 @@ class _RenderPositionDelegate extends RenderBox
 
     const halfArrowWidth = Constants.arrowWidth * 0.5;
     const halfArrowHeight = Constants.arrowWidth * 0.5;
-    final halfTargetHeight = targetSize.height * 0.5;
-    final halfTargetWidth = targetSize.width * 0.5;
 
-    // Position arrow differently based on tooltip direction
+    // Calculate arrow position based on alignment
     switch (tooltipPosition) {
       case TooltipPosition.top:
         // Arrow points down from bottom of tooltip
+        final arrowX = _calculateArrowX(
+          alignment: arrowAlignment,
+          halfArrowWidth: halfArrowWidth,
+          targetPosition: targetPosition,
+          targetSize: targetSize,
+          tooltipPosition: Offset(_xOffset, _yOffset),
+          tooltipSize: _toolTipBoxSize,
+        );
         arrowBoxParentData.offset = Offset(
-          targetPosition.dx + halfTargetWidth - halfArrowWidth,
+          arrowX,
           _yOffset + _toolTipBoxSize.height - 2,
         );
 
       case TooltipPosition.bottom:
         // Arrow points up from top of tooltip
+        final arrowX = _calculateArrowX(
+          alignment: arrowAlignment,
+          halfArrowWidth: halfArrowWidth,
+          targetPosition: targetPosition,
+          targetSize: targetSize,
+          tooltipPosition: Offset(_xOffset, _yOffset),
+          tooltipSize: _toolTipBoxSize,
+        );
         arrowBoxParentData.offset = Offset(
-          targetPosition.dx + halfTargetWidth - halfArrowWidth,
+          arrowX,
           _yOffset - Constants.arrowHeight + 1,
         );
 
       case TooltipPosition.left:
         // Arrow points right from right side of tooltip
+        final arrowY = _calculateArrowY(
+          alignment: arrowAlignment,
+          halfArrowWidth: halfArrowWidth,
+          targetSize: targetSize,
+          tooltipSize: _toolTipBoxSize,
+          targetPosition: targetPosition,
+          tooltipPosition: Offset(_xOffset, _yOffset),
+        );
         arrowBoxParentData.offset = Offset(
           _xOffset + _toolTipBoxSize.width - halfArrowHeight + 4,
-          targetPosition.dy + halfTargetHeight - halfArrowWidth + 4,
+          arrowY,
         );
 
       case TooltipPosition.right:
         // Arrow points left from left side of tooltip
+        final arrowY = _calculateArrowY(
+          alignment: arrowAlignment,
+          halfArrowWidth: halfArrowWidth,
+          targetSize: targetSize,
+          tooltipSize: _toolTipBoxSize,
+          targetPosition: targetPosition,
+          tooltipPosition: Offset(_xOffset, _yOffset),
+        );
         arrowBoxParentData.offset = Offset(
           _xOffset - Constants.arrowHeight - 4,
-          targetPosition.dy + halfTargetHeight - halfArrowHeight + 4,
+          arrowY,
         );
+    }
+  }
+
+  /// Calculate horizontal arrow position based on alignment for top/bottom tooltips
+  double _calculateArrowX({
+    required ArrowAlignment alignment,
+    required double halfArrowWidth,
+    required Size targetSize,
+    required Size tooltipSize,
+    required Offset targetPosition,
+    required Offset tooltipPosition,
+  }) {
+    const padding = 8; // Minimum padding from tooltip edges
+    final tooltipEnd = tooltipPosition.dx + tooltipSize.width;
+    final targetEnd = targetPosition.dx + targetSize.width;
+    final arrowEndWithPadding = halfArrowWidth * 2 + padding;
+    final targetCenter = targetPosition.dx + (targetSize.width * 0.5);
+
+    switch (alignment) {
+      case ArrowAlignment.start:
+        // Position arrow at the start (left) of target bounds, not tooltip
+        final proposedX = targetPosition.dx;
+        return proposedX
+            .clamp(
+              tooltipPosition.dx + padding,
+              tooltipEnd - padding,
+            )
+            .clamp(targetPosition.dx + padding, targetEnd - padding);
+
+      case ArrowAlignment.center:
+        // Position arrow centered relative to target (default behavior)
+        return (targetCenter - halfArrowWidth).clamp(
+          tooltipPosition.dx + halfArrowWidth,
+          tooltipEnd - halfArrowWidth,
+        );
+
+      case ArrowAlignment.end:
+        // Position arrow at the end (right) of target bounds, not tooltip
+        final proposedX = targetEnd;
+        return proposedX
+            .clamp(
+              tooltipPosition.dx + arrowEndWithPadding,
+              tooltipEnd - arrowEndWithPadding,
+            )
+            .clamp(targetPosition.dx + padding, targetEnd - padding);
+    }
+  }
+
+  /// Calculate vertical arrow position based on alignment for left/right tooltips
+  double _calculateArrowY({
+    required ArrowAlignment alignment,
+    required double halfArrowWidth,
+    required Size targetSize,
+    required Size tooltipSize,
+    required Offset targetPosition,
+    required Offset tooltipPosition,
+  }) {
+    const padding = 8; // Minimum padding from tooltip edges
+    final tooltipEnd = tooltipPosition.dy + tooltipSize.height;
+    final targetEnd = targetPosition.dy + targetSize.height;
+    final arrowEndWithPadding = (halfArrowWidth * 2) + padding;
+    final targetCenter = targetPosition.dy + (targetSize.height * 0.5);
+
+    switch (alignment) {
+      case ArrowAlignment.start:
+        // Position arrow at the start (top) of target bounds, not tooltip
+        final proposedY = targetPosition.dy;
+        return proposedY
+            .clamp(
+              tooltipPosition.dy + (halfArrowWidth + 4),
+              tooltipEnd - (padding + 2),
+            )
+            .clamp(targetPosition.dy + padding, targetEnd - padding);
+
+      case ArrowAlignment.center:
+        // Position arrow centered relative to target (default behavior)
+        return (targetCenter - halfArrowWidth).clamp(
+          tooltipPosition.dy + halfArrowWidth,
+          tooltipEnd - halfArrowWidth,
+        );
+
+      case ArrowAlignment.end:
+        // Position arrow at the end (bottom) of target bounds, not tooltip
+        final proposedY = targetEnd;
+        return proposedY
+            .clamp(
+              tooltipPosition.dy + padding,
+              tooltipEnd - (halfArrowWidth * 2 + 2),
+            )
+            .clamp(targetPosition.dy + padding, targetEnd - padding);
     }
   }
 

@@ -149,6 +149,30 @@ enum TooltipActionPosition {
   bool get isOutside => this == outside;
 }
 
+/// Defines the alignment of the arrow relative to the tooltip.
+///
+/// This enum determines where the arrow should be positioned along the edge
+/// of the tooltip when pointing to the target widget.
+enum ArrowAlignment {
+  /// Positions the arrow at the start of the tooltip edge.
+  ///
+  /// - For top/bottom tooltips: arrow appears at the left edge
+  /// - For left/right tooltips: arrow appears at the top edge
+  start,
+
+  /// Positions the arrow at the center of the tooltip edge.
+  ///
+  /// This is the default behavior where the arrow is centered relative
+  /// to the target widget.
+  center,
+
+  /// Positions the arrow at the end of the tooltip edge.
+  ///
+  /// - For top/bottom tooltips: arrow appears at the right edge
+  /// - For left/right tooltips: arrow appears at the bottom edge
+  end;
+}
+
 /// Defines the standard action types that can be used in tooltip action
 /// buttons.
 ///

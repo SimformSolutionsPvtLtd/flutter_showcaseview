@@ -47,6 +47,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.tooltipBackgroundColor,
     required this.textColor,
     required this.showArrow,
+    required this.arrowAlignment,
     required this.onTooltipTap,
     required this.movingAnimationDuration,
     required this.titleTextAlign,
@@ -87,6 +88,7 @@ class ToolTipWidget extends StatefulWidget {
   final Color tooltipBackgroundColor;
   final Color textColor;
   final bool showArrow;
+  final ArrowAlignment arrowAlignment;
   final VoidCallback? onTooltipTap;
   final EdgeInsets tooltipPadding;
   final Duration movingAnimationDuration;
@@ -246,6 +248,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         screenSize: widget.showcaseController.rootWidgetSize ??
             MediaQuery.sizeOf(context),
         hasArrow: widget.showArrow,
+        arrowAlignment: widget.arrowAlignment,
         targetPadding: widget.targetPadding,
         scaleAlignment: widget.scaleAnimationAlignment,
         hasSecondBox: widget.tooltipActions.isNotEmpty &&

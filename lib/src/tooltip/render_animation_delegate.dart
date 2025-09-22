@@ -43,6 +43,7 @@ class _RenderAnimationDelegate extends _RenderPositionDelegate {
     required super.screenSize,
     required super.hasSecondBox,
     required super.hasArrow,
+    required super.arrowAlignment,
     required super.gapBetweenContentAndAction,
     required super.toolTipSlideEndDistance,
     required super.screenEdgePadding,

@@ -78,6 +78,7 @@ class Showcase extends StatefulWidget {
     this.textColor = Colors.black,
     this.scrollLoadingWidget = Constants.defaultProgressIndicator,
     this.showArrow = true,
+    this.arrowAlignment = ArrowAlignment.center,
     this.onTargetClick,
     this.disposeOnTap,
     this.autoPlayDelay,
@@ -203,6 +204,7 @@ class Showcase extends StatefulWidget {
     this.toolTipMargin = 14,
     this.targetTooltipGap = 10,
   })  : showArrow = false,
+        arrowAlignment = ArrowAlignment.center,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
         scaleAnimationCurve = Curves.decelerate,
@@ -335,6 +337,16 @@ class Showcase extends StatefulWidget {
   ///
   /// Default to `true`
   final bool showArrow;
+
+  /// Defines the alignment of the arrow along the tooltip edge.
+  ///
+  /// Controls where the arrow is positioned relative to the tooltip:
+  /// - [ArrowAlignment.start]: Arrow at the start of the tooltip edge
+  /// - [ArrowAlignment.center]: Arrow centered (default behavior)
+  /// - [ArrowAlignment.end]: Arrow at the end of the tooltip edge
+  ///
+  /// Default to [ArrowAlignment.center]
+  final ArrowAlignment arrowAlignment;
 
   /// Height of [container]
   final double? height;

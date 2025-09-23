@@ -136,6 +136,10 @@ class Showcase extends StatefulWidget {
           onBarrierClick == null || disableBarrierInteraction == false,
           "can't use `onBarrierClick` & `disableBarrierInteraction` property "
           'at same time',
+        ),
+        assert(
+          title != null || description != null,
+          'title or description can\'t be null. Provide at least one of them',
         );
 
   /// Creates a showcase with a completely custom tooltip widget.

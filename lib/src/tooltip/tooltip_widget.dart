@@ -48,6 +48,7 @@ class ToolTipWidget extends StatefulWidget {
     required this.textColor,
     required this.showArrow,
     required this.arrowAlignment,
+    required this.arrowPadding,
     required this.onTooltipTap,
     required this.movingAnimationDuration,
     required this.titleTextAlign,
@@ -89,6 +90,7 @@ class ToolTipWidget extends StatefulWidget {
   final Color textColor;
   final bool showArrow;
   final ArrowAlignment arrowAlignment;
+  final double? arrowPadding;
   final VoidCallback? onTooltipTap;
   final EdgeInsets tooltipPadding;
   final Duration movingAnimationDuration;
@@ -249,6 +251,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             MediaQuery.sizeOf(context),
         hasArrow: widget.showArrow,
         arrowAlignment: widget.arrowAlignment,
+        arrowPadding: widget.arrowPadding,
+        tooltipBorderRadius: widget.tooltipBorderRadius,
         targetPadding: widget.targetPadding,
         scaleAlignment: widget.scaleAnimationAlignment,
         hasSecondBox: widget.tooltipActions.isNotEmpty &&

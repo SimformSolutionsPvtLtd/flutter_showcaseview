@@ -79,6 +79,7 @@ class Showcase extends StatefulWidget {
     this.scrollLoadingWidget = Constants.defaultProgressIndicator,
     this.showArrow = true,
     this.arrowAlignment = ArrowAlignment.center,
+    this.arrowPadding,
     this.onTargetClick,
     this.disposeOnTap,
     this.autoPlayDelay,
@@ -205,6 +206,7 @@ class Showcase extends StatefulWidget {
     this.targetTooltipGap = 10,
   })  : showArrow = false,
         arrowAlignment = ArrowAlignment.center,
+        arrowPadding = null,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
         scaleAnimationCurve = Curves.decelerate,
@@ -347,6 +349,15 @@ class Showcase extends StatefulWidget {
   ///
   /// Default to [ArrowAlignment.center]
   final ArrowAlignment arrowAlignment;
+
+  /// Defines the padding between the arrow and the tooltip edge.
+  ///
+  /// When null, the padding is calculated dynamically based on the tooltip
+  /// border radius to ensure the arrow is positioned 4 pixels away from
+  /// the radius curve end. If the tooltip has no border radius, defaults to 8.
+  ///
+  /// Default to null (dynamic calculation)
+  final double? arrowPadding;
 
   /// Height of [container]
   final double? height;

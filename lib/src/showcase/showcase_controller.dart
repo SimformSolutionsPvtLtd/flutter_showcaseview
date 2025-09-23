@@ -322,6 +322,7 @@ class ShowcaseController {
               textColor: config.textColor,
               showArrow: config.showArrow,
               arrowAlignment: config.arrowAlignment,
+              arrowPadding: config.arrowPadding,
               onTooltipTap: config.disposeOnTap ?? config.onToolTipClick != null
                   ? _getOnTooltipTap
                   : null,

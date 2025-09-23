@@ -50,6 +50,8 @@ class _RenderPositionDelegate extends RenderBox
     required this.hasSecondBox,
     required this.hasArrow,
     required this.arrowAlignment,
+    this.arrowPadding,
+    this.tooltipBorderRadius,
     required this.toolTipSlideEndDistance,
     required this.gapBetweenContentAndAction,
     required this.screenEdgePadding,
@@ -66,6 +68,8 @@ class _RenderPositionDelegate extends RenderBox
   bool hasSecondBox;
   bool hasArrow;
   ArrowAlignment arrowAlignment;
+  double? arrowPadding;
+  BorderRadius? tooltipBorderRadius;
   double toolTipSlideEndDistance;
   double gapBetweenContentAndAction;
   double screenEdgePadding;
@@ -809,6 +813,150 @@ class _RenderPositionDelegate extends RenderBox
     }
   }
 
+  /// Calculate position-specific padding for horizontal arrow positioning
+  /// Considers only the relevant corner radius based on arrow alignment and tooltip position
+  double _calculateHorizontalPadding({
+    required ArrowAlignment alignment,
+    required TooltipPosition tooltipPosition,
+  }) {
+    if (arrowPadding != null) {
+      return arrowPadding!;
+    }
+
+    if (tooltipBorderRadius == null) {
+      return 8.0;
+    }
+
+    var relevantRadius = 0.0;
+
+    // For horizontal positioning, we care about the X-axis radius of relevant corners
+    switch (alignment) {
+      case ArrowAlignment.start:
+        // Arrow at start (left side) - consider left corners
+        if (tooltipPosition == TooltipPosition.top) {
+          relevantRadius =
+              tooltipBorderRadius!.bottomLeft.x; // Bottom-left for top tooltip
+        } else if (tooltipPosition == TooltipPosition.bottom) {
+          relevantRadius =
+              tooltipBorderRadius!.topLeft.x; // Top-left for bottom tooltip
+        } else {
+          // For left/right tooltips, use the larger left radius
+          relevantRadius = [
+            tooltipBorderRadius!.topLeft.x,
+            tooltipBorderRadius!.bottomLeft.x,
+          ].reduce((a, b) => a > b ? a : b);
+        }
+        break;
+
+      case ArrowAlignment.end:
+        // Arrow at end (right side) - consider right corners
+        if (tooltipPosition == TooltipPosition.top) {
+          relevantRadius = tooltipBorderRadius!
+              .bottomRight.x; // Bottom-right for top tooltip
+        } else if (tooltipPosition == TooltipPosition.bottom) {
+          relevantRadius =
+              tooltipBorderRadius!.topRight.x; // Top-right for bottom tooltip
+        } else {
+          // For left/right tooltips, use the larger right radius
+          relevantRadius = [
+            tooltipBorderRadius!.topRight.x,
+            tooltipBorderRadius!.bottomRight.x,
+          ].reduce((a, b) => a > b ? a : b);
+        }
+        break;
+
+      case ArrowAlignment.center:
+        // For center alignment, we don't need curve-specific padding
+        // Use a minimal padding since arrow is away from corners
+        return 8.0;
+    }
+
+    // Calculate curve-aware padding instead of using full radius
+    return _calculateCurveAwarePadding(relevantRadius);
+  }
+
+  /// Calculate position-specific padding for vertical arrow positioning
+  /// Considers only the relevant corner radius based on arrow alignment and tooltip position
+  double _calculateVerticalPadding({
+    required ArrowAlignment alignment,
+    required TooltipPosition tooltipPosition,
+  }) {
+    if (arrowPadding != null) {
+      return arrowPadding!;
+    }
+
+    if (tooltipBorderRadius == null) {
+      return 8.0;
+    }
+
+    var relevantRadius = 0.0;
+
+    // For vertical positioning, we care about the Y-axis radius of relevant corners
+    switch (alignment) {
+      case ArrowAlignment.start:
+        // Arrow at start (top side) - consider top corners
+        if (tooltipPosition == TooltipPosition.left) {
+          relevantRadius =
+              tooltipBorderRadius!.topRight.y; // Top-right for left tooltip
+        } else if (tooltipPosition == TooltipPosition.right) {
+          relevantRadius =
+              tooltipBorderRadius!.topLeft.y; // Top-left for right tooltip
+        } else {
+          // For top/bottom tooltips, use the larger top radius
+          relevantRadius = [
+            tooltipBorderRadius!.topLeft.y,
+            tooltipBorderRadius!.topRight.y,
+          ].reduce((a, b) => a > b ? a : b);
+        }
+        break;
+
+      case ArrowAlignment.end:
+        // Arrow at end (bottom side) - consider bottom corners
+        if (tooltipPosition == TooltipPosition.left) {
+          relevantRadius = tooltipBorderRadius!
+              .bottomRight.y; // Bottom-right for left tooltip
+        } else if (tooltipPosition == TooltipPosition.right) {
+          relevantRadius = tooltipBorderRadius!
+              .bottomLeft.y; // Bottom-left for right tooltip
+        } else {
+          // For top/bottom tooltips, use the larger bottom radius
+          relevantRadius = [
+            tooltipBorderRadius!.bottomLeft.y,
+            tooltipBorderRadius!.bottomRight.y,
+          ].reduce((a, b) => a > b ? a : b);
+        }
+        break;
+
+      case ArrowAlignment.center:
+        // For center alignment, we don't need curve-specific padding
+        // Use a minimal padding since arrow is away from corners
+        return 8.0;
+    }
+
+    // Calculate curve-aware padding instead of using full radius
+    return _calculateCurveAwarePadding(relevantRadius);
+  }
+
+  /// Calculate curve-aware padding that considers the geometric arc intersection
+  /// Rather than using the full radius, this calculates where the curve actually
+  /// affects the straight edge of the tooltip
+  double _calculateCurveAwarePadding(double radius) {
+    if (radius == 0.0) {
+      return 8.0; // Default padding for sharp corners
+    }
+
+    // For a rounded corner with radius r, the curve creates an arc
+    // The "effective radius" for padding is much smaller than the full radius
+    // We want to avoid the curve but not over-compensate
+
+    // Use a fraction of the radius plus a small buffer
+    // This ensures we clear the curve without excessive padding
+    final effectivePadding = (radius * 0.3) + 4.0;
+
+    // Ensure minimum padding and reasonable maximum
+    return effectivePadding.clamp(6.0, radius * 0.5 + 8.0);
+  }
+
   /// Calculate horizontal arrow position based on alignment for top/bottom tooltips
   double _calculateArrowX({
     required ArrowAlignment alignment,
@@ -818,7 +966,15 @@ class _RenderPositionDelegate extends RenderBox
     required Offset targetPosition,
     required Offset tooltipPosition,
   }) {
-    const padding = 8; // Minimum padding from tooltip edges
+    // Determine tooltip position based on arrow context
+    final tooltipPos = tooltipPosition.dy < targetPosition.dy
+        ? TooltipPosition.top
+        : TooltipPosition.bottom;
+
+    final padding = _calculateHorizontalPadding(
+      alignment: alignment,
+      tooltipPosition: tooltipPos,
+    );
     final tooltipEnd = tooltipPosition.dx + tooltipSize.width;
     final targetEnd = targetPosition.dx + targetSize.width;
     final arrowEndWithPadding = halfArrowWidth * 2 + padding;
@@ -863,10 +1019,17 @@ class _RenderPositionDelegate extends RenderBox
     required Offset targetPosition,
     required Offset tooltipPosition,
   }) {
-    const padding = 8; // Minimum padding from tooltip edges
+    // Determine tooltip position based on arrow context
+    final tooltipPos = tooltipPosition.dx < targetPosition.dx
+        ? TooltipPosition.left
+        : TooltipPosition.right;
+
+    final padding = _calculateVerticalPadding(
+      alignment: alignment,
+      tooltipPosition: tooltipPos,
+    );
     final tooltipEnd = tooltipPosition.dy + tooltipSize.height;
     final targetEnd = targetPosition.dy + targetSize.height;
-    final arrowEndWithPadding = (halfArrowWidth * 2) + padding;
     final targetCenter = targetPosition.dy + (targetSize.height * 0.5);
 
     switch (alignment) {

@@ -19,9 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../models/flutter_inherited_data.dart';
@@ -210,7 +212,7 @@ class ShowcaseController {
     bool shouldUpdateOverlay = true,
   }) {
     if (!showcaseView.enableShowcase || !showcaseView.isShowcaseRunning) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _runLater(() {
       if (!context.mounted ||
           !showcaseView.enableShowcase ||
           !showcaseView.isShowcaseRunning) {
@@ -442,6 +444,18 @@ class ShowcaseController {
   /// configuration over global when available.
   FloatingActionWidget? get _getFloatingActionWidget =>
       config.floatingActionWidget ?? globalFloatingActionWidget;
+
+  /// Schedules a callback to run after the current frame with guarantee.
+  void _runLater(VoidCallback process) {
+    final scheduler = SchedulerBinding.instance;
+    // Schedule a frame if none is scheduled to ensure the callback runs.
+    // This is useful particularly when [disableMovingAnimation] is true and so
+    // flutter doesn't another frame on web.
+    if (!scheduler.hasScheduledFrame) {
+      scheduler.scheduleFrame();
+    }
+    scheduler.addPostFrameCallback((_) => process());
+  }
 
   @override
   int get hashCode => Object.hash(id, key);

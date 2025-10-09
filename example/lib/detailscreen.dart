@@ -11,16 +11,16 @@ class Detail extends StatefulWidget {
 class _DetailState extends State<Detail> {
   final GlobalKey _one = GlobalKey();
   BuildContext? myContext;
-  final scopeName = "_detailsScreen";
+
+  // This is optional but if you need different configuration in
+  // ShowcaseView then you can register new ShowcaseView
+  final showcaseDetailScope = ShowcaseView.register(scope: "_detailsScreen");
 
   @override
   void initState() {
     super.initState();
-    // This is optional but if you need different configuration in
-    // ShowcaseView then you can register new ShowcaseView
-    ShowcaseView.register(scope: scopeName);
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ShowcaseView.getNamed(scopeName)
+      (_) => showcaseDetailScope
         ..startShowCase([_one], delay: const Duration(milliseconds: 200))
         ..addOnFinishCallback(_onShowcaseFinished)
         ..addOnDismissCallback(_onShowcaseDismissed),
@@ -29,7 +29,7 @@ class _DetailState extends State<Detail> {
 
   @override
   void dispose() {
-    ShowcaseView.getNamed(scopeName)
+    showcaseDetailScope
       ..removeOnFinishCallback(_onShowcaseFinished)
       ..removeOnDismissCallback(_onShowcaseDismissed);
     super.dispose();
@@ -76,7 +76,7 @@ class _DetailState extends State<Detail> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffEE5366),
                     ),
-                    onPressed: ShowcaseView.getNamed(scopeName).dismiss,
+                    onPressed: showcaseDetailScope.dismiss,
                     child: const Text(
                       'Close Showcase',
                       style: TextStyle(

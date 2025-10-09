@@ -62,6 +62,16 @@ dependencies:
 For questions, issues, or feature requests, [create an issue](https://github.com/SimformSolutionsPvtLtd/showcaseview/issues) on GitHub or reach out via the GitHub Discussions tab. We're happy to help and encourage community contributions.
 To contribute documentation updates specifically, please make changes to the doc/documentation.md file and submit a pull request.
 
+## Main Contributors
+
+| ![img](https://avatars.githubusercontent.com/u/25323183?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/81063988?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/41247722?v=4&s=200) | 
+|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
+|           [Vatsal Tanna](https://github.com/vatsaltanna)           |           [Sahil Totala](https://github.com/Flamingloon)           |         [Aditya Chavda](https://github.com/aditya-chavda)          |
+
+| ![img](https://avatars.githubusercontent.com/u/20923896?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/56400956?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/97177197?v=4&s=200) |
+|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
+|       [Sanket Kachchela](https://github.com/SanketKachhela)        |        [Ujas Majithiya](https://github.com/Ujas-Majithiya)         |        [Happy Makadiya](https://github.com/HappyMakadiyaS)         |
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://simform-flutter-packages.web.app/showCaseView/license) file for details.

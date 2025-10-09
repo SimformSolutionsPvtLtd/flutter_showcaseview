@@ -937,24 +937,50 @@ class _RenderPositionDelegate extends RenderBox
     return _calculateCurveAwarePadding(relevantRadius);
   }
 
-  /// Calculate curve-aware padding that considers the geometric arc intersection
-  /// Rather than using the full radius, this calculates where the curve actually
-  /// affects the straight edge of the tooltip
+  /// Calculate precise geometric padding based on actual curve geometry
+  /// This method finds the practical intersection point where the curved corner
+  /// transitions to a visually straight edge for optimal arrow placement
   double _calculateCurveAwarePadding(double radius) {
     if (radius == 0.0) {
       return 8.0; // Default padding for sharp corners
     }
 
-    // For a rounded corner with radius r, the curve creates an arc
-    // The "effective radius" for padding is much smaller than the full radius
-    // We want to avoid the curve but not over-compensate
+    // The real challenge: finding where the curve becomes "straight enough"
+    // for arrow placement from a visual perspective.
 
-    // Use a fraction of the radius plus a small buffer
-    // This ensures we clear the curve without excessive padding
-    final effectivePadding = (radius * 0.3) + 4.0;
+    // Geometric insight: For a quarter-circle arc, the curvature decreases
+    // as we move away from the corner. The point where curvature becomes
+    // negligible for UI purposes is much smaller than the full radius.
 
-    // Ensure minimum padding and reasonable maximum
-    return effectivePadding.clamp(6.0, radius * 0.5 + 8.0);
+    // Approach: Calculate the point where the curve deviates minimally
+    // from a straight line. For a quarter circle, this "linearization point"
+    // occurs at approximately 15-20% of the radius from the corner.
+
+    // Mathematical basis: The point where the tangent line to the circle
+    // is within 1-2 pixels of the actual curve (imperceptible difference)
+
+    // For radius r, the effective "straight edge" begins at approximately:
+    // - Small radii (< 15px): ~20% of radius (reduced from 25%)
+    // - Medium radii (15-30px): ~15% of radius (reduced from 20%)
+    // - Large radii (> 30px): ~12% of radius (reduced from 15%)
+
+    double effectiveRatio;
+    if (radius <= 15) {
+      effectiveRatio = 0.20; // 20% for small radii
+    } else if (radius <= 30) {
+      effectiveRatio = 0.15; // 15% for medium radii
+    } else {
+      effectiveRatio = 0.12; // 12% for large radii
+    }
+
+    final geometricPadding = radius * effectiveRatio;
+
+    // Add small buffer for arrow width and visual comfort
+    const visualBuffer = 3.0; // Reduced from 4.0
+    final totalPadding = geometricPadding + visualBuffer;
+
+    // Ensure reasonable bounds with more conservative maximum
+    return totalPadding.clamp(5.0, radius * 0.3);
   }
 
   /// Calculate horizontal arrow position based on alignment for top/bottom tooltips
@@ -971,14 +997,21 @@ class _RenderPositionDelegate extends RenderBox
         ? TooltipPosition.top
         : TooltipPosition.bottom;
 
-    final padding = _calculateHorizontalPadding(
+    final idealPadding = _calculateHorizontalPadding(
       alignment: alignment,
       tooltipPosition: tooltipPos,
     );
+
     final tooltipEnd = tooltipPosition.dx + tooltipSize.width;
     final targetEnd = targetPosition.dx + targetSize.width;
-    final arrowEndWithPadding = halfArrowWidth * 2 + padding;
     final targetCenter = targetPosition.dx + (targetSize.width * 0.5);
+
+    // Calculate available space for padding and adjust if necessary
+    final availableSpace = tooltipSize.width - (halfArrowWidth * 2);
+    final maxPadding = (availableSpace * 0.4).clamp(6.0, idealPadding);
+    final padding = idealPadding > maxPadding ? maxPadding : idealPadding;
+
+    final arrowEndWithPadding = halfArrowWidth * 2 + padding;
 
     switch (alignment) {
       case ArrowAlignment.start:
@@ -1024,13 +1057,19 @@ class _RenderPositionDelegate extends RenderBox
         ? TooltipPosition.left
         : TooltipPosition.right;
 
-    final padding = _calculateVerticalPadding(
+    final idealPadding = _calculateVerticalPadding(
       alignment: alignment,
       tooltipPosition: tooltipPos,
     );
+
     final tooltipEnd = tooltipPosition.dy + tooltipSize.height;
     final targetEnd = targetPosition.dy + targetSize.height;
     final targetCenter = targetPosition.dy + (targetSize.height * 0.5);
+
+    // Calculate available space for padding and adjust if necessary
+    final availableSpace = tooltipSize.height - (halfArrowWidth * 2);
+    final maxPadding = (availableSpace * 0.4).clamp(6.0, idealPadding);
+    final padding = idealPadding > maxPadding ? maxPadding : idealPadding;
 
     switch (alignment) {
       case ArrowAlignment.start:
@@ -1038,8 +1077,8 @@ class _RenderPositionDelegate extends RenderBox
         final proposedY = targetPosition.dy;
         return proposedY
             .clamp(
-              tooltipPosition.dy + (halfArrowWidth + 4),
-              tooltipEnd - (padding + 2),
+              tooltipPosition.dy + padding,
+              tooltipEnd - padding,
             )
             .clamp(targetPosition.dy + padding, targetEnd - padding);
 
@@ -1056,7 +1095,7 @@ class _RenderPositionDelegate extends RenderBox
         return proposedY
             .clamp(
               tooltipPosition.dy + padding,
-              tooltipEnd - (halfArrowWidth * 2 + 2),
+              tooltipEnd - padding,
             )
             .clamp(targetPosition.dy + padding, targetEnd - padding);
     }

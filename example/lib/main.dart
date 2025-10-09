@@ -235,6 +235,8 @@ class _MailPageState extends State<MailPage> {
                                     Showcase(
                                       key: _firstShowcaseWidget,
                                       description: 'Tap to see menu options',
+                                      tooltipPosition: TooltipPosition.right,
+                                      arrowAlignment: ArrowAlignment.end,
                                       onBarrierClick: () {
                                         debugPrint('Barrier clicked');
                                         debugPrint(
@@ -292,6 +294,8 @@ class _MailPageState extends State<MailPage> {
                       title: 'Profile',
                       description:
                           "Tap to see profile which contains user's name, profile picture, mobile number and country",
+                      tooltipPosition: TooltipPosition.left,
+                      arrowAlignment: ArrowAlignment.start,
                       tooltipBackgroundColor: Theme.of(context).primaryColor,
                       textColor: Colors.white,
                       floatingActionWidget: FloatingActionWidget(
@@ -394,7 +398,10 @@ class _MailPageState extends State<MailPage> {
         title: 'Compose Mail',
         description: 'Click here to compose mail',
         targetBorderRadius: const BorderRadius.all(Radius.circular(16)),
-        showArrow: false,
+        tooltipPosition: TooltipPosition.left,
+        arrowAlignment: ArrowAlignment.start,
+        arrowPadding: 20.0, // Custom arrow padding
+        showArrow: true,
         tooltipActions: [
           TooltipActionButton(
               type: TooltipDefaultActionType.previous,
@@ -463,6 +470,8 @@ class _MailPageState extends State<MailPage> {
         child: Showcase(
           key: key,
           description: 'Tap to check mail',
+          tooltipPosition: TooltipPosition.right,
+          arrowAlignment: ArrowAlignment.start,
           disposeOnTap: true,
           onTargetClick: () {
             Navigator.push<void>(

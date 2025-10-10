@@ -47,7 +47,7 @@ more efficient than ever:
 
 ## Documentation
 
-Visit our [documentation](https://simform-flutter-packages.web.app/showCaseView) site for all 
+Visit our <a href="https://simform-flutter-packages.web.app/showCaseView" target="_blank">documentation</a> site for all 
 implementation details, usage instructions, code examples, and advanced features.
 
 ## Installation

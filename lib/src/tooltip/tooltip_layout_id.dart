@@ -25,6 +25,7 @@ class _TooltipLayoutId extends ParentDataWidget<MultiChildLayoutParentData> {
   const _TooltipLayoutId({
     required this.id,
     required super.child,
+    required super.key,
   });
 
   final Object id;

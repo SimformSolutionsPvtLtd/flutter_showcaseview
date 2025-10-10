@@ -215,7 +215,6 @@ class _ToolTipWrapperState extends State<ToolTipWrapper>
               ),
             ),
           );
-
     return Material(
       type: MaterialType.transparency,
       child: _AnimatedTooltipMultiLayout(
@@ -243,8 +242,14 @@ class _ToolTipWrapperState extends State<ToolTipWrapper>
             Offset.zero,
         targetTooltipGap: widget.targetTooltipGap,
         children: [
+          // We have to use UniqueKey here to avoid the issue with the
+          // _TooltipLayoutId being reused and causing layout issues
+          // See: documentation of [MultiChildRenderObjectWidget] for more
+          // details and to reproduce issue navigate to details screen in
+          // example app with route transition
           _TooltipLayoutId(
             id: TooltipLayoutSlot.tooltipBox,
+            key: UniqueKey(),
             child: defaultToolTipWidget,
           ),
           if (widget.tooltipActions.isNotEmpty &&
@@ -252,6 +257,7 @@ class _ToolTipWrapperState extends State<ToolTipWrapper>
                   widget.container != null))
             _TooltipLayoutId(
               id: TooltipLayoutSlot.actionBox,
+              key: UniqueKey(),
               child: ActionWidget(
                 tooltipActionConfig: widget.tooltipActionConfig,
                 children: widget.tooltipActions,
@@ -260,6 +266,7 @@ class _ToolTipWrapperState extends State<ToolTipWrapper>
           if (widget.showArrow)
             _TooltipLayoutId(
               id: TooltipLayoutSlot.arrow,
+              key: UniqueKey(),
               child: ShowcaseArrow(
                 strokeColor: widget.tooltipBackgroundColor,
               ),
